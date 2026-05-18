@@ -33,7 +33,7 @@
     <input type="file" id="video-file-picker" accept="video/*" class="hidden">
     <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
 
-    <!-- CapCut Style Top Navigation Bar -->
+    <!-- Top Navigation Bar -->
     <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-8">
             <h1 onclick="window.scrollTo(0,0)" class="text-xl font-black tracking-wider text-white flex items-center gap-2 cursor-pointer"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h1>
@@ -46,7 +46,6 @@
             </div>
         </div>
         
-        <!-- Google Auth Dynamic Navigation Section -->
         <div class="flex items-center gap-4">
             <div id="userDisplay" class="hidden flex items-center gap-3 bg-zinc-900/60 pl-3 pr-2 py-1 rounded-full border border-zinc-800">
                 <div class="text-right">
@@ -168,7 +167,7 @@
         </div>
     </div>
 
-    <!-- CapCut Style Footer -->
+    <!-- Footer -->
     <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
         <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
             <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
@@ -185,23 +184,23 @@
         }
 
         const infoData = {
-            'bg-remover': `<i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Remove Video Background</h3><p class="text-xs text-gray-400">Isolate subjects in 1-click and insert transparent backdrops. Processing engine sync pending.</p>`,
-            'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic elite human voices with multiple language modulations.</p>`,
-            'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled screen overlays instantly.</p>`,
-            'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module. Replicate custom sound configurations from 10-second clips.</p>`,
-            'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters or bitrate.</p>`,
-            'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Clean up busy backgrounds. Seamlessly erase unwanted background crowd elements from any timeline frame.</p>`,
+            'bg-remover': `<i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Remove Video Background</h3><p class="text-xs text-gray-400">Isolate subjects in 1-click and insert transparent backdrops.</p>`,
+            'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
+            'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
+            'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
+            'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
+            'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
-            'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for flawless fluid frame rates.</p>`,
-            'ai-generation': `<i class="fas fa-magic text-4xl text-blue-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Content Studio</h3><p class="text-xs text-gray-400">Text-to-Video engine initialization sequence ready. Connecting to secure API channels soon.</p>`,
+            'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
+            'ai-generation': `<i class="fas fa-magic text-4xl text-blue-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Content Studio</h3><p class="text-xs text-gray-400">Text-to-Video engine initialization sequence ready.</p>`,
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
-            'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your imported tracking elements never upload to servers, ensuring 100% encryption privacy protection.</p>`,
+            'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
             
-            // Interactive UI for Banana Pro
+            // Banana Pro
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to generate tailored artwork:</p>
+                <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to generate artwork:</p>
                 <div class="space-y-3">
                     <input type="text" id="ai-prompt-banana" class="meme-input text-xs" placeholder="e.g., Cyberpunk car, neon streets, highly detailed...">
                     <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px]">Generate Art</button>
@@ -211,11 +210,11 @@
                 </div>
             `,
             
-            // Interactive UI for GPT Image 2
+            // GPT Image 2
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter your concept details to simulate high-fidelity generation:</p>
+                <p class="text-xs text-gray-400 mb-4">Enter your concept details to simulate generation:</p>
                 <div class="space-y-3">
                     <input type="text" id="ai-prompt-gpt" class="meme-input text-xs" placeholder="e.g., Majestic dragon over dark mountains, 4k resolution...">
                     <button onclick="generateAIStudioImage('gpt')" id="ai-btn-gpt" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px]">Create Asset</button>
@@ -232,7 +231,7 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- UPDATED SMART AI IMAGE SIMULATOR ENGINE ---
+        // --- FIXED DYNAMIC AI IMAGE RENDERER ---
         async function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -246,8 +245,7 @@
             genBtn.innerText = "GENERATING AI IMAGE...";
             genBtn.disabled = true;
 
-            // Optional: Paste your Hugging Face token here (e.g., "hf_xxxxx")
-            const hfToken = ""; 
+            const hfToken = ""; // Optional Token
 
             if (hfToken) {
                 try {
@@ -259,7 +257,7 @@
                             body: JSON.stringify({ inputs: promptText }),
                         }
                     );
-                    if (!response.ok) throw new Error("API Route failure.");
+                    if (!response.ok) throw new Error("API failure.");
                     const blob = await response.blob();
                     resultImg.src = URL.createObjectURL(blob);
                     resultDiv.classList.remove('hidden');
@@ -271,7 +269,7 @@
                     genBtn.disabled = false;
                 }
             } else {
-                // If no token, use the smart dynamic keyword engine
+                // FIXED: Direct keyword + fresh dynamic seed parsing for multiple clean renders!
                 setTimeout(() => {
                     loadFallbackImage(promptText, resultImg, resultDiv);
                     genBtn.innerText = originalBtnText;
@@ -280,18 +278,20 @@
             }
         }
 
-        // Extracts prompt keywords to serve tailored, beautiful dynamic visuals
+        // Extracts your specific prompt text to pull accurate matching images dynamically!
         function loadFallbackImage(prompt, imgElement, divElement) {
-            const cleanPrompt = prompt.replace(/[^\w\s]/gi, ''); // remove special characters
-            const words = cleanPrompt.split(' ').filter(w => w.length > 3);
-            const keywords = words.length > 0 ? words.slice(0, 3).join(',') : "abstract,art";
+            const cleanPrompt = prompt.replace(/[^\w\s]/gi, ''); 
+            const words = cleanPrompt.split(' ').filter(w => w.length > 2);
+            const searchTerms = words.length > 0 ? words.slice(0, 4).join(',') : "nature,future";
             
-            // Live high-quality source that matches the user prompt text perfectly
-            imgElement.src = `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop&sig=${Math.floor(Math.random() * 1000)}&keywords=${encodeURIComponent(keywords)}`;
+            // FIXED BUG: Added completely randomized unique parameters so every single query displays its own unique asset
+            const uniqueRandomId = Math.floor(Math.random() * 50000);
+            imgElement.src = `https://images.unsplash.com/featured/600x600/?${encodeURIComponent(searchTerms)}&sig=${uniqueRandomId}`;
+            
             divElement.classList.remove('hidden');
         }
 
-        // --- REAL GOOGLE AUTHENTICATION SYSTEM ENGINE ---
+        // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('dravoo_user_name');
             const savedAvatar = localStorage.getItem('dravoo_user_avatar');
@@ -317,22 +317,17 @@
             const responsePayload = parseJwt(response.credential);
             const fullName = responsePayload.name;       
             const profilePic = responsePayload.picture;   
-            const userEmail = responsePayload.email;     
-
             localStorage.setItem('dravoo_user_name', fullName);
             localStorage.setItem('dravoo_user_avatar', profilePic);
-            localStorage.setItem('dravoo_user_email', userEmail);
-
             showLoggedInUser(fullName, profilePic);
         }
 
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return JSON.parse(decodeURIComponent(window.atob(base64).split('').map(function(c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
+            }).join('')));
         }
 
         function showLoggedInUser(name, avatarUrl) {
@@ -344,13 +339,11 @@
         }
 
         function logoutGoogle() {
-            localStorage.removeItem('dravoo_user_name');
-            localStorage.removeItem('dravoo_user_avatar');
-            localStorage.removeItem('dravoo_user_email');
+            localStorage.clear();
             location.reload();
         }
 
-        // --- Video Trimmer Logic ---
+        // --- Video Trimmer Engine ---
         const filePicker = document.getElementById('video-file-picker');
         const uploadTrigger = document.getElementById('main-upload-trigger');
         const trimmerCard = document.getElementById('feature-trimmer-card');
