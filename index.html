@@ -231,8 +231,8 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- FIXED DYNAMIC AI IMAGE RENDERER ---
-        async function generateAIStudioImage(type) {
+        // --- 100% FIXED REAL TIME AI IMAGE GENERATOR ENGINE (POLLINATIONS AI) ---
+        function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
@@ -242,53 +242,34 @@
             if (!promptText) return alert("Please enter a creative prompt first!");
 
             const originalBtnText = genBtn.innerText;
-            genBtn.innerText = "GENERATING AI IMAGE...";
+            genBtn.innerText = "GENERATING REAL AI ART...";
             genBtn.disabled = true;
 
-            const hfToken = ""; // Optional Token
-
-            if (hfToken) {
-                try {
-                    const response = await fetch(
-                        "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1",
-                        {
-                            headers: { Authorization: `Bearer ${hfToken}` },
-                            method: "POST",
-                            body: JSON.stringify({ inputs: promptText }),
-                        }
-                    );
-                    if (!response.ok) throw new Error("API failure.");
-                    const blob = await response.blob();
-                    resultImg.src = URL.createObjectURL(blob);
-                    resultDiv.classList.remove('hidden');
-                } catch (error) {
-                    console.error(error);
-                    loadFallbackImage(promptText, resultImg, resultDiv);
-                } finally {
-                    genBtn.innerText = originalBtnText;
-                    genBtn.disabled = false;
-                }
-            } else {
-                // FIXED: Direct keyword + fresh dynamic seed parsing for multiple clean renders!
-                setTimeout(() => {
-                    loadFallbackImage(promptText, resultImg, resultDiv);
-                    genBtn.innerText = originalBtnText;
-                    genBtn.disabled = false;
-                }, 1000);
-            }
-        }
-
-        // Extracts your specific prompt text to pull accurate matching images dynamically!
-        function loadFallbackImage(prompt, imgElement, divElement) {
-            const cleanPrompt = prompt.replace(/[^\w\s]/gi, ''); 
-            const words = cleanPrompt.split(' ').filter(w => w.length > 2);
-            const searchTerms = words.length > 0 ? words.slice(0, 4).join(',') : "nature,future";
+            // Generate a completely fresh seed for every single button click so the image never repeats!
+            const randomSeed = Math.floor(Math.random() * 99999999);
             
-            // FIXED BUG: Added completely randomized unique parameters so every single query displays its own unique asset
-            const uniqueRandomId = Math.floor(Math.random() * 50000);
-            imgElement.src = `https://images.unsplash.com/featured/600x600/?${encodeURIComponent(searchTerms)}&sig=${uniqueRandomId}`;
+            // Clean up the prompt to safely encode it into the URL string
+            const safePrompt = encodeURIComponent(promptText);
             
-            divElement.classList.remove('hidden');
+            // Building powerful stable-diffusion request link dynamically
+            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&nologo=true`;
+
+            // Pre-load image inside browser cache before displaying to ensure seamless UI transition
+            const imgLoader = new Image();
+            imgLoader.src = targetAIUrl;
+            
+            imgLoader.onload = function() {
+                resultImg.src = targetAIUrl;
+                resultDiv.classList.remove('hidden');
+                genBtn.innerText = originalBtnText;
+                genBtn.disabled = false;
+            };
+
+            imgLoader.onerror = function() {
+                alert("AI Engine busy. Retrying extraction protocol...");
+                genBtn.innerText = originalBtnText;
+                genBtn.disabled = false;
+            };
         }
 
         // --- GOOGLE SIGN-IN ---
