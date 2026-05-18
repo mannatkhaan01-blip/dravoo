@@ -7,11 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        html { scroll-behavior: smooth; }
         body { background-color: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; }
         .cap-gradient { background: linear-gradient(135deg, #2563eb, #db2777); }
         .cap-text-gradient { background: linear-gradient(90deg, #3b82f6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 500; transition: 0.2s; cursor: pointer; }
+        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 500; transition: 0.2s; }
         .nav-link:hover { color: #fff; }
         .feature-box { background: #121212; border: 1px solid #1f2937; border-radius: 16px; transition: 0.3s; cursor: pointer; }
         .feature-box:hover { border-color: #3b82f6; transform: translateY(-4px); background: #161616; }
@@ -29,16 +28,16 @@
     <input type="file" id="video-file-picker" accept="video/*" class="hidden">
     <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
 
-    <!-- CapCut Style Top Navigation Bar (Links Fixed!) -->
+    <!-- CapCut Style Top Navigation Bar -->
     <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-8">
-            <h1 onclick="window.scrollTo(0,0)" class="text-xl font-black tracking-wider text-white flex items-center gap-2 cursor-pointer"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h1>
+            <h1 class="text-xl font-black tracking-wider text-white flex items-center gap-2"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h1>
             <div class="hidden md:flex items-center gap-6">
-                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Products</span>
-                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Features</span>
-                <span onclick="showInfo('seedance')" class="nav-link">Seedance 2.0</span>
-                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Templates</span>
-                <span onclick="showInfo('about')" class="nav-link">About</span>
+                <a href="#" class="nav-link">Products</a>
+                <a href="#" class="nav-link">Features</a>
+                <a href="#" class="nav-link">Seedance 2.0</a>
+                <a href="#" class="nav-link">Templates</a>
+                <a href="#" class="nav-link">Blog</a>
             </div>
         </div>
         <div class="flex items-center gap-4">
@@ -50,13 +49,13 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section (CapCut Real Feel) -->
     <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
         <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
         
-        <!-- Action Buttons / Prompt Input Box Connected! -->
+        <!-- CapCut Style Fake AI Generator Prompt box -->
         <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-2 rounded-full flex justify-between items-center pl-6">
             <div class="flex items-center gap-2 text-gray-500 text-xs truncate">
                 <i class="fas fa-wand-magic-sparkles text-blue-500"></i>
@@ -100,26 +99,26 @@
         </div>
     </section>
 
-    <!-- Comprehensive Feature Grid (Navigation Targets Here) -->
-    <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
+    <!-- Comprehensive Feature Grid (All CapCut Features Listed) -->
+    <section class="max-w-5xl mx-auto px-6 mb-24">
         <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
         
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <!-- Video Trimmer -->
+            <!-- Video Trimmer (Active) -->
             <div id="feature-trimmer-card" class="feature-box p-6 border-blue-500/30 bg-blue-950/5 text-center">
                 <i class="fas fa-scissors text-2xl text-blue-400 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">Video Trimmer</h4>
                 <p class="text-[10px] text-blue-400 mt-1 font-semibold">Active Studio</p>
             </div>
 
-            <!-- Meme Maker -->
+            <!-- Meme Maker (Active) -->
             <div onclick="openMemeStudio()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
                 <i class="fas fa-face-laugh text-2xl text-pink-400 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">Meme Maker</h4>
                 <p class="text-[10px] text-pink-400 mt-1 font-semibold">Active Studio</p>
             </div>
 
-            <!-- AI Features -->
+            <!-- Requested Features (Popups Added) -->
             <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
             <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
             <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
@@ -179,23 +178,15 @@
     <!-- CapCut Style Footer -->
     <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
         <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
-            <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
+            <a href="javascript:void(0)" onclick="showInfo('about')" class="hover:text-white transition">About Us</a>
             <a href="mailto:dravooeditor@gmail.com" class="hover:text-white transition">Feedback</a>
-            <span onclick="showInfo('privacy')" class="hover:text-white transition cursor-pointer">Privacy Policy</span>
+            <a href="javascript:void(0)" onclick="showInfo('privacy')" class="hover:text-white transition">Privacy Policy</a>
         </div>
         <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
     </footer>
 
     <!-- Logic Script Engine -->
     <script>
-        // Smooth Scroll Logic
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
         const infoData = {
             'bg-remover': `<i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Remove Video Background</h3><p class="text-xs text-gray-400">Isolate subjects in 1-click and insert transparent backdrops. Processing engine sync pending.</p>`,
             'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic elite human voices with multiple language modulations.</p>`,
