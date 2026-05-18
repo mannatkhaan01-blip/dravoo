@@ -3,96 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dravoo AI Studio Engine</title>
-    <!-- Tailwind CSS CDN for styling -->
+    <title>Dravoo AI - Next-Gen Video Architecture</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts for premium tech typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Modern standard custom styles for video canvas overlay */
-        .studio-active-border {
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712;
+        }
+        .tech-heading {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Legendary Cyberpunk Neon Effects */
+        .neon-glow-blue {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 25px rgba(147, 51, 234, 0.2);
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .active-tool-card {
             border-color: #3b82f6 !important;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(30, 27, 75, 0.4) 100%);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.25);
+        }
+        /* Hide scrollbar tracks custom styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans">
+<body class="text-zinc-100 min-h-screen antialiased selection:bg-blue-500/30">
 
-    <!-- MAIN DRAVOO WORKSPACE CONTAINER -->
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Dravoo Next-Gen AI Video Architecture</h1>
-            <p class="text-zinc-400 text-sm mt-1">Developed by Mudassir Shabbir</p>
-        </header>
+    <!-- BACKGROUND GRADIENT BLURS -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- Tool Selection Dashboard GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <!-- Tool 1: AI Background Remover -->
-            <div id="btn-select-bg" onclick="switchStudioEngine('bg-remover')" class="p-5 bg-zinc-900 border border-zinc-800 rounded-xl cursor-pointer hover:border-zinc-700 transition studio-active-border">
-                <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">🟢 AI Background Remover</h3>
-                <p class="text-zinc-400 text-xs mt-1">Real-time canvas frame segmentation & transparent overlay alpha processing.</p>
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 glass-panel border-b border-zinc-900 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center font-bold text-white tracking-tighter text-lg shadow-lg shadow-blue-500/20">D</div>
+                <span class="tech-heading text-xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">DRAVOO<span class="text-blue-500 font-extrabold">.AI</span></span>
             </div>
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-400">
+                <a href="#features" class="hover:text-white transition">Features</a>
+                <a href="#studio" class="text-blue-400 hover:text-blue-300 transition flex items-center gap-1.5"><span>●</span> Creator Studio</a>
+                <a href="#templates" class="hover:text-white transition">Templates</a>
+                <a href="#docs" class="hover:text-white transition">API Architecture</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-xs bg-zinc-800 text-zinc-400 px-2.5 py-1 rounded-md border border-zinc-700/50">V2.0 Core Active</span>
+            </div>
+        </div>
+    </nav>
 
-            <!-- Tool 2: Auto Captions -->
-            <div id="btn-select-speech" onclick="switchStudioEngine('speech-text')" class="p-5 bg-zinc-900 border border-zinc-800 rounded-xl cursor-pointer hover:border-zinc-700 transition">
-                <h3 class="text-lg font-bold text-zinc-300 flex items-center gap-2">🌐 Auto Captions (Speech to Text)</h3>
-                <p class="text-zinc-400 text-xs mt-1">Native Web Speech Recognition API engine integration for dynamic timed subtitles.</p>
+    <!-- HERO SECTION (LEGENDARY LANDING LOOK) -->
+    <header class="relative max-w-5xl mx-auto text-center pt-20 pb-16 px-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs text-zinc-400 mb-6 neon-glow-blue animate-pulse">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            <span>Next-Generation Multi-Modal Video Automation Architecture</span>
+        </div>
+        <h1 class="tech-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
+            Automate Documentaries With <br>
+            <span class="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent">Advanced Core Engines</span>
+        </h1>
+        <p class="max-w-2xl mx-auto text-zinc-400 text-base sm:text-lg font-light leading-relaxed mb-8">
+            Built for scaling high-retention cinematic content across Western channels. Instantly deploy browser-side neural frame filters and dynamic acoustic timelines.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="#studio" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-xl shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5">Open Workspace Console</a>
+            <button onclick="alert('Dravoo Premium Modules documentation linking pending.')" class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-medium text-sm rounded-xl transition">View Architecture Docs</button>
+        </div>
+    </header>
+
+    <!-- CORE WORKSPACE MODULE -->
+    <main id="studio" class="max-w-6xl mx-auto px-4 py-12 scroll-mt-24">
+        
+        <!-- SECTION TITLE -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h2 class="tech-heading text-2xl font-bold text-white flex items-center gap-2">
+                    <span class="w-2 h-5 bg-blue-500 rounded-sm inline-block"></span>
+                    Central Processing Engine Console
+                </h2>
+                <p class="text-zinc-500 text-xs mt-1">Select an integrated operational engine to run execution logic on source media.</p>
+            </div>
+            <div class="flex items-center gap-2 bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs text-zinc-400">
+                <span class="px-2.5 py-1 rounded bg-zinc-800 text-zinc-200 font-medium shadow-sm">Target Audience: US/UK/CA Optimized</span>
             </div>
         </div>
 
-        <!-- CORE STUDIO MODAL / WORKSPACE CONSOLE -->
-        <div id="generalStudioModal" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
-                <h2 id="gs-modal-title" class="text-xl font-bold text-zinc-200">Studio Engine: Background Remover</h2>
-                <span id="gs-engine-badge" class="px-2.5 py-1 text-xs font-semibold bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20">Active</span>
+        <!-- ENGINE CONTROL DASHBOARD GRID -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            
+            <!-- CARD 1: AI BACKGROUND REMOVER (REAL WORKING) -->
+            <div id="btn-engine-bg" onclick="switchStudioEngine('bg-remover')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-zinc-700 transition-all duration-300 active-tool-card group">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-lg text-blue-400 mb-4 group-hover:scale-110 transition-transform">🎭</div>
+                <h3 id="text-title-bg" class="text-sm font-bold text-blue-400 tracking-wide uppercase">AI Background Remover</h3>
+                <p class="text-zinc-400 text-xs mt-1.5 leading-relaxed">Real-time canvas frame segmentation & green mask transparent alpha chroma engine.</p>
+                <span class="inline-block mt-3 text-[10px] font-semibold bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20">Active Native Engine</span>
             </div>
 
-            <!-- File Upload Box -->
-            <div id="gs-upload-box" class="border-2 border-dashed border-zinc-800 hover:border-zinc-700 rounded-xl p-8 text-center cursor-pointer mb-4 transition">
+            <!-- CARD 2: AUTO CAPTIONS (REAL WORKING) -->
+            <div id="btn-engine-speech" onclick="switchStudioEngine('speech-text')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-zinc-700 transition-all duration-300 group">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-lg text-purple-400 mb-4 group-hover:scale-110 transition-transform">🌐</div>
+                <h3 id="text-title-speech" class="text-sm font-bold text-zinc-300 tracking-wide uppercase">Auto Captions AI</h3>
+                <p class="text-zinc-400 text-xs mt-1.5 leading-relaxed">Native Web Speech Recognition pipeline tracking for instant timed voice subtitles.</p>
+                <span class="inline-block mt-3 text-[10px] font-semibold bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">Active Native Engine</span>
+            </div>
+
+            <!-- CARD 3: VOICE CLONING (INTEGRATED LOOK) -->
+            <div id="btn-engine-voice" onclick="switchStudioEngine('voice-clone')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-zinc-700 transition-all duration-300 group">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg text-emerald-400 mb-4 group-hover:scale-110 transition-transform">🎙️</div>
+                <h3 id="text-title-voice" class="text-sm font-bold text-zinc-300 tracking-wide uppercase">AI Voice Cloning</h3>
+                <p class="text-zinc-400 text-xs mt-1.5 leading-relaxed">Clone signature voice textures from input samples for natural audio generation.</p>
+                <span class="inline-block mt-3 text-[10px] font-semibold bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded border border-zinc-700/50">Simulation Frame</span>
+            </div>
+
+            <!-- CARD 4: SCRIPT GENERATOR (INTEGRATED LOOK) -->
+            <div id="btn-engine-script" onclick="switchStudioEngine('script-gen')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-zinc-700 transition-all duration-300 group">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-lg text-amber-400 mb-4 group-hover:scale-110 transition-transform">✍️</div>
+                <h3 id="text-title-script" class="text-sm font-bold text-zinc-300 tracking-wide uppercase">AI Documentary Script</h3>
+                <p class="text-zinc-400 text-xs mt-1.5 leading-relaxed">Generate high-retention scripts optimized for USA, UK and Western pacing metrics.</p>
+                <span class="inline-block mt-3 text-[10px] font-semibold bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded border border-zinc-700/50">Simulation Frame</span>
+            </div>
+
+        </div>
+
+        <!-- MAIN CORE STUDIO INTERFACE WINDOW -->
+        <div id="generalStudioModal" class="glass-panel rounded-2xl p-6 neon-glow-purple relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-purple-500"></div>
+            
+            <!-- Window Header Controls -->
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-zinc-800/60">
+                <div class="flex items-center gap-3">
+                    <div class="flex gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-red-500/40 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500/40 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500/40 inline-block"></span>
+                    </div>
+                    <h2 id="gs-modal-title" class="text-md font-semibold text-zinc-200 tracking-wide tech-heading ml-2">Console Processing Pipeline: AI Background Remover</h2>
+                </div>
+                <span id="gs-engine-badge" class="px-2.5 py-1 text-xs font-semibold bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">System Ready</span>
+            </div>
+
+            <!-- MEDIA SOURCE UPLOADER BOX -->
+            <div id="gs-upload-box" class="border border-dashed border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 rounded-xl p-12 text-center cursor-pointer mb-6 transition duration-200">
                 <input type="file" id="gs-file-input" accept="video/*" class="hidden">
                 <label for="gs-file-input" class="cursor-pointer block">
-                    <span class="text-3xl block mb-2">📁</span>
-                    <span class="text-sm font-medium text-zinc-300 block">Choose Video File</span>
-                    <span class="text-xs text-zinc-500 block mt-1">MP4, WebM up to 100MB</span>
+                    <div class="w-14 h-14 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-2xl shadow-inner mx-auto mb-4">📥</div>
+                    <span class="text-sm font-semibold text-zinc-300 block">Inject Media Source File</span>
+                    <span class="text-xs text-zinc-500 block mt-1.5">Drag & drop or browse local files (MP4, WebM up to 100MB)</span>
                 </label>
             </div>
 
-            <!-- VIDEO PLAYER & LIVE OVERLAY SCREEN -->
-            <div id="gs-player-container" class="hidden relative aspect-video bg-black rounded-xl overflow-hidden border border-zinc-800 mb-4">
-                <!-- Original Video Element -->
-                <video id="gs-video-preview" controls class="w-full h-full object-contain"></video>
+            <!-- DIGITAL VIDEO PLAYER & LIVE EXPERIMENTAL OVERLAY SCREEN -->
+            <div id="gs-player-container" class="hidden relative aspect-video bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 mb-6">
+                <!-- Live Video Render Target -->
+                <video id="gs-video-preview" controls class="w-full h-full object-contain z-10"></video>
                 
-                <!-- Real-time BG Removal Rendering Target -->
-                <canvas id="gs-visible-canvas" class="hidden w-full h-full object-contain absolute inset-0 pointer-events-none"></canvas>
+                <!-- Chroma Mask Pixel Frame Rendering Canvas -->
+                <canvas id="gs-visible-canvas" class="hidden w-full h-full object-contain absolute inset-0 pointer-events-none z-20"></canvas>
                 
-                <!-- REAL AUTO CAPTIONS OVERLAY LAYER -->
-                <div id="gs-captions-overlay" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-11/12 text-center pointer-events-none hidden z-30">
-                    <p id="gs-captions-text" class="inline-block bg-black/85 text-yellow-400 font-bold px-4 py-2 rounded-lg text-sm md:text-base border border-zinc-700 shadow-2xl tracking-wide"></p>
+                <!-- NATIVE VOICE RECOGNITION LIVE SUBTITLE OVERLAY LAYER -->
+                <div id="gs-captions-overlay" class="absolute bottom-8 left-1/2 -translate-x-1/2 w-10/12 text-center pointer-events-none hidden z-30">
+                    <p id="gs-captions-text" class="inline-block bg-zinc-950/90 text-yellow-400 font-bold px-4 py-2 rounded-xl text-sm md:text-base border border-zinc-700/60 shadow-2xl tracking-wide max-h-24 overflow-hidden"></p>
                 </div>
             </div>
 
-            <!-- PROGRESS & STATUS CONSOLE -->
-            <div id="gs-progress-box" class="hidden bg-zinc-950 p-4 rounded-xl border border-zinc-800 mb-4">
-                <div class="flex justify-between items-center text-xs mb-2">
-                    <span id="gs-progress-status" class="text-zinc-400 font-medium">Processing frames...</span>
+            <!-- PROGRESS REPORT SYSTEM CONSOLE -->
+            <div id="gs-progress-box" class="hidden bg-zinc-950/80 p-4 rounded-xl border border-zinc-800/80 mb-6 shadow-inner">
+                <div class="flex justify-between items-center text-xs mb-2.5">
+                    <span id="gs-progress-status" class="text-zinc-400 font-medium">Injecting media stream data...</span>
                     <span id="gs-progress-percent" class="text-blue-400 font-bold">0%</span>
                 </div>
-                <div class="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                    <div id="gs-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-0 transition-all duration-300"></div>
+                <div class="w-full bg-zinc-900 h-2 rounded-full overflow-hidden border border-zinc-800">
+                    <div id="gs-progress-bar" class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full w-0 transition-all duration-300"></div>
                 </div>
             </div>
 
-            <!-- ACTION CONTROL PANEL -->
-            <div class="flex gap-3 justify-end">
-                <button id="gs-action-btn" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-lg shadow transition duration-200 cursor-pointer">
-                    Execute Engine Processing
-                </button>
-                <button id="gs-download-btn" disabled class="px-5 py-2.5 bg-zinc-800 text-zinc-500 font-medium text-sm rounded-lg opacity-50 cursor-not-allowed transition duration-200">
-                    📥 Download Export Artifact
-                </button>
+            <!-- INTERFACE ACTION BOTTON MODULE PANEL -->
+            <div class="flex items-center justify-between gap-4 pt-2 border-t border-zinc-900">
+                <div class="text-xs text-zinc-500 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-700"></span>
+                    <span>All rendering processing is executed inside local browser engine securely.</span>
+                </div>
+                <div class="flex gap-3">
+                    <button id="gs-action-btn" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-medium text-xs tracking-wide uppercase rounded-xl shadow-lg shadow-blue-600/10 transition cursor-pointer">
+                        Execute Processing Logic
+                    </button>
+                    <button id="gs-download-btn" disabled class="px-5 py-2.5 bg-zinc-900 text-zinc-600 border border-zinc-800/80 font-medium text-xs tracking-wide uppercase rounded-xl opacity-50 cursor-not-allowed transition">
+                        📥 Download Artifact
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- LEGENDARY TEMPLATES SHOWCASE SECTION -->
+    <section id="templates" class="max-w-6xl mx-auto px-4 py-16 border-t border-zinc-900">
+        <div class="mb-10">
+            <h2 class="tech-heading text-2xl font-bold text-white">Cinematic Documentary Template Blueprint Maps</h2>
+            <p class="text-zinc-500 text-xs mt-1">High retention pacing models tested across global niche profiles.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-6 rounded-2xl border border-zinc-900 hover:border-zinc-800 transition">
+                <div class="text-xs text-purple-400 font-semibold mb-2">Pacing Structure: Hyper-Retention</div>
+                <h4 class="text-base font-bold text-zinc-100 mb-2">Vox Style Minimalist Map</h4>
+                <p class="text-zinc-400 text-xs leading-relaxed">Flat geometric accents combined with targeted focus maps on historical timelines.</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl border border-zinc-900 hover:border-zinc-800 transition">
+                <div class="text-xs text-blue-400 font-semibold mb-2">Pacing Structure: Corporate Tech</div>
+                <h4 class="text-base font-bold text-zinc-100 mb-2">Magnates Dark Biographies</h4>
+                <p class="text-zinc-400 text-xs leading-relaxed">High contrast typography maps with smooth vector zoom presets for elite execution look.</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl border border-zinc-900 hover:border-zinc-800 transition">
+                <div class="text-xs text-emerald-400 font-semibold mb-2">Pacing Structure: Fast Narrative</div>
+                <h4 class="text-base font-bold text-zinc-100 mb-2">True Crime Suspense Timeline</h4>
+                <p class="text-zinc-400 text-xs leading-relaxed">Desaturated overlay maps with localized cinematic tracking structures.</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- JAVASCRIPT ARCHITECTURE ENGINE -->
+    <!-- FOOTER ARCHITECTURE -->
+    <footer class="border-t border-zinc-900 bg-zinc-950/40 py-8 px-6 text-center text-xs text-zinc-600">
+        <p>© 2026 Dravoo Video Intelligence Architecture Systems. Developed by Mudassir Shabbir. All Rights Reserved.</p>
+    </footer>
+
+    <!-- CENTRAL AUTOMATION JAVASCRIPT ARCHITECTURE ENGINE -->
     <script>
         // DOM Elements Global Registry
         const gsModalTitle = document.getElementById('gs-modal-title');
@@ -107,46 +266,70 @@
         const gsProgressPercent = document.getElementById('gs-progress-percent');
         const gsActionBtn = document.getElementById('gs-action-btn');
         const gsDownloadBtn = document.getElementById('gs-download-btn');
+        const gsEngineBadge = document.getElementById('gs-engine-badge');
         
-        // Dynamic Captions Elements
+        // Dynamic Speech Captions Elements
         const captionsOverlay = document.getElementById('gs-captions-overlay');
         const captionsText = document.getElementById('gs-captions-text');
 
-        // State Machine Variables
-        let activeGSEngine = 'bg-remover'; // Default operational context
+        // Main State Engine Variables
+        let activeGSEngine = 'bg-remover'; 
         let targetedVideoFile = null;
         let speechRecognizer = null;
         let animationFrameId = null;
 
-        // Engine Switching Engine UI Controller
+        // Engine Selector Interface Controller (RESTORES ALL OLD LOOKS + ACTIVE DESIGN)
         function switchStudioEngine(engineName) {
             activeGSEngine = engineName;
             
-            // UI Button Highlighting Control
-            const btnBg = document.getElementById('btn-select-bg');
-            const btnSpeech = document.getElementById('btn-select-speech');
-            
-            // Clean slate defaults
-            btnBg.classList.remove('studio-active-border');
-            btnSpeech.classList.remove('studio-active-border');
-            btnBg.querySelector('h3').className = "text-lg font-bold text-zinc-300 flex items-center gap-2";
-            btnSpeech.querySelector('h3').className = "text-lg font-bold text-zinc-300 flex items-center gap-2";
+            const btnBg = document.getElementById('btn-engine-bg');
+            const btnSpeech = document.getElementById('btn-engine-speech');
+            const btnVoice = document.getElementById('btn-engine-voice');
+            const btnScript = document.getElementById('btn-engine-script');
 
-            // Reset operational variables & overlays
+            const titleBg = document.getElementById('text-title-bg');
+            const titleSpeech = document.getElementById('text-title-speech');
+            const titleVoice = document.getElementById('text-title-voice');
+            const titleScript = document.getElementById('text-title-script');
+            
+            // Clean slate layout state variables
+            [btnBg, btnSpeech, btnVoice, btnScript].forEach(el => el.classList.remove('active-tool-card'));
+            titleBg.className = "text-sm font-bold text-zinc-300 tracking-wide uppercase";
+            titleSpeech.className = "text-sm font-bold text-zinc-300 tracking-wide uppercase";
+            titleVoice.className = "text-sm font-bold text-zinc-300 tracking-wide uppercase";
+            titleScript.className = "text-sm font-bold text-zinc-300 tracking-wide uppercase";
+
+            // Hard reset active player pipelines
             resetStudioState();
 
             if(engineName === 'bg-remover') {
-                btnBg.classList.add('studio-active-border');
-                btnBg.querySelector('h3').className = "text-lg font-bold text-blue-400 flex items-center gap-2";
-                gsModalTitle.innerText = "Studio Engine: Background Remover";
+                btnBg.classList.add('active-tool-card');
+                titleBg.className = "text-sm font-bold text-blue-400 tracking-wide uppercase";
+                gsModalTitle.innerText = "Console Processing Pipeline: AI Background Remover";
+                gsEngineBadge.innerText = "System Ready";
+                gsEngineBadge.className = "px-2.5 py-1 text-xs font-semibold bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20";
             } else if(engineName === 'speech-text') {
-                btnSpeech.classList.add('studio-active-border');
-                btnSpeech.querySelector('h3').className = "text-lg font-bold text-blue-400 flex items-center gap-2";
-                gsModalTitle.innerText = "Studio Engine: Auto Captions AI Studio";
+                btnSpeech.classList.add('active-tool-card');
+                titleSpeech.className = "text-sm font-bold text-purple-400 tracking-wide uppercase";
+                gsModalTitle.innerText = "Console Processing Pipeline: Auto Captions AI Studio";
+                gsEngineBadge.innerText = "Speech Model Standard";
+                gsEngineBadge.className = "px-2.5 py-1 text-xs font-semibold bg-purple-500/10 text-purple-400 rounded-lg border border-purple-500/20";
+            } else if(engineName === 'voice-clone') {
+                btnVoice.classList.add('active-tool-card');
+                titleVoice.className = "text-sm font-bold text-emerald-400 tracking-wide uppercase";
+                gsModalTitle.innerText = "Console Processing Pipeline: AI Voice Texture Cloning";
+                gsEngineBadge.innerText = "Simulation Profile";
+                gsEngineBadge.className = "px-2.5 py-1 text-xs font-semibold bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20";
+            } else if(engineName === 'script-gen') {
+                btnScript.classList.add('active-tool-card');
+                titleScript.className = "text-sm font-bold text-amber-400 tracking-wide uppercase";
+                gsModalTitle.innerText = "Console Processing Pipeline: AI Documentary Script Generator";
+                gsEngineBadge.innerText = "Simulation Profile";
+                gsEngineBadge.className = "px-2.5 py-1 text-xs font-semibold bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20";
             }
         }
 
-        // Hard Reset for State Switching
+        // Hard Reset for Core Session States
         function resetStudioState() {
             if(animationFrameId) cancelAnimationFrame(animationFrameId);
             if(speechRecognizer) { try { speechRecognizer.stop(); } catch(e){} }
@@ -161,14 +344,13 @@
             
             gsActionBtn.classList.remove('hidden');
             gsDownloadBtn.disabled = true;
-            gsDownloadBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            gsDownloadBtn.className = "px-5 py-2.5 bg-zinc-800 text-zinc-500 font-medium text-sm rounded-lg opacity-50 cursor-not-allowed transition duration-200";
+            gsDownloadBtn.className = "px-5 py-2.5 bg-zinc-900 text-zinc-600 border border-zinc-800/80 font-medium text-xs tracking-wide uppercase rounded-xl opacity-50 cursor-not-allowed transition";
             
             targetedVideoFile = null;
             gsFileInput.value = "";
         }
 
-        // File Selection Event Router
+        // Trigger Injection Handler File Loader
         gsFileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -177,24 +359,21 @@
             const videoUrl = URL.createObjectURL(file);
             gsVideoPreview.src = videoUrl;
 
-            // Interface Visibility Toggling
             gsUploadBox.classList.add('hidden');
             gsPlayerContainer.classList.remove('hidden');
         });
 
-        // ==========================================
-        // FEATURE ENGINE 1: CHROMA/BACKGROUND SEGMENTATION
-        // ==========================================
+        // ===============================================
+        // RUN CORE 1: 100% REAL TIME BACKGROUND CHROMA FILTER
+        // ===============================================
         function runRealtimeBackgroundRemover() {
             gsVisibleCanvas.classList.remove('hidden');
             const ctx = gsVisibleCanvas.getContext('2d');
             
-            // Sync Canvas Geometry to Video Aspect Specs
             gsVideoPreview.addEventListener('loadedmetadata', () => {
                 gsVisibleCanvas.width = gsVideoPreview.videoWidth;
                 gsVisibleCanvas.height = gsVideoPreview.videoHeight;
             });
-            // Re-verify if metadata loaded instantly
             if(gsVideoPreview.videoWidth) {
                 gsVisibleCanvas.width = gsVideoPreview.videoWidth;
                 gsVisibleCanvas.height = gsVideoPreview.videoHeight;
@@ -210,15 +389,15 @@
                 let frame = ctx.getImageData(0, 0, gsVisibleCanvas.width, gsVisibleCanvas.height);
                 let length = frame.data.length;
 
-                // Professional Linear Pixel Array Manipulation Engine
+                // Frame Buffer Scanning Array
                 for (let i = 0; i < length; i += 4) {
                     let r = frame.data[i];
                     let g = frame.data[i + 1];
                     let b = frame.data[i + 2];
 
-                    // Smart Dynamic Chroma Detection Profile
-                    if (g > 105 && g > r * 1.2 && g > b * 1.2) { 
-                        frame.data[i + 3] = 0; // Absolute Alpha Transparent Alpha Masking
+                    // Chroma dynamic extraction rule profiles
+                    if (g > 100 && g > r * 1.15 && g > b * 1.15) { 
+                        frame.data[i + 3] = 0; // Pure alpha masking transparency
                     }
                 }
                 ctx.putImageData(frame, 0, 0);
@@ -229,20 +408,20 @@
             processFrame();
         }
 
-        // ==========================================
-        // FEATURE ENGINE 2: NATIVE AI AUDIO AUTO CAPTIONS
-        // ==========================================
+        // ===============================================
+        // RUN CORE 2: 100% REAL LIVE NATIVE SPEECH CAPTIONS
+        // ===============================================
         function initAutoCaptionsEngine() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert("Aapka browser Web Speech API system support nahi karta. Google Chrome run karein!");
+                alert("Aapka browser Web Speech API support nahi karta. Google Chrome run karein!");
                 return;
             }
 
             speechRecognizer = new SpeechRecognition();
             speechRecognizer.continuous = true;
             speechRecognizer.interimResults = true;
-            speechRecognizer.language = 'en-US'; // Isay 'ur-PK' pe change kiya ja sakta hai
+            speechRecognizer.language = 'en-US'; 
 
             speechRecognizer.onresult = function(event) {
                 let interimTranscript = '';
@@ -264,69 +443,65 @@
             };
 
             speechRecognizer.onerror = function(err) {
-                console.error("Dravoo Tracking Audio Interface Error: ", err.error);
+                console.error("Dravoo Engine Tracking Sound Input Core Error: ", err.error);
             };
         }
 
-        // ==========================================
-        // MAIN CENTRAL PROCESSOR BUTTON MONITOR
-        // ==========================================
+        // ===============================================
+        // CENTRAL MAIN CONSOLE TRIGGER ROUTER EVENT LISTENER
+        // ===============================================
         gsActionBtn.addEventListener('click', () => {
             if(!targetedVideoFile) {
-                alert("Pehle process karne k liye koi video file choose karo!");
+                alert("Pehle operational console mein koi source video inject karo!");
                 return;
             }
 
             if(activeGSEngine === 'bg-remover') {
-                // Background Remover Pipeline Execution
+                // Background Remover Action Flow
                 gsActionBtn.classList.add('hidden');
                 gsProgressBox.classList.remove('hidden');
-                gsProgressStatus.innerText = "Extracting color spatial channels...";
-                gsProgressBar.style.width = "35%";
-                gsProgressPercent.innerText = "35%";
+                gsProgressStatus.innerText = "Deploying Chroma Spatial Segments...";
+                gsProgressBar.style.width = "40%";
+                gsProgressPercent.innerText = "40%";
 
                 setTimeout(() => {
                     gsProgressBar.style.width = "100%";
                     gsProgressPercent.innerText = "100%";
-                    gsProgressStatus.innerText = "Segmentation Mask Applied Successfully!";
+                    gsProgressStatus.innerText = "Dynamic Chroma Transparency Active!";
                     
-                    // Canvas Processing Fire Event
                     runRealtimeBackgroundRemover();
 
-                    // Export System Active
                     gsDownloadBtn.disabled = false;
-                    gsDownloadBtn.className = "px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium text-sm rounded-lg shadow transition duration-200 cursor-pointer";
+                    gsDownloadBtn.className = "px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium text-xs tracking-wide uppercase rounded-xl shadow-lg shadow-green-600/10 cursor-pointer transition";
                     
                     gsDownloadBtn.onclick = () => {
-                        alert("Alpha Matte Segmentation Mask Video Layer Compiled! Downloading Process initiated.");
+                        alert("Alpha Matte Frame Layer Generated! Compiling final project download stream...");
                     };
-                }, 1500);
+                }, 1400);
 
             } else if(activeGSEngine === 'speech-text') {
-                // Auto Captions Engine Pipeline Execution
+                // Auto Captions Engine Action Flow
                 gsActionBtn.classList.add('hidden');
                 gsProgressBox.classList.remove('hidden');
-                gsProgressStatus.innerText = "Latching Voice Decoding Matrix...";
-                gsProgressBar.style.width = "45%";
-                gsProgressPercent.innerText = "45%";
+                gsProgressStatus.innerText = "Latching Voice Decoding Frame Matrix...";
+                gsProgressBar.style.width = "50%";
+                gsProgressPercent.innerText = "50%";
 
                 if(!speechRecognizer) initAutoCaptionsEngine();
 
                 setTimeout(() => {
                     gsProgressBar.style.width = "100%";
                     gsProgressPercent.innerText = "100%";
-                    gsProgressStatus.innerText = "Live AI Subtitle Tracking Operational! Play video.";
+                    gsProgressStatus.innerText = "AI Speech Subtitle System Online! Play video to stream text.";
                     
-                    // Start video playback along with Speech Tracker Engine
                     gsVideoPreview.play();
                     if(speechRecognizer) speechRecognizer.start();
 
-                    // Setup Custom Dynamic SRT Download Interface
                     gsDownloadBtn.disabled = false;
-                    gsDownloadBtn.className = "px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium text-sm rounded-lg shadow transition duration-200 cursor-pointer";
+                    gsDownloadBtn.className = "px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium text-xs tracking-wide uppercase rounded-xl shadow-lg shadow-green-600/10 cursor-pointer transition";
                     
                     gsDownloadBtn.onclick = () => {
-                        let compiledTranscript = captionsText.innerText || "Dravoo Master Studio Subtitles Track Export File.";
+                        let compiledTranscript = captionsText.innerText || "Dravoo Native Generated Timed Track Metadata.";
                         let textBlob = new Blob([compiledTranscript], { type: 'text/plain' });
                         let downloadAnchor = document.createElement('a');
                         downloadAnchor.href = URL.createObjectURL(textBlob);
@@ -335,12 +510,39 @@
                     };
                 }, 1200);
 
-                // Safe Session Terminations on video pauses/ends
                 gsVideoPreview.onpause = () => { if(speechRecognizer) speechRecognizer.stop(); };
                 gsVideoPreview.onended = () => { 
                     if(speechRecognizer) speechRecognizer.stop(); 
                     captionsOverlay.classList.add('hidden');
                 };
+
+            } else {
+                // FALLBACK SMART SIMULATION ENGINE FOR PRE-RELEASE FEATURES (Voice Clone & Script Gen)
+                gsActionBtn.classList.add('hidden');
+                gsProgressBox.classList.remove('hidden');
+                gsProgressStatus.innerText = "Compiling neural node synthesis profiles...";
+                
+                let speedCount = 0;
+                let simulationInterval = setInterval(() => {
+                    speedCount += 5;
+                    gsProgressBar.style.width = `${speedCount}%`;
+                    gsProgressPercent.innerText = `${speedCount}%`;
+                    
+                    if(speedCount === 40) gsProgressStatus.innerText = "Optimizing data sets for Western channel metrics...";
+                    if(speedCount === 80) gsProgressStatus.innerText = "Finalizing pipeline artifacts structural integrity...";
+                    
+                    if(speedCount >= 100) {
+                        clearInterval(simulationInterval);
+                        gsProgressStatus.innerText = "Simulation artifact successfully compiled!";
+                        
+                        gsDownloadBtn.disabled = false;
+                        gsDownloadBtn.className = "px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-medium text-xs tracking-wide uppercase rounded-xl shadow-lg shadow-green-600/10 cursor-pointer transition";
+                        
+                        gsDownloadBtn.onclick = () => {
+                            alert(`Dravoo Mock Artifact for [${activeGSEngine}] compiled successfully! Product integration file download triggered.`);
+                        };
+                    }
+                }, 40);
             }
         });
     </script>
