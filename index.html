@@ -241,6 +241,7 @@
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
+            if (!promptInput) return;
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Please enter a creative prompt first!");
 
@@ -267,6 +268,13 @@
                 genBtn.innerText = originalBtnText;
                 genBtn.disabled = false;
             };
+
+            resultImg.onerror = function() {
+                loaderDiv.classList.add('hidden');
+                genBtn.innerText = originalBtnText;
+                genBtn.disabled = false;
+                alert("Failed to load AI Image. Please try again.");
+            };
         }
 
         // --- GOOGLE SIGN-IN ---
@@ -281,14 +289,16 @@
         });
 
         function initializeGoogleSignIn() {
-            google.accounts.id.initialize({
-                client_id: "320474351321-k6mbmf82m53dotsmfcups46050rflc8p.apps.googleusercontent.com",
-                callback: handleCredentialResponse
-            });
-            google.accounts.id.renderButton(
-                document.getElementById("googleBtnContainer"),
-                { theme: "outline", size: "medium", shape: "pill", text: "signin_with" }
-            );
+            if (typeof google !== 'undefined') {
+                google.accounts.id.initialize({
+                    client_id: "320474351321-k6mbmf82m53dotsmfcups46050rflc8p.apps.googleusercontent.com",
+                    callback: handleCredentialResponse
+                });
+                google.accounts.id.renderButton(
+                    document.getElementById("googleBtnContainer"),
+                    { theme: "outline", size: "medium", shape: "pill", text: "signin_with" }
+                );
+            }
         }
 
         function handleCredentialResponse(response) {
