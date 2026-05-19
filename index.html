@@ -233,7 +233,7 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- 100% RELIABLE BYPASS STREAM ENGINE ---
+        // --- FIXED MULTI-TIME RUNNING AI ENGINE ---
         function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -241,39 +241,44 @@
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
-            if (!promptInput) return;
+            if (!promptInput || !genBtn) return;
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Please enter a creative prompt first!");
 
-            // UI feedback sequence
-            const originalBtnText = genBtn.innerText;
+            // UI feedback state
+            const originalBtnText = genBtn.getAttribute('data-original-text') || genBtn.innerText;
+            if (!genBtn.getAttribute('data-original-text')) {
+                genBtn.setAttribute('data-original-text', originalBtnText);
+            }
+
             genBtn.innerText = "RENDERING IMAGERY...";
             genBtn.disabled = true;
 
-            // Show container and loading overlay immediately
+            // Make container and loader active
             resultDiv.classList.remove('hidden');
             loaderDiv.classList.remove('hidden');
+            resultImg.classList.add('opacity-0'); // Hide older image while rendering new one
 
-            // Unique generation hash seed values
-            const randomSeed = Math.floor(Math.random() * 99999999);
+            // Random seed generator for multi-time query uniqueness
+            const randomSeed = Math.floor(Math.random() * 999999999);
             const safePrompt = encodeURIComponent(promptText);
             const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&nologo=true`;
 
-            // FIXED: Direct browser layout injection to bypass custom JS trigger failure flags
+            // Reset image handler and fetch new source
             resultImg.src = targetAIUrl;
 
-            // Hide the animated loading bar only when image data has successfully streamed into view
             resultImg.onload = function() {
                 loaderDiv.classList.add('hidden');
-                genBtn.innerText = originalBtnText;
+                resultImg.classList.remove('opacity-0');
+                genBtn.innerText = genBtn.getAttribute('data-original-text');
                 genBtn.disabled = false;
             };
 
             resultImg.onerror = function() {
                 loaderDiv.classList.add('hidden');
-                genBtn.innerText = originalBtnText;
+                genBtn.innerText = genBtn.getAttribute('data-original-text');
                 genBtn.disabled = false;
-                alert("Failed to load AI Image. Please try again.");
+                alert("Failed to load AI Image. Let's try again with a different prompt!");
             };
         }
 
