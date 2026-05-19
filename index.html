@@ -414,7 +414,10 @@
                     }
                 );
                 const data = await res.json();
-                return data.candidates[0].content.parts[0].text.trim();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text.trim();
+                }
+                return prompt;
             } catch (err) {
                 console.error("Gemini expansion failed, using original prompt.", err);
                 return prompt;
@@ -424,7 +427,7 @@
         // ================= HUGGING FACE TEXT TO IMAGE =================
         async function queryHF(promptText) {
             const response = await fetch(
-                "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-3.5-large",
+                "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
                 {
                     headers: {
                         Authorization: `Bearer ${HF_TOKEN}`,
@@ -434,7 +437,20 @@
                     body: JSON.stringify({ inputs: promptText }),
                 }
             );
-            if (!response.ok) throw new Error("HuggingFace Inference Studio Engine Failure.");
+
+            // Handle Model Loading/Cold Boot state (503 Service Unavailable)
+            if (response.status === 503) {
+                const data = await response.json();
+                const waitTime = Math.ceil(data.estimated_time || 15);
+                throw new Error(`Model loading status detected. Please trigger again in ${waitTime} seconds while HuggingFace wakes up the GPU server.`);
+            }
+
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error("HF ERROR DETAILS:", errText);
+                throw new Error(`HF API Error: ${errText}`);
+            }
+
             const result = await response.blob();
             return URL.createObjectURL(result);
         }
@@ -463,9 +479,9 @@
                 // Step 1: Improve prompt via Gemini
                 loaderStatus.innerText = "Gemini expanding prompt...";
                 const enhancedPrompt = await improvePrompt(promptText);
-                console.log("Enhanced Prompt Target Studio Strategy:", enhancedPrompt);
+                console.log("Enhanced Prompt:", enhancedPrompt);
 
-                // Step 2: Generate Image via HuggingFace
+                // Step 2: Generate Image via HuggingFace (SDXL)
                 loaderStatus.innerText = "HuggingFace structural rendering...";
                 const generatedImgUrl = await queryHF(enhancedPrompt);
 
@@ -479,11 +495,13 @@
                 };
 
             } catch (error) {
-                console.error(error);
+                console.error("Pipeline Breakdown:", error);
                 loaderDiv.classList.add('hidden');
                 genBtn.innerText = "Generate Art";
                 genBtn.disabled = false;
-                alert("Generation sequence error occurred. Check API quotas or validation setup tokens.");
+                
+                // Print explicit descriptive errors directly to user
+                alert(error.message);
             }
         }
     </script>
