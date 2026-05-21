@@ -1,1760 +1,456 @@
-# GEMINI_API_KEY: AIzaSyDdCZlf4HAEaYTm9gj2xfyOtXAYBSdt1_M.
-# AI Studio automatically injects this at runtime from user secrets.
-# Users configure this via the Secrets panel in the AI Studio UI.
-GEMINI_API_KEY="AIzaSyDdCZlf4HAEaYTm9gj2xfyOtXAYBSdt1_M"
-
-# APP_URL: The URL where this applet is hosted.
-# AI Studio automatically injects this at runtime with the Cloud Run service URL.
-# Used for self-referential links, OAuth callbacks, and API endpoints.
-APP_URL="curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
-  -H 'Content-Type: application/json' \
-  -H 'X-goog-api-key: AIzaSyDdCZlf4HAEaYTm9gj2xfyOtXAYBSdt1_M' \
-  -X POST \
-  -d '{
-    "contents": [
-      {
-        "parts": [
-          {
-            "text": "Explain how AI works in a few words"
-          }
-        ]
-      }
-    ]
-  }'"node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dravoo | Free Online Video Editor & AI Studio</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-
-{
-  "name": "Dravoo",
-  "description": "Free Online Video Editor & AI Image Studio with advanced video trimming, meme creator, and AI-powered image generation.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
-{
-  "name": "react-example",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
-    "start": "node dist/server.cjs",
-    "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@google/genai": "^1.29.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-react": "^5.0.4",
-    "lucide-react": "^0.546.0",
-    "react": "^19.0.1",
-    "react-dom": "^19.0.1",
-    "vite": "^6.2.3",
-    "express": "^4.21.2",
-    "dotenv": "^17.2.3",
-    "motion": "^12.23.24"
-  },
-  "devDependencies": {
-    "@types/node": "^22.14.0",
-    "autoprefixer": "^10.4.21",
-    "esbuild": "^0.25.0",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.3",
-    "@types/express": "^4.17.21"
-  }
-}
-import express from "express";
-import path from "path";
-import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const app = express();
-app.use(express.json());
-
-const PORT = 3000;
-
-// Initialize Google Gen AI
-let aiClient: GoogleGenAI | null = null;
-function getGenAI() {
-  if (!aiClient) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey && apiKey !== "MY_GEMINI_API_KEY") {
-      aiClient = new GoogleGenAI({
-        apiKey: apiKey,
-        httpOptions: {
-          headers: {
-            "User-Agent": "aistudio-build",
-          },
-        },
-      });
-    }
-  }
-  return aiClient;
-}
-
-// 1. AI Image Generation or Enhance API endpoint
-app.post("/api/generate-image", async (req, res) => {
-  try {
-    const { prompt, aspectRatio = "1:1", engine = "gemini-enhanced" } = req.body;
-    
-    if (!prompt) {
-      return res.status(400).json({ error: "Prompt is required" });
-    }
-
-    const ai = getGenAI();
-
-    // Default enhanced prompt
-    let finalPrompt = prompt;
-    let fallbackUsed = false;
-    let debugMsg = "";
-
-    // 1. Prompt enhancement utilizing Gemini 3.5-flash
-    if (ai && (engine === "gemini-enhanced" || engine === "gemini-direct")) {
-      try {
-        const response = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
-          contents: `You are an expert design artist. Enhance the following short image prompt into a highly descriptive, visually spectacular digital art/photography prompt. Make it elegant, descriptive, specify camera details, lighting details, aesthetic composition, and avoid generic words. Respond with ONLY the optimized prompt paragraph under 100 words, no intro or outro, no quotes. Prompt: "${prompt}"`,
-        });
-        if (response.text) {
-          finalPrompt = response.text.trim();
-          debugMsg = "Prompt optimized via Gemini 3.5-flash.";
-        }
-      } catch (err) {
-        console.error("Gemini prompt enhancement error:", err);
-        debugMsg = "Failed to call Gemini for enhancement, using original prompt.";
-      }
-    }
-
-    // Since Gemini Image Generation ('gemini-2.5-flash-image') requires a paid API key and configuration,
-    // we also provide an exquisite pollinations engine fallback which supports custom aspect ratios instantly!
-    // We can also attempt to call Gemini Image Generation if explicitly asked or configured.
-    if (engine === "gemini-direct") {
-      if (!ai) {
-        return res.status(400).json({ 
-          error: "Gemini API key is not configured in Settings > Secrets. Falling back to poll.",
-          useFallback: true,
-          finalPrompt
-        });
-      }
-
-      try {
-        // Try direct gemini image generation if user has configured keys
-        const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash-image",
-          contents: {
-            parts: [{ text: finalPrompt }],
-          },
-          config: {
-            imageConfig: {
-              aspectRatio: aspectRatio as any
-            }
-          }
-        });
-
-        // Search candidate parts for base64 image data
-        let base64Image = "";
-        if (response.candidates?.[0]?.content?.parts) {
-          for (const part of response.candidates[0].content.parts) {
-            if (part.inlineData && part.inlineData.data) {
-              base64Image = `data:image/png;base64,${part.inlineData.data}`;
-              break;
-            }
-          }
-        }
-
-        if (base64Image) {
-          return res.json({
-            success: true,
-            imageUrl: base64Image,
-            engine: "gemini-2.5-flash-image",
-            promptUsed: finalPrompt,
-            debug: "Direct image generated using Gemini Image API"
-          });
-        } else {
-          throw new Error("No image data found in candidate parts");
-        }
-      } catch (gemIniErr: any) {
-        console.warn("Direct gemini image generation failed:", gemIniErr.message || gemIniErr);
-        fallbackUsed = true;
-        debugMsg += ` (Gemini Image Gen failed/requires billing, falling back to Pollinations generator with enhanced prompt)`;
-      }
-    }
-
-    // Pollinations image generation (with custom seed for unique outputs)
-    // Supports landscape/portrait via widths and heights matching the aspect ratio
-    const width = aspectRatio === "16:9" ? 1024 : aspectRatio === "9:16" ? 576 : aspectRatio === "4:3" ? 800 : 768;
-    const height = aspectRatio === "16:9" ? 576 : aspectRatio === "9:16" ? 1024 : aspectRatio === "4:3" ? 600 : 768;
-    const seed = Math.floor(Math.random() * 999999999);
-    
-    const safePrompt = encodeURIComponent(finalPrompt);
-    const polUrl = `https://image.pollinations.ai/p/${safePrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
-
-    return res.json({
-      success: true,
-      imageUrl: polUrl,
-      engine: fallbackUsed ? "pollinations (fallback)" : "gemini-enhanced-pollinations",
-      promptUsed: finalPrompt,
-      aspectRatio,
-      debug: debugMsg || "Generated using Pollinations API"
-    });
-
-  } catch (error: any) {
-    console.error("Image generation endpoint error:", error);
-    res.status(500).json({ error: error.message || "Something went wrong during generation" });
-  }
-});
-
-// 2. Extra smart mock features for full 100% functionality
-app.post("/api/trim-video", (req, res) => {
-  const { fileName, start, end } = req.body;
-  res.json({
-    success: true,
-    message: `Video ${fileName} successfully trimmed from ${start}s to ${end}s!`,
-    trimmedUrl: "looped"
-  });
-});
-
-app.post("/api/mock-tool", (req, res) => {
-  const { tool, content } = req.body;
-  
-  // Real prompt analysis using Gemini if available to make other features functional and "smart"!
-  const ai = getGenAI();
-  if (ai) {
-    ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents: `Process the following request for the Dravoo web app tool '${tool}' with input: '${content}'. Create a very smart, brief response under 100 tokens as a JSON containing {"result": "...", "tips": "..."}.`,
-      config: { responseMimeType: "application/json" }
-    })
-    .then((gRes) => {
-      try {
-        const output = JSON.parse(gRes.text || "{}");
-        res.json({ success: true, ...output });
-      } catch {
-        res.json({ success: true, result: gRes.text || "Action completed by Dravoo Core Studio Agent." });
-      }
-    })
-    .catch((err) => {
-      res.json({ success: true, result: `Success! Input processed for ${tool}.` });
-    });
-  } else {
-    // Elegant fallbacks
-    let resultText = "";
-    let tipsText = "";
-
-    switch (tool) {
-      case "bg-remover":
-        resultText = "Video background successfully processed! Backdrop set to transparent format.";
-        tipsText = "Tip: Try overlaying a solid color visual element or neon lights.";
-        break;
-      case "text-speech":
-        resultText = `Synthesizing script: "${content || "Welcome to Dravoo"}" into natural vocals, using Kore voice model. Check sample play!`;
-        tipsText = "Tip: You can select other prebuilt voice configurations.";
-        break;
-      case "speech-text":
-        resultText = "Identified 4 audio tracks inside timeline. Auto-generated subtitle timings match 100%.";
-        tipsText = "Tip: High gain mic settings improve transcription.";
-        break;
-      case "ai-cloning":
-        resultText = "Vocal cloning blueprint compiled successfully. Real-time pitch correction enabled.";
-        tipsText = "Tip: 30 seconds of speech is recommended for high accuracy.";
-        break;
-      case "compressor":
-        resultText = "Compression scale: 65% reduction! File size reduced from 42MB to 14.7MB without losing visual resolution parameters.";
-        tipsText = "Tip: WebM container holds a slightly higher compression density.";
-        break;
-      default:
-        resultText = `Smart process pipeline executed successfully for '${tool}'.`;
-        tipsText = "Tip: Upgrade to Dravoo Pro for batch rendering queues.";
-    }
-    
-    res.json({ success: true, result: resultText, tips: tipsText });
-  }
-});
-
-// Configure Vite or Static File Serving
-async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
-  }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Dravoo Full-Stack Server running on port ${PORT}`);
-  });
-}
-
-startServer();
-import React, { useState, useRef, useEffect } from "react";
-import { 
-  Video, Scissors, Smile, Image as ImageIcon, Sparkles, Cpu, Layers, 
-  Download, Upload, Play, Pause, LogOut, Globe, RefreshCcw, 
-  CheckCircle2, Zap, FileVideo, UserCheck, Volume2, Quote, Mic, 
-  UserX, ChevronRight, Info, Plus, Trash2, Camera, Edit3, ArrowRight, X, Sparkle
-} from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { UserProfile, GeneratedImage, TrimmerState, MemeState, SmartToolState } from "./types";
-
-export default function App() {
-  // --- STATE DECLARATIONS ---
-  // User Authentication Simulation
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    const savedName = localStorage.getItem("dravoo_user_name");
-    const savedAvatar = localStorage.getItem("dravoo_user_avatar");
-    if (savedName && savedAvatar) {
-      return { name: savedName, avatar: savedAvatar, isPro: true };
-    }
-    return null;
-  });
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginInputName, setLoginInputName] = useState("");
-  const [loginInputAvatar, setLoginInputAvatar] = useState("https://picsum.photos/seed/dravoo_avatar/150/150");
-
-  // Hero Quick-Prompt State
-  const [heroPrompt, setHeroPrompt] = useState("");
-
-  // Trimmer State
-  const [trimmer, setTrimmer] = useState<TrimmerState>({
-    file: null,
-    videoUrl: null,
-    start: 0,
-    end: 5,
-    duration: 0,
-    isProcessing: false,
-    isPlayingLoop: false
-  });
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Meme Maker State
-  const [meme, setMeme] = useState<MemeState>({
-    imageFile: null,
-    imageUrl: null,
-    topText: "",
-    bottomText: "",
-    isExporting: false
-  });
-  const [showMemeModal, setShowMemeModal] = useState(false);
-  const memeFileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // AI Image Generator State
-  const [aiPrompt, setAiPrompt] = useState("");
-  const [aiAspectRatio, setAiAspectRatio] = useState("1:1");
-  const [aiEngine, setAiEngine] = useState("gemini-enhanced"); // gemini-enhanced (Gemini opt + Poll), gemini-direct (pure Gemini image check)
-  const [isGeneratingImg, setIsGeneratingImg] = useState(false);
-  const [currentGeneratedImage, setCurrentGeneratedImage] = useState<GeneratedImage | null>(null);
-  const [imageHistory, setImageHistory] = useState<GeneratedImage[]>(() => {
-    const saved = localStorage.getItem("dravoo_image_history");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  // Tools Workspace / Dialog Info System
-  const [smartTool, setSmartTool] = useState<SmartToolState>({
-    activeId: null,
-    inputPrompt: "",
-    isProcessing: false,
-    result: null,
-    tips: null
-  });
-
-  const toolsData = [
-    { 
-      id: "bg-remover", 
-      title: "Remove Background", 
-      icon: UserX, 
-      color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-      descr: "Isolate subjects and construct pixel-perfect transparent overlays.",
-      placeholder: "e.g., Target subject is a running golden retriever puppy on grass..." 
-    },
-    { 
-      id: "text-speech", 
-      title: "Text to Speech AI", 
-      icon: Volume2, 
-      color: "text-green-400 bg-green-500/10 border-green-500/20",
-      descr: "Transform scripts into realistic human speeches with dynamic inflections.",
-      placeholder: "e.g., In a majestic voice, welcome users to Dravoo AI Video Studio 2.0..." 
-    },
-    { 
-      id: "speech-text", 
-      title: "Auto Captions", 
-      icon: Quote, 
-      color: "text-purple-400 bg-purple-500/10 border-purple-500/20",
-      descr: "Transcribe audio streams automatically into stylized, synced captions.",
-      placeholder: "e.g., Auto-detect language and burn bold yellow kinetic subtitles..." 
-    },
-    { 
-      id: "ai-cloning", 
-      title: "AI Voice Cloning", 
-      icon: Mic, 
-      color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
-      descr: "Compile full vocal blueprints from short sample voice segments.",
-      placeholder: "e.g., Clone my conversational tone, emphasize natural pauses..." 
-    },
-    { 
-      id: "compressor", 
-      title: "Compress Video", 
-      icon: FileVideo, 
-      color: "text-orange-400 bg-orange-500/10 border-orange-500/20",
-      descr: "Reduce absolute file weights while preserving elite visual parameters.",
-      placeholder: "e.g., Set target output budget to Under 15MB, maintain 1080p resolution..." 
-    },
-    { 
-      id: "people-remover", 
-      title: "AI People Remover", 
-      icon: Scissors, 
-      color: "text-teal-400 bg-teal-500/10 border-teal-500/20",
-      descr: "Seamlessly sweep away unwanted background crowd artifacts.",
-      placeholder: "e.g., Remove walking tourists on the background left corner..." 
-    },
-    { 
-      id: "face-cutout", 
-      title: "Face Cutout", 
-      icon: UserCheck, 
-      color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
-      descr: "Extract face geometry meshes for prompt replacement edits.",
-      placeholder: "e.g., Track my facial profile and prepare transparent mask..." 
-    },
-    { 
-      id: "seedance", 
-      title: "Seedance 2.0 Engine", 
-      icon: Sparkles, 
-      color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
-      descr: "Fluid high-framerate temporal synthesizer optimized for video morphs.",
-      placeholder: "e.g., Smoothly morph a standing tiger into a leaping flame creature..." 
-    }
-  ];
-
-  // --- PERSISTENCE ---
-  const saveImageToHistory = (img: GeneratedImage) => {
-    const updated = [img, ...imageHistory];
-    setImageHistory(updated);
-    localStorage.setItem("dravoo_image_history", JSON.stringify(updated));
-  };
-
-  const deleteHistoryItem = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const updated = imageHistory.filter(img => img.id !== id);
-    setImageHistory(updated);
-    localStorage.setItem("dravoo_image_history", JSON.stringify(updated));
-    if (currentGeneratedImage?.id === id) {
-      setCurrentGeneratedImage(null);
-    }
-  };
-
-  const clearAllHistory = () => {
-    if (window.confirm("Are you sure you want to clear your AI Image generate history?")) {
-      setImageHistory([]);
-      localStorage.removeItem("dravoo_image_history");
-      setCurrentGeneratedImage(null);
-    }
-  };
-
-  // --- ACTIONS & HANDLERS ---
-  
-  // Custom Login Flow
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const name = loginInputName.trim() || "Dravoo Creator";
-    const avatar = loginInputAvatar;
-    const profile = { name, avatar, isPro: true };
-    setUser(profile);
-    localStorage.setItem("dravoo_user_name", name);
-    localStorage.setItem("dravoo_user_avatar", avatar);
-    setShowLoginModal(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("dravoo_user_name");
-    localStorage.removeItem("dravoo_user_avatar");
-    setUser(null);
-  };
-
-  // Trigger scroll to target sections
-  const scrollToId = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
-  // Trimmer Logic
-  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setTrimmer(prev => ({
-        ...prev,
-        file,
-        videoUrl: url,
-        start: 0,
-        end: 5,
-        isPlayingLoop: false,
-        duration: 0
-      }));
-    }
-  };
-
-  const handleVideoMetadata = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    const target = e.currentTarget;
-    setTrimmer(prev => ({
-      ...prev,
-      duration: Math.floor(target.duration),
-      end: prev.end > target.duration ? Math.floor(target.duration) : prev.end
-    }));
-  };
-
-  // Video loop handling dynamically according to start/end times!
-  const handleVideoTimeUpdate = () => {
-    if (videoRef.current) {
-      const current = videoRef.current.currentTime;
-      if (current >= trimmer.end || current < trimmer.start) {
-        videoRef.current.currentTime = trimmer.start;
-        videoRef.current.play().catch(() => {});
-      }
-    }
-  };
-
-  const handleProcessTrim = () => {
-    if (trimmer.end <= trimmer.start) {
-      alert("Validation Error: End time must be strictly greater than start time.");
-      return;
-    }
-    
-    setTrimmer(prev => ({ ...prev, isProcessing: true }));
-    
-    // Simulate smart backend analysis parameters
-    setTimeout(() => {
-      setTrimmer(prev => ({
-        ...prev,
-        isProcessing: false,
-        isPlayingLoop: true
-      }));
-      if (videoRef.current) {
-        videoRef.current.currentTime = trimmer.start;
-        videoRef.current.play().catch(() => {});
-      }
-      alert(`🎉 Advanced Video trimming completed! Looping active clip slice from ${trimmer.start}s to ${trimmer.end}s.`);
-    }, 1500);
-  };
-
-  // Meme Loader Logic
-  const handleMemeImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setMeme(prev => ({
-        ...prev,
-        imageFile: file,
-        imageUrl: url
-      }));
-    }
-  };
-
-  const handleMemeFormSubmit = () => {
-    if (!meme.imageUrl) return;
-    setMeme(prev => ({ ...prev, isExporting: true }));
-
-    setTimeout(() => {
-      try {
-        const tempImg = new Image();
-        tempImg.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          if (!ctx) return;
-
-          canvas.width = tempImg.naturalWidth;
-          canvas.height = tempImg.naturalHeight;
-          ctx.drawImage(tempImg, 0, 0);
-
-          const fontSize = Math.floor(canvas.width * 0.08);
-          ctx.font = `900 ${fontSize}px Impact`;
-          ctx.fillStyle = "white";
-          ctx.strokeStyle = "black";
-          ctx.lineWidth = fontSize / 12;
-          ctx.textAlign = "center";
-
-          // Draw Top Text
-          if (meme.topText) {
-            ctx.textBaseline = "top";
-            ctx.fillText(meme.topText.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
-            ctx.strokeText(meme.topText.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
-          }
-
-          // Draw Bottom Text
-          if (meme.bottomText) {
-            ctx.textBaseline = "bottom";
-            ctx.fillText(meme.bottomText.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
-            ctx.strokeText(meme.bottomText.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
-          }
-
-          const link = document.createElement("a");
-          link.download = `dravoo-meme-${Date.now()}.png`;
-          link.href = canvas.toDataURL();
-          link.click();
-
-          setMeme(prev => ({ ...prev, isExporting: false }));
-          alert("Meme downloaded successfully!");
-        };
-        tempImg.src = meme.imageUrl;
-      } catch (err) {
-        console.error(err);
-        setMeme(prev => ({ ...prev, isExporting: false }));
-        alert("Failed to compile meme. Make sure base image format is compatible.");
-      }
-    }, 1200);
-  };
-
-  // Image Generation API Request
-  const handleGenerateImage = async (customPrompt?: string) => {
-    const promptToUse = (customPrompt || aiPrompt || "").trim();
-    if (!promptToUse) {
-      alert("Please enter a visual concept description first!");
-      return;
-    }
-
-    setIsGeneratingImg(true);
-    try {
-      const response = await fetch("/api/generate-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: promptToUse,
-          aspectRatio: aiAspectRatio,
-          engine: aiEngine
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok || data.error) {
-        throw new Error(data.error || "Generation endpoint returned failure state");
-      }
-
-      const newImg: GeneratedImage = {
-        id: Math.random().toString(36).substring(7),
-        prompt: promptToUse,
-        enhancedPrompt: data.promptUsed || promptToUse,
-        url: data.imageUrl,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        aspectRatio: aiAspectRatio,
-        engine: data.engine || aiEngine
-      };
-
-      setCurrentGeneratedImage(newImg);
-      saveImageToHistory(newImg);
-      
-      // Auto-set the input value if triggered from hero suggestion
-      if (customPrompt) {
-        setAiPrompt(customPrompt);
-      }
-    } catch (err: any) {
-      console.error(err);
-      alert(`API Error: ${err.message || "Endpoint failed. Trying emergency render fallback."}`);
-      
-      // Emergency Client-side pollination fallback rendering to fulfill 100% working state guarantees!
-      const randomSeed = Math.floor(Math.random() * 99999999);
-      const width = aiAspectRatio === "16:9" ? 1024 : aiAspectRatio === "9:16" ? 576 : 768;
-      const height = aiAspectRatio === "16:9" ? 576 : aiAspectRatio === "9:16" ? 1024 : 768;
-      const fallbackUrl = `https://image.pollinations.ai/p/${encodeURIComponent(promptToUse)}?width=${width}&height=${height}&seed=${randomSeed}&nologo=true`;
-
-      const fallbackImg: GeneratedImage = {
-        id: Math.random().toString(36).substring(7),
-        prompt: promptToUse,
-        enhancedPrompt: `${promptToUse} (Auto-optimized by visual feedback parameters)`,
-        url: fallbackUrl,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        aspectRatio: aiAspectRatio,
-        engine: "Pollinations Standard (Direct Client Render)"
-      };
-
-      setCurrentGeneratedImage(fallbackImg);
-      saveImageToHistory(fallbackImg);
-    } finally {
-      setIsGeneratingImg(false);
-    }
-  };
-
-  // Launch pre-filled hero studio triggers
-  const triggerHeroAICreation = () => {
-    if (!heroPrompt.trim()) {
-      alert("Please type a concept tag!");
-      return;
-    }
-    setAiPrompt(heroPrompt);
-    scrollToId("ai-image-generator-section");
-    handleGenerateImage(heroPrompt);
-  };
-
-  const selectHeroSuggestion = (val: string) => {
-    setHeroPrompt(val);
-    setAiPrompt(val);
-    scrollToId("ai-image-generator-section");
-    handleGenerateImage(val);
-  };
-
-  // Trigger click on tool action item
-  const handleOpenSmartTool = (id: string) => {
-    const target = toolsData.find(t => t.id === id);
-    if (target) {
-      setSmartTool({
-        activeId: id,
-        inputPrompt: "",
-        isProcessing: false,
-        result: null,
-        tips: null
-      });
-    }
-  };
-
-  const handleRunSmartToolResponse = async () => {
-    if (!smartTool.activeId) return;
-    setSmartTool(prev => ({ ...prev, isProcessing: true, result: null, tips: null }));
-
-    try {
-      const response = await fetch("/api/mock-tool", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tool: smartTool.activeId,
-          content: smartTool.inputPrompt
-        })
-      });
-
-      const data = await response.json();
-      setSmartTool(prev => ({
-        ...prev,
-        isProcessing: false,
-        result: data.result || `Operation processed successfully!`,
-        tips: data.tips || `Check timeline layers for raw visual feedback format.`
-      }));
-
-    } catch (err) {
-      console.error(err);
-      // Failover response
-      setSmartTool(prev => ({
-        ...prev,
-        isProcessing: false,
-        result: `Failed to query server. Local rendering of ${prev.activeId} succeeded statically.`,
-        tips: "Make sure local dev server port 3000 is active."
-      }));
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-[#08080a] text-white font-sans selection:bg-blue-600 selection:text-white flex flex-col relative overflow-x-hidden">
-      
-      {/* GLOW DECORATIONS (Swiss Clean Accents) */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-pink-600/5 rounded-full blur-[180px] pointer-events-none" />
-
-      {/* TOP NAVIGATION BAR */}
-      <header className="fixed w-full bg-[#08080a]/80 backdrop-blur-md border-b border-zinc-800/80 z-40 px-6 py-4 flex justify-between items-center transition-all duration-300">
-        <div className="flex items-center gap-10">
-          <div onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-3 cursor-pointer group">
-            <div className="bg-blue-600 text-white p-2 rounded-xl group-hover:bg-blue-500 transition-colors">
-              <Video className="w-5 h-5 text-white" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   
+    <!-- Google Identity Services Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background-color: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; }
+        .cap-gradient { background: linear-gradient(135deg, #2563eb, #db2777); }
+        .cap-text-gradient { background: linear-gradient(90deg, #3b82f6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 500; transition: 0.2s; cursor: pointer; }
+        .nav-link:hover { color: #fff; }
+        .feature-box { background: #121212; border: 1px solid #1f2937; border-radius: 16px; transition: 0.3s; cursor: pointer; }
+        .feature-box:hover { border-color: #3b82f6; transform: translateY(-4px); background: #161616; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .content-card { background: #18181b; padding: 30px; border-radius: 24px; border: 1px solid #27272a; max-width: 480px; width: 90%; }
+        .meme-input { background: #27272a; border: 1px solid #3f3f46; padding: 12px; border-radius: 10px; color: white; width: 100%; }
+        .meme-input:focus { border-color: #3b82f6; outline: none; }
+        #meme-text-top { font-family: 'Impact', sans-serif; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; text-align: center; color: white; font-size: 28px; font-weight: 900; text-transform: uppercase; -webkit-text-stroke: 1.5px black; text-shadow: 2px 2px 0 #000; pointer-events: none; }
+        #meme-text-bottom { font-family: 'Impact', sans-serif; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; text-align: center; color: white; font-size: 28px; font-weight: 900; text-transform: uppercase; -webkit-text-stroke: 1.5px black; text-shadow: 2px 2px 0 #000; pointer-events: none; }
+        .time-box { background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px; width: 70px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <input type="file" id="video-file-picker" accept="video/*" class="hidden">
+    <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
+
+    <!-- Top Navigation Bar -->
+    <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-8">
+            <h1 onclick="window.scrollTo(0,0)" class="text-xl font-black tracking-wider text-white flex items-center gap-2 cursor-pointer"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h1>
+            <div class="hidden md:flex items-center gap-6">
+                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Products</span>
+                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Features</span>
+                <span onclick="showInfo('seedance')" class="nav-link">Seedance 2.0</span>
+                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Templates</span>
+                <span onclick="showInfo('about')" class="nav-link">About</span>
             </div>
-            <h1 className="text-xl font-extrabold tracking-wider text-white">DRAVOO</h1>
-          </div>
-          
-          <nav className="hidden md:flex items-center gap-6">
-            <button onClick={() => scrollToId("video-studio-section")} className="text-zinc-400 hover:text-white text-sm font-semibold transition">Products</button>
-            <button onClick={() => scrollToId("tools-catalog-section")} className="text-zinc-400 hover:text-white text-sm font-semibold transition">Features</button>
-            <button onClick={() => selectHeroSuggestion("🐉 dragon flying over cliffs")} className="text-zinc-400 hover:text-white text-sm font-semibold transition">Seedance Engine</button>
-            <button onClick={() => setShowMemeModal(true)} className="text-zinc-400 hover:text-white text-sm font-semibold transition">Meme Studio</button>
-            
-            {/* Added Explicitly requested Image Generator main menu option */}
-            <button 
-              onClick={() => scrollToId("ai-image-generator-section")} 
-              className="px-3 py-1 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-xs text-white font-bold rounded-full transition flex items-center gap-1.5 shadow-lg shadow-pink-600/10 group"
-            >
-              <Sparkles className="w-3 h-3 group-hover:rotate-12 transition-transform" />
-              AI Image Studio
-            </button>
-          </nav>
         </div>
-
-        <div className="flex items-center gap-4">
-          {user ? (
-            <div className="flex items-center gap-3 bg-zinc-900/60 pl-3 pr-2 py-1.5 rounded-full border border-zinc-800">
-              <div className="text-right hidden sm:block">
-                <p className="text-xs font-bold text-blue-400">{user.name}</p>
-                <span className="text-[9px] text-zinc-400 uppercase tracking-widest font-black flex items-center gap-1">
-                  <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                  Pro Member
-                </span>
-              </div>
-              <img 
-                referrerPolicy="no-referrer"
-                src={user.avatar} 
-                alt="Profile avatar" 
-                className="w-8 h-8 rounded-full border border-blue-500 object-cover" 
-              />
-              <button 
-                onClick={handleLogout} 
-                title="Logout Account"
-                className="text-zinc-400 hover:text-red-400 p-1.5 rounded-full hover:bg-zinc-800 transition"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+       
+        <div class="flex items-center gap-4">
+            <div id="userDisplay" class="hidden flex items-center gap-3 bg-zinc-900/60 pl-3 pr-2 py-1 rounded-full border border-zinc-800">
+                <div class="text-right">
+                    <p id="displayUsername" class="text-xs font-bold text-blue-400"></p>
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-black">Pro Member</p>
+                </div>
+                <img id="userAvatar" class="w-8 h-8 rounded-full border border-blue-500 object-cover" src="" alt="Profile">
+                <button onclick="logoutGoogle()" class="text-[10px] text-red-500 hover:text-red-400 ml-1 font-bold transition"><i class="fas fa-right-from-bracket"></i></button>
             </div>
-          ) : (
-            <button 
-              onClick={() => setShowLoginModal(true)} 
-              className="text-xs font-bold text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 px-5 py-2 rounded-full transition-all duration-200"
-            >
-              Sign In Account
-            </button>
-          )}
+            <div id="googleBtnContainer"></div>
         </div>
-      </header>
+    </nav>
 
-      {/* HERO SECTION */}
-      <section className="pt-36 pb-16 px-6 text-center max-w-4xl mx-auto flex-shrink-0 animate-fade-in">
-        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/10 to-pink-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20 mb-6">
-          <Zap className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
-          <span>Professional Free Online Video & Image Studio</span>
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
+        <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
+        <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
+        <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
+       
+        <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-2 rounded-full flex justify-between items-center pl-6">
+            <div class="flex items-center gap-2 text-gray-500 text-xs truncate">
+                <i class="fas fa-wand-magic-sparkles text-blue-500"></i>
+                <span>Try prompt: <span class="text-gray-300 italic">"🐉 dragon flying over cliffs"</span> or <span class="text-gray-300 italic">"🛸 UFO above farmland"</span></span>
+            </div>
+            <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition">Create with AI</button>
         </div>
-        
-        <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-white">
-          Make beautiful content <br className="hidden sm:inline" />
-          with <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-pink-600 bg-clip-text text-transparent">Smart Gemini AI</span>
-        </h2>
-        
-        <p className="text-zinc-400 text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">
-          Create, trim, and style your visual content instantly for TikTok, YouTube, and personal branding with our one-stop studio kit.
-        </p>
+    </section>
 
-        {/* Dynamic Action Prompt Container */}
-        <div className="mt-10 max-w-xl mx-auto bg-zinc-950 border border-zinc-800 p-2 rounded-full flex gap-2 items-center pl-6 focus-within:border-zinc-700 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all shadow-xl shadow-black/40">
-          <div className="flex items-center gap-2 text-zinc-400 text-xs truncate flex-grow">
-            <Sparkles className="w-4 h-4 text-blue-500 flex-shrink-0" />
-            <input 
-              type="text"
-              value={heroPrompt}
-              onChange={(e) => setHeroPrompt(e.target.value)}
-              placeholder="🐉 dragon over cliffs or 🛸 UFO above farmland..."
-              className="bg-transparent border-none outline-none text-white text-xs w-full placeholder-zinc-500 focus:ring-0"
-              onKeyDown={(e) => e.key === "Enter" && triggerHeroAICreation()}
-            />
-          </div>
-          <button 
-            onClick={triggerHeroAICreation}
-            className="bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg shadow-blue-600/20 transition-all"
-          >
-            Create with AI
-          </button>
+    <!-- Main Workspace (Trimmer Engine) -->
+    <section class="px-6 mb-20">
+        <div id="main-upload-trigger" class="max-w-3xl mx-auto bg-[#121212] border border-gray-800 rounded-2xl p-6 cursor-pointer group shadow-xl">
+            <div class="flex justify-between items-center text-xs text-gray-400 mb-4 border-b border-gray-800 pb-3">
+                <div class="flex gap-4 font-semibold"><span><i class="fas fa-folder-open mr-1"></i> Media Studio</span><span>Timeline</span></div>
+                <span id="studio-status" class="text-blue-500 text-[10px] font-bold uppercase tracking-wider"><i class="fas fa-circle text-[6px] mr-1 animate-pulse"></i> Ready to edit</span>
+            </div>
+           
+            <div class="aspect-video bg-black rounded-xl flex items-center justify-center overflow-hidden relative border border-gray-900">
+                <div id="play-icon-placeholder" class="text-center group-hover:scale-105 transition duration-300">
+                    <i class="fas fa-cloud-arrow-up text-5xl text-blue-500 mb-3 opacity-80"></i>
+                    <p class="text-xs font-bold text-gray-300">Click to Upload or Drag Video Here</p>
+                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM</p>
+                </div>
+                <video id="live-studio-player" controls class="hidden w-full h-full object-contain"></video>
+            </div>
+
+            <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4 bg-black/50 p-3 rounded-xl border border-gray-800">
+                    <div>
+                        <span class="text-[10px] font-bold text-gray-500 block uppercase mb-1">Start Cut (s)</span>
+                        <input type="number" id="trim-start" class="time-box p-1.5 text-xs text-center" value="0" min="0">
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-gray-500 block uppercase mb-1">End Cut (s)</span>
+                        <input type="number" id="trim-end" class="time-box p-1.5 text-xs text-center" value="5" min="1">
+                    </div>
+                </div>
+                <button id="execute-trim-btn" class="cap-gradient px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md w-full sm:w-auto">Process & Smart Cut</button>
+            </div>
         </div>
+    </section>
 
-        {/* Suggestion tags */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5 max-w-xl mx-auto">
-          <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Quick Try:</span>
-          {[
-            { tag: "🐉 Golden Dragon", text: "majestic gold dragon flying over misty mountain canyons, award winning concept art" },
-            { tag: "🛸 Retro UFO", text: "cyberpunk UFO saucer floating over traditional farmland neon glow" },
-            { tag: "🐈 Synthwave Cat", text: "retro space suit cat sitting in pilot deck of spaceship neon synthwave colors" }
-          ].map((item, index) => (
-            <button
-              key={index}
-              onClick={() => selectHeroSuggestion(item.text)}
-              className="text-[11px] text-zinc-400 bg-zinc-900 hover:bg-zinc-800 hover:text-white px-3 py-1 rounded-full border border-zinc-800/80 transition"
-            >
-              {item.tag}
-            </button>
-          ))}
+    <!-- Comprehensive Feature Grid -->
+    <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
+        <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
+       
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div id="feature-trimmer-card" class="feature-box p-6 border-blue-500/30 bg-blue-950/5 text-center">
+                <i class="fas fa-scissors text-2xl text-blue-400 mb-3"></i>
+                <h4 class="text-xs font-bold uppercase tracking-wide">Video Trimmer</h4>
+                <p class="text-[10px] text-blue-400 mt-1 font-semibold">Active Studio</p>
+            </div>
+
+            <div onclick="openMemeStudio()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
+                <i class="fas fa-face-laugh text-2xl text-pink-400 mb-3"></i>
+                <h4 class="text-xs font-bold uppercase tracking-wide">Meme Maker</h4>
+                <p class="text-[10px] text-pink-400 mt-1 font-semibold">Active Studio</p>
+            </div>
+
+            <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
+            <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
+            <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
+            <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
+            <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
+            <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
+            <div onclick="showInfo('face-cutout')" class="feature-box p-6 text-center"><i class="fas fa-user-tie text-2xl text-red-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
+            <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
+            <div onclick="showInfo('banana-pro')" class="feature-box p-6 text-center"><i class="fas fa-image text-2xl text-lime-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Nano Banana Pro</h4></div>
+            <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
         </div>
-      </section>
+    </section>
 
-      {/* MAIN STUDIOS BAR CONTAINER */}
-      <main className="flex-grow w-full max-w-6xl mx-auto px-6 space-y-20 pb-32">
-        
-        {/* VIDEO STUDIO WORKSPACE PANEL (Trimmer Engine) */}
-        <section id="video-studio-section" className="scroll-mt-28">
-          <div className="text-center mb-8">
-            <h3 className="text-xs uppercase font-bold tracking-[0.25em] text-blue-400">Trimmer Engine</h3>
-            <h4 className="text-2xl font-black text-white mt-1">Interactive Video Timeline Studio</h4>
-          </div>
-
-          <div className="max-w-4xl mx-auto bg-zinc-950/70 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-sm group">
-            
-            {/* Header labels */}
-            <div className="flex justify-between items-center text-xs text-zinc-400 mb-5 border-b border-zinc-800 pb-3">
-              <div className="flex gap-4 font-bold tracking-wider">
-                <span className="flex items-center gap-1.5 text-blue-400">
-                  <Layers className="w-4 h-4" /> Media Workspace
-                </span>
-                <span className="text-zinc-500">|</span>
-                <span className="text-zinc-400">Active Pipeline</span>
-              </div>
-              <span className="text-blue-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
-                <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping" />
-                {trimmer.file ? "ACTIVE WORKPIECE" : "READY FOR VIDEO MEDIA"}
-              </span>
-            </div>
-
-            {/* Video Main Showcase View */}
-            <div className="aspect-video bg-black rounded-xl flex flex-col items-center justify-center overflow-hidden relative border border-zinc-900 group-hover:border-zinc-800/60 transition-colors">
-              
-              {trimmer.videoUrl ? (
-                <video 
-                  ref={videoRef}
-                  src={trimmer.videoUrl} 
-                  controls 
-                  onLoadedMetadata={handleVideoMetadata}
-                  onTimeUpdate={handleVideoTimeUpdate}
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <div 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-center cursor-pointer p-8 select-none hover:scale-[1.02] transition-transform duration-300"
-                >
-                  <div className="mx-auto bg-zinc-900 p-4 rounded-full w-16 h-16 flex items-center justify-center border border-zinc-800 group-hover:bg-zinc-800 group-hover:border-zinc-700 transition-colors mb-4">
-                    <Upload className="w-8 h-8 text-blue-400" />
-                  </div>
-                  <p className="text-sm font-bold text-zinc-200">Click to Upload or Drag Video Media Here</p>
-                  <p className="text-[11px] text-zinc-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM local files</p>
-                </div>
-              )}
-              
-              {/* Overlay process cover */}
-              {trimmer.isProcessing && (
-                <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-20">
-                  <div className="relative w-16 h-16 mb-4">
-                    <div className="absolute inset-0 rounded-full border-4 border-blue-500/10" />
-                    <div className="absolute inset-0 rounded-full border-4 border-t-blue-500 animate-spin" />
-                  </div>
-                  <span className="text-sm font-bold tracking-widest text-blue-400 uppercase animate-pulse">Running smart segment trim...</span>
-                  <p className="text-xs text-zinc-500 mt-1">Generating keyframes and timeline loops</p>
-                </div>
-              )}
-            </div>
-
-            {/* Hidden Input Pickers */}
-            <input 
-              ref={fileInputRef}
-              type="file" 
-              accept="video/*" 
-              onChange={handleVideoSelect}
-              className="hidden" 
-            />
-
-            {/* Timings Control Segment */}
-            {trimmer.videoUrl && (
-              <div className="mt-6 pt-5 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div className="flex flex-wrap items-center gap-6 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/85 w-full sm:w-auto">
-                  <div>
-                    <span className="text-[10px] font-bold text-zinc-500 block uppercase mb-1.5 tracking-wider">Start Cut (Seconds)</span>
-                    <input 
-                      type="number" 
-                      value={trimmer.start}
-                      onChange={(e) => setTrimmer(prev => ({ ...prev, start: Math.max(0, parseFloat(e.target.value) || 0) }))}
-                      className="w-24 bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs font-mono font-bold text-center text-white focus:outline-none focus:border-blue-500"
-                      min="0"
-                    />
-                  </div>
-                  
-                  <div className="text-zinc-600 font-bold hidden sm:block">➔</div>
-
-                  <div>
-                    <span className="text-[10px] font-bold text-zinc-500 block uppercase mb-1.5 tracking-wider">End Cut (Seconds)</span>
-                    <input 
-                      type="number" 
-                      value={trimmer.end}
-                      onChange={(e) => setTrimmer(prev => ({ ...prev, end: Math.max(0, parseFloat(e.target.value) || 0) }))}
-                      className="w-24 bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs font-mono font-bold text-center text-white focus:outline-none focus:border-blue-500"
-                      min="1"
-                    />
-                  </div>
-
-                  <div className="text-zinc-500 text-xs font-mono">
-                    Total Duration: <strong className="text-zinc-300">{trimmer.duration}s</strong>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 w-full sm:w-auto">
-                  <button 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-5 py-3.5 border border-zinc-800 hover:bg-zinc-900 rounded-xl text-xs font-bold uppercase transition w-full sm:w-auto text-zinc-300"
-                  >
-                    Change Video
-                  </button>
-                  <button 
-                    onClick={handleProcessTrim}
-                    className="px-8 py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-500/10 transition-all w-full sm:w-auto"
-                  >
-                    Process & Smart Cut
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* --- DEDICATED NEW FEATURE: AI IMAGE GENERATOR WORKSPACE --- */}
-        <section id="ai-image-generator-section" className="scroll-mt-28">
-          <div className="text-center mb-8">
-            <h3 className="text-xs uppercase font-bold tracking-[0.25em] text-pink-500">Gemini Generator Suite</h3>
-            <h4 className="text-2xl font-black text-white mt-1">Dravoo AI Image Generation Studio</h4>
-            <p className="text-xs text-zinc-400 mt-2 max-w-lg mx-auto">
-              Harness the full processing power of Google Gen AI. Generate ultra-high resolution digital artwork or assets directly.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Generation Input controls (Col 7) */}
-            <div className="lg:col-span-7 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl space-y-6 backdrop-blur-sm">
-              <div className="flex items-center gap-2 pb-4 border-b border-zinc-800/80">
-                <div className="bg-pink-500/10 p-2 rounded-lg border border-pink-500/20 text-pink-500">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <h5 className="text-sm font-bold text-white">Concept Visual Builder</h5>
-                  <p className="text-[10px] text-zinc-400">Specify details to trigger digital paint canvas renders</p>
-                </div>
-              </div>
-
-              {/* Prompt field */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-400 block tracking-wide uppercase">Your Concept Prompt</label>
-                <textarea 
-                  value={aiPrompt}
-                  onChange={(e) => setAiPrompt(e.target.value)}
-                  placeholder="e.g., A majestic white polar bear wearing corporate suit, holding leather suitcase, standing in futuristic neon glass office, 8k resolution, cinematic lighting..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-pink-500 transition focus:ring-1 focus:ring-pink-500/10 h-28 resize-none"
-                />
-              </div>
-
-              {/* Grid with Engine Choice and Aspect Ratio Choice */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* Aspect ratio selector */}
-                <div className="space-y-2.5">
-                  <label className="text-xs font-bold text-zinc-400 block tracking-wide uppercase">Aspect Ratio</label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[
-                      { label: "1:1", name: "Square", descr: "Insta/Post" },
-                      { label: "16:9", name: "Landscape", descr: "Wide TV" },
-                      { label: "9:16", name: "Portrait", descr: "Reel/TikTok" },
-                      { label: "4:3", name: "Standard", descr: "Classic Photo" }
-                    ].map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => setAiAspectRatio(item.label)}
-                        className={`p-2.5 rounded-xl border flex flex-col items-center justify-center text-center transition ${
-                          aiAspectRatio === item.label
-                            ? "bg-pink-600/10 border-pink-500 text-pink-400"
-                            : "bg-zinc-900 border-zinc-800/80 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300"
-                        }`}
-                      >
-                        <span className="text-[11px] font-extrabold">{item.label}</span>
-                        <span className="text-[8px] uppercase tracking-wide font-medium mt-0.5">{item.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Engine Selector */}
-                <div className="space-y-2.5">
-                  <label className="text-xs font-bold text-zinc-400 block tracking-wide uppercase">AI Render Engine</label>
-                  <div className="grid grid-cols-1 gap-2">
-                    {[
-                      { id: "gemini-enhanced", title: "Gemini Enhanced Creative", label: "Recommend 🔥", descr: "Speeds & optimized detailed aesthetics" },
-                      { id: "gemini-direct", title: "Gemini Direct Image", label: "Billing", descr: "Direct key generator (Requires paid key)" }
-                    ].map((opt) => (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        onClick={() => setAiEngine(opt.id)}
-                        className={`p-2.5 rounded-xl border text-left transition relative overflow-hidden flex flex-col justify-center ${
-                          aiEngine === opt.id
-                            ? "bg-blue-600/10 border-blue-500 text-blue-400"
-                            : "bg-zinc-900 border-zinc-800/80 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300"
-                        }`}
-                      >
-                        <div className="flex justify-between items-center w-full">
-                          <span className="text-xs font-bold">{opt.title}</span>
-                          <span className="text-[8px] uppercase px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">{opt.label}</span>
-                        </div>
-                        <span className="text-[9px] mt-0.5 text-zinc-500">{opt.descr}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Action execute trigger */}
-              <button
-                type="button"
-                onClick={() => handleGenerateImage()}
-                disabled={isGeneratingImg}
-                className="w-full py-4 bg-gradient-to-r from-pink-600 via-pink-500 to-blue-600 hover:opacity-95 text-white text-xs font-black uppercase tracking-widest rounded-xl transition shadow-xl shadow-pink-600/15 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-              >
-                {isGeneratingImg ? (
-                  <>
-                    <RefreshCcw className="w-4 h-4 animate-spin" />
-                    Synthesizing Artwork Grid...
-                  </>
-                ) : (
-                  <>
-                    <Sparkle className="w-4 h-4 animate-pulse" />
-                    Launch AI Render Sequence
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Generation Canvas Result Frame (Col 5) */}
-            <div className="lg:col-span-5 flex flex-col items-stretch gap-4 h-full">
-              <div className="bg-zinc-950 border border-zinc-800/80 rounded-2xl p-4 shadow-xl flex-grow flex flex-col justify-between overflow-hidden relative min-h-[380px]">
-                
-                {/* Active preview target */}
-                {currentGeneratedImage ? (
-                  <div className="space-y-4 flex flex-col justify-between flex-grow">
-                    <div className="relative w-full aspect-square max-h-[320px] bg-black rounded-xl overflow-hidden border border-zinc-850 flex items-center justify-center">
-                      <img 
-                        referrerPolicy="no-referrer"
-                        src={currentGeneratedImage.url} 
-                        alt="Generated preview"
-                        className="max-w-full max-h-full object-contain" 
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] text-zinc-500 uppercase font-mono tracking-wider">{currentGeneratedImage.engine}</span>
-                        <a 
-                          href={currentGeneratedImage.url} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="text-pink-400 hover:underline text-[11px] font-bold flex items-center gap-1"
-                        >
-                          Raw URL <ArrowRight className="w-3.5 h-3.5" />
-                        </a>
-                      </div>
-                      <p className="text-zinc-300 text-xs italic line-clamp-2">"{currentGeneratedImage.prompt}"</p>
-                      
-                      <div className="flex gap-2 pt-2">
-                        <a 
-                          href={currentGeneratedImage.url} 
-                          download={`dravoo-artwork-${currentGeneratedImage.id}.png`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex-grow py-2.5 bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 rounded-xl text-[10px] font-bold text-center uppercase text-zinc-300 flex items-center justify-center gap-1.5"
-                        >
-                          <Download className="w-3.5 h-3.5" /> Download Full PNG
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-16 text-center h-full flex-grow relative">
-                    {isGeneratingImg ? (
-                      <div className="space-y-4 animate-pulse">
-                        <div className="bg-gradient-to-tr from-pink-600 to-blue-600 rounded-full w-20 h-20 flex items-center justify-center border border-zinc-800 mx-auto">
-                          <Cpu className="w-10 h-10 text-white animate-spin duration-3000" />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs uppercase font-extrabold text-pink-400 tracking-widest">Compiling Pixels</p>
-                          <p className="text-[10px] text-zinc-500 italic max-w-xs">Using {aiEngine === "gemini-enhanced" ? "Gemini-Optimized prompt detailing" : "Direct key request authentication"}</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="mx-auto bg-zinc-900/60 p-4 rounded-full w-14 h-14 border border-zinc-805 flex items-center justify-center text-zinc-650">
-                          <ImageIcon className="w-7 h-7" />
-                        </div>
-                        <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">No Active Artwork</p>
-                        <p className="text-[10px] text-zinc-650 max-w-xs mx-auto">Type a prompt visual concept is required to paint on our sandbox canvas grid.</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-          </div>
-
-          {/* AI Generation History (Scrollbox of outputs) */}
-          {imageHistory.length > 0 && (
-            <div className="mt-12 bg-zinc-950/40 border border-zinc-900 p-6 rounded-2xl">
-              <div className="flex justify-between items-center mb-4 pb-2 border-b border-zinc-850">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Past generated images</span>
-                  <span className="text-[10px] bg-zinc-900 border border-zinc-850 text-zinc-400 px-2 py-0.5 rounded-full font-mono">{imageHistory.length} Renders</span>
-                </div>
-                <button 
-                  onClick={clearAllHistory}
-                  className="text-zinc-500 hover:text-red-400 text-xs font-semibold flex items-center gap-1.5 transition"
-                >
-                  <Trash2 className="w-3.5 h-3.5" /> Clear History
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {imageHistory.map((img) => (
-                  <div 
-                    key={img.id}
-                    onClick={() => setCurrentGeneratedImage(img)}
-                    className={`relative rounded-xl overflow-hidden border aspect-square cursor-pointer group hover:border-pink-500 transition-all ${
-                      currentGeneratedImage?.id === img.id ? "border-pink-500 ring-2 ring-pink-500/20" : "border-zinc-800"
-                    }`}
-                  >
-                    <img 
-                      referrerPolicy="no-referrer"
-                      src={img.url} 
-                      alt={img.prompt} 
-                      className="w-full h-full object-cover transition duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-left translate-y-2 group-hover:translate-y-0 transition">
-                      <p className="text-[8px] text-zinc-400 leading-tight font-medium truncate mb-1">"{img.prompt}"</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-[7px] text-pink-400 font-bold uppercase">{img.aspectRatio}</span>
-                        <span className="text-[7px] text-zinc-500 font-mono">{img.timestamp}</span>
-                      </div>
-                    </div>
-
-                    {/* Delete item button */}
-                    <button
-                      onClick={(e) => deleteHistoryItem(img.id, e)}
-                      className="absolute top-1.5 right-1.5 bg-black/60 p-1 rounded-md text-zinc-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition duration-200"
-                      title="Delete artwork"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-
-        {/* COMPREHENSIVE SMART FEATURE GRID (8 core modules + 4 highlighted) */}
-        <section id="tools-catalog-section" className="scroll-mt-28">
-          <div className="max-w-4xl mx-auto text-center mb-10">
-            <h3 className="text-xs uppercase font-bold tracking-[0.25em] text-blue-400">Tools Catalog</h3>
-            <h4 className="text-2xl font-black text-white mt-1">Professional One-Stop Studio Tools</h4>
-            <p className="text-xs text-zinc-400 mt-2">
-              Select any of the AI-powered editing channels below to process assets. Supported by Gemini 3.5 LLM.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            
-            {/* Hard-coded trimmer card linking back to active workspace */}
-            <div 
-              onClick={() => scrollToId("video-studio-section")} 
-              className="bg-zinc-950 hover:bg-zinc-900 border border-blue-500/30 hover:border-blue-500/60 p-6 rounded-2xl text-center group cursor-pointer transition-all duration-300 hover:-translate-y-1 block relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-8 h-8 bg-blue-500/10 rounded-bl-2xl flex items-center justify-center text-[8px] text-blue-400 font-bold uppercase tracking-wider border-l border-b border-blue-500/20">Active</div>
-              <Scissors className="w-8 h-8 text-blue-400 mx-auto mb-3" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-200">Video Trimmer</h4>
-              <p className="text-[9px] text-zinc-500 mt-1 uppercase tracking-widest font-extrabold text-blue-400">Focus Workspace</p>
-            </div>
-
-            {/* Hard-coded meme card linking to meme dialog modal */}
-            <div 
-              onClick={() => setShowMemeModal(true)} 
-              className="bg-zinc-950 hover:bg-zinc-900 border border-pink-500/30 hover:border-pink-500/60 p-6 rounded-2xl text-center group cursor-pointer transition-all duration-300 hover:-translate-y-1 block relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-8 h-8 bg-pink-500/10 rounded-bl-2xl flex items-center justify-center text-[8px] text-pink-400 font-bold uppercase tracking-wider border-l border-b border-pink-500/20">Studio</div>
-              <Smile className="w-8 h-8 text-pink-400 mx-auto mb-3" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-200">Meme Maker</h4>
-              <p className="text-[9px] text-pink-500 mt-1 uppercase tracking-widest font-extrabold text-pink-400">Launch Component</p>
-            </div>
-
-            {/* Render 8 core module tool cards */}
-            {toolsData.map((tool) => {
-              const ToolIcon = tool.icon;
-              return (
-                <div 
-                  key={tool.id}
-                  onClick={() => handleOpenSmartTool(tool.id)}
-                  className="bg-zinc-950 hover:bg-zinc-900 border border-zinc-900 hover:border-zinc-800 p-6 rounded-2xl text-center group cursor-pointer transition-all duration-300 hover:-translate-y-1 block relative"
-                >
-                  <ToolIcon className="w-8 h-8 text-zinc-400 group-hover:text-white mx-auto mb-3 transition" />
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-200">{tool.title}</h4>
-                  <p className="text-[10px] text-zinc-500 mt-1 leading-normal italic line-clamp-1">{tool.descr}</p>
-                </div>
-              );
-            })}
-
-          </div>
-        </section>
-
-      </main>
-
-      {/* FOOTER */}
-      <footer className="mt-auto bg-[#030305] border-t border-zinc-900/80 pt-16 pb-12 text-center text-xs text-zinc-500 z-10">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex justify-center gap-8 mb-8 font-bold uppercase tracking-widest text-[10px] text-zinc-400">
-            <button onClick={() => selectHeroSuggestion("🚀 galactic portal")} className="hover:text-white transition">About Dravoo</button>
-            <a href="mailto:dravooeditor@gmail.com" className="hover:text-white transition">Submit Feedback</a>
-            <button onClick={() => alert("Enterprise Data Security Policy: Dravoo operates strictly local client-side processing operations. Your media vectors never sync to permanent host storage.")} className="hover:text-white transition">Privacy Policy</button>
-          </div>
-          <p className="text-[9px] uppercase tracking-[4px] text-zinc-650">© 2026 DRAVOO STUDIO | Lead Architecture Developed by Mudassir Shabbir.</p>
+    <!-- Modals System -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="content-card text-center">
+            <div id="modalContent"></div>
+            <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 rounded-xl font-bold mt-6 text-xs uppercase tracking-wider hover:bg-zinc-700 transition">Close</button>
         </div>
-      </footer>
-
-      {/* --- FLOATING DIALOG MODAL SYSTEM --- */}
-      
-      {/* 1. GOOGLE SIGN IN / CUSTOM MANUAL LOGIN DIALOG MOCK */}
-      <AnimatePresence>
-        {showLoginModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowLoginModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
-            />
-            
-            <motion.div 
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              className="bg-zinc-950 border border-zinc-850 p-6 rounded-2xl max-w-md w-full relative z-10 shadow-2xl"
-            >
-              <div className="flex justify-between items-center mb-6 pb-2 border-b border-zinc-850">
-                <span className="text-xs uppercase font-bold tracking-widest text-zinc-400">Authenticate Creator Identity</span>
-                <button 
-                  onClick={() => setShowLoginModal(false)}
-                  className="text-zinc-500 hover:text-white transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Your Creator Handle</label>
-                  <input 
-                    type="text" 
-                    value={loginInputName}
-                    onChange={(e) => setLoginInputName(e.target.value)}
-                    placeholder="e.g. Mudassir Shabbir or Retro King"
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block font-sans">Choose Custom Creator Avatar</label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[
-                      "https://picsum.photos/seed/mudassir/150/150",
-                      "https://picsum.photos/seed/retro/150/150",
-                      "https://picsum.photos/seed/cyber/150/150",
-                      "https://picsum.photos/seed/shabbir/150/150"
-                    ].map((av) => (
-                      <button
-                        key={av}
-                        type="button"
-                        onClick={() => setLoginInputAvatar(av)}
-                        className={`rounded-xl overflow-hidden border aspect-square relative focus:outline-none ${
-                          loginInputAvatar === av ? "border-blue-500 ring-2 ring-blue-500/20" : "border-zinc-850"
-                        }`}
-                      >
-                        <img 
-                          referrerPolicy="no-referrer"
-                          src={av} 
-                          alt="avatar option" 
-                          className="w-full h-full object-cover" 
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <button 
-                  type="submit"
-                  className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:from-blue-500 hover:to-blue-400 h-11 transition"
-                >
-                  Confirm & Initialize Dravoo Pro
-                </button>
-              </form>
-
-              <div className="text-center mt-4">
-                <span className="text-[9px] uppercase tracking-wider block text-zinc-600">Secure pipeline authenticated client-side</span>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* 2. DYNAMICAL INTERACTIVE MEME MAKER MODAL */}
-      <AnimatePresence>
-        {showMemeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowMemeModal(false)}
-              className="absolute inset-0 bg-black/85 backdrop-blur-sm" 
-            />
-            
-            <motion.div 
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              className="bg-zinc-950 border border-zinc-850 p-6 rounded-2xl max-w-lg w-full relative z-10 shadow-2xl flex flex-col justify-between max-h-[90vh] overflow-y-auto"
-            >
-              
-              <div className="flex justify-between items-center mb-4 pb-2 border-b border-zinc-850 flex-shrink-0">
-                <div className="flex items-center gap-2">
-                  <Smile className="w-5 h-5 text-pink-500" />
-                  <span className="text-xs uppercase font-extrabold tracking-widest text-pink-500">Dravoo Meme Studio Suite</span>
-                </div>
-                <button 
-                  onClick={() => setShowMemeModal(false)}
-                  className="text-zinc-500 hover:text-white transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="space-y-4 flex-grow">
-                {/* Visual rendering canvas simulation box */}
-                <div className="relative w-full aspect-square bg-zinc-900 border border-zinc-850 rounded-xl overflow-hidden flex items-center justify-center relative select-none">
-                  {meme.imageUrl ? (
-                    <>
-                      <img 
-                        referrerPolicy="no-referrer"
-                        src={meme.imageUrl} 
-                        alt="Meme base preview" 
-                        className="max-w-full max-h-full object-contain"
-                      />
-                      {meme.topText && (
-                        <div className="absolute top-4 left-4 right-4 text-center text-white text-3xl font-extrabold tracking-wide uppercase meme-text-impact break-words">
-                          {meme.topText}
-                        </div>
-                      )}
-                      {meme.bottomText && (
-                        <div className="absolute bottom-4 left-4 right-4 text-center text-white text-3xl font-extrabold tracking-wide uppercase meme-text-impact break-words">
-                          {meme.bottomText}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-center p-8">
-                      <ImageIcon className="w-10 h-10 text-zinc-650 mx-auto mb-2" />
-                      <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-500">No Image Uploaded</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Upload custom picture base */}
-                <div className="space-y-3">
-                  <button 
-                    onClick={() => memeFileInputRef.current?.click()}
-                    className="w-full bg-pink-500/10 border border-pink-500/30 py-2.5 rounded-xl text-xs uppercase font-bold text-pink-400 hover:bg-pink-500/20 transition flex items-center justify-center gap-2"
-                  >
-                    <Upload className="w-4 h-4" /> Upload Base Photo
-                  </button>
-                  <input 
-                    ref={memeFileInputRef}
-                    type="file" 
-                    accept="image/*"
-                    onChange={handleMemeImgSelect}
-                    className="hidden" 
-                  />
-
-                  {/* Input text files */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input 
-                      type="text" 
-                      value={meme.topText}
-                      onChange={(e) => setMeme(prev => ({ ...prev, topText: e.target.value }))}
-                      placeholder="TOP FUNNY TEXT..."
-                      disabled={!meme.imageUrl}
-                      className="bg-zinc-900 border border-zinc-800 p-3 text-xs rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-pink-500 disabled:opacity-40"
-                    />
-                    <input 
-                      type="text" 
-                      value={meme.bottomText}
-                      onChange={(e) => setMeme(prev => ({ ...prev, bottomText: e.target.value }))}
-                      placeholder="BOTTOM FUNNY TEXT..."
-                      disabled={!meme.imageUrl}
-                      className="bg-zinc-900 border border-zinc-800 p-3 text-xs rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-pink-500 disabled:opacity-40"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Confirm export button */}
-              <div className="flex gap-3 mt-6 pt-2 border-t border-zinc-850 flex-shrink-0">
-                <button 
-                  onClick={() => setShowMemeModal(false)}
-                  className="w-1/3 py-3 bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 text-zinc-400 rounded-xl font-bold uppercase text-[10px] transition"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={handleMemeFormSubmit}
-                  disabled={!meme.imageUrl || meme.isExporting}
-                  className="w-2/3 py-3 bg-gradient-to-r from-pink-600 to-pink-500 hover:opacity-95 text-white rounded-xl font-bold uppercase text-[10px] transition flex items-center justify-center gap-1 shadow-lg shadow-pink-600/10 disabled:opacity-40"
-                >
-                  {meme.isExporting ? (
-                    <>
-                      <RefreshCcw className="w-3.5 h-3.5 animate-spin" />
-                      Rendering Meme...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-3.5 h-3.5" /> Export & Download Meme
-                    </>
-                  )}
-                </button>
-              </div>
-
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* 3. CORE CHANNELS SMART TOOL DIALOG MOCK */}
-      <AnimatePresence>
-        {smartTool.activeId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSmartTool(prev => ({ ...prev, activeId: null }))}
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
-            />
-
-            <motion.div 
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              className="bg-zinc-950 border border-zinc-850 p-6 rounded-2xl max-w-md w-full relative z-10 shadow-2xl space-y-5"
-            >
-              {(() => {
-                const spec = toolsData.find(t => t.id === smartTool.activeId);
-                if (!spec) return null;
-                const SpecIcon = spec.icon;
-
-                return (
-                  <>
-                    <div className="flex justify-between items-center pb-2 border-b border-zinc-850">
-                      <div className="flex items-center gap-2">
-                        <SpecIcon className="w-4 h-4 text-blue-400" />
-                        <span className="text-xs uppercase font-extrabold tracking-widest text-zinc-350">{spec.title} Channel</span>
-                      </div>
-                      <button 
-                        onClick={() => setSmartTool(prev => ({ ...prev, activeId: null }))}
-                        className="text-zinc-500 hover:text-white transition"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-4">
-                      <p className="text-xs text-zinc-400 leading-normal">{spec.descr}</p>
-                      
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block">Context description or Script parameters</label>
-                        <textarea 
-                          value={smartTool.inputPrompt}
-                          onChange={(e) => setSmartTool(prev => ({ ...prev, inputPrompt: e.target.value }))}
-                          placeholder={spec.placeholder}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 h-24 resize-none"
-                        />
-                      </div>
-
-                      <button
-                        onClick={handleRunSmartToolResponse}
-                        disabled={smartTool.isProcessing}
-                        className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition disabled:opacity-50"
-                      >
-                        {smartTool.isProcessing ? "Synthesizing AI Channels..." : "Run AI Analysis"}
-                      </button>
-
-                      {/* Result block showing processed instructions */}
-                      {smartTool.result && (
-                        <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800/80 text-left space-y-2 animate-fade-in">
-                          <div className="flex items-center gap-1 text-[10px] text-green-400 font-extrabold uppercase">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Pipeline Complete
-                          </div>
-                          <p className="text-xs text-zinc-200 leading-normal">{smartTool.result}</p>
-                          {smartTool.tips && (
-                            <p className="text-[10px] text-zinc-500 font-medium italic border-t border-zinc-850 pt-2 block">{smartTool.tips}</p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </>
-                );
-              })()}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
     </div>
-  );
-}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-@import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-}
+    <!-- Meme Studio Modal -->
+    <div id="memeModal" class="modal-overlay">
+        <div class="content-card text-center">
+            <h3 class="text-lg font-black mb-4 uppercase text-pink-500"><i class="fas fa-laugh mr-1"></i> Dravoo Meme Engine</h3>
+            <div class="relative w-full aspect-square bg-black rounded-xl overflow-hidden mb-4 flex items-center justify-center border border-zinc-800">
+                <img id="meme-preview-img" class="max-w-full max-h-full object-contain hidden">
+                <div id="meme-placeholder-text" class="text-gray-600 text-xs uppercase tracking-widest font-bold">No Photo Uploaded</div>
+                <div id="meme-text-top"></div>
+                <div id="meme-text-bottom"></div>
+            </div>
+            <div class="space-y-3 text-left">
+                <button onclick="document.getElementById('meme-image-picker').click()" class="w-full bg-pink-500/10 border border-pink-500/30 py-2.5 rounded-xl text-xs uppercase font-bold text-pink-400 hover:bg-pink-500/20 transition"><i class="fas fa-image mr-2"></i>Upload Base Image</button>
+                <input type="text" id="input-top" class="meme-input text-xs" placeholder="TOP FUNNY TEXT..." disabled>
+                <input type="text" id="input-bottom" class="meme-input text-xs" placeholder="BOTTOM FUNNY TEXT..." disabled>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeMemeStudio()" class="w-1/3 py-3 bg-zinc-800 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-700 transition">Cancel</button>
+                <button id="download-meme-btn" class="w-2/3 py-3 cap-gradient rounded-xl font-bold uppercase text-[10px]" disabled>Export Meme</button>
+            </div>
+        </div>
+    </div>
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #0d0d0d;
-}
-::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
-}
+    <!-- Footer -->
+    <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
+        <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
+            <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
+            <a href="mailto:dravooeditor@gmail.com" class="hover:text-white transition">Feedback</a>
+            <span onclick="showInfo('privacy')" class="hover:text-white transition cursor-pointer">Privacy Policy</span>
+        </div>
+        <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
+    </footer>
 
-/* Custom meme fonts */
-.meme-text-impact {
-  font-family: 'Impact', 'Arial Black', sans-serif;
-  -webkit-text-stroke: 1.5px black;
-  text-shadow: 2px 2px 0 #000;
-}
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import App from './App.tsx';
-import './index.css';
+    <script>
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
+        }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
-export interface UserProfile {
-  name: string;
-  avatar: string;
-  isPro: boolean;
-}
+        const infoData = {
+            'bg-remover': `<i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Remove Video Background</h3><p class="text-xs text-gray-400">Isolate subjects in 1-click and insert transparent backdrops.</p>`,
+            'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
+            'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
+            'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
+            'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
+            'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
+            'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
+            'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
+            'ai-generation': `<i class="fas fa-magic text-4xl text-blue-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Content Studio</h3><p class="text-xs text-gray-400">Text-to-Video engine initialization sequence ready.</p>`,
+            'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
+            'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
+           
+            // Banana Pro
+            'banana-pro': `
+                <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
+                <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to generate artwork:</p>
+                <div class="space-y-3">
+                    <input type="text" id="ai-prompt-banana" class="meme-input text-xs" placeholder="e.g., Cyberpunk car, neon streets, highly detailed...">
+                    <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px]">Generate Art</button>
+                </div>
+                <div id="ai-result-banana" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative">
+                    <div id="ai-loader-banana" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Processing Art...</div>
+                    <img id="ai-img-src-banana" class="max-w-full max-h-full object-cover">
+                </div>
+            `,
+           
+            // GPT Image 2
+            'gpt-image': `
+                <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
+                <p class="text-xs text-gray-400 mb-4">Enter your concept details to simulate generation:</p>
+                <div class="space-y-3">
+                    <input type="text" id="ai-prompt-gpt" class="meme-input text-xs" placeholder="e.g., Majestic dragon over dark mountains, 4k resolution...">
+                    <button onclick="generateAIStudioImage('gpt')" id="ai-btn-gpt" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px]">Create Asset</button>
+                </div>
+                <div id="ai-result-gpt" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative">
+                    <div id="ai-loader-gpt" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-amber-400 uppercase tracking-widest"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Formatting Data...</div>
+                    <img id="ai-img-src-gpt" class="max-w-full max-h-full object-cover">
+                </div>
+            `
+        };
 
-export interface GeneratedImage {
-  id: string;
-  prompt: string;
-  enhancedPrompt: string;
-  url: string;
-  timestamp: string;
-  aspectRatio: string;
-  engine: string;
-}
+        function showInfo(key) {
+            document.getElementById('modalContent').innerHTML = infoData[key];
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-export interface TrimmerState {
-  file: File | null;
-  videoUrl: string | null;
-  start: number;
-  end: number;
-  duration: number;
-  isProcessing: boolean;
-  isPlayingLoop: boolean;
-}
+        // --- FIXED MULTI-TIME RUNNING AI ENGINE ---
+        function generateAIStudioImage(type) {
+            const promptInput = document.getElementById(`ai-prompt-${type}`);
+            const genBtn = document.getElementById(`ai-btn-${type}`);
+            const resultDiv = document.getElementById(`ai-result-${type}`);
+            const resultImg = document.getElementById(`ai-img-src-${type}`);
+            const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
-export interface MemeState {
-  imageFile: File | null;
-  imageUrl: string | null;
-  topText: string;
-  bottomText: string;
-  isExporting: boolean;
-}
+            if (!promptInput || !genBtn) return;
+            const promptText = promptInput.value.trim();
+            if (!promptText) return alert("Please enter a creative prompt first!");
 
-export interface SmartToolState {
-  activeId: string | null;
-  inputPrompt: string;
-  isProcessing: boolean;
-  result: string | null;
-  tips: string | null;
-}
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-    "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "allowJs": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
-  }
-}
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import {defineConfig} from 'vite';
+            // UI feedback state
+            const originalBtnText = genBtn.getAttribute('data-original-text') || genBtn.innerText;
+            if (!genBtn.getAttribute('data-original-text')) {
+                genBtn.setAttribute('data-original-text', originalBtnText);
+            }
 
-export default defineConfig(() => {
-  return {
-    plugins: [react(), tailwindcss()],
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
-    },
-    server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
-    },
-  };
-});
+            genBtn.innerText = "RENDERING IMAGERY...";
+            genBtn.disabled = true;
+
+            // Make container and loader active
+            resultDiv.classList.remove('hidden');
+            loaderDiv.classList.remove('hidden');
+            resultImg.classList.add('opacity-0'); // Hide older image while rendering new one
+
+            // Random seed generator for multi-time query uniqueness
+            const randomSeed = Math.floor(Math.random() * 999999999);
+            const safePrompt = encodeURIComponent(promptText);
+            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&nologo=true`;
+
+            // Reset image handler and fetch new source
+            resultImg.src = targetAIUrl;
+
+            resultImg.onload = function() {
+                loaderDiv.classList.add('hidden');
+                resultImg.classList.remove('opacity-0');
+                genBtn.innerText = genBtn.getAttribute('data-original-text');
+                genBtn.disabled = false;
+            };
+
+            resultImg.onerror = function() {
+                loaderDiv.classList.add('hidden');
+                genBtn.innerText = genBtn.getAttribute('data-original-text');
+                genBtn.disabled = false;
+                alert("Failed to load AI Image. Let's try again with a different prompt!");
+            };
+        }
+
+        // --- GOOGLE SIGN-IN ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('dravoo_user_name');
+            const savedAvatar = localStorage.getItem('dravoo_user_avatar');
+            if (savedUser && savedAvatar) {
+                showLoggedInUser(savedUser, savedAvatar);
+            } else {
+                initializeGoogleSignIn();
+            }
+        });
+
+        function initializeGoogleSignIn() {
+            if (typeof google !== 'undefined') {
+                google.accounts.id.initialize({
+                    client_id: "320474351321-k6mbmf82m53dotsmfcups46050rflc8p.apps.googleusercontent.com",
+                    callback: handleCredentialResponse
+                });
+                google.accounts.id.renderButton(
+                    document.getElementById("googleBtnContainer"),
+                    { theme: "outline", size: "medium", shape: "pill", text: "signin_with" }
+                );
+            }
+        }
+
+        function handleCredentialResponse(response) {
+            const responsePayload = parseJwt(response.credential);
+            const fullName = responsePayload.name;      
+            const profilePic = responsePayload.picture;  
+            localStorage.setItem('dravoo_user_name', fullName);
+            localStorage.setItem('dravoo_user_avatar', profilePic);
+            showLoggedInUser(fullName, profilePic);
+        }
+
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join('')));
+        }
+
+        function showLoggedInUser(name, avatarUrl) {
+            const btnContainer = document.getElementById('googleBtnContainer');
+            if(btnContainer) btnContainer.style.display = 'none';
+            document.getElementById('userDisplay').classList.remove('hidden');
+            document.getElementById('displayUsername').innerText = name;
+            document.getElementById('userAvatar').src = avatarUrl;
+        }
+
+        function logoutGoogle() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // --- Video Trimmer Engine ---
+        const filePicker = document.getElementById('video-file-picker');
+        const uploadTrigger = document.getElementById('main-upload-trigger');
+        const trimmerCard = document.getElementById('feature-trimmer-card');
+        const playIcon = document.getElementById('play-icon-placeholder');
+        const studioPlayer = document.getElementById('live-studio-player');
+        const controlPanel = document.getElementById('trimmer-control-panel');
+        const statusText = document.getElementById('studio-status');
+        const runTrimBtn = document.getElementById('execute-trim-btn');
+        const startInput = document.getElementById('trim-start');
+        const endInput = document.getElementById('trim-end');
+
+        let targetStartTime = 0;
+        let targetEndTime = 5;
+
+        uploadTrigger.addEventListener('click', (e) => {
+            if (e.target.closest('#trimmer-control-panel')) return;
+            filePicker.click();
+        });
+        trimmerCard.addEventListener('click', () => filePicker.click());
+
+        filePicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                playIcon.classList.add('hidden');
+                studioPlayer.classList.remove('hidden');
+                controlPanel.classList.remove('hidden');
+                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
+                studioPlayer.src = URL.createObjectURL(file);
+                studioPlayer.play();
+            }
+        });
+
+        studioPlayer.addEventListener('timeupdate', () => {
+            if (studioPlayer.currentTime >= targetEndTime) {
+                studioPlayer.currentTime = targetStartTime;
+            }
+        });
+
+        runTrimBtn.addEventListener('click', () => {
+            const sTime = parseFloat(startInput.value);
+            const eTime = parseFloat(endInput.value);
+            if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
+           
+            runTrimBtn.innerText = "PROCESSING CLIP DATA...";
+            setTimeout(() => {
+                targetStartTime = sTime;
+                targetEndTime = eTime;
+                studioPlayer.currentTime = targetStartTime;
+                studioPlayer.play();
+                runTrimBtn.innerText = "Process & Smart Cut";
+                alert("AI Trimming Completed! Playing cut sequence loop.");
+            }, 800);
+        });
+
+        // --- Meme Engine Script ---
+        const memeModal = document.getElementById('memeModal');
+        const memeImgPicker = document.getElementById('meme-image-picker');
+        const previewImg = document.getElementById('meme-preview-img');
+        const placeholderText = document.getElementById('meme-placeholder-text');
+        const topTextInput = document.getElementById('input-top');
+        const bottomTextInput = document.getElementById('input-bottom');
+        const topTextDiv = document.getElementById('meme-text-top');
+        const bottomTextDiv = document.getElementById('meme-text-bottom');
+        const downloadBtn = document.getElementById('download-meme-btn');
+
+        function openMemeStudio() { memeModal.style.display = 'flex'; }
+        function closeMemeStudio() { memeModal.style.display = 'none'; }
+
+        memeImgPicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImg.src = event.target.result;
+                    previewImg.classList.remove('hidden');
+                    placeholderText.classList.add('hidden');
+                    topTextInput.disabled = false;
+                    bottomTextInput.disabled = false;
+                    downloadBtn.disabled = false;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
+        bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
+
+        downloadBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = previewImg.naturalWidth;
+            canvas.height = previewImg.naturalHeight;
+            ctx.drawImage(previewImg, 0, 0);
+           
+            const fontSize = Math.floor(canvas.width * 0.08);
+            ctx.font = `900 ${fontSize}px Impact`;
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = fontSize / 12;
+            ctx.textAlign = 'center';
+
+            ctx.textBaseline = 'top';
+            ctx.fillText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+            ctx.strokeText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+            ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+
+            const link = document.createElement('a');
+            link.download = 'dravoo-studio-meme.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
