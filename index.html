@@ -6,7 +6,7 @@
     <title>Dravoo | Free Online Video Editor & AI Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   
+    
     <!-- Google Identity Services Library -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -45,7 +45,7 @@
                 <span onclick="showInfo('about')" class="nav-link">About</span>
             </div>
         </div>
-       
+        
         <div class="flex items-center gap-4">
             <div id="userDisplay" class="hidden flex items-center gap-3 bg-zinc-900/60 pl-3 pr-2 py-1 rounded-full border border-zinc-800">
                 <div class="text-right">
@@ -64,7 +64,7 @@
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
         <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
-       
+        
         <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-2 rounded-full flex justify-between items-center pl-6">
             <div class="flex items-center gap-2 text-gray-500 text-xs truncate">
                 <i class="fas fa-wand-magic-sparkles text-blue-500"></i>
@@ -81,7 +81,7 @@
                 <div class="flex gap-4 font-semibold"><span><i class="fas fa-folder-open mr-1"></i> Media Studio</span><span>Timeline</span></div>
                 <span id="studio-status" class="text-blue-500 text-[10px] font-bold uppercase tracking-wider"><i class="fas fa-circle text-[6px] mr-1 animate-pulse"></i> Ready to edit</span>
             </div>
-           
+            
             <div class="aspect-video bg-black rounded-xl flex items-center justify-center overflow-hidden relative border border-gray-900">
                 <div id="play-icon-placeholder" class="text-center group-hover:scale-105 transition duration-300">
                     <i class="fas fa-cloud-arrow-up text-5xl text-blue-500 mb-3 opacity-80"></i>
@@ -110,7 +110,7 @@
     <!-- Comprehensive Feature Grid -->
     <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
         <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
-       
+        
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             <div id="feature-trimmer-card" class="feature-box p-6 border-blue-500/30 bg-blue-950/5 text-center">
                 <i class="fas fa-scissors text-2xl text-blue-400 mb-3"></i>
@@ -195,7 +195,7 @@
             'ai-generation': `<i class="fas fa-magic text-4xl text-blue-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Content Studio</h3><p class="text-xs text-gray-400">Text-to-Video engine initialization sequence ready.</p>`,
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
-           
+            
             // Banana Pro
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
@@ -210,7 +210,7 @@
                     <img id="ai-img-src-banana" class="max-w-full max-h-full object-cover">
                 </div>
             `,
-           
+            
             // GPT Image 2
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
@@ -233,40 +233,49 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- FIXED MULTI-TIME RUNNING AI ENGINE ---
+        // --- 100% FIXED RE-RUNNABLE AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
+            // Modal DOM elements fetch directly on runtime execution context
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
-            if (!promptInput || !genBtn) return;
+            // Validation Guard
+            if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderDiv) {
+                return alert("System Error: Modal elements context not initialized fully yet.");
+            }
+
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Please enter a creative prompt first!");
 
-            // UI feedback state
-            const originalBtnText = genBtn.getAttribute('data-original-text') || genBtn.innerText;
+            // Preserve original button layout text safely
             if (!genBtn.getAttribute('data-original-text')) {
-                genBtn.setAttribute('data-original-text', originalBtnText);
+                genBtn.setAttribute('data-original-text', genBtn.innerText);
             }
 
+            // Lock UI controls to avoid collision streams
             genBtn.innerText = "RENDERING IMAGERY...";
             genBtn.disabled = true;
 
-            // Make container and loader active
+            // Interface Updates
             resultDiv.classList.remove('hidden');
             loaderDiv.classList.remove('hidden');
-            resultImg.classList.add('opacity-0'); // Hide older image while rendering new one
+            resultImg.classList.add('opacity-0'); 
 
-            // Random seed generator for multi-time query uniqueness
+            // Strict Cache-Busting Parameters Construction
             const randomSeed = Math.floor(Math.random() * 999999999);
+            const cacheBusterTimestamp = new Date().getTime(); 
             const safePrompt = encodeURIComponent(promptText);
-            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&nologo=true`;
+            
+            // Clean dynamic URI Generation with dynamic timestamp integration
+            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&cb=${cacheBusterTimestamp}&nologo=true`;
 
-            // Reset image handler and fetch new source
-            resultImg.src = targetAIUrl;
-
+            // Reset image tracking state so browser treats it as absolutely new source pipeline
+            resultImg.removeAttribute('src'); 
+            
+            // Bind async network context listeners
             resultImg.onload = function() {
                 loaderDiv.classList.add('hidden');
                 resultImg.classList.remove('opacity-0');
@@ -280,6 +289,9 @@
                 genBtn.disabled = false;
                 alert("Failed to load AI Image. Let's try again with a different prompt!");
             };
+
+            // Initialize image asset network dispatch stream
+            resultImg.src = targetAIUrl;
         }
 
         // --- GOOGLE SIGN-IN ---
@@ -379,7 +391,7 @@
             const sTime = parseFloat(startInput.value);
             const eTime = parseFloat(endInput.value);
             if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
-           
+            
             runTrimBtn.innerText = "PROCESSING CLIP DATA...";
             setTimeout(() => {
                 targetStartTime = sTime;
@@ -430,7 +442,7 @@
             canvas.width = previewImg.naturalWidth;
             canvas.height = previewImg.naturalHeight;
             ctx.drawImage(previewImg, 0, 0);
-           
+            
             const fontSize = Math.floor(canvas.width * 0.08);
             ctx.font = `900 ${fontSize}px Impact`;
             ctx.fillStyle = 'white';
