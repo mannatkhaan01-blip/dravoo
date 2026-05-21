@@ -1,0 +1,6 @@
+{
+  "name": "Dravoo",
+  "description": "Free Online Video Editor & AI Image Studio with advanced video trimming, meme creator, and AI-powered image generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
