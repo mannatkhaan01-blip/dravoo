@@ -248,20 +248,7 @@
             }
         }
 
-        function onAIImageError(type) {
-            const genBtn = document.getElementById(`ai-btn-${type}`);
-            const loaderDiv = document.getElementById(`ai-loader-${type}`);
-            
-            if(loaderDiv) loaderDiv.classList.add('hidden');
-            if(genBtn) {
-                const origText = genBtn.getAttribute('data-original-text') || (type === 'banana' ? 'Generate Art' : 'Create Asset');
-                genBtn.innerText = origText;
-                genBtn.disabled = false;
-            }
-            alert("Failed to load AI Image. Let's try again with a different prompt!");
-        }
-
-        // --- CORE ASYNC GENERATION SEQUENCE ENGINE ---
+        // --- CORE ASYNC GENERATION SEQUENCE ENGINE (FAST OPTIMIZED) ---
         function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -291,11 +278,27 @@
             const cacheBuster = Date.now();
             const safePrompt = encodeURIComponent(promptText);
             
-            // Build absolute fresh URL network pointer
-            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&nocache=${cacheBuster}&nologo=true`;
+            // OPTIMIZED URL: Dimensions set to 512x512 for lightning fast rendering speed
+            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=512&height=512&seed=${randomSeed}&nocache=${cacheBuster}&nologo=true&enhance=false`;
 
-            // Reset source track inside DOM context
+            // Enable hardware acceleration decoding on browser side
+            resultImg.decoding = "async";
+            
+            // Reset source track inside DOM context and dispatch
             resultImg.src = targetAIUrl;
+        }
+
+        function onAIImageError(type) {
+            const genBtn = document.getElementById(`ai-btn-${type}`);
+            const loaderDiv = document.getElementById(`ai-loader-${type}`);
+            
+            if(loaderDiv) loaderDiv.classList.add('hidden');
+            if(genBtn) {
+                const origText = genBtn.getAttribute('data-original-text') || (type === 'banana' ? 'Generate Art' : 'Create Asset');
+                genBtn.innerText = origText;
+                genBtn.disabled = false;
+            }
+            alert("Failed to load AI Image. Let's try again with a different prompt!");
         }
 
         // --- GOOGLE SIGN-IN ---
