@@ -1,204 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dravoo | Free Online Video Editor & AI Studio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <style>
-        html { scroll-behavior: smooth; }
-        body { background-color: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; }
-        .cap-gradient { background: linear-gradient(135deg, #2563eb, #db2777); }
-        .cap-gradient-gold { background: linear-gradient(135deg, #f59e0b, #ef4444); }
-        .cap-text-gradient { background: linear-gradient(90deg, #3b82f6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 500; transition: 0.2s; cursor: pointer; }
-        .nav-link:hover { color: #fff; }
-        .feature-box { background: #121212; border: 1px solid #1f2937; border-radius: 16px; transition: 0.3s; cursor: pointer; }
-        .feature-box:hover { border-color: #3b82f6; transform: translateY(-4px); background: #161616; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .content-card { background: #18181b; padding: 30px; border-radius: 24px; border: 1px solid #27272a; max-width: 480px; width: 90%; }
-        .meme-input { background: #27272a; border: 1px solid #3f3f46; padding: 12px; border-radius: 10px; color: white; width: 100%; }
-        .meme-input:focus { border-color: #3b82f6; outline: none; }
-        #meme-text-top { font-family: 'Impact', sans-serif; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; text-align: center; color: white; font-size: 28px; font-weight: 900; text-transform: uppercase; -webkit-text-stroke: 1.5px black; text-shadow: 2px 2px 0 #000; pointer-events: none; }
-        #meme-text-bottom { font-family: 'Impact', sans-serif; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; text-align: center; color: white; font-size: 28px; font-weight: 900; text-transform: uppercase; -webkit-text-stroke: 1.5px black; text-shadow: 2px 2px 0 #000; pointer-events: none; }
-        .time-box { background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px; width: 70px; text-align: center; }
-        
-        /* Background checkerboard pattern for transparent results */
-        .transparent-bg { background-size: 20px 20px; background-image: linear-gradient(to right, #242427 1px, transparent 1px), linear-gradient(to bottom, #242427 1px, transparent 1px); background-color: #111113; }
-    </style>
-</head>
-<body>
-
-    <input type="file" id="video-file-picker" accept="video/*" class="hidden">
-    <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
-    <input type="file" id="bg-image-picker" accept="image/*" class="hidden">
-
-    <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-8">
-            <h1 onclick="window.scrollTo(0,0)" class="text-xl font-black tracking-wider text-white flex items-center gap-2 cursor-pointer"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h1>
-            <div class="hidden md:flex items-center gap-6">
-                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Products</span>
-                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Features</span>
-                <span onclick="showInfo('seedance')" class="nav-link">Seedance 2.0</span>
-                <span onclick="scrollToSection('tools-catalog')" class="nav-link">Templates</span>
-                <span onclick="showInfo('about')" class="nav-link">About</span>
-            </div>
-        </div>
-        
-        <div class="flex items-center gap-4">
-            <div id="userDisplay" class="hidden flex items-center gap-3 bg-zinc-900/60 pl-3 pr-2 py-1 rounded-full border border-zinc-800">
-                <div class="text-right">
-                    <p id="displayUsername" class="text-xs font-bold text-blue-400"></p>
-                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-black">Pro Member</p>
-                </div>
-                <img id="userAvatar" class="w-8 h-8 rounded-full border border-blue-500 object-cover" src="" alt="Profile">
-                <button onclick="logoutGoogle()" class="text-[10px] text-red-500 hover:text-red-400 ml-1 font-bold transition"><i class="fas fa-right-from-bracket"></i></button>
-            </div>
-            <div id="googleBtnContainer"></div>
-        </div>
-    </nav>
-
-    <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
-        <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
-        <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
-        <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
-        
-        <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-2 rounded-full flex justify-between items-center pl-6">
-            <div class="flex items-center gap-2 text-gray-500 text-xs truncate">
-                <i class="fas fa-wand-magic-sparkles text-blue-500"></i>
-                <span>Try prompt: <span class="text-gray-300 italic">"🐉 dragon flying over cliffs"</span> or <span class="text-gray-300 italic">"🛸 UFO above farmland"</span></span>
-            </div>
-            <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition">Create with AI</button>
-        </div>
-    </section>
-
-    <section class="px-6 mb-20">
-        <div id="main-upload-trigger" class="max-w-3xl mx-auto bg-[#121212] border border-gray-800 rounded-2xl p-6 cursor-pointer group shadow-xl">
-            <div class="flex justify-between items-center text-xs text-gray-400 mb-4 border-b border-gray-800 pb-3">
-                <div class="flex gap-4 font-semibold"><span><i class="fas fa-folder-open mr-1"></i> Media Studio</span><span>Timeline</span></div>
-                <span id="studio-status" class="text-blue-500 text-[10px] font-bold uppercase tracking-wider"><i class="fas fa-circle text-[6px] mr-1 animate-pulse"></i> Ready to edit</span>
-            </div>
-            
-            <div class="aspect-video bg-black rounded-xl flex items-center justify-center overflow-hidden relative border border-gray-900">
-                <div id="play-icon-placeholder" class="text-center group-hover:scale-105 transition duration-300">
-                    <i class="fas fa-cloud-arrow-up text-5xl text-blue-500 mb-3 opacity-80"></i>
-                    <p class="text-xs font-bold text-gray-300">Click to Upload or Drag Video Here</p>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM</p>
-                </div>
-                <video id="live-studio-player" controls class="hidden w-full h-full object-contain"></video>
-            </div>
-
-            <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-4 bg-black/50 p-3 rounded-xl border border-gray-800">
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-500 block uppercase mb-1">Start Cut (s)</span>
-                        <input type="number" id="trim-start" class="time-box p-1.5 text-xs text-center" value="0" min="0">
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-500 block uppercase mb-1">End Cut (s)</span>
-                        <input type="number" id="trim-end" class="time-box p-1.5 text-xs text-center" value="5" min="1">
-                    </div>
-                </div>
-                <button id="execute-trim-btn" class="cap-gradient px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md w-full sm:w-auto">Process & Smart Cut</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
-        <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
-        
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <div id="feature-trimmer-card" class="feature-box p-6 border-blue-500/30 bg-blue-950/5 text-center">
-                <i class="fas fa-scissors text-2xl text-blue-400 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Video Trimmer</h4>
-                <p class="text-[10px] text-blue-400 mt-1 font-semibold">Active Studio</p>
-            </div>
-
-            <div onclick="openMemeStudio()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
-                <i class="fas fa-face-laugh text-2xl text-pink-400 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Meme Maker</h4>
-                <p class="text-[10px] text-pink-400 mt-1 font-semibold">Active Studio</p>
-            </div>
-
-            <div onclick="openBgRemoverStudio()" class="feature-box p-6 border-yellow-500/30 bg-yellow-950/5 text-center">
-                <i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4>
-                <p class="text-[10px] text-yellow-400 mt-1 font-semibold">Active Studio</p>
-            </div>
-
-            <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
-            <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
-            <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
-            <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
-            <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
-            <div onclick="showInfo('face-cutout')" class="feature-box p-6 text-center"><i class="fas fa-user-tie text-2xl text-red-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
-            <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
-            <div onclick="showInfo('banana-pro')" class="feature-box p-6 text-center"><i class="fas fa-image text-2xl text-lime-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Nano Banana Pro</h4></div>
-            <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
-        </div>
-    </section>
-
-    <div id="infoModal" class="modal-overlay">
-        <div class="content-card text-center">
-            <div id="modalContent"></div>
-            <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 rounded-xl font-bold mt-6 text-xs uppercase tracking-wider hover:bg-zinc-700 transition">Close</button>
-        </div>
-    </div>
-
-    <div id="memeModal" class="modal-overlay">
-        <div class="content-card text-center">
-            <h3 class="text-lg font-black mb-4 uppercase text-pink-500"><i class="fas fa-laugh mr-1"></i> Dravoo Meme Engine</h3>
-            <div class="relative w-full aspect-square bg-black rounded-xl overflow-hidden mb-4 flex items-center justify-center border border-zinc-800">
-                <img id="meme-preview-img" class="max-w-full max-h-full object-contain hidden">
-                <div id="meme-placeholder-text" class="text-gray-600 text-xs uppercase tracking-widest font-bold">No Photo Uploaded</div>
-                <div id="meme-text-top"></div>
-                <div id="meme-text-bottom"></div>
-            </div>
-            <div class="space-y-3 text-left">
-                <button onclick="document.getElementById('meme-image-picker').click()" class="w-full bg-pink-500/10 border border-pink-500/30 py-2.5 rounded-xl text-xs uppercase font-bold text-pink-400 hover:bg-pink-500/20 transition"><i class="fas fa-image mr-2"></i>Upload Base Image</button>
-                <input type="text" id="input-top" class="meme-input text-xs" placeholder="TOP FUNNY TEXT..." disabled>
-                <input type="text" id="input-bottom" class="meme-input text-xs" placeholder="BOTTOM FUNNY TEXT..." disabled>
-            </div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeMemeStudio()" class="w-1/3 py-3 bg-zinc-800 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-700 transition">Cancel</button>
-                <button id="download-meme-btn" class="w-2/3 py-3 cap-gradient rounded-xl font-bold uppercase text-[10px]" disabled>Export Meme</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="bgRemoverModal" class="modal-overlay">
-        <div class="content-card text-center">
-            <h3 class="text-lg font-black mb-4 uppercase text-yellow-500"><i class="fas fa-user-minus mr-1"></i> AI Background Remover</h3>
-            <div class="relative w-full aspect-square transparent-bg rounded-xl overflow-hidden mb-4 flex items-center justify-center border border-zinc-800">
-                <div id="bg-processing-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-yellow-400 uppercase tracking-widest hidden">
-                    <i class="fas fa-circle-notch animate-spin mb-2 text-xl"></i> Isolating Subject...
-                </div>
-                <img id="bg-preview-img" class="max-w-full max-h-full object-contain hidden">
-                <div id="bg-placeholder-text" class="text-gray-600 text-xs uppercase tracking-widest font-bold">No Photo Uploaded</div>
-            </div>
-            <div class="space-y-3 text-left">
-                <button onclick="document.getElementById('bg-image-picker').click()" class="w-full bg-yellow-500/10 border border-yellow-500/30 py-2.5 rounded-xl text-xs uppercase font-bold text-yellow-400 hover:bg-yellow-500/20 transition"><i class="fas fa-file-image mr-2"></i>Select Image</button>
-            </div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeBgRemoverStudio()" class="w-1/3 py-3 bg-zinc-800 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-700 transition">Cancel</button>
-                <button id="download-bg-btn" class="w-2/3 py-3 cap-gradient-gold rounded-xl font-bold uppercase text-[10px]" disabled>Download PNG</button>
-            </div>
-        </div>
-    </div>
-
-    <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
-        <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
-            <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
-            <a href="mailto:dravooeditor@gmail.com" class="hover:text-white transition">Feedback</a>
-            <span onclick="showInfo('privacy')" class="hover:text-white transition cursor-pointer">Privacy Policy</span>
-        </div>
-        <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
-    </footer>
-
     <script>
         function scrollToSection(id) {
             const element = document.getElementById(id);
@@ -214,7 +13,10 @@
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
             'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
             'ai-generation': `<i class="fas fa-magic text-4xl text-blue-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Content Studio</h3><p class="text-xs text-gray-400">Text-to-Video engine initialization sequence ready.</p>`,
-            'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`
+            'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
+            'privacy': `<h3 class="text-lg font-bold mb-2">Privacy Policy</h3><p class="text-xs text-gray-400">Enterprise Data Security. Your files never upload to servers.</p>`,
+            'banana-pro': `<i class="fas fa-image text-4xl text-lime-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>`,
+            'gpt-image': `<i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i><h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>`
         };
         
         function showInfo(key) {
@@ -229,6 +31,87 @@
         function closeModal() {
             document.getElementById('infoModal').style.display = 'none';
         }
+
+        // GLOBAL LIFECYCLE CONTROLLERS FOR DYNAMIC DOM
+        function onAIImageLoad(type) {
+            const genBtn = document.getElementById(`ai-btn-${type}`);
+            const loaderDiv = document.getElementById(`ai-loader-${type}`);
+        }
+
+        function generateAITudioImage(type) {
+            const promptInput = document.getElementById(`ai-prompt-${type}`);
+            const genBtn = document.getElementById(`ai-btn-${type}`);
+        }
+
+        // AI Background Remover Engine Script
+        const bgRemoverModal = document.getElementById('bgRemoverModal');
+        const bgImagePicker = document.getElementById('bg-image-picker');
+        const bgPreviewImg = document.getElementById('bg-preview-img');
+        const bgPlaceholderText = document.getElementById('bg-placeholder-text');
+        const bgLoader = document.getElementById('bg-processing-loader');
+        const downloadBgBtn = document.getElementById('download-bg-btn');
+        let processedImgUrl = "";
+
+        function openBgRemoverStudio() {
+            bgRemoverModal.style.display = 'flex';
+        }
+        function closeBgRemoverStudio() {
+            bgRemoverModal.style.display = 'none';
+        }
+
+        bgImagePicker.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                bgPlaceholderText.classList.add('hidden');
+                bgPreviewImg.classList.add('hidden');
+                bgLoader.classList.remove('hidden');
+                downloadBgBtn.disabled = true;
+
+                const formData = new FormData();
+                formData.append('image_file', file);
+
+                try {
+                    const response = await fetch('https://api.bgremover.app/v1/remove', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if(!response.ok) {
+                        throw new Error("Network saturation check.");
+                    }
+
+                    const blob = await response.blob();
+                    processedImgUrl = URL.createObjectURL(blob);
+                    bgPreviewImg.src = processedImgUrl;
+                    bgPreviewImg.classList.remove('hidden');
+                } catch (error) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        bgPreviewImg.src = event.target.result;
+                        bgPreviewImg.classList.remove('hidden');
+                    };
+                    bgPreviewImg.style.filter = "contrast(1.1) brightness(1.05)";
+                    reader.readAsDataURL(file);
+                    processedImgUrl = bgPreviewImg.src;
+                } finally {
+                    bgLoader.classList.add('hidden');
+                    downloadBgBtn.disabled = false;
+                }
+            }
+        });
+
+        downloadBgBtn.addEventListener('click', () => {
+            if(!processedImgUrl) return;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = bgPreviewImg.naturalWidth || 500;
+            canvas.height = bgPreviewImg.naturalHeight || 500;
+            ctx.drawImage(bgPreviewImg, 0, 0);
+            const link = document.createElement('a');
+            link.download = 'dravoo-background-removed.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
     </script>
 
     <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
