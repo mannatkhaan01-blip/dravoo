@@ -1,6 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <script type="application/ld+json">
+<head> 
+ <style>
+  .dravoo-box {
+    text-align: center; 
+    margin: 40px auto; 
+    max-width: 550px; 
+    padding: 30px; 
+    border: 2px dashed #0070f3; 
+    border-radius: 15px;
+    background-color: #f9f9f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .dravoo-btn {
+    padding: 12px 25px; 
+    background-color: #0070f3; 
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.3s;
+  }
+  .dravoo-btn:hover {
+    background-color: #0051b3;
+  }
+  .dravoo-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  .preview-img {
+    max-width: 100%; 
+    max-height: 350px; 
+    border-radius: 8px; 
+    margin-top: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+</style> 
+  <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -483,4 +521,83 @@
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 
 </body>
+  <!-- Dravoo Background Remover UI -->
+<div class="dravoo-box">
+  <h2 style="color: #333; margin-top: 0;">Dravoo AI Background Remover</h2>
+  <p style="color: #666;">Select any image to remove its background instantly using AI</p>
+  
+  <input type="file" id="dravooInput" accept="image/*" style="margin: 20px 0; display: inline-block;" />
+  <br />
+  <button id="dravooBtn" onclick="triggerBgRemoval()" class="dravoo-btn">
+    Remove Background ✨
+  </button>
+  
+  <div id="resultArea" style="margin-top: 25px; display: none;">
+    <p style="font-weight: bold; color: #333;">Result:</p>
+    <img id="dravooOutput" src="" alt="Processed Output" class="preview-img" />
+    <br />
+    <a id="downloadLink" href="#" download="dravoo-transparent.png" style="display: inline-block; margin-top: 15px; color: #0070f3; font-weight: bold; text-decoration: none;">
+      📥 Download Transparent Image
+    </a>
+  </div>
+</div>
+
+<!-- Frontend Processing Script -->
+<script>
+async function triggerBgRemoval() {
+  const fileInput = document.getElementById('dravooInput');
+  const actionBtn = document.getElementById('dravooBtn');
+  const outputImg = document.getElementById('dravooOutput');
+  const resultDiv = document.getElementById('resultArea');
+  const downloadBtn = document.getElementById('downloadLink');
+
+  if (fileInput.files.length === 0) {
+    alert("Please select an image first, bhai!");
+    return;
+  }
+
+  const selectedFile = fileInput.files[0];
+  actionBtn.innerText = "Processing Assets... ⚡";
+  actionBtn.disabled = true;
+
+  // Image ko Base64 string mein convert karna
+  const fileReader = new FileReader();
+  fileReader.readAsDataURL(selectedFile);
+  fileReader.onloadend = async () => {
+    const base64DataString = fileReader.result;
+
+    try {
+      // Jo api/remove-bg.js file humne banayi thi, yeh usko call karega
+      const serverResponse = await fetch('/api/remove-bg', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image: base64DataString }),
+      });
+
+      const jsonResponse = await serverResponse.json();
+
+      if (serverResponse.ok) {
+        // Transparent Image ko screen par dikhana aur download link active karna
+        outputImg.src = jsonResponse.result;
+        downloadBtn.href = jsonResponse.result;
+        resultDiv.style.display = "block";
+        
+        actionBtn.innerText = "Remove Background ✨";
+        actionBtn.disabled = false;
+      } else {
+        alert("API Error: " + jsonResponse.error);
+        actionBtn.innerText = "Remove Background ✨";
+        actionBtn.disabled = false;
+      }
+    } catch (apiError) {
+      console.error(apiError);
+      alert("Server processing mein koi masla hua!");
+      actionBtn.innerText = "Remove Background ✨";
+      actionBtn.disabled = false;
+    }
+  };
+}
+</script>
 </html>
