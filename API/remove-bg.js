@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head> 
@@ -61,7 +62,7 @@
    
     <!-- Google Identity Services Library -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+ 
     <style>
         html { scroll-behavior: smooth; }
         body { background-color: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; }
@@ -82,10 +83,10 @@
 <meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
 </head> 
 <body>
-
+ 
     <input type="file" id="video-file-picker" accept="video/*" class="hidden">
     <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
-
+ 
     <!-- Top Navigation Bar -->
     <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-8">
@@ -111,7 +112,7 @@
             <div id="googleBtnContainer"></div>
         </div>
     </nav>
-
+ 
     <!-- Hero Section -->
     <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
@@ -126,7 +127,7 @@
             <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition">Create with AI</button>
         </div>
     </section>
-
+ 
     <!-- Main Workspace (Trimmer Engine) -->
     <section class="px-6 mb-20">
         <div id="main-upload-trigger" class="max-w-3xl mx-auto bg-[#121212] border border-gray-800 rounded-2xl p-6 cursor-pointer group shadow-xl">
@@ -143,7 +144,7 @@
                 </div>
                 <video id="live-studio-player" controls class="hidden w-full h-full object-contain"></video>
             </div>
-
+ 
             <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4 bg-black/50 p-3 rounded-xl border border-gray-800">
                     <div>
@@ -159,7 +160,7 @@
             </div>
         </div>
     </section>
-
+ 
     <!-- Comprehensive Feature Grid -->
     <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
         <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
@@ -170,13 +171,13 @@
                 <h4 class="text-xs font-bold uppercase tracking-wide">Video Trimmer</h4>
                 <p class="text-[10px] text-blue-400 mt-1 font-semibold">Active Studio</p>
             </div>
-
+ 
             <div onclick="openMemeStudio()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
                 <i class="fas fa-face-laugh text-2xl text-pink-400 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">Meme Maker</h4>
                 <p class="text-[10px] text-pink-400 mt-1 font-semibold">Active Studio</p>
             </div>
-
+ 
             <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
             <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
             <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
@@ -189,7 +190,7 @@
             <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
         </div>
     </section>
-
+ 
     <!-- Modals System -->
     <div id="infoModal" class="modal-overlay">
         <div class="content-card text-center">
@@ -197,7 +198,7 @@
             <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 rounded-xl font-bold mt-6 text-xs uppercase tracking-wider hover:bg-zinc-700 transition">Close</button>
         </div>
     </div>
-
+ 
     <!-- Meme Studio Modal -->
     <div id="memeModal" class="modal-overlay">
         <div class="content-card text-center">
@@ -219,7 +220,7 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- Footer -->
     <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
         <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
@@ -229,13 +230,13 @@
         </div>
         <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
     </footer>
-
+ 
     <script>
         function scrollToSection(id) {
             const element = document.getElementById(id);
             if (element) element.scrollIntoView({ behavior: 'smooth' });
         }
-
+ 
         const infoData = {
             // ✅ UPDATED: bg-remover - Real AI Tool (Step 1)
             'bg-remover': `
@@ -295,13 +296,13 @@
                 </div>
             `
         };
-
+ 
         function showInfo(key) {
             document.getElementById('modalContent').innerHTML = infoData[key];
             document.getElementById('infoModal').style.display = 'flex';
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
-
+ 
         // --- AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
@@ -309,29 +310,29 @@
             const resultDiv = document.getElementById(`ai-result-${type}`);
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
-
+ 
             if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderDiv) {
                 return alert("System Error: Modal elements context not initialized fully yet.");
             }
-
+ 
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Please enter a creative prompt first!");
-
+ 
             if (!genBtn.getAttribute('data-original-text')) {
                 genBtn.setAttribute('data-original-text', genBtn.innerText);
             }
-
+ 
             genBtn.innerText = "RENDERING IMAGERY...";
             genBtn.disabled = true;
             resultDiv.classList.remove('hidden');
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
-
+ 
             const randomSeed = Math.floor(Math.random() * 999999999);
             const cacheBusterTimestamp = new Date().getTime();
             const safePrompt = encodeURIComponent(promptText);
             const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&cb=${cacheBusterTimestamp}&nologo=true`;
-
+ 
             resultImg.removeAttribute('src');
            
             resultImg.onload = function() {
@@ -340,17 +341,17 @@
                 genBtn.innerText = genBtn.getAttribute('data-original-text');
                 genBtn.disabled = false;
             };
-
+ 
             resultImg.onerror = function() {
                 loaderDiv.classList.add('hidden');
                 genBtn.innerText = genBtn.getAttribute('data-original-text');
                 genBtn.disabled = false;
                 alert("Failed to load AI Image. Let's try again with a different prompt!");
             };
-
+ 
             resultImg.src = targetAIUrl;
         }
-
+ 
         // ✅ ADDED: AI Background Remover Logic (Step 2)
         async function processBgRemoval() {
             const fileInput = document.getElementById('bg-upload-input');
@@ -359,11 +360,11 @@
             const resultImg = document.getElementById('bg-result-img');
             const downloadLink = document.getElementById('bg-download-link');
             const loader = document.getElementById('bg-loader');
-
+ 
             if (fileInput.files.length === 0) {
                 return alert("Pehle koi photo select karein!");
             }
-
+ 
             const file = fileInput.files[0];
             
             actionBtn.disabled = true;
@@ -372,7 +373,7 @@
             resultImg.classList.add('hidden');
             downloadLink.classList.add('hidden');
             loader.classList.remove('hidden');
-
+ 
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = async () => {
@@ -403,7 +404,7 @@
                 }
             };
         }
-
+ 
         // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('dravoo_user_name');
@@ -414,7 +415,7 @@
                 initializeGoogleSignIn();
             }
         });
-
+ 
         function initializeGoogleSignIn() {
             if (typeof google !== 'undefined') {
                 google.accounts.id.initialize({
@@ -427,7 +428,7 @@
                 );
             }
         }
-
+ 
         function handleCredentialResponse(response) {
             const responsePayload = parseJwt(response.credential);
             const fullName = responsePayload.name;      
@@ -436,7 +437,7 @@
             localStorage.setItem('dravoo_user_avatar', profilePic);
             showLoggedInUser(fullName, profilePic);
         }
-
+ 
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -444,7 +445,7 @@
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join('')));
         }
-
+ 
         function showLoggedInUser(name, avatarUrl) {
             const btnContainer = document.getElementById('googleBtnContainer');
             if(btnContainer) btnContainer.style.display = 'none';
@@ -452,12 +453,12 @@
             document.getElementById('displayUsername').innerText = name;
             document.getElementById('userAvatar').src = avatarUrl;
         }
-
+ 
         function logoutGoogle() {
             localStorage.clear();
             location.reload();
         }
-
+ 
         // --- Video Trimmer Engine ---
         const filePicker = document.getElementById('video-file-picker');
         const uploadTrigger = document.getElementById('main-upload-trigger');
@@ -469,16 +470,16 @@
         const runTrimBtn = document.getElementById('execute-trim-btn');
         const startInput = document.getElementById('trim-start');
         const endInput = document.getElementById('trim-end');
-
+ 
         let targetStartTime = 0;
         let targetEndTime = 5;
-
+ 
         uploadTrigger.addEventListener('click', (e) => {
             if (e.target.closest('#trimmer-control-panel')) return;
             filePicker.click();
         });
         trimmerCard.addEventListener('click', () => filePicker.click());
-
+ 
         filePicker.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -490,13 +491,13 @@
                 studioPlayer.play();
             }
         });
-
+ 
         studioPlayer.addEventListener('timeupdate', () => {
             if (studioPlayer.currentTime >= targetEndTime) {
                 studioPlayer.currentTime = targetStartTime;
             }
         });
-
+ 
         runTrimBtn.addEventListener('click', () => {
             const sTime = parseFloat(startInput.value);
             const eTime = parseFloat(endInput.value);
@@ -512,7 +513,7 @@
                 alert("AI Trimming Completed! Playing cut sequence loop.");
             }, 800);
         });
-
+ 
         // --- Meme Engine Script ---
         const memeModal = document.getElementById('memeModal');
         const memeImgPicker = document.getElementById('meme-image-picker');
@@ -523,10 +524,10 @@
         const topTextDiv = document.getElementById('meme-text-top');
         const bottomTextDiv = document.getElementById('meme-text-bottom');
         const downloadBtn = document.getElementById('download-meme-btn');
-
+ 
         function openMemeStudio() { memeModal.style.display = 'flex'; }
         function closeMemeStudio() { memeModal.style.display = 'none'; }
-
+ 
         memeImgPicker.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -542,10 +543,10 @@
                 reader.readAsDataURL(file);
             }
         });
-
+ 
         topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
         bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
-
+ 
         downloadBtn.addEventListener('click', () => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
