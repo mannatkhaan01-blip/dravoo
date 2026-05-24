@@ -59,7 +59,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
    
-    <!-- Google Identity Services Library -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <style>
@@ -86,7 +85,6 @@
     <input type="file" id="video-file-picker" accept="video/*" class="hidden">
     <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
 
-    <!-- Top Navigation Bar -->
     <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-8">
             <h1 onclick="window.scrollTo(0,0)" class="text-xl font-black tracking-wider text-white flex items-center gap-2 cursor-pointer"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h1>
@@ -112,7 +110,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
         <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
@@ -127,7 +124,6 @@
         </div>
     </section>
 
-    <!-- Main Workspace (Trimmer Engine) -->
     <section class="px-6 mb-20">
         <div id="main-upload-trigger" class="max-w-3xl mx-auto bg-[#121212] border border-gray-800 rounded-2xl p-6 cursor-pointer group shadow-xl">
             <div class="flex justify-between items-center text-xs text-gray-400 mb-4 border-b border-gray-800 pb-3">
@@ -160,7 +156,6 @@
         </div>
     </section>
 
-    <!-- Comprehensive Feature Grid -->
     <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
         <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
        
@@ -190,7 +185,6 @@
         </div>
     </section>
 
-    <!-- Modals System -->
     <div id="infoModal" class="modal-overlay">
         <div class="content-card text-center">
             <div id="modalContent"></div>
@@ -198,7 +192,6 @@
         </div>
     </div>
 
-    <!-- Meme Studio Modal -->
     <div id="memeModal" class="modal-overlay">
         <div class="content-card text-center">
             <h3 class="text-lg font-black mb-4 uppercase text-pink-500"><i class="fas fa-laugh mr-1"></i> Dravoo Meme Engine</h3>
@@ -220,7 +213,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
         <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
             <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
@@ -237,7 +229,22 @@
         }
 
         const infoData = {
-            'bg-remover': `<i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Remove Video Background</h3><p class="text-xs text-gray-400">Isolate subjects in 1-click and insert transparent backdrops.</p>`,
+            'bg-remover': `
+                <i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2">AI Background Remover</h3>
+                <p class="text-xs text-gray-400 mb-4">Select an image to make its background transparent.</p>
+                <div class="space-y-3">
+                    <input type="file" id="bg-upload-input" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-yellow-500/10 file:text-yellow-500 hover:file:bg-yellow-500/20">
+                    <button onclick="processBgRemoval()" id="bg-remove-btn" class="w-full py-2.5 bg-yellow-600 hover:bg-yellow-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Remove Background ✨</button>
+                </div>
+                <div id="bg-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[150px]">
+                    <div id="bg-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-yellow-400 uppercase tracking-widest hidden">
+                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Processing AI...
+                    </div>
+                    <img id="bg-result-img" class="max-w-full max-h-48 object-contain mb-3 hidden">
+                    <a id="bg-download-link" class="text-[11px] text-yellow-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-transparent.png"><i class="fas fa-download mr-1"></i> Download Image</a>
+                </div>
+            `,
             'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
             'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
@@ -248,7 +255,7 @@
             'ai-generation': `<i class="fas fa-magic text-4xl text-blue-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Content Studio</h3><p class="text-xs text-gray-400">Text-to-Video engine initialization sequence ready.</p>`,
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
-           
+            
             // Banana Pro
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
@@ -263,7 +270,7 @@
                     <img id="ai-img-src-banana" class="max-w-full max-h-full object-cover">
                 </div>
             `,
-           
+            
             // GPT Image 2
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
@@ -288,14 +295,12 @@
 
         // --- 100% FIXED RE-RUNNABLE AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
-            // Modal DOM elements fetch directly on runtime execution context
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
-            // Validation Guard
             if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderDiv) {
                 return alert("System Error: Modal elements context not initialized fully yet.");
             }
@@ -303,32 +308,25 @@
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Please enter a creative prompt first!");
 
-            // Preserve original button layout text safely
             if (!genBtn.getAttribute('data-original-text')) {
                 genBtn.setAttribute('data-original-text', genBtn.innerText);
             }
 
-            // Lock UI controls to avoid collision streams
             genBtn.innerText = "RENDERING IMAGERY...";
             genBtn.disabled = true;
 
-            // Interface Updates
             resultDiv.classList.remove('hidden');
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
 
-            // Strict Cache-Busting Parameters Construction
             const randomSeed = Math.floor(Math.random() * 999999999);
             const cacheBusterTimestamp = new Date().getTime();
             const safePrompt = encodeURIComponent(promptText);
            
-            // Clean dynamic URI Generation with dynamic timestamp integration
             const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&cb=${cacheBusterTimestamp}&nologo=true`;
 
-            // Reset image tracking state so browser treats it as absolutely new source pipeline
             resultImg.removeAttribute('src');
            
-            // Bind async network context listeners
             resultImg.onload = function() {
                 loaderDiv.classList.add('hidden');
                 resultImg.classList.remove('opacity-0');
@@ -343,7 +341,6 @@
                 alert("Failed to load AI Image. Let's try again with a different prompt!");
             };
 
-            // Initialize image asset network dispatch stream
             resultImg.src = targetAIUrl;
         }
 
@@ -444,7 +441,7 @@
             const sTime = parseFloat(startInput.value);
             const eTime = parseFloat(endInput.value);
             if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
-           
+            
             runTrimBtn.innerText = "PROCESSING CLIP DATA...";
             setTimeout(() => {
                 targetStartTime = sTime;
@@ -495,7 +492,7 @@
             canvas.width = previewImg.naturalWidth;
             canvas.height = previewImg.naturalHeight;
             ctx.drawImage(previewImg, 0, 0);
-           
+            
             const fontSize = Math.floor(canvas.width * 0.08);
             ctx.font = `900 ${fontSize}px Impact`;
             ctx.fillStyle = 'white';
