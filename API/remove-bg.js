@@ -1,25 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
  <style>
   .dravoo-box {
-    text-align: center; 
-    margin: 40px auto; 
-    max-width: 550px; 
-    padding: 30px; 
-    border: 2px dashed #0070f3; 
+    text-align: center;
+    margin: 40px auto;
+    max-width: 550px;
+    padding: 30px;
+    border: 2px dashed #0070f3;
     border-radius: 15px;
     background-color: #f9f9f9;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   .dravoo-btn {
-    padding: 12px 25px; 
-    background-color: #0070f3; 
-    color: white; 
-    border: none; 
-    border-radius: 8px; 
-    cursor: pointer; 
+    padding: 12px 25px;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
     font-weight: bold;
     font-size: 16px;
     transition: 0.3s;
@@ -32,13 +31,13 @@
     cursor: not-allowed;
   }
   .preview-img {
-    max-width: 100%; 
-    max-height: 350px; 
-    border-radius: 8px; 
+    max-width: 100%;
+    max-height: 350px;
+    border-radius: 8px;
     margin-top: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
-</style> 
+</style>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -62,7 +61,7 @@
    
     <!-- Google Identity Services Library -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
- 
+
     <style>
         html { scroll-behavior: smooth; }
         body { background-color: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; }
@@ -81,12 +80,12 @@
         .time-box { background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px; width: 70px; text-align: center; }
     </style>
 <meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
-</head> 
+</head>
 <body>
- 
+
     <input type="file" id="video-file-picker" accept="video/*" class="hidden">
     <input type="file" id="meme-image-picker" accept="image/*" class="hidden">
- 
+
     <!-- Top Navigation Bar -->
     <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-8">
@@ -112,7 +111,7 @@
             <div id="googleBtnContainer"></div>
         </div>
     </nav>
- 
+
     <!-- Hero Section -->
     <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
@@ -127,7 +126,7 @@
             <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition">Create with AI</button>
         </div>
     </section>
- 
+
     <!-- Main Workspace (Trimmer Engine) -->
     <section class="px-6 mb-20">
         <div id="main-upload-trigger" class="max-w-3xl mx-auto bg-[#121212] border border-gray-800 rounded-2xl p-6 cursor-pointer group shadow-xl">
@@ -144,7 +143,7 @@
                 </div>
                 <video id="live-studio-player" controls class="hidden w-full h-full object-contain"></video>
             </div>
- 
+
             <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4 bg-black/50 p-3 rounded-xl border border-gray-800">
                     <div>
@@ -160,7 +159,7 @@
             </div>
         </div>
     </section>
- 
+
     <!-- Comprehensive Feature Grid -->
     <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
         <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
@@ -171,13 +170,13 @@
                 <h4 class="text-xs font-bold uppercase tracking-wide">Video Trimmer</h4>
                 <p class="text-[10px] text-blue-400 mt-1 font-semibold">Active Studio</p>
             </div>
- 
+
             <div onclick="openMemeStudio()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
                 <i class="fas fa-face-laugh text-2xl text-pink-400 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">Meme Maker</h4>
                 <p class="text-[10px] text-pink-400 mt-1 font-semibold">Active Studio</p>
             </div>
- 
+
             <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
             <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
             <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
@@ -190,7 +189,7 @@
             <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
         </div>
     </section>
- 
+
     <!-- Modals System -->
     <div id="infoModal" class="modal-overlay">
         <div class="content-card text-center">
@@ -198,7 +197,7 @@
             <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 rounded-xl font-bold mt-6 text-xs uppercase tracking-wider hover:bg-zinc-700 transition">Close</button>
         </div>
     </div>
- 
+
     <!-- Meme Studio Modal -->
     <div id="memeModal" class="modal-overlay">
         <div class="content-card text-center">
@@ -220,7 +219,7 @@
             </div>
         </div>
     </div>
- 
+
     <!-- Footer -->
     <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
         <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
@@ -230,31 +229,15 @@
         </div>
         <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
     </footer>
- 
+
     <script>
         function scrollToSection(id) {
             const element = document.getElementById(id);
             if (element) element.scrollIntoView({ behavior: 'smooth' });
         }
- 
+
         const infoData = {
-            // ✅ UPDATED: bg-remover - Real AI Tool (Step 1)
-            'bg-remover': `
-                <i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">AI Background Remover</h3>
-                <p class="text-xs text-gray-400 mb-4">Select an image to make its background transparent.</p>
-                <div class="space-y-3">
-                    <input type="file" id="bg-upload-input" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-yellow-500/10 file:text-yellow-500 hover:file:bg-yellow-500/20">
-                    <button onclick="processBgRemoval()" id="bg-remove-btn" class="w-full py-2.5 bg-yellow-600 hover:bg-yellow-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Remove Background ✨</button>
-                </div>
-                <div id="bg-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[150px]">
-                    <div id="bg-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-yellow-400 uppercase tracking-widest hidden">
-                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Processing AI...
-                    </div>
-                    <img id="bg-result-img" class="max-w-full max-h-48 object-contain mb-3 hidden">
-                    <a id="bg-download-link" class="text-[11px] text-yellow-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-transparent.png"><i class="fas fa-download mr-1"></i> Download Image</a>
-                </div>
-            `,
+            'bg-remover': `<i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Remove Video Background</h3><p class="text-xs text-gray-400">Isolate subjects in 1-click and insert transparent backdrops.</p>`,
             'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
             'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
@@ -296,115 +279,74 @@
                 </div>
             `
         };
- 
+
         function showInfo(key) {
             document.getElementById('modalContent').innerHTML = infoData[key];
             document.getElementById('infoModal').style.display = 'flex';
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
- 
-        // --- AI IMAGE RENDERING ENGINE ---
+
+        // --- 100% FIXED RE-RUNNABLE AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
+            // Modal DOM elements fetch directly on runtime execution context
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
- 
+
+            // Validation Guard
             if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderDiv) {
                 return alert("System Error: Modal elements context not initialized fully yet.");
             }
- 
+
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Please enter a creative prompt first!");
- 
+
+            // Preserve original button layout text safely
             if (!genBtn.getAttribute('data-original-text')) {
                 genBtn.setAttribute('data-original-text', genBtn.innerText);
             }
- 
+
+            // Lock UI controls to avoid collision streams
             genBtn.innerText = "RENDERING IMAGERY...";
             genBtn.disabled = true;
+
+            // Interface Updates
             resultDiv.classList.remove('hidden');
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
- 
+
+            // Strict Cache-Busting Parameters Construction
             const randomSeed = Math.floor(Math.random() * 999999999);
             const cacheBusterTimestamp = new Date().getTime();
             const safePrompt = encodeURIComponent(promptText);
+           
+            // Clean dynamic URI Generation with dynamic timestamp integration
             const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&cb=${cacheBusterTimestamp}&nologo=true`;
- 
+
+            // Reset image tracking state so browser treats it as absolutely new source pipeline
             resultImg.removeAttribute('src');
            
+            // Bind async network context listeners
             resultImg.onload = function() {
                 loaderDiv.classList.add('hidden');
                 resultImg.classList.remove('opacity-0');
                 genBtn.innerText = genBtn.getAttribute('data-original-text');
                 genBtn.disabled = false;
             };
- 
+
             resultImg.onerror = function() {
                 loaderDiv.classList.add('hidden');
                 genBtn.innerText = genBtn.getAttribute('data-original-text');
                 genBtn.disabled = false;
                 alert("Failed to load AI Image. Let's try again with a different prompt!");
             };
- 
+
+            // Initialize image asset network dispatch stream
             resultImg.src = targetAIUrl;
         }
- 
-        // ✅ ADDED: AI Background Remover Logic (Step 2)
-        async function processBgRemoval() {
-            const fileInput = document.getElementById('bg-upload-input');
-            const actionBtn = document.getElementById('bg-remove-btn');
-            const resultContainer = document.getElementById('bg-result-container');
-            const resultImg = document.getElementById('bg-result-img');
-            const downloadLink = document.getElementById('bg-download-link');
-            const loader = document.getElementById('bg-loader');
- 
-            if (fileInput.files.length === 0) {
-                return alert("Pehle koi photo select karein!");
-            }
- 
-            const file = fileInput.files[0];
-            
-            actionBtn.disabled = true;
-            actionBtn.innerText = "Processing...";
-            resultContainer.classList.remove('hidden');
-            resultImg.classList.add('hidden');
-            downloadLink.classList.add('hidden');
-            loader.classList.remove('hidden');
- 
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onloadend = async () => {
-                try {
-                    const response = await fetch('/api/remove-bg', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ image: reader.result })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        resultImg.src = data.result;
-                        downloadLink.href = data.result;
-                        resultImg.classList.remove('hidden');
-                        downloadLink.classList.remove('hidden');
-                    } else {
-                        alert("API Error: " + data.error);
-                    }
-                } catch (error) {
-                    console.error(error);
-                    alert("Processing mein koi masla hua. Console check karein.");
-                } finally {
-                    loader.classList.add('hidden');
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Remove Background ✨";
-                }
-            };
-        }
- 
+
         // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('dravoo_user_name');
@@ -415,7 +357,7 @@
                 initializeGoogleSignIn();
             }
         });
- 
+
         function initializeGoogleSignIn() {
             if (typeof google !== 'undefined') {
                 google.accounts.id.initialize({
@@ -428,7 +370,7 @@
                 );
             }
         }
- 
+
         function handleCredentialResponse(response) {
             const responsePayload = parseJwt(response.credential);
             const fullName = responsePayload.name;      
@@ -437,7 +379,7 @@
             localStorage.setItem('dravoo_user_avatar', profilePic);
             showLoggedInUser(fullName, profilePic);
         }
- 
+
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -445,7 +387,7 @@
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join('')));
         }
- 
+
         function showLoggedInUser(name, avatarUrl) {
             const btnContainer = document.getElementById('googleBtnContainer');
             if(btnContainer) btnContainer.style.display = 'none';
@@ -453,12 +395,12 @@
             document.getElementById('displayUsername').innerText = name;
             document.getElementById('userAvatar').src = avatarUrl;
         }
- 
+
         function logoutGoogle() {
             localStorage.clear();
             location.reload();
         }
- 
+
         // --- Video Trimmer Engine ---
         const filePicker = document.getElementById('video-file-picker');
         const uploadTrigger = document.getElementById('main-upload-trigger');
@@ -470,16 +412,16 @@
         const runTrimBtn = document.getElementById('execute-trim-btn');
         const startInput = document.getElementById('trim-start');
         const endInput = document.getElementById('trim-end');
- 
+
         let targetStartTime = 0;
         let targetEndTime = 5;
- 
+
         uploadTrigger.addEventListener('click', (e) => {
             if (e.target.closest('#trimmer-control-panel')) return;
             filePicker.click();
         });
         trimmerCard.addEventListener('click', () => filePicker.click());
- 
+
         filePicker.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -491,13 +433,13 @@
                 studioPlayer.play();
             }
         });
- 
+
         studioPlayer.addEventListener('timeupdate', () => {
             if (studioPlayer.currentTime >= targetEndTime) {
                 studioPlayer.currentTime = targetStartTime;
             }
         });
- 
+
         runTrimBtn.addEventListener('click', () => {
             const sTime = parseFloat(startInput.value);
             const eTime = parseFloat(endInput.value);
@@ -513,7 +455,7 @@
                 alert("AI Trimming Completed! Playing cut sequence loop.");
             }, 800);
         });
- 
+
         // --- Meme Engine Script ---
         const memeModal = document.getElementById('memeModal');
         const memeImgPicker = document.getElementById('meme-image-picker');
@@ -524,10 +466,10 @@
         const topTextDiv = document.getElementById('meme-text-top');
         const bottomTextDiv = document.getElementById('meme-text-bottom');
         const downloadBtn = document.getElementById('download-meme-btn');
- 
+
         function openMemeStudio() { memeModal.style.display = 'flex'; }
         function closeMemeStudio() { memeModal.style.display = 'none'; }
- 
+
         memeImgPicker.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -543,10 +485,10 @@
                 reader.readAsDataURL(file);
             }
         });
- 
+
         topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
         bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
- 
+
         downloadBtn.addEventListener('click', () => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -560,18 +502,23 @@
             ctx.strokeStyle = 'black';
             ctx.lineWidth = fontSize / 12;
             ctx.textAlign = 'center';
+
             ctx.textBaseline = 'top';
             ctx.fillText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
             ctx.strokeText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+
             ctx.textBaseline = 'bottom';
             ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
             ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+
             const link = document.createElement('a');
             link.download = 'dravoo-studio-meme.png';
             link.href = canvas.toDataURL();
             link.click();
         });
     </script>
+
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
+
 </body>
 </html>
