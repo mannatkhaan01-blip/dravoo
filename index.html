@@ -577,6 +577,43 @@ function parseJwt(token) {
             link.click();
         });
     </script>
+ link.click();
+        });
+
+        // --- Yahan apna naya code chipka do ---
+
+        async function removeBackground(file) {
+            const formData = new FormData();
+            formData.append("image_file", file);
+            formData.append("size", "auto");
+            const apiKey = "nj5wergqe2vKF4kjdhq9XAND";
+            document.getElementById('display-removed-img').src = "loading.gif"; 
+            const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+                method: "POST",
+                headers: { "X-Api-Key": apiKey },
+                body: formData
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const frame = document.getElementById('display-removed-img');
+                frame.src = url;
+                frame.style.display = 'block';
+            }
+        }
+
+        function speakNow() {
+            const text = document.getElementById('tts-text').value;
+            if (text !== "") {
+                const googleTTS = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ur&client=tw-ob&q=${encodeURIComponent(text)}`;
+                const audio = new Audio(googleTTS);
+                audio.play();
+            }
+        }
+
+        // --- Yahan aapka code khatam hua ---
+
+    </script> <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 
