@@ -249,7 +249,46 @@
                     <a id="bg-download-link" class="text-[11px] text-yellow-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-transparent.png"><i class="fas fa-download mr-1"></i> Download Image</a>
                 </div>
             `,
-            'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
+            'text-speech': `
+                <i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2">Dravoo AI Voice Studio</h3>
+                <p class="text-xs text-gray-400 mb-4">Select an AI Avatar character and convert text to realistic speech.</p>
+                
+                <div class="space-y-3 text-left">
+                    <div>
+                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select AI Character</label>
+                        <select id="tts-voice" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
+                            <optgroup label="👦 FOR BOYS / MEN">
+                                <option value="en-US-ChristopherNeural">Boy — Ahmed Kashmiri 🇵🇰</option>
+                                <option value="en-US-BrianNeural">Young Boy — Mudassir 👦</option>
+                                <option value="en-IN-PrabhatNeural">Men — Surmad Kashmiri 🧔</option>
+                                <option value="en-GB-RyanNeural">Old Men — Uncle George 👨‍🦳</option>
+                            </optgroup>
+                            <optgroup label="👧 FOR GIRLS / WOMEN">
+                                <option value="en-US-AnaNeural">Girl — Aisha Little 👧</option>
+                                <option value="en-US-JennyNeural">Young Girl — Priya Sharma 👩</option>
+                                <option value="en-IN-NeerjaNeural">Women — Kavita Mishra 👩‍💼</option>
+                                <option value="en-US-MichelleNeural">Old Women — Grandma Mary 👵</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Your Script (English)</label>
+                        <textarea id="tts-input" class="meme-input text-xs h-24 resize-none bg-zinc-900 border border-zinc-800 rounded-xl text-white p-2 w-full" placeholder="Type your script here to change into AI Voice..."></textarea>
+                    </div>
+
+                    <button onclick="processTextToSpeech(event)" id="tts-btn" class="w-full py-2.5 bg-green-600 hover:bg-green-500 rounded-xl font-bold uppercase text-[10px] text-white transition tracking-wider">Generate AI Voice 🎧</button>
+                </div>
+
+                <div id="tts-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950 flex flex-col items-center justify-center p-4 relative">
+                    <div id="tts-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-[10px] font-bold text-green-400 uppercase tracking-widest hidden">
+                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> AI Voice Generating...
+                    </div>
+                    <audio id="tts-audio-player" controls class="w-full mb-3"></audio>
+                    <a id="tts-download-link" class="text-[11px] text-green-400 font-bold uppercase tracking-wide flex items-center gap-1 hover:text-green-300" href="#" download="dravoo-ai-voice.mp3"><i class="fas fa-download"></i> Download Audio MP3</a>
+                </div>
+            `,
             'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
             'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
