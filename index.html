@@ -476,6 +476,60 @@
                 actionBtn.innerText = "Remove Background ✨";
             }
         }
+        } 
+}
+
+async function processTextToSpeech(e) {
+    if (e) e.preventDefault();
+
+    const textInput = document.getElementById('tts-input');
+    const voiceSelect = document.getElementById('tts-voice');
+    const actionBtn = document.getElementById('tts-btn');
+    const resultContainer = document.getElementById('tts-result-container');
+    const audioPlayer = document.getElementById('tts-audio-player');
+    const downloadLink = document.getElementById('tts-download-link');
+    const loader = document.getElementById('tts-loader');
+
+    const textToSpeak = textInput.value.trim();
+    if (!textToSpeak) {
+        return alert("Pehle koi text/script likhein!");
+    }
+
+    actionBtn.disabled = true;
+    actionBtn.innerText = "Generating...";
+    resultContainer.classList.remove('hidden');
+    audioPlayer.classList.add('hidden');
+    downloadLink.classList.add('hidden');
+    loader.classList.remove('hidden');
+
+    try {
+        const liveVoiceUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
+
+        audioPlayer.src = liveVoiceUrl;
+        downloadLink.href = liveVoiceUrl;
+        downloadLink.target = "_blank"; 
+
+        loader.classList.add('hidden');
+        audioPlayer.classList.remove('hidden');
+        downloadLink.classList.remove('hidden');
+        
+        actionBtn.disabled = false;
+        actionBtn.innerText = "Generate AI Voice 🎧";
+
+    } catch (error) {
+        console.error(error);
+        alert("Voice generation failed. Try again!");
+        loader.classList.add('hidden');
+        actionBtn.disabled = false;
+        actionBtn.innerText = "Generate AI Voice 🎧";
+    }
+}
+
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    // ... باقی کوڈ
+
+
 function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
