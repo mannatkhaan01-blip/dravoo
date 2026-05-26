@@ -545,6 +545,40 @@
             localStorage.clear();
             location.reload();
         }
+async function processTTS() {
+    const textInput = document.getElementById('tts-input');
+    const voiceSelect = document.getElementById('tts-voice');
+    
+    if (!textInput || !textInput.value.trim()) {
+        alert("Please type some script first!");
+        return;
+    }
+
+    const text = textInput.value;
+    const voice = voiceSelect.value;
+
+    // آواز جنریٹ کرنے کے لیے کسٹم API یو آر ایل
+    const apiUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(text)}`;
+
+    try {
+        // آڈیو پلیئر کو تلاش کرنا اور آواز پلے کرنا
+        const audioPlayer = document.querySelector('.text-speech audio') || document.querySelector('audio');
+        if (audioPlayer) {
+            audioPlayer.src = apiUrl;
+            audioPlayer.load();
+            audioPlayer.play();
+        }
+
+        // ڈاؤن لوڈ بٹن کو چالو کرنا تاکہ 404 ایرر نہ آئے
+        const downloadLink = document.querySelector('.text-speech a[href*="download"]') || document.querySelector('a.text-yellow-400') || document.getElementById('YOUR_DOWNLOAD_LINK_ID');
+        if (downloadLink) {
+            downloadLink.href = apiUrl;
+            downloadLink.download = 'dravoo-voice.mp3';
+        }
+    } catch (error) {
+        console.error("Voice generation error:", error);
+    }
+}
 
         // --- Video Trimmer Engine ---
         const filePicker = document.getElementById('video-file-picker');
