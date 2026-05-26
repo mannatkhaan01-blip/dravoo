@@ -258,26 +258,27 @@
                         <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select AI Character</label>
                         <select id="tts-voice" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
                             <optgroup label="👨 FOR BOYS / MEN">
-                            <option value="en-US-ChristopherNeural">Boy — Ahmed Kashmiri 🇵🇰</option>
-                            <option value="en-US-BrianNeural">Young Boy — Mudassir 👦</option>
-                            <option value="en-IN-PrabhatNeural">Men — Sarmad Kashmiri 🧔</option>
-                            <option value="en-GB-RyanNeural">Old Men — Uncle George 👴</option>
-                        </optgroup>
-                        <optgroup label="👩 FOR GIRLS / WOMEN">
-                            <option value="en-US-AnaNeural">Girl — Aisha Little 👧</option>
-                            <option value="en-IN-NeerjaNeural">Young Girl — Priya Sharma 👩</option>
-                            <option value="en-IN-AnanyaNeural">Women — Kavita Mishra 👩‍🦱</option>
-                            <option value="en-US-MichelleNeural">Old Women — Grandma Mary 👵</option>
-                        </optgroup>
-                    </select>
+                                <option value="en-US-ChristopherNeural">Boy — Ahmed Kashmiri 🇵🇰</option>
+                                <option value="en-US-BrianNeural">Young Boy — Mudassir 👦</option>
+                                <option value="en-IN-PrabhatNeural">Men — Sarmad Kashmiri 🧔</option>
+                                <option value="en-GB-RyanNeural">Old Men — Uncle George 👴</option>
+                            </optgroup>
+                            <optgroup label="👩 FOR GIRLS / WOMEN">
+                                <option value="en-US-AnaNeural">Girl — Aisha Little 👧</option>
+                                <option value="en-IN-NeerjaNeural">Young Girl — Priya Sharma 👩</option>
+                                <option value="en-IN-AnanyaNeural">Women — Kavita Mishra 👩‍🦱</option>
+                                <option value="en-US-MichelleNeural">Old Women — Grandma Mary 👵</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Your Script (English)</label>
+                        <textarea id="tts-input" class="meme-input text-xs h-24 resize-none bg-zinc-900 border border-zinc-800 rounded-xl text-white p-2 w-full" placeholder="Type your script here..."></textarea>
+                    </div>
+
+                    <button onclick="processTextToSpeech(event)" id="tts-btn" class="w-full py-2.5 bg-green-600 hover:bg-green-500 rounded-xl font-bold uppercase text-[10px] text-white transition tracking-wider">Generate AI Voice 🎧</button>
                 </div>
-                <div class="space-y-3 text-left">
-                    <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Your Script (English)</label>
-                    <textarea id="tts-input" class="meme-input text-xs py-2.5 px-3 w-full bg-zinc-900 border border-zinc-800 rounded-md text-white h-24 resize-none bg-zinc-900/50" placeholder="Type your script here..."></textarea>
-                </div>
-                <button onclick="processTTS()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider font-bold">
-                    Generate AI Voice <i class="fas fa-headphones"></i>
-                </button>
 
                 <div id="tts-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950 flex flex-col items-center justify-center p-4 relative">
                     <div id="tts-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-[10px] font-bold text-green-400 uppercase tracking-widest hidden">
@@ -418,6 +419,11 @@
             showLoggedInUser(fullName, profilePic);
         }
 
+        function logoutGoogle() {
+            localStorage.clear();
+            location.reload();
+        }
+
         // --- Remove.bg لائیو ورکنگ AI لاجک ---
         async function processBgRemoval(e) {
             if (e) e.preventDefault();
@@ -478,7 +484,7 @@
             }
         }
 
-        // --- Dravoo AI Text to Speech with Live Download Link ---
+        // --- 100% FIXED TEXT TO SPEECH ENGINE ---
         async function processTextToSpeech(e) {
             if (e) e.preventDefault();
 
@@ -503,16 +509,25 @@
             loader.classList.remove('hidden');
 
             try {
+                // کسٹم گوگل وائس یو آر ایل
                 const liveVoiceUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
 
+                // آڈیو پلیئر کو لائیو لنک اسائن کرنا
                 audioPlayer.src = liveVoiceUrl;
-                downloadLink.href = liveVoiceUrl;
-                downloadLink.target = "_blank"; 
+                audioPlayer.load();
 
+                // ڈاؤن لوڈ بٹن کا لنک ایک دم درست سیٹ کرنا
+                downloadLink.href = liveVoiceUrl;
+                downloadLink.setAttribute('download', 'dravoo-voice.mp3');
+
+                // لوڈر چھپانا اور پلیئر پلس ڈاؤن لوڈ لنک دکھانا
                 loader.classList.add('hidden');
                 audioPlayer.classList.remove('hidden');
                 downloadLink.classList.remove('hidden');
                 
+                // آواز کو خود بخود پلے کرنا
+                audioPlayer.play();
+
                 actionBtn.disabled = false;
                 actionBtn.innerText = "Generate AI Voice 🎧";
 
@@ -540,62 +555,6 @@
             document.getElementById('displayUsername').innerText = name;
             document.getElementById('userAvatar').src = avatarUrl;
         }
-
-        function logoutGoogle() {
-            localStorage.clear();
-            location.reload();
-        }
-async function processTTS() {
-    const textInput = document.getElementById('tts-input');
-    const voiceSelect = document.getElementById('tts-voice');
-    
-    if (!textInput || !textInput.value.trim()) {
-        alert("Please type some script first!");
-        return;
-    }
-
-    const text = textInput.value;
-    const voice = voiceSelect.value;
-
-    // آواز جنریٹ کرنے کے لیے کسٹم API یو آر ایل
-    const apiUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(text)}`;
-
-            // آواز پلے کرنے کا پکا طریقہ (جو براؤزر بلاک نہیں کرے گا)
-        const audioPlayer = document.querySelector('.text-speech audio') || document.querySelector('audio');
-        if (audioPlayer) {
-            audioPlayer.src = apiUrl;
-            audioPlayer.load();
-            
-            var playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("Audio started playing successfully!");
-                }).catch(error => {
-                    console.log("Playback blocked. Directing to URL...");
-                    // اگر آڈیو پلیئر پھر بھی پلے نہ ہو تو بیک اپ طریقہ
-                    window.open(apiUrl, '_blank'); 
-                });
-            }
-        }
-
-        // ڈاؤن لوڈ بٹن کا لنک سیٹ کرنا تاکہ 404 ایرر بالکل نہ آئے
-        const downloadLink = document.querySelector('a[href*="download"]') || document.querySelector('.text-speech a') || document.getElementById('download-link');
-        if (downloadLink) {
-            downloadLink.href = apiUrl;
-            downloadLink.setAttribute('download', 'dravoo-voice.mp3');
-        }
-
-
-        // ڈاؤن لوڈ بٹن کو چالو کرنا تاکہ 404 ایرر نہ آئے
-        const downloadLink = document.querySelector('.text-speech a[href*="download"]') || document.querySelector('a.text-yellow-400') || document.getElementById('YOUR_DOWNLOAD_LINK_ID');
-        if (downloadLink) {
-            downloadLink.href = apiUrl;
-            downloadLink.download = 'dravoo-voice.mp3';
-        }
-    } catch (error) {
-        console.error("Voice generation error:", error);
-    }
-}
 
         // --- Video Trimmer Engine ---
         const filePicker = document.getElementById('video-file-picker');
