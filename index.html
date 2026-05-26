@@ -560,14 +560,31 @@ async function processTTS() {
     // آواز جنریٹ کرنے کے لیے کسٹم API یو آر ایل
     const apiUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(text)}`;
 
-    try {
-        // آڈیو پلیئر کو تلاش کرنا اور آواز پلے کرنا
+            // آواز پلے کرنے کا پکا طریقہ (جو براؤزر بلاک نہیں کرے گا)
         const audioPlayer = document.querySelector('.text-speech audio') || document.querySelector('audio');
         if (audioPlayer) {
             audioPlayer.src = apiUrl;
             audioPlayer.load();
-            audioPlayer.play();
+            
+            var playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Audio started playing successfully!");
+                }).catch(error => {
+                    console.log("Playback blocked. Directing to URL...");
+                    // اگر آڈیو پلیئر پھر بھی پلے نہ ہو تو بیک اپ طریقہ
+                    window.open(apiUrl, '_blank'); 
+                });
+            }
         }
+
+        // ڈاؤن لوڈ بٹن کا لنک سیٹ کرنا تاکہ 404 ایرر بالکل نہ آئے
+        const downloadLink = document.querySelector('a[href*="download"]') || document.querySelector('.text-speech a') || document.getElementById('download-link');
+        if (downloadLink) {
+            downloadLink.href = apiUrl;
+            downloadLink.setAttribute('download', 'dravoo-voice.mp3');
+        }
+
 
         // ڈاؤن لوڈ بٹن کو چالو کرنا تاکہ 404 ایرر نہ آئے
         const downloadLink = document.querySelector('.text-speech a[href*="download"]') || document.querySelector('a.text-yellow-400') || document.getElementById('YOUR_DOWNLOAD_LINK_ID');
