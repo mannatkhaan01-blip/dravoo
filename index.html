@@ -257,21 +257,27 @@
                     <div>
                         <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select AI Character</label>
                         <select id="tts-voice" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-     <optgroup label="👨 FOR BOYS / MEN">
-    <option value="en-US-ChristopherNeural">Boy — Ahmed Kashmiri 🇵🇰</option>
-    <option value="en-US-BrianNeural">Young Boy — Mudassir 👦</option>
-    <option value="en-IN-PrabhatNeural">Men — Sarmad Kashmiri 🧔</option>
-    <option value="en-GB-RyanNeural">Old Men — Uncle George 👴</option>
-</optgroup>
-<optgroup label="👩 FOR GIRLS / WOMEN">
-    <option value="en-US-AnaNeural">Girl — Aisha Little 👧</option>
-    <option value="en-IN-NeerjaNeural">Young Girl — Priya Sharma 👩</option>
-    <option value="en-IN-AnanyaNeural">Women — Kavita Mishra 👩‍🦱</option>
-    <option value="en-US-MichelleNeural">Old Women — Grandma Mary 👵</option>
-</optgroup>
-
-                 <button onclick="processTextToSpeech(event)" id="tts-btn" class="w-full py-2.5 bg-green-600 hover:bg-green-500 rounded-xl font-bold uppercase text-[10px] text-white transition tracking-wider">Generate AI Voice 🎧</button>
+                            <optgroup label="👨 FOR BOYS / MEN">
+                            <option value="en-US-ChristopherNeural">Boy — Ahmed Kashmiri 🇵🇰</option>
+                            <option value="en-US-BrianNeural">Young Boy — Mudassir 👦</option>
+                            <option value="en-IN-PrabhatNeural">Men — Sarmad Kashmiri 🧔</option>
+                            <option value="en-GB-RyanNeural">Old Men — Uncle George 👴</option>
+                        </optgroup>
+                        <optgroup label="👩 FOR GIRLS / WOMEN">
+                            <option value="en-US-AnaNeural">Girl — Aisha Little 👧</option>
+                            <option value="en-IN-NeerjaNeural">Young Girl — Priya Sharma 👩</option>
+                            <option value="en-IN-AnanyaNeural">Women — Kavita Mishra 👩‍🦱</option>
+                            <option value="en-US-MichelleNeural">Old Women — Grandma Mary 👵</option>
+                        </optgroup>
+                    </select>
                 </div>
+                <div class="space-y-3 text-left">
+                    <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Your Script (English)</label>
+                    <textarea id="tts-input" class="meme-input text-xs py-2.5 px-3 w-full bg-zinc-900 border border-zinc-800 rounded-md text-white h-24 resize-none bg-zinc-900/50" placeholder="Type your script here..."></textarea>
+                </div>
+                <button onclick="processTTS()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider font-bold">
+                    Generate AI Voice <i class="fas fa-headphones"></i>
+                </button>
 
                 <div id="tts-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950 flex flex-col items-center justify-center p-4 relative">
                     <div id="tts-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-[10px] font-bold text-green-400 uppercase tracking-widest hidden">
