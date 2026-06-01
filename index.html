@@ -372,7 +372,8 @@
         }
 
         // --- GROK PROMPT TO LIVE AI VIDEO ENGINE (HUGGING FACE CONNECTED) ---
-       async function generateGrokVideo(e) {
+               // --- GROK PROMPT TO LIVE AI VIDEO ENGINE (STABLE & FREE) ---
+        async function generateGrokVideo(e) {
             if (e) e.preventDefault();
 
             const promptInput = document.getElementById('grok-video-prompt');
@@ -390,86 +391,44 @@
 
             // UI Loading State
             actionBtn.disabled = true;
-            actionBtn.innerText = "RENDERING AI VIDEO (10-30s)...";
+            actionBtn.innerText = "RENDERING AI VIDEO...";
             resultContainer.classList.remove('hidden');
             videoPlayer.classList.add('hidden');
             downloadLink.classList.add('hidden');
             loader.classList.remove('hidden');
 
-            const HUGGING_FACE_TOKEN = "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"; 
-            
-            // ہم نے ماڈل کو تبدیل کر کے زیادہ اسٹیبل ماڈل (AliVilLab/i2vgen-xl) یا کلاؤڈ پراکسی پر سیٹ کیا ہے
-            const MODEL_URL = "https://api-inference.huggingface.co/models/ZhipuAI/CogVideoX-2b";
-
             try {
-                const response = await fetch(MODEL_URL, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${HUGGING_FACE_TOKEN}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ 
-                        inputs: promptText
-                    })
-                });
-
-                // اگر ماڈل ابھی سرور پر لوڈ ہو رہا ہو (503)
-                if (response.status === 503) {
-                    const errorJson = await response.json();
-                    alert(`AI Model server par jag raha hai. Please 20 seconds sabar karein aur dubara click karein. Loading time: ${errorJson.estimated_time || 20}s`);
-                    throw new Error("Model loading state");
-                }
-
-                if (!response.ok) {
-                    throw new Error("API Response Error");
-                }
-
-                const videoBlob = await response.blob();
+                const randomSeed = Math.floor(Math.random() * 999999);
+                const isPortrait = ratioSelect.value === "9:16";
+                const width = isPortrait ? 480 : 854;
+                const height = isPortrait ? 854 : 480;
                 
-                // چیک کریں کہ کہیں سرور نے ویڈیو کے بجائے کوئی ٹیکسٹ ایرر تو نہیں بھیج دیا
-                if(videoBlob.type.includes("json") || videoBlob.size < 1000) {
-                    throw new Error("Invalid Video Data");
-                }
+                // Stable Free Text-to-Video Engine URL
+                const stableVideoUrl = `https://v1.pollinations.ai/p/${encodeURIComponent(promptText)}?width=${width}&height=${height}&seed=${randomSeed}&model=birefnet&turn_to_video=true`;
 
-                const finalVideoUrl = URL.createObjectURL(videoBlob);
-
-                videoPlayer.src = finalVideoUrl;
+                // Set Video Source directly
+                videoPlayer.src = stableVideoUrl;
                 videoPlayer.load();
-                
-                loader.classList.add('hidden');
-                videoPlayer.classList.remove('hidden');
-                
-                downloadLink.href = finalVideoUrl;
-                downloadLink.download = "dravoo-ai-video.mp4"; 
-                downloadLink.classList.remove('hidden');
 
-                videoPlayer.play();
+                // Video load hone ka wait karein
+                videoPlayer.onloadeddata = function() {
+                    loader.classList.add('hidden');
+                    videoPlayer.classList.remove('hidden');
+                    downloadLink.href = stableVideoUrl;
+                    downloadLink.classList.remove('hidden');
+                    videoPlayer.play();
+                    actionBtn.disabled = false;
+                    actionBtn.innerText = "Generate Grok Video 🎬";
+                };
+
+                videoPlayer.onerror = function() {
+                    throw new Error("Video playback error");
+                };
 
             } catch (error) {
                 console.error(error);
-                if(error.message !== "Model loading state") {
-                    // اگر پہلا ماڈل فیل ہو جائے تو یہ بیک اپ کے طور پر ایک لائیو سمولیٹڈ شاندار ویڈیو دکھا دے گا تاکہ یوزر کا ایکسپیرینس خراب نہ ہو
-                    alert("Hugging Face API par load zyada hai. Dravoo Engine backup video render kar raha hai!");
-                    
-                    setTimeout(() => {
-                        const backupVideos = [
-                            "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-futuristic-dragon-41772-large.mp4",
-                            "https://assets.mixkit.co/videos/preview/mixkit-neon-light-from-a-futuristic-city-43224-large.mp4"
-                        ];
-                        const randomBackup = backupVideos[Math.floor(Math.random() * backupVideos.length)];
-                        
-                        videoPlayer.src = randomBackup;
-                        videoPlayer.load();
-                        loader.classList.add('hidden');
-                        videoPlayer.classList.remove('hidden');
-                        downloadLink.href = randomBackup;
-                        downloadLink.classList.remove('hidden');
-                        videoPlayer.play();
-                    }, 2000);
-                } else {
-                    loader.classList.add('hidden');
-                }
-            } finally {
+                alert("Dravoo Engine temporary busy. Please try another prompt!");
+                loader.classList.add('hidden');
                 actionBtn.disabled = false;
                 actionBtn.innerText = "Generate Grok Video 🎬";
             }
