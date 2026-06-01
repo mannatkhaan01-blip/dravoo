@@ -370,77 +370,8 @@
 
             resultImg.src = targetAIUrl;
         }
-         // --- GROK PROMPT TO LIVE AI VIDEO ENGINE (100% FIXED & TESTED) ---
-        async function generateGrokVideo(e) {
-            if (e) e.preventDefault();
-
-            const promptInput = document.getElementById('grok-video-prompt');
-            const ratioSelect = document.getElementById('grok-video-ratio');
-            const actionBtn = document.getElementById('grok-video-btn');
+     
             const resultContainer = document.getElementById('grok-result-container');
-            const videoPlayer = document.getElementById('grok-video-player');
-            const downloadLink = document.getElementById('grok-download-link');
-            const loader = document.getElementById('grok-loader');
-
-            const promptText = promptInput.value.trim().toLowerCase();
-            if (!promptText) {
-                return alert("Pehle koi cinematic prompt likhein!");
-            }
-
-            // UI Loading State
-            actionBtn.disabled = true;
-            actionBtn.innerText = "RENDERING AI VIDEO...";
-            resultContainer.classList.remove('hidden');
-            videoPlayer.classList.add('hidden');
-            if(downloadLink) downloadLink.classList.add('hidden');
-            loader.classList.remove('hidden');
-
-            // 100% پبلک ڈومین اور اوپن سورس ویڈیوز جو کبھی بلاک نہیں ہوتیں
-            const aiVideoDatabase = [
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", // Fantasy/Animation Vibe
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", // Sci-Fi/Space/UFO Vibe
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" // Surreal/Tech Vibe
-            ];
-
-            // پرومپٹ کے حساب سے سمارٹ اور تیز میچنگ
-            let selectedVideo = aiVideoDatabase[0]; // Default
-            
-            if (promptText.includes("ufo") || promptText.includes("space") || promptText.includes("flying") || promptText.includes("star")) {
-                selectedVideo = aiVideoDatabase[1]; // Sci-Fi matching
-            } else if (promptText.includes("tech") || promptText.includes("robot") || promptText.includes("neon")) {
-                selectedVideo = aiVideoDatabase[2]; // Tech matching
-            } else {
-                selectedVideo = aiVideoDatabase[Math.floor(Math.random() * aiVideoDatabase.length)];
-            }
-
-            // 3 سیکنڈ کا پروسیسنگ ٹائم تاکہ یو آئی اسموتھ رہے
-            setTimeout(() => {
-                loader.classList.add('hidden');
-                videoPlayer.classList.remove('hidden');
-                
-                // ویڈیو کو پراپر لوڈ کرنے کا طریقہ
-                videoPlayer.src = selectedVideo;
-                videoPlayer.load();
-                
-                // آٹو پلے کے ساتھ کنٹرولز کو یقینی بنانا
-                videoPlayer.play().then(() => {
-                    console.log("Video playing!");
-                }).catch(err => {
-                    // اگر براؤزر بلاک کرے تو کنٹرولز شو کر دو تاکہ یوزر کلک کر سکے
-                    videoPlayer.controls = true;
-                });
-
-                // ڈاؤن لوڈ لنک فکس کرنا
-                if(downloadLink) {
-                    downloadLink.href = selectedVideo;
-                    downloadLink.setAttribute('download', 'dravoo-ai-video.mp4');
-                    downloadLink.classList.remove('hidden');
-                }
-                
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Generate Grok Video 🎬";
-            }, 3000); 
-        }
         // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('dravoo_user_name');
