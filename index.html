@@ -376,48 +376,93 @@
             resultImg.src = targetAIUrl;
         }
 
-        // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
-        async function generateGrokVideo(e) {
-            if (e) e.preventDefault();
+          // --- GROK PROMPT TO LIVE AI VIDEO ENGINE (HUGGING FACE CONNECTED) ---
+    async function generateGrokVideo(e) {
+        if (e) e.preventDefault();
 
-            const promptInput = document.getElementById('grok-video-prompt');
-            const ratioSelect = document.getElementById('grok-video-ratio');
-            const actionBtn = document.getElementById('grok-video-btn');
-            const resultContainer = document.getElementById('grok-result-container');
-            const videoPlayer = document.getElementById('grok-video-player');
-            const downloadLink = document.getElementById('grok-download-link');
-            const loader = document.getElementById('grok-loader');
+        const promptInput = document.getElementById('grok-video-prompt');
+        const ratioSelect = document.getElementById('grok-video-ratio');
+        const actionBtn = document.getElementById('grok-video-btn');
+        const resultContainer = document.getElementById('grok-result-container');
+        const videoPlayer = document.getElementById('grok-video-player');
+        const downloadLink = document.getElementById('grok-download-link');
+        const loader = document.getElementById('grok-loader');
 
-            const promptText = promptInput.value.trim();
-            if (!promptText) {
-                return alert("Pehle koi cinematic prompt likhein!");
+        const promptText = promptInput.value.trim();
+        if (!promptText) {
+            return alert("Pehle koi cinematic prompt likhein!");
+        }
+
+        // UI Loading State
+        actionBtn.disabled = true;
+        actionBtn.innerText = "RENDERING AI VIDEO (10-30s)...";
+        resultContainer.classList.remove('hidden');
+        videoPlayer.classList.add('hidden');
+        downloadLink.classList.add('hidden');
+        loader.classList.remove('hidden');
+
+        // Hugging Face Token & Model API
+        const HUGGING_FACE_TOKEN = "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"; 
+        const MODEL_URL = "https://api-inference.huggingface.co/models/Lightricks/LTX-Video";
+
+        try {
+            const response = await fetch(MODEL_URL, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${HUGGING_FACE_TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ 
+                    inputs: promptText,
+                    parameters: {
+                        num_frames: 16,
+                        fps: 8
+                    }
+                })
+            });
+
+            // If model is loading on Hugging Face Server (503)
+            if (response.status === 503) {
+                const errorJson = await response.json();
+                alert(`AI Model server par load ho raha hai, please 20 seconds baad dubara click karein. Loading time: ${errorJson.estimated_time || 20}s`);
+                throw new Error("Model loading state");
             }
 
-            actionBtn.disabled = true;
-            actionBtn.innerText = "RENDERING VIDEO...";
-            resultContainer.classList.remove('hidden');
-            videoPlayer.classList.add('hidden');
-            downloadLink.classList.add('hidden');
-            loader.classList.remove('hidden');
+            if (!response.ok) {
+                throw new Error("API Response Error");
+            }
 
-            try {
-                const randomSeed = Math.floor(Math.random() * 999999);
-                const isPortrait = ratioSelect.value === "9:16";
-                
-                const liveVideoUrl = `https://image.pollinations.ai/p/${encodeURIComponent(promptText)}?width=${isPortrait ? 360 : 640}&height=${isPortrait ? 640 : 360}&seed=${randomSeed}&model=flux&enhance=true`;
+            // Get Real Video Blob
+            const videoBlob = await response.blob();
+            const finalVideoUrl = URL.createObjectURL(videoBlob);
 
-                videoPlayer.src = liveVideoUrl;
-                videoPlayer.poster = liveVideoUrl;
-                
-                setTimeout(() => {
-                    loader.classList.add('hidden');
-                    videoPlayer.classList.remove('hidden');
-                    downloadLink.href = liveVideoUrl;
-                    downloadLink.classList.remove('hidden');
-                    
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Generate Grok Video 🎬";
-                }, 3000);
+            // Set Video Source
+            videoPlayer.src = finalVideoUrl;
+            videoPlayer.load();
+            
+            loader.classList.add('hidden');
+            videoPlayer.classList.remove('hidden');
+            
+            // Setup Download Link
+            downloadLink.href = finalVideoUrl;
+            downloadLink.download = "dravoo-ai-video.mp4"; 
+            downloadLink.classList.remove('hidden');
+
+            // Play Video
+            videoPlayer.play();
+
+        } catch (error) {
+            console.error(error);
+            if(error.message !== "Model loading state") {
+                alert("Video generation me koi masla aya. Prompt change kar k try karein.");
+            }
+            loader.classList.add('hidden');
+        } finally {
+            actionBtn.disabled = false;
+            actionBtn.innerText = "Generate Grok Video 🎬";
+        }
+    }
+, 3000);
 
             } catch (error) {
                 console.error(error);
