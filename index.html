@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <style>
- 
   .dravoo-box {
     text-align: center;
     margin: 40px auto;
@@ -257,7 +256,6 @@
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
             'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
             
-            // --- UPDATED AI GENERATION BLOCK (GROK ENGINE CLICK OVERLAY) ---
             'ai-generation': `
                 <i class="fas fa-video text-4xl text-blue-500 mb-4 animate-pulse"></i>
                 <h3 class="text-lg font-bold mb-2">Grok AI Video Studio</h3>
@@ -288,7 +286,6 @@
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
            
-            // Banana Pro
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
@@ -303,7 +300,6 @@
                 </div>
             `,
            
-            // GPT Image 2
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
@@ -325,7 +321,6 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- 100% FIXED RE-RUNNABLE AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -376,98 +371,81 @@
             resultImg.src = targetAIUrl;
         }
 
-          // --- GROK PROMPT TO LIVE AI VIDEO ENGINE (HUGGING FACE CONNECTED) ---
-    async function generateGrokVideo(e) {
-        if (e) e.preventDefault();
+        // --- GROK PROMPT TO LIVE AI VIDEO ENGINE (HUGGING FACE CONNECTED) ---
+        async function generateGrokVideo(e) {
+            if (e) e.preventDefault();
 
-        const promptInput = document.getElementById('grok-video-prompt');
-        const ratioSelect = document.getElementById('grok-video-ratio');
-        const actionBtn = document.getElementById('grok-video-btn');
-        const resultContainer = document.getElementById('grok-result-container');
-        const videoPlayer = document.getElementById('grok-video-player');
-        const downloadLink = document.getElementById('grok-download-link');
-        const loader = document.getElementById('grok-loader');
+            const promptInput = document.getElementById('grok-video-prompt');
+            const ratioSelect = document.getElementById('grok-video-ratio');
+            const actionBtn = document.getElementById('grok-video-btn');
+            const resultContainer = document.getElementById('grok-result-container');
+            const videoPlayer = document.getElementById('grok-video-player');
+            const downloadLink = document.getElementById('grok-download-link');
+            const loader = document.getElementById('grok-loader');
 
-        const promptText = promptInput.value.trim();
-        if (!promptText) {
-            return alert("Pehle koi cinematic prompt likhein!");
-        }
-
-        // UI Loading State
-        actionBtn.disabled = true;
-        actionBtn.innerText = "RENDERING AI VIDEO (10-30s)...";
-        resultContainer.classList.remove('hidden');
-        videoPlayer.classList.add('hidden');
-        downloadLink.classList.add('hidden');
-        loader.classList.remove('hidden');
-
-        // Hugging Face Token & Model API
-        const HUGGING_FACE_TOKEN = "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"; 
-        const MODEL_URL = "https://api-inference.huggingface.co/models/Lightricks/LTX-Video";
-
-        try {
-            const response = await fetch(MODEL_URL, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${HUGGING_FACE_TOKEN}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ 
-                    inputs: promptText,
-                    parameters: {
-                        num_frames: 16,
-                        fps: 8
-                    }
-                })
-            });
-
-            // If model is loading on Hugging Face Server (503)
-            if (response.status === 503) {
-                const errorJson = await response.json();
-                alert(`AI Model server par load ho raha hai, please 20 seconds baad dubara click karein. Loading time: ${errorJson.estimated_time || 20}s`);
-                throw new Error("Model loading state");
+            const promptText = promptInput.value.trim();
+            if (!promptText) {
+                return alert("Pehle koi cinematic prompt likhein!");
             }
 
-            if (!response.ok) {
-                throw new Error("API Response Error");
-            }
+            actionBtn.disabled = true;
+            actionBtn.innerText = "RENDERING AI VIDEO (10-30s)...";
+            resultContainer.classList.remove('hidden');
+            videoPlayer.classList.add('hidden');
+            downloadLink.classList.add('hidden');
+            loader.classList.remove('hidden');
 
-            // Get Real Video Blob
-            const videoBlob = await response.blob();
-            const finalVideoUrl = URL.createObjectURL(videoBlob);
+            const HUGGING_FACE_TOKEN = "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"; 
+            const MODEL_URL = "https://api-inference.huggingface.co/models/Lightricks/LTX-Video";
 
-            // Set Video Source
-            videoPlayer.src = finalVideoUrl;
-            videoPlayer.load();
-            
-            loader.classList.add('hidden');
-            videoPlayer.classList.remove('hidden');
-            
-            // Setup Download Link
-            downloadLink.href = finalVideoUrl;
-            downloadLink.download = "dravoo-ai-video.mp4"; 
-            downloadLink.classList.remove('hidden');
+            try {
+                const response = await fetch(MODEL_URL, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${HUGGING_FACE_TOKEN}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 
+                        inputs: promptText,
+                        parameters: {
+                            num_frames: 16,
+                            fps: 8
+                        }
+                    })
+                });
 
-            // Play Video
-            videoPlayer.play();
+                if (response.status === 503) {
+                    const errorJson = await response.json();
+                    alert(`AI Model server par load ho raha hai, please 20 seconds baad dubara click karein. Loading time: ${errorJson.estimated_time || 20}s`);
+                    throw new Error("Model loading state");
+                }
 
-        } catch (error) {
-            console.error(error);
-            if(error.message !== "Model loading state") {
-                alert("Video generation me koi masla aya. Prompt change kar k try karein.");
-            }
-            loader.classList.add('hidden');
-        } finally {
-            actionBtn.disabled = false;
-            actionBtn.innerText = "Generate Grok Video 🎬";
-        }
-    }
-, 3000);
+                if (!response.ok) {
+                    throw new Error("API Response Error");
+                }
+
+                const videoBlob = await response.blob();
+                const finalVideoUrl = URL.createObjectURL(videoBlob);
+
+                videoPlayer.src = finalVideoUrl;
+                videoPlayer.load();
+                
+                loader.classList.add('hidden');
+                videoPlayer.classList.remove('hidden');
+                
+                downloadLink.href = finalVideoUrl;
+                downloadLink.download = "dravoo-ai-video.mp4"; 
+                downloadLink.classList.remove('hidden');
+
+                videoPlayer.play();
 
             } catch (error) {
                 console.error(error);
-                alert("Grok Video Engine timeout. Try again!");
+                if(error.message !== "Model loading state") {
+                    alert("Video generation me koi masla aya. Prompt change kar k try karein.");
+                }
                 loader.classList.add('hidden');
+            } finally {
                 actionBtn.disabled = false;
                 actionBtn.innerText = "Generate Grok Video 🎬";
             }
@@ -602,45 +580,53 @@
         let targetStartTime = 0;
         let targetEndTime = 5;
 
-        uploadTrigger.addEventListener('click', (e) => {
-            if (e.target.closest('#trimmer-control-panel')) return;
-            filePicker.click();
-        });
-        trimmerCard.addEventListener('click', () => filePicker.click());
+        if (uploadTrigger) {
+            uploadTrigger.addEventListener('click', (e) => {
+                if (e.target.closest('#trimmer-control-panel')) return;
+                filePicker.click();
+            });
+        }
+        if (trimmerCard) trimmerCard.addEventListener('click', () => filePicker.click());
 
-        filePicker.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                playIcon.classList.add('hidden');
-                studioPlayer.classList.remove('hidden');
-                controlPanel.classList.remove('hidden');
-                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
-                studioPlayer.src = URL.createObjectURL(file);
-                studioPlayer.play();
-            }
-        });
+        if (filePicker) {
+            filePicker.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    playIcon.classList.add('hidden');
+                    studioPlayer.classList.remove('hidden');
+                    controlPanel.classList.remove('hidden');
+                    statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
+                    studioPlayer.src = URL.createObjectURL(file);
+                    studioPlayer.play();
+                }
+            });
+        }
 
-        studioPlayer.addEventListener('timeupdate', () => {
-            if (studioPlayer.currentTime >= targetEndTime) {
-                studioPlayer.currentTime = targetStartTime;
-            }
-        });
+        if (studioPlayer) {
+            studioPlayer.addEventListener('timeupdate', () => {
+                if (studioPlayer.currentTime >= targetEndTime) {
+                    studioPlayer.currentTime = targetStartTime;
+                }
+            });
+        }
 
-        runTrimBtn.addEventListener('click', () => {
-            const sTime = parseFloat(startInput.value);
-            const eTime = parseFloat(endInput.value);
-            if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
-           
-            runTrimBtn.innerText = "PROCESSING CLIP DATA...";
-            setTimeout(() => {
-                targetStartTime = sTime;
-                targetEndTime = eTime;
-                studioPlayer.currentTime = targetStartTime;
-                studioPlayer.play();
-                runTrimBtn.innerText = "Process & Smart Cut";
-                alert("AI Trimming Completed! Playing cut sequence loop.");
-            }, 800);
-        });
+        if (runTrimBtn) {
+            runTrimBtn.addEventListener('click', () => {
+                const sTime = parseFloat(startInput.value);
+                const eTime = parseFloat(endInput.value);
+                if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
+               
+                runTrimBtn.innerText = "PROCESSING CLIP DATA...";
+                setTimeout(() => {
+                    targetStartTime = sTime;
+                    targetEndTime = eTime;
+                    studioPlayer.currentTime = targetStartTime;
+                    studioPlayer.play();
+                    runTrimBtn.innerText = "Process & Smart Cut";
+                    alert("AI Trimming Completed! Playing cut sequence loop.");
+                }, 800);
+            });
+        }
 
         // --- Meme Engine Script ---
         const memeModal = document.getElementById('memeModal');
@@ -656,52 +642,56 @@
         function openMemeStudio() { memeModal.style.display = 'flex'; }
         function closeMemeStudio() { memeModal.style.display = 'none'; }
 
-        memeImgPicker.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    previewImg.src = event.target.result;
-                    previewImg.classList.remove('hidden');
-                    placeholderText.classList.add('hidden');
-                    topTextInput.disabled = false;
-                    bottomTextInput.disabled = false;
-                    downloadBtn.disabled = false;
+        if (memeImgPicker) {
+            memeImgPicker.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        previewImg.src = event.target.result;
+                        previewImg.classList.remove('hidden');
+                        placeholderText.classList.add('hidden');
+                        topTextInput.disabled = false;
+                        bottomTextInput.disabled = false;
+                        downloadBtn.disabled = false;
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
+            });
+        }
 
-        topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
-        bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
+        if (topTextInput) topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
+        if (bottomTextInput) bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
 
-        downloadBtn.addEventListener('click', () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = previewImg.naturalWidth;
-            canvas.height = previewImg.naturalHeight;
-            ctx.drawImage(previewImg, 0, 0);
-           
-            const fontSize = Math.floor(canvas.width * 0.08);
-            ctx.font = `900 ${fontSize}px Impact`;
-            ctx.fillStyle = 'white';
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = fontSize / 12;
-            ctx.textAlign = 'center';
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = previewImg.naturalWidth;
+                canvas.height = previewImg.naturalHeight;
+                ctx.drawImage(previewImg, 0, 0);
+               
+                const fontSize = Math.floor(canvas.width * 0.08);
+                ctx.font = `900 ${fontSize}px Impact`;
+                ctx.fillStyle = 'white';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = fontSize / 12;
+                ctx.textAlign = 'center';
 
-            ctx.textBaseline = 'top';
-            ctx.fillText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
-            ctx.strokeText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+                ctx.textBaseline = 'top';
+                ctx.fillText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+                ctx.strokeText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
 
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
-            ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+                ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
 
-            const link = document.createElement('a');
-            link.download = 'dravoo-studio-meme.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        });
+                const link = document.createElement('a');
+                link.download = 'dravoo-studio-meme.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
