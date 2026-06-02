@@ -1,7 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <style>
+ 
   .dravoo-box {
     text-align: center;
     margin: 40px auto;
@@ -60,8 +62,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
     <style>
         html { scroll-behavior: smooth; }
@@ -178,7 +178,7 @@
             <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
             <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
-            <div onclick="showInfo('compressor')" class="feature-box p-6 border-orange-500/30 bg-orange-950/5 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4><p class="text-[10px] text-orange-400 mt-1 font-semibold">Active Studio</p></div>
+            <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
             <div onclick="showInfo('face-cutout')" class="feature-box p-6 text-center"><i class="fas fa-user-tie text-2xl text-red-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
             <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
@@ -233,9 +233,6 @@
             if (element) element.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // FFmpeg Initialization Global Instance
-        let ffmpegInstance = null;
-
         const infoData = {
             'bg-remover': `
                 <i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i>
@@ -256,42 +253,12 @@
             'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
             'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
-            
-            // --- Live Video Compressor UI Block ---
-            'compressor': `
-                <i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3>
-                <p class="text-xs text-gray-400 mb-4">Compress videos client-side instantly without losing heavy quality.</p>
-                <div class="space-y-4 text-left">
-                    <input type="file" id="compress-video-input" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-500/10 file:text-orange-500 hover:file:bg-orange-500/20">
-                    
-                    <div>
-                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Compression Level</label>
-                        <select id="compression-crf" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                            <option value="28">Medium (Recommended)</option>
-                            <option value="32">High Compression (Smaller Size, Lower Quality)</option>
-                            <option value="24">Low Compression (Best Quality)</option>
-                        </select>
-                    </div>
-
-                    <button onclick="processVideoCompression()" id="compress-action-btn" class="w-full py-2.5 bg-orange-600 hover:bg-orange-500 rounded-xl font-bold uppercase text-[10px] text-white transition tracking-wider">Compress Video ⚡</button>
-                </div>
-                
-                <div id="compress-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl bg-black p-4 text-center relative">
-                    <div id="compress-loader" class="flex flex-col items-center justify-center text-xs font-bold text-orange-400 uppercase tracking-widest hidden py-4">
-                        <i class="fas fa-circle-notch animate-spin mb-2 text-2xl"></i> <span id="compress-status-log">Loading Engine...</span>
-                    </div>
-                    <div id="compress-success-box" class="hidden">
-                        <p class="text-green-400 text-xs font-bold mb-2"><i class="fas fa-check-circle"></i> Video Compressed Successfully!</p>
-                        <video id="compressed-video-preview" controls class="w-full max-h-40 object-contain rounded-lg mb-3 bg-zinc-900"></video>
-                        <a id="compress-download-link" class="inline-block py-2 px-4 bg-zinc-800 hover:bg-zinc-700 text-orange-400 font-bold text-xs uppercase tracking-wide rounded-lg border border-zinc-700" href="#" download="dravoo-compressed.mp4"><i class="fas fa-download mr-1"></i> Download Compressed Video</a>
-                    </div>
-                </div>
-            `,
+            'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
             'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
             'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
             
+            // --- UPDATED AI GENERATION BLOCK (GROK ENGINE CLICK OVERLAY) ---
             'ai-generation': `
                 <i class="fas fa-video text-4xl text-blue-500 mb-4 animate-pulse"></i>
                 <h3 class="text-lg font-bold mb-2">Grok AI Video Studio</h3>
@@ -322,6 +289,7 @@
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
            
+            // Banana Pro
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
@@ -336,6 +304,7 @@
                 </div>
             `,
            
+            // GPT Image 2
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
@@ -357,79 +326,7 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- Video Compression JavaScript Engine ---
-        async function processVideoCompression() {
-            const fileInput = document.getElementById('compress-video-input');
-            const actionBtn = document.getElementById('compress-action-btn');
-            const resultContainer = document.getElementById('compress-result-container');
-            const loader = document.getElementById('compress-loader');
-            const successBox = document.getElementById('compress-success-box');
-            const statusLog = document.getElementById('compress-status-log');
-            const videoPreview = document.getElementById('compressed-video-preview');
-            const downloadLink = document.getElementById('compress-download-link');
-            const crfValue = document.getElementById('compression-crf').value;
-
-            if (!fileInput || fileInput.files.length === 0) {
-                return alert("Pehle compress krne ke liye ek video file select karein!");
-            }
-
-            const file = fileInput.files[0];
-
-            // UI Setup
-            actionBtn.disabled = true;
-            actionBtn.innerText = "Compressing...";
-            resultContainer.classList.remove('hidden');
-            loader.classList.remove('hidden');
-            successBox.classList.add('hidden');
-            
-            try {
-                // Initialize FFmpeg instance if not loaded
-                if (!ffmpegInstance) {
-                    statusLog.innerText = "Loading FFmpeg Core Engine (First time may take moments)...";
-                    ffmpegInstance = FFmpeg.createFFmpeg({ log: true });
-                }
-                
-                if (!ffmpegInstance.isLoaded()) {
-                    await ffmpegInstance.load();
-                }
-
-                statusLog.innerText = "Reading File Data Securely...";
-                const { fetchFile } = FFmpeg;
-                ffmpegInstance.FS('writeFile', 'input_video.mp4', await fetchFile(file));
-
-                statusLog.innerText = "Processing Video Frames & Compressing...";
-                
-                /* FFmpeg Command Structure:
-                   -i input_video.mp4 : Input Source
-                   -vcodec libx264 : Modern Web Standard Encoding
-                   -crf [Value] : Constant Rate Factor (Higher = Smaller size, Default 28)
-                   -preset ultrafast : Best performance on mobile/web browsers
-                */
-                await ffmpegInstance.run('-i', 'input_video.mp4', '-vcodec', 'libx264', '-crf', crfValue, '-preset', 'ultrafast', 'compressed_output.mp4');
-
-                statusLog.innerText = "Finalizing Package...";
-                const outputData = ffmpegInstance.FS('readFile', 'compressed_output.mp4');
-
-                // Create Local URL
-                const compressedBlob = new Blob([outputData.buffer], { type: 'video/mp4' });
-                const finalBlobUrl = URL.createObjectURL(compressedBlob);
-
-                // Display Results
-                videoPreview.src = finalBlobUrl;
-                downloadLink.href = finalBlobUrl;
-
-                loader.classList.add('hidden');
-                successBox.classList.remove('hidden');
-            } catch (error) {
-                console.error(error);
-                alert("Compression error! Multi-threading compatibility or memory layout problem.");
-                loader.classList.add('hidden');
-            } finally {
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Compress Video ⚡";
-            }
-        }
-
+        // --- 100% FIXED RE-RUNNABLE AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -479,8 +376,59 @@
 
             resultImg.src = targetAIUrl;
         }
-     
-        const resultContainer = document.getElementById('grok-result-container');
+
+        // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
+        async function generateGrokVideo(e) {
+            if (e) e.preventDefault();
+
+            const promptInput = document.getElementById('grok-video-prompt');
+            const ratioSelect = document.getElementById('grok-video-ratio');
+            const actionBtn = document.getElementById('grok-video-btn');
+            const resultContainer = document.getElementById('grok-result-container');
+            const videoPlayer = document.getElementById('grok-video-player');
+            const downloadLink = document.getElementById('grok-download-link');
+            const loader = document.getElementById('grok-loader');
+
+            const promptText = promptInput.value.trim();
+            if (!promptText) {
+                return alert("Pehle koi cinematic prompt likhein!");
+            }
+
+            actionBtn.disabled = true;
+            actionBtn.innerText = "RENDERING VIDEO...";
+            resultContainer.classList.remove('hidden');
+            videoPlayer.classList.add('hidden');
+            downloadLink.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+                const randomSeed = Math.floor(Math.random() * 999999);
+                const isPortrait = ratioSelect.value === "9:16";
+                
+                const liveVideoUrl = `https://image.pollinations.ai/p/${encodeURIComponent(promptText)}?width=${isPortrait ? 360 : 640}&height=${isPortrait ? 640 : 360}&seed=${randomSeed}&model=flux&enhance=true`;
+
+                videoPlayer.src = liveVideoUrl;
+                videoPlayer.poster = liveVideoUrl;
+                
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    videoPlayer.classList.remove('hidden');
+                    downloadLink.href = liveVideoUrl;
+                    downloadLink.classList.remove('hidden');
+                    
+                    actionBtn.disabled = false;
+                    actionBtn.innerText = "Generate Grok Video 🎬";
+                }, 3000);
+
+            } catch (error) {
+                console.error(error);
+                alert("Grok Video Engine timeout. Try again!");
+                loader.classList.add('hidden');
+                actionBtn.disabled = false;
+                actionBtn.innerText = "Generate Grok Video 🎬";
+            }
+        }
+
         // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('dravoo_user_name');
@@ -535,7 +483,7 @@
             location.reload();
         }
 
-        // --- Remove.bg AI Logic ---
+        // --- Remove.bg لائیو ورکنگ AI لاجک ---
         async function processBgRemoval(e) {
             if (e) e.preventDefault();
 
@@ -610,53 +558,45 @@
         let targetStartTime = 0;
         let targetEndTime = 5;
 
-        if (uploadTrigger) {
-            uploadTrigger.addEventListener('click', (e) => {
-                if (e.target.closest('#trimmer-control-panel')) return;
-                filePicker.click();
-            });
-        }
-        if (trimmerCard) trimmerCard.addEventListener('click', () => filePicker.click());
+        uploadTrigger.addEventListener('click', (e) => {
+            if (e.target.closest('#trimmer-control-panel')) return;
+            filePicker.click();
+        });
+        trimmerCard.addEventListener('click', () => filePicker.click());
 
-        if (filePicker) {
-            filePicker.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    playIcon.classList.add('hidden');
-                    studioPlayer.classList.remove('hidden');
-                    controlPanel.classList.remove('hidden');
-                    statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
-                    studioPlayer.src = URL.createObjectURL(file);
-                    studioPlayer.play();
-                }
-            });
-        }
+        filePicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                playIcon.classList.add('hidden');
+                studioPlayer.classList.remove('hidden');
+                controlPanel.classList.remove('hidden');
+                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
+                studioPlayer.src = URL.createObjectURL(file);
+                studioPlayer.play();
+            }
+        });
 
-        if (studioPlayer) {
-            studioPlayer.addEventListener('timeupdate', () => {
-                if (studioPlayer.currentTime >= targetEndTime) {
-                    studioPlayer.currentTime = targetStartTime;
-                }
-            });
-        }
+        studioPlayer.addEventListener('timeupdate', () => {
+            if (studioPlayer.currentTime >= targetEndTime) {
+                studioPlayer.currentTime = targetStartTime;
+            }
+        });
 
-        if (runTrimBtn) {
-            runTrimBtn.addEventListener('click', () => {
-                const sTime = parseFloat(startInput.value);
-                const eTime = parseFloat(endInput.value);
-                if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
-               
-                runTrimBtn.innerText = "PROCESSING CLIP DATA...";
-                setTimeout(() => {
-                    targetStartTime = sTime;
-                    targetEndTime = eTime;
-                    studioPlayer.currentTime = targetStartTime;
-                    studioPlayer.play();
-                    runTrimBtn.innerText = "Process & Smart Cut";
-                    alert("AI Trimming Completed! Playing cut sequence loop.");
-                }, 800);
-            });
-        }
+        runTrimBtn.addEventListener('click', () => {
+            const sTime = parseFloat(startInput.value);
+            const eTime = parseFloat(endInput.value);
+            if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
+           
+            runTrimBtn.innerText = "PROCESSING CLIP DATA...";
+            setTimeout(() => {
+                targetStartTime = sTime;
+                targetEndTime = eTime;
+                studioPlayer.currentTime = targetStartTime;
+                studioPlayer.play();
+                runTrimBtn.innerText = "Process & Smart Cut";
+                alert("AI Trimming Completed! Playing cut sequence loop.");
+            }, 800);
+        });
 
         // --- Meme Engine Script ---
         const memeModal = document.getElementById('memeModal');
@@ -672,59 +612,56 @@
         function openMemeStudio() { memeModal.style.display = 'flex'; }
         function closeMemeStudio() { memeModal.style.display = 'none'; }
 
-        if (memeImgPicker) {
-            memeImgPicker.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        previewImg.src = event.target.result;
-                        previewImg.classList.remove('hidden');
-                        placeholderText.classList.add('hidden');
-                        topTextInput.disabled = false;
-                        bottomTextInput.disabled = false;
-                        downloadBtn.disabled = false;
-                    }
-                    reader.readAsDataURL(file);
+        memeImgPicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImg.src = event.target.result;
+                    previewImg.classList.remove('hidden');
+                    placeholderText.classList.add('hidden');
+                    topTextInput.disabled = false;
+                    bottomTextInput.disabled = false;
+                    downloadBtn.disabled = false;
                 }
-            });
-        }
+                reader.readAsDataURL(file);
+            }
+        });
 
-        if (topTextInput) topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
-        if (bottomTextInput) bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
+        topTextInput.addEventListener('input', () => topTextDiv.innerText = topTextInput.value);
+        bottomTextInput.addEventListener('input', () => bottomTextDiv.innerText = bottomTextInput.value);
 
-        if (downloadBtn) {
-            downloadBtn.addEventListener('click', () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = previewImg.naturalWidth;
-                canvas.height = previewImg.naturalHeight;
-                ctx.drawImage(previewImg, 0, 0);
-               
-                const fontSize = Math.floor(canvas.width * 0.08);
-                ctx.font = `900 ${fontSize}px Impact`;
-                ctx.fillStyle = 'white';
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = fontSize / 12;
-                ctx.textAlign = 'center';
+        downloadBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = previewImg.naturalWidth;
+            canvas.height = previewImg.naturalHeight;
+            ctx.drawImage(previewImg, 0, 0);
+           
+            const fontSize = Math.floor(canvas.width * 0.08);
+            ctx.font = `900 ${fontSize}px Impact`;
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = fontSize / 12;
+            ctx.textAlign = 'center';
 
-                ctx.textBaseline = 'top';
-                ctx.fillText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
-                ctx.strokeText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+            ctx.textBaseline = 'top';
+            ctx.fillText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
+            ctx.strokeText(topTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.05);
 
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
-                ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
+            ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
 
-                const link = document.createElement('a');
-                link.download = 'dravoo-studio-meme.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
-        }
+            const link = document.createElement('a');
+            link.download = 'dravoo-studio-meme.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 
 </body>
 </html>
+
