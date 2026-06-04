@@ -1,9 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <style>
- 
   .dravoo-box {
     text-align: center;
     margin: 40px auto;
@@ -188,14 +186,12 @@
     </section>
 
     <div id="infoModal" class="modal-overlay">
-    <div class="content-card text-center">
-        <div id="modalContent"></div>
-       
-        <img id="display-removed-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="width: 100%; margin-top: 15px; display: none;">
-       
-        <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 rounded-xl font-bold mt-6 text-xs uppercase tracking-wider hover:bg-zinc-700 transition">Close</button>
+        <div class="content-card text-center">
+            <div id="modalContent"></div>
+            <img id="display-removed-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="width: 100%; margin-top: 15px; display: none;">
+            <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 rounded-xl font-bold mt-6 text-xs uppercase tracking-wider hover:bg-zinc-700 transition">Close</button>
+        </div>
     </div>
-</div>
 
     <div id="memeModal" class="modal-overlay">
         <div class="content-card text-center">
@@ -218,7 +214,32 @@
         </div>
     </div>
 
-    <footer class="bg-[#050505] pt-16 pb-8 border-t border-gray-900 text-center text-xs text-gray-600">
+    <section class="bg-[#08080a] py-12 border-t border-gray-900">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-left">
+                <div class="space-y-3">
+                    <span onclick="showInfo('tos')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Terms of Service</span>
+                    <span onclick="showInfo('license')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">License Agreement</span>
+                    <span onclick="showInfo('dsa')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Digital Services Act</span>
+                </div>
+                <div class="space-y-3">
+                    <span onclick="showInfo('privacy')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Privacy Policy</span>
+                    <span onclick="showInfo('creator-tos')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Creator Terms of Service</span>
+                    <span onclick="showInfo('privacy-choices')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer"><i class="fas fa-circle-check text-blue-500 text-xs mr-1"></i> Your Privacy Choices</span>
+                </div>
+                <div class="space-y-3">
+                    <span onclick="showInfo('cookies')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Cookies Policy</span>
+                    <span onclick="showInfo('community')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Community Guidelines</span>
+                </div>
+                <div class="flex flex-col justify-center items-start md:items-end">
+                    <h4 class="text-md font-black tracking-wider text-white flex items-center gap-2"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h4>
+                    <p class="text-[10px] text-gray-500 mt-1">Next-Gen Client Side Processing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#050505] pt-8 pb-8 border-t border-gray-950 text-center text-xs text-gray-600">
         <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
             <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
             <a href="mailto:dravooeditor@gmail.com" class="hover:text-white transition">Feedback</a>
@@ -258,15 +279,21 @@
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
             'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
             
-            // --- UPDATED AI GENERATION BLOCK (GROK ENGINE CLICK OVERLAY) ---
+            // --- MODALS TEXT FOR POLICIES ---
+            'tos': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-file-contract text-blue-500"></i> Terms of Service</h3><p class="text-xs text-gray-400 leading-relaxed text-left">By using Dravoo, you agree to process videos locally on your browser. Any commercial usage of output assets generated via integration channels must adhere to local jurisdiction safety criteria.</p>`,
+            'license': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-id-badge text-blue-500"></i> License Agreement</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Dravoo grants you a personal, non-exclusive license to utilize all embedded Client-Side logic components for standard content creations and non-malicious distribution formats.</p>`,
+            'dsa': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-scale-balanced text-blue-500"></i> Digital Services Act (DSA)</h3><p class="text-xs text-gray-400 leading-relaxed text-left">In accordance with DSA protocols, Dravoo does not actively store or monitor automated operations since all visual transformation steps are completely structured client-side inside the browser scope.</p>`,
+            'creator-tos': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-clapperboard text-blue-500"></i> Creator Terms of Service</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Creators retain full ownership rights over any raw timelines processed. You are strictly responsible for managing media data rights when utilizing synthetic layers.</p>`,
+            'privacy-choices': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-circle-check text-blue-500"></i> Your Privacy Choices</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Since zero file logs or media track bits are sent over to cloud engines, your privacy remains physically controlled within your desktop terminal ecosystem.</p>`,
+            'cookies': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-cookie-bite text-blue-500"></i> Cookies Policy</h3><p class="text-xs text-gray-400 leading-relaxed text-left">We utilize absolute minimal local storage cache elements strictly to preserve authentication configurations, including Google sign-in membership data parameters.</p>`,
+            'community': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-users text-blue-500"></i> Community Guidelines</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Usage of synthesis modules to formulate deeply deceptive deepfakes, target individuals maliciously, or propagate graphic content streams is stringently prohibited.</p>`,
+
             'ai-generation': `
                 <i class="fas fa-video text-4xl text-blue-500 mb-4 animate-pulse"></i>
                 <h3 class="text-lg font-bold mb-2">Grok AI Video Studio</h3>
                 <p class="text-xs text-gray-400 mb-4">Enter your prompt to generate high-fidelity AI video sequences:</p>
-                
                 <div class="space-y-3 text-left">
                     <input type="text" id="grok-video-prompt" class="meme-input text-xs w-full" placeholder="e.g., Cinematic dragon flying over dark mountains, 4k resolution...">
-                    
                     <div>
                         <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Aspect Ratio</label>
                         <select id="grok-video-ratio" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
@@ -274,10 +301,8 @@
                             <option value="9:16">Portrait (9:16) — TikTok/Reels</option>
                         </select>
                     </div>
-
                     <button onclick="generateGrokVideo(event)" id="grok-video-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Grok Video 🎬</button>
                 </div>
-
                 <div id="grok-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-video bg-black flex flex-col items-center justify-center p-4 relative">
                     <div id="grok-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-[10px] font-bold text-blue-400 uppercase tracking-widest hidden">
                         <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Grok Engine Rendering...
@@ -289,32 +314,32 @@
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
            
-            // Banana Pro
+            // Banana Pro Fixed Modal UI Template Block
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
                 <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to generate artwork:</p>
                 <div class="space-y-3">
                     <input type="text" id="ai-prompt-banana" class="meme-input text-xs" placeholder="e.g., Cyberpunk car, neon streets, highly detailed...">
-                    <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px]">Generate Art</button>
+                    <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Generate Art</button>
                 </div>
-                <div id="ai-result-banana" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative">
-                    <div id="ai-loader-banana" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Processing Art...</div>
+                <div id="ai-result-banana" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
+                    <div id="ai-loader-banana" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Processing Art...</div>
                     <img id="ai-img-src-banana" class="max-w-full max-h-full object-cover">
                 </div>
             `,
            
-            // GPT Image 2
+            // GPT Image 2 Fixed Modal UI Template Block
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
                 <p class="text-xs text-gray-400 mb-4">Enter your concept details to simulate generation:</p>
                 <div class="space-y-3">
                     <input type="text" id="ai-prompt-gpt" class="meme-input text-xs" placeholder="e.g., Majestic dragon over dark mountains, 4k resolution...">
-                    <button onclick="generateAIStudioImage('gpt')" id="ai-btn-gpt" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px]">Create Asset</button>
+                    <button onclick="generateAIStudioImage('gpt')" id="ai-btn-gpt" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Create Asset</button>
                 </div>
-                <div id="ai-result-gpt" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative">
-                    <div id="ai-loader-gpt" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-amber-400 uppercase tracking-widest"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Formatting Data...</div>
+                <div id="ai-result-gpt" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
+                    <div id="ai-loader-gpt" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-amber-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Formatting Data...</div>
                     <img id="ai-img-src-gpt" class="max-w-full max-h-full object-cover">
                 </div>
             `
@@ -326,7 +351,7 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- 100% FIXED RE-RUNNABLE AI IMAGE RENDERING ENGINE ---
+        // --- 100% FIXED HIGH-SPEED AI IMAGE RENDERING ENGINE ---
         function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -339,12 +364,9 @@
             }
 
             const promptText = promptInput.value.trim();
-            if (!promptText) return alert("Please enter a creative prompt first!");
+            if (!promptText) return alert("Pehle koi creative prompt likhein!");
 
-            if (!genBtn.getAttribute('data-original-text')) {
-                genBtn.setAttribute('data-original-text', genBtn.innerText);
-            }
-
+            const originalText = genBtn.innerText;
             genBtn.innerText = "RENDERING IMAGERY...";
             genBtn.disabled = true;
 
@@ -352,29 +374,27 @@
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
 
-            const randomSeed = Math.floor(Math.random() * 999999999);
-            const cacheBusterTimestamp = new Date().getTime();
+            const randomSeed = Math.floor(Math.random() * 99999999);
             const safePrompt = encodeURIComponent(promptText);
-           
-            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=600&height=600&seed=${randomSeed}&cb=${cacheBusterTimestamp}&nologo=true`;
+            
+            // Explicit structure with standard model parameter ensures browser processes it smoothly
+            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
 
-            resultImg.removeAttribute('src');
+            resultImg.src = targetAIUrl;
            
             resultImg.onload = function() {
                 loaderDiv.classList.add('hidden');
                 resultImg.classList.remove('opacity-0');
-                genBtn.innerText = genBtn.getAttribute('data-original-text');
+                genBtn.innerText = originalText;
                 genBtn.disabled = false;
             };
 
             resultImg.onerror = function() {
                 loaderDiv.classList.add('hidden');
-                genBtn.innerText = genBtn.getAttribute('data-original-text');
+                genBtn.innerText = originalText;
                 genBtn.disabled = false;
-                alert("Failed to load AI Image. Let's try again with a different prompt!");
+                alert("Image fetch error. Please try again with different keywords!");
             };
-
-            resultImg.src = targetAIUrl;
         }
 
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
@@ -483,7 +503,7 @@
             location.reload();
         }
 
-        // --- Remove.bg لائیو ورکنگ AI لاجک ---
+        // --- Remove.bg AI ---
         async function processBgRemoval(e) {
             if (e) e.preventDefault();
 
@@ -664,4 +684,3 @@
 
 </body>
 </html>
-
