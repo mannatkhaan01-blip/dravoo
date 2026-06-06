@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -378,8 +379,8 @@
             const safePrompt = encodeURIComponent(promptText);
            
             // Explicit structure with standard model parameter ensures browser processes it smoothly
-            const targetAIUrl = `https://image.pollinations.ai/prompt/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
-          
+            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
+
             resultImg.src = targetAIUrl;
            
             resultImg.onload = function() {
@@ -396,15 +397,6 @@
                 alert("Image fetch error. Please try again with different keywords!");
             };
         }
-
-      setTimeout(() => {
-    if (genBtn.disabled) {
-        loaderDiv.classList.add('hidden');
-        resultImg.classList.remove('opacity-0');
-        genBtn.innerText = originalText;
-        genBtn.disabled = false;
-    }
-}, 15000);
 
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
         async function generateGrokVideo(e) {
