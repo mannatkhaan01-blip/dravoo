@@ -397,6 +397,15 @@
             };
         }
 
+      setTimeout(() => {
+    if (genBtn.disabled) {
+        loaderDiv.classList.add('hidden');
+        resultImg.classList.remove('opacity-0');
+        genBtn.innerText = originalText;
+        genBtn.disabled = false;
+    }
+}, 15000);
+
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
         async function generateGrokVideo(e) {
             if (e) e.preventDefault();
