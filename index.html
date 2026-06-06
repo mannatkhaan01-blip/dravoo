@@ -378,8 +378,8 @@
             const safePrompt = encodeURIComponent(promptText);
            
             // Explicit structure with standard model parameter ensures browser processes it smoothly
-            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
-
+            const targetAIUrl = `https://image.pollinations.ai/prompt/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
+          
             resultImg.src = targetAIUrl;
            
             resultImg.onload = function() {
