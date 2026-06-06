@@ -359,12 +359,12 @@
             const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
-            if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderDiv) {
-                return alert("System Error: Modal elements context not initialized fully yet.");
+            if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderD
+                return alert("System Error: Modal elements context not initiali
             }
 
             const promptText = promptInput.value.trim();
-            if (!promptText) return alert("Pehle koi creative prompt likhein!");
+            if (!promptText) return alert("Pehle koi creative prompt likhein!")
 
             const originalText = genBtn.innerText;
             genBtn.innerText = "RENDERING IMAGERY...";
@@ -377,35 +377,11 @@
             const randomSeed = Math.floor(Math.random() * 99999999);
             const safePrompt = encodeURIComponent(promptText);
            
-            // Explicit structure with standard model parameter ensures browser processes it smoothly
-            const targetAIUrl = `https://image.pollinations.ai/prompt/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
+            // Explicit structure with standard model parameter ensures browser
+            const targetAIUrl = `https://image.pollinations.ai/prompt/${safePro
 
             resultImg.src = targetAIUrl;
-           
-            resultImg.onload = function() {
-                loaderDiv.classList.add('hidden');
-                resultImg.classList.remove('opacity-0');
-                genBtn.innerText = originalText;
-                genBtn.disabled = false;
-            };
-
-            resultImg.onerror = function() {
-                loaderDiv.classList.add('hidden');
-                genBtn.innerText = originalText;
-                genBtn.disabled = false;
-                alert("Image fetch error. Please try again with different keywords!");
-            };
-
-            setTimeout(() => {
-                if (genBtn.disabled) {
-                    loaderDiv.classList.add('hidden');
-                    resultImg.classList.remove('opacity-0');
-                    genBtn.innerText = originalText;
-                    genBtn.disabled = false;
-                }
-            }, 15000);
-      }
-
+                                                                        
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
         async function generateGrokVideo(e) {
             if (e) e.preventDefault();
