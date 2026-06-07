@@ -381,6 +381,34 @@
             const targetAIUrl = `https://image.pollinations.ai/prompt/${safePro
 
             resultImg.src = targetAIUrl;
+
+            freshImg.onload = function() {
+                loaderDiv.classList.add('hidden');
+                const oldImg = document.getElementById(`ai-img-src-${type}`);
+                if (oldImg) oldImg.src = targetAIUrl;
+                genBtn.innerText = originalText;
+                genBtn.disabled = false;
+            };
+
+            freshImg.onerror = function() {
+                loaderDiv.classList.add('hidden');
+                genBtn.innerText = originalText;
+                genBtn.disabled = false;
+                alert("Image fetch error. Try different keywords!");
+            };
+
+            setTimeout(() => {
+                if (genBtn.disabled) {
+                    loaderDiv.classList.add('hidden');
+                    const oldImg = document.getElementById(`ai-img-src-${type}`);
+                    if (oldImg) oldImg.src = targetAIUrl;
+                    genBtn.innerText = originalText;
+                    genBtn.disabled = false;
+                }
+            }, 20000);
+
+            freshImg.src = targetAIUrl;
+        }
                                                                         
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
         async function generateGrokVideo(e) {
