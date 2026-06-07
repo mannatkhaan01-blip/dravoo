@@ -356,12 +356,29 @@
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
-            const resultImg = document.getElementById(`ai-img-src-${type}`);
             const loaderDiv = document.getElementById(`ai-loader-${type}`);
 
-            if (!promptInput || !genBtn || !resultDiv || !resultImg || !loaderD
-                return alert("System Error: Modal elements context not initiali
+            if (!promptInput || !genBtn || !resultDiv || !loaderDiv) {
+                return alert("System Error: Modal elements not found!");
             }
+
+            const promptText = promptInput.value.trim();
+            if (!promptText) return alert("Pehle koi creative prompt likhein!");
+
+            const originalText = genBtn.innerText;
+            genBtn.innerText = "RENDERING IMAGERY...";
+            genBtn.disabled = true;
+
+            resultDiv.classList.remove('hidden');
+            loaderDiv.classList.remove('hidden');
+
+            const randomSeed = Math.floor(Math.random() * 99999999);
+            const safePrompt = encodeURIComponent(promptText);
+            const targetAIUrl = `https://image.pollinations.ai/prompt/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
+
+            const freshImg = new Image();
+
+            freshImg.onload = function() {
 
             const promptText = promptInput.value.trim();
             if (!promptText) return alert("Pehle koi creative prompt likhein!")
