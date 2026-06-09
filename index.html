@@ -318,13 +318,13 @@
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to generate artwork:</p>
+                <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to search artwork:</p>
                 <div class="space-y-3">
                     <input type="text" id="ai-prompt-banana" class="meme-input text-xs" placeholder="e.g., Cyberpunk car, neon streets, highly detailed...">
-                    <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Generate Art</button>
+                    <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Search Art</button>
                 </div>
                 <div id="ai-result-banana" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
-                    <div id="ai-loader-banana" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Processing Art...</div>
+                    <div id="ai-loader-banana" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Fetching Art...</div>
                     <img id="ai-img-src-banana" class="max-w-full max-h-full object-cover">
                 </div>
             `,
@@ -333,7 +333,7 @@
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter your concept details to simulate generation:</p>
+                <p class="text-xs text-gray-400 mb-4">Enter your concept details to search asset:</p>
                 <div class="space-y-3">
                     <input type="text" id="ai-prompt-gpt" class="meme-input text-xs" placeholder="e.g., Majestic dragon over dark mountains, 4k resolution...">
                     <button onclick="generateAIStudioImage('gpt')" id="ai-btn-gpt" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Create Asset</button>
@@ -351,8 +351,9 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- 100% FIXED HIGH-SPEED AI IMAGE RENDERING ENGINE ---
-        function generateAIStudioImage(type) {
+        // --- 100% FIXED HIGH-SPEED PIXABAY IMAGE RENDERING ENGINE ---
+        // Mudassir Bhai, yeh aap ka naya super-fast aur hamesha free rehne wala Pixabay script hai!
+        async function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
@@ -367,34 +368,48 @@
             if (!promptText) return alert("Pehle koi creative prompt likhein!");
 
             const originalText = genBtn.innerText;
-            genBtn.innerText = "RENDERING IMAGERY...";
+            genBtn.innerText = "FETCHING IMAGERY...";
             genBtn.disabled = true;
 
             resultDiv.classList.remove('hidden');
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
 
-            const randomSeed = Math.floor(Math.random() * 99999999);
-            const safePrompt = encodeURIComponent(promptText);
-           
-            // Explicit structure with standard model parameter ensures browser processes it smoothly
-            const targetAIUrl = `https://image.pollinations.ai/p/${safePrompt}?width=512&height=512&seed=${randomSeed}&model=flux&nologo=true`;
+            // Pixabay API Key Configuration
+            const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
+            const targetPixabayUrl = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(promptText)}&image_type=photo&safesearch=true&per_page=3`;
 
-            resultImg.src = targetAIUrl;
-           
-            resultImg.onload = function() {
+            try {
+                const response = await fetch(targetPixabayUrl);
+                if (!response.ok) throw new Error("Network response error");
+                
+                const data = await response.json();
+
+                if (data.hits && data.hits.length > 0) {
+                    // Pixabay se web-optimized resolution ki picture uthana
+                    const imageUrl = data.hits[0].webformatURL;
+                    
+                    resultImg.src = imageUrl;
+                    
+                    resultImg.onload = function() {
+                        loaderDiv.classList.add('hidden');
+                        resultImg.classList.remove('opacity-0');
+                        genBtn.innerText = originalText;
+                        genBtn.disabled = false;
+                    };
+                } else {
+                    loaderDiv.classList.add('hidden');
+                    genBtn.innerText = originalText;
+                    genBtn.disabled = false;
+                    alert("Pixabay par is keyword ki koi picture nahi mili. Kuch aur search karein!");
+                }
+            } catch (error) {
+                console.error("Pixabay API Error:", error);
                 loaderDiv.classList.add('hidden');
-                resultImg.classList.remove('opacity-0');
                 genBtn.innerText = originalText;
                 genBtn.disabled = false;
-            };
-
-            resultImg.onerror = function() {
-                loaderDiv.classList.add('hidden');
-                genBtn.innerText = originalText;
-                genBtn.disabled = false;
-                alert("Image fetch error. Please try again with different keywords!");
-            };
+                alert("Image fetch error. Please try again later!");
+            }
         }
 
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
