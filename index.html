@@ -180,7 +180,23 @@
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
-            <div onclick="showInfo('face-cutout')" class="feature-box p-6 text-center"><i class="fas fa-user-tie text-2xl text-red-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
+          <!-- Dravoo AI Face Cutout Tool -->
+<div class="feature-box p-6 bg-[#121212] border border-[#1f2937] rounded-2xl text-center">
+    <div class="text-blue-500 text-3xl mb-3">
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <h3 class="text-lg font-bold mb-2 text-white">Dravoo AI Face Cutout</h3>
+    <p class="text-gray-400 text-sm mb-4">Upload video or photo to instantly extract only the face with AI.</p>
+    
+    <!-- Upload Input and Canvas -->
+    <input type="file" id="face-input" accept="image/*,video/*" class="hidden">
+    <button onclick="document.getElementById('face-input').click()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg">
+        Select File
+    </button>
+    
+    <!-- Output Canvas Hidden Initially -->
+    <canvas id="face-canvas" class="mt-4 mx-auto max-w-full rounded-full border-2 border-blue-500 hidden"></canvas>
+</div>
             <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
             <div onclick="showInfo('banana-pro')" class="feature-box p-6 text-center"><i class="fas fa-image text-2xl text-lime-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Nano Banana Pro</h4></div>
             <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
