@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,8 +80,6 @@
         .time-box { background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px; width: 70px; text-align: center; }
     </style>
 <meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
-<meta name="description" content="Dravoo is a free online AI Video Editor & Studio powered by Seedance 2.0. Remove backgrounds instantly, trim clips, create memes, and use advanced AI tools.">
-<meta name="keywords" content="Dravoo, Dravoo video editor, free online video editor, AI background remover, Dravoo studio, client side video trimmer, online meme maker, Seedance engine">
 </head>
 <body>
 
@@ -181,7 +180,7 @@
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
             <div onclick="showInfo('face-cutout')" class="feature-box p-6 text-center"><i class="fas fa-user-tie text-2xl text-red-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
-            <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
+            <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
             <div onclick="showInfo('banana-pro')" class="feature-box p-6 text-center"><i class="fas fa-image text-2xl text-lime-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Nano Banana Pro</h4></div>
             <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
         </div>
@@ -259,7 +258,7 @@
         const infoData = {
             'bg-remover': `
                 <i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">Dravoo Free AI Background Remover</h3>
+                <h3 class="text-lg font-bold mb-2">AI Background Remover</h3>
                 <p class="text-xs text-gray-400 mb-4">Select an image to make its background transparent.</p>
                 <div class="space-y-3">
                     <input type="file" id="bg-upload-input" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-yellow-500/10 file:text-yellow-500 hover:file:bg-yellow-500/20">
@@ -279,21 +278,8 @@
             'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
             'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
-          
-            // Seedance 2.0 Configuration Model Updated by Mudassir
-            'seedance': `
-                <i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4 animate-spin" style="animation-duration: 3s;"></i>
-                <h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3>
-                <p class="text-xs text-gray-400 mb-4">High-Performance Client Side Execution Framework.</p>
-                <div class="bg-black/50 p-4 border border-zinc-800 rounded-xl text-left font-mono text-[11px] text-cyan-400 space-y-1 mb-4">
-                    <p>> Initializing Seedance Core...</p>
-                    <p>> Virtual DOM Optimization: [ACTIVE]</p>
-                    <p>> Speed Boost Render Layer: [10X FAST]</p>
-                    <p class="text-green-400">> System Status: Stable & Ready ⚡</p>
-                </div>
-                <button onclick="activateSeedanceBoost()" id="seedance-boost-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Activate 10x Turbo Boost</button>
-            `,
-
+            'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
+           
             // --- MODALS TEXT FOR POLICIES ---
             'tos': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-file-contract text-blue-500"></i> Terms of Service</h3><p class="text-xs text-gray-400 leading-relaxed text-left">By using Dravoo, you agree to process videos locally on your browser. Any commercial usage of output assets generated via integration channels must adhere to local jurisdiction safety criteria.</p>`,
             'license': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-id-badge text-blue-500"></i> License Agreement</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Dravoo grants you a personal, non-exclusive license to utilize all embedded Client-Side logic components for standard content creations and non-malicious distribution formats.</p>`,
@@ -305,7 +291,7 @@
 
             'ai-generation': `
                 <i class="fas fa-video text-4xl text-blue-500 mb-4 animate-pulse"></i>
-                <h3 class="text-lg font-bold mb-2">Dravoo Online AI Video Studio</h3>
+                <h3 class="text-lg font-bold mb-2">Grok AI Video Studio</h3>
                 <p class="text-xs text-gray-400 mb-4">Enter your prompt to generate high-fidelity AI video sequences:</p>
                 <div class="space-y-3 text-left">
                     <input type="text" id="grok-video-prompt" class="meme-input text-xs w-full" placeholder="e.g., Cinematic dragon flying over dark mountains, 4k resolution...">
@@ -329,23 +315,23 @@
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
            
-            // 4k uncopyrighted images Fixed Modal UI Template Block
-            '4k uncopyrighted images': `
+            // Banana Pro Fixed Modal UI Template Block
+            'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">4k uncopyrighted images</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter a keyword to search artwork:</p>
+                <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
+                <p class="text-xs text-gray-400 mb-4">Enter a creative prompt to search artwork:</p>
                 <div class="space-y-3">
-                    <input type="text" id="4k-uncopyrighed-images" class="meme-input text-xs" placeholder="e.g., Cyberpunk car, neon streets, highly detailed...">
-                    <button onclick="generate4kuncopyrighedimages('Dravoo')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Search Art</button>
+                    <input type="text" id="ai-prompt-banana" class="meme-input text-xs" placeholder="e.g., Cyberpunk car, neon streets, highly detailed...">
+                    <button onclick="generateAIStudioImage('banana')" id="ai-btn-banana" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Search Art</button>
                 </div>
-                <div id="4k-result-images" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
-                    <div id="4k-loader-images" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Fetching Art...</div>
+                <div id="ai-result-banana" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
+                    <div id="ai-loader-banana" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-lime-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Fetching Art...</div>
                     <img id="ai-img-src-banana" class="max-w-full max-h-full object-cover">
                 </div>
             `,
            
-            // Ai realistic iamges Fixed Modal UI Template Block
-            'Ai realistic images': `
+            // GPT Image 2 Fixed Modal UI Template Block
+            'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
                 <p class="text-xs text-gray-400 mb-4">Enter your concept details to search asset:</p>
@@ -353,9 +339,9 @@
                     <input type="text" id="ai-prompt-gpt" class="meme-input text-xs" placeholder="e.g., Majestic dragon over dark mountains, 4k resolution...">
                     <button onclick="generateAIStudioImage('gpt')" id="ai-btn-gpt" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white">Create Asset</button>
                 </div>
-                <div id="ai-result-realistic" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
-                    <div id="ai-loader-realistic" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-amber-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Formatting Data...</div>
-                    <img id="ai-img-src-realistic" class="max-w-full max-h-full object-cover">
+                <div id="ai-result-gpt" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-square bg-black flex items-center justify-center relative min-h-[200px]">
+                    <div id="ai-loader-gpt" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-xs font-bold text-amber-400 uppercase tracking-widest hidden"><i class="fas fa-spinner animate-spin mb-2 text-lg"></i> Formatting Data...</div>
+                    <img id="ai-img-src-gpt" class="max-w-full max-h-full object-cover">
                 </div>
             `
         };
@@ -708,23 +694,10 @@
             link.href = canvas.toDataURL();
             link.click();
         });
-            // Seedance 2.0 Turbo Booster Integration Added by Mudassir
-      function activateSeedanceBoost() {
-          const boostBtn = document.getElementById('seedance-boost-btn');
-          if (boostBtn) {
-              boostBtn.innerText = "TUNING CORE ENGINE...";
-              boostBtn.disabled = true;
-              setTimeout(() => {
-                  boostBtn.innerText = "10X TURBO ACCELERATION ACTIVE! 🚀";
-                  boostBtn.style.background = "linear-gradient(135deg, #06b6d4, #10b981)";
-                  alert("Seedance 2.0 Engine has successfully optimized your browser cache! Dravoo Video Editor is now running at maximum performance.");
-              }, 1500);
-          }
-      }
-  
-  </script>
+    </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 
 </body>
 </html>
+
