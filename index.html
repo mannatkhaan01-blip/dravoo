@@ -183,8 +183,6 @@
     <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
     <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
             </div>
-          
-            <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
@@ -281,13 +279,17 @@
                     <a id="bg-download-link" class="text-[11px] text-yellow-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-transparent.png"><i class="fas fa-download mr-1"></i> Download Image</a>
                 </div>
             `,
-            'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
             'speech-text': `
     <i class="fas fa-quote-left text-4xl text-purple-500 mb-4 animate-pulse"></i>
     <h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles AI</h3>
-    <p class="text-xs text-gray-400 mb-4">ویڈیو کی آواز سن کر خود بخود نیچے سب ٹائٹلز جنریٹ کریں۔</p>
+    <p class="text-xs text-gray-400 mb-4">Select a video file from your device to generate real-time dynamic overlays.</p>
     
     <div class="space-y-4 text-left">
+        <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Import Video Target</label>
+            <input type="file" id="caption-video-picker" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20">
+        </div>
+
         <div>
             <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select Audio Language</label>
             <select id="caption-lang" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
@@ -299,6 +301,7 @@
         <button onclick="generateAutoCaptions()" id="captions-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Captions 💬</button>
     </div>
 `,
+          
           
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
             'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
@@ -720,7 +723,7 @@
             link.href = canvas.toDataURL();
             link.click();
         });
-              // --- DRAVOO AUTO CAPTIONS ENGINE ---
+        // --- DRAVOO AUTO CAPTIONS ENGINE (UPDATED VERSION) ---
         let recognition;
 
         function openCaptionsStudio() {
@@ -733,15 +736,29 @@
             const langSelect = document.getElementById('caption-lang');
             const overlay = document.getElementById('video-caption-overlay');
             const textBox = document.getElementById('caption-text-box');
+            const captionFilePicker = document.getElementById('caption-video-picker');
+            const playIcon = document.getElementById('play-icon-placeholder');
+            const controlPanel = document.getElementById('trimmer-control-panel');
+            const statusText = document.getElementById('studio-status');
 
-            if (!video.src || video.classList.contains('hidden')) {
-                closeModal();
-                return alert("Pehle Media Studio mein koi video upload karein!");
+            // اگر یوزر نے ماڈل کے اندر سے نئی ویڈیو سلیکٹ کی ہے تو اسے مین پلیئر میں لوڈ کریں
+            if (captionFilePicker && captionFilePicker.files.length > 0) {
+                const file = captionFilePicker.files[0];
+                playIcon.classList.add('hidden');
+                video.classList.remove('hidden');
+                controlPanel.classList.remove('hidden');
+                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
+                video.src = URL.createObjectURL(file);
+            }
+
+            // اگر نہ پہلے سے ویڈیو لوڈ ہے اور نہ ہی نئی سلیکٹ کی گئی ہے تو الرٹ دکھائیں
+            if (!video.src || video.src === "") {
+                return alert("Please select or upload a video file first!");
             }
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                return alert("Sorry! Aap ka browser Auto Captions support nahi karta. Google Chrome istemal karein.");
+                return alert("Sorry! Your browser does not support Auto Captions. Please use Google Chrome.");
             }
 
             captionsBtn.innerText = "CAPTIONS ACTIVATED ✨";
@@ -749,7 +766,8 @@
             
             setTimeout(() => {
                 closeModal();
-                alert("Auto Captions tayar hain! Ab video play karein, captions screen par nazar aayenge.");
+                video.play(); // ویڈیو خود بخود پلے ہو جائے گی
+                alert("Auto Captions are ready! Play the video to see subtitles.");
             }, 800);
 
             recognition = new SpeechRecognition();
@@ -782,9 +800,10 @@
             };
 
             recognition.onerror = function(event) {
-                console.error("Speech Error: ", event.error);
+                console.error("Speech Recognition Error: ", event.error);
             };
-        }
+            }
+    
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
