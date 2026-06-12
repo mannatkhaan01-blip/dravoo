@@ -137,12 +137,12 @@
                     <p class="text-xs font-bold text-gray-300">Click to Upload or Drag Video Here</p>
                     <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM</p>
                 </div>
-              <div onclick="openCaptionsStudio()" class="feature-box p-6 border-purple-500/30 bg-purple-950/5 text-center cursor-pointer">
-    <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
-    <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
-    <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
-              </div>
-              
+                
+                <video id="live-studio-player" controls class="hidden w-full h-full object-contain"></video>
+
+                <div id="video-caption-overlay" class="absolute bottom-12 left-1/2 -translate-x-1/2 w-11/12 text-center pointer-events-none hidden z-20">
+                    <span id="caption-text-box" class="bg-black/85 text-yellow-400 font-black text-sm md:text-xl px-4 py-2 rounded-xl border border-zinc-700 uppercase tracking-wide shadow-2xl inline-block"></span>
+                </div>
             </div>
 
             <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -178,11 +178,13 @@
             </div>
 
             <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
+            
             <div onclick="openCaptionsStudio()" class="feature-box p-6 border-purple-500/30 bg-purple-950/5 text-center cursor-pointer">
-    <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
-    <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
-    <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
+                <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
+                <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
+                <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
             </div>
+            
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
@@ -280,27 +282,27 @@
                 </div>
             `,
             'speech-text': `
-    <i class="fas fa-quote-left text-4xl text-purple-500 mb-4 animate-pulse"></i>
-    <h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles AI</h3>
-    <p class="text-xs text-gray-400 mb-4">Select a video file from your device to generate real-time dynamic overlays.</p>
-    
-    <div class="space-y-4 text-left">
-        <div>
-            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Import Video Target</label>
-            <input type="file" id="caption-video-picker" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20">
-        </div>
+                <i class="fas fa-quote-left text-4xl text-purple-500 mb-4 animate-pulse"></i>
+                <h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles AI</h3>
+                <p class="text-xs text-gray-400 mb-4">Select a video file from your device to generate real-time dynamic overlays.</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Import Video Target</label>
+                        <input type="file" id="caption-video-picker" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20">
+                    </div>
 
-        <div>
-            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select Audio Language</label>
-            <select id="caption-lang" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                <option value="en-US">English (US)</option>
-                <option value="ur-PK">Urdu (Pakistan)</option>
-                <option value="hi-IN">Hindi / Hinglish</option>
-            </select>
-        </div>
-        <button onclick="generateAutoCaptions()" id="captions-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Captions 💬</button>
-    </div>
-`,
+                    <div>
+                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select Audio Language</label>
+                        <select id="caption-lang" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
+                            <option value="en-US">English (US)</option>
+                            <option value="ur-PK">Urdu (Pakistan)</option>
+                            <option value="hi-IN">Hindi / Hinglish</option>
+                        </select>
+                    </div>
+                    <button onclick="generateAutoCaptions()" id="captions-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Captions 💬</button>
+                </div>
+            `,
           
           
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
@@ -309,7 +311,6 @@
             'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
             'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
            
-            // --- MODALS TEXT FOR POLICIES ---
             'tos': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-file-contract text-blue-500"></i> Terms of Service</h3><p class="text-xs text-gray-400 leading-relaxed text-left">By using Dravoo, you agree to process videos locally on your browser. Any commercial usage of output assets generated via integration channels must adhere to local jurisdiction safety criteria.</p>`,
             'license': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-id-badge text-blue-500"></i> License Agreement</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Dravoo grants you a personal, non-exclusive license to utilize all embedded Client-Side logic components for standard content creations and non-malicious distribution formats.</p>`,
             'dsa': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-scale-balanced text-blue-500"></i> Digital Services Act (DSA)</h3><p class="text-xs text-gray-400 leading-relaxed text-left">In accordance with DSA protocols, Dravoo does not actively store or monitor automated operations since all visual transformation steps are completely structured client-side inside the browser scope.</p>`,
@@ -344,7 +345,6 @@
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
            
-            // Banana Pro Fixed Modal UI Template Block
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
@@ -359,7 +359,6 @@
                 </div>
             `,
            
-            // GPT Image 2 Fixed Modal UI Template Block
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
@@ -381,8 +380,6 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- 100% FIXED HIGH-SPEED PIXABAY IMAGE RENDERING ENGINE ---
-        // Mudassir Bhai, yeh aap ka naya super-fast aur hamesha free rehne wala Pixabay script hai!
         async function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -405,7 +402,6 @@
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
 
-            // Pixabay API Key Configuration
             const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
             const targetPixabayUrl = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(promptText)}&image_type=photo&safesearch=true&per_page=3`;
 
@@ -416,11 +412,8 @@
                 const data = await response.json();
 
                 if (data.hits && data.hits.length > 0) {
-                    // Pixabay se web-optimized resolution ki picture uthana
                     const imageUrl = data.hits[0].webformatURL;
-                    
                     resultImg.src = imageUrl;
-                    
                     resultImg.onload = function() {
                         loaderDiv.classList.add('hidden');
                         resultImg.classList.remove('opacity-0');
@@ -431,7 +424,7 @@
                     loaderDiv.classList.add('hidden');
                     genBtn.innerText = originalText;
                     genBtn.disabled = false;
-                    alert("Pixabay par is keyword ki koi picture nahi mili. Kuch aur search karein!");
+                    alert("No imagery matched for your context!");
                 }
             } catch (error) {
                 console.error("Pixabay API Error:", error);
@@ -442,7 +435,6 @@
             }
         }
 
-        // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
         async function generateGrokVideo(e) {
             if (e) e.preventDefault();
 
@@ -494,7 +486,6 @@
             }
         }
 
-        // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('dravoo_user_name');
             const savedAvatar = localStorage.getItem('dravoo_user_avatar');
@@ -548,7 +539,6 @@
             location.reload();
         }
 
-        // --- Remove.bg AI ---
         async function processBgRemoval(e) {
             if (e) e.preventDefault();
 
@@ -723,7 +713,8 @@
             link.href = canvas.toDataURL();
             link.click();
         });
-        // --- DRAVOO AUTO CAPTIONS ENGINE (UPDATED VERSION) ---
+
+        // --- DRAVOO AUTO CAPTIONS ENGINE (100% FIXED VERSION) ---
         let recognition;
 
         function openCaptionsStudio() {
@@ -741,7 +732,6 @@
             const controlPanel = document.getElementById('trimmer-control-panel');
             const statusText = document.getElementById('studio-status');
 
-            // اگر یوزر نے ماڈل کے اندر سے نئی ویڈیو سلیکٹ کی ہے تو اسے مین پلیئر میں لوڈ کریں
             if (captionFilePicker && captionFilePicker.files.length > 0) {
                 const file = captionFilePicker.files[0];
                 playIcon.classList.add('hidden');
@@ -751,7 +741,6 @@
                 video.src = URL.createObjectURL(file);
             }
 
-            // اگر نہ پہلے سے ویڈیو لوڈ ہے اور نہ ہی نئی سلیکٹ کی گئی ہے تو الرٹ دکھائیں
             if (!video.src || video.src === "") {
                 return alert("Please select or upload a video file first!");
             }
@@ -766,7 +755,7 @@
             
             setTimeout(() => {
                 closeModal();
-                video.play(); // ویڈیو خود بخود پلے ہو جائے گی
+                video.play();
                 alert("Auto Captions are ready! Play the video to see subtitles.");
             }, 800);
 
@@ -802,8 +791,7 @@
             recognition.onerror = function(event) {
                 console.error("Speech Recognition Error: ", event.error);
             };
-            }
-    
+        }
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
