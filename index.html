@@ -722,76 +722,87 @@
         }
 
         function generateAutoCaptions() {
-            const video = document.getElementById('live-studio-player');
-            const captionsBtn = document.getElementById('captions-btn');
-            const langSelect = document.getElementById('caption-lang');
-            const overlay = document.getElementById('video-caption-overlay');
-            const textBox = document.getElementById('caption-text-box');
-            const captionFilePicker = document.getElementById('caption-video-picker');
-            const playIcon = document.getElementById('play-icon-placeholder');
-            const controlPanel = document.getElementById('trimmer-control-panel');
-            const statusText = document.getElementById('studio-status');
+    const video = document.getElementById('live-studio-player');
+    const captionsBtn = document.getElementById('captions-btn');
+    const langSelect = document.getElementById('caption-lang');
+    const overlay = document.getElementById('video-caption-overlay');
+    const textBox = document.getElementById('caption-text-box');
+    const captionFilePicker = document.getElementById('caption-video-picker');
+    const playIcon = document.getElementById('play-icon-placeholder');
+    const controlPanel = document.getElementById('trimmer-control-panel');
+    const statusText = document.getElementById('studio-status');
 
-            if (captionFilePicker && captionFilePicker.files.length > 0) {
-                const file = captionFilePicker.files[0];
-                playIcon.classList.add('hidden');
-                video.classList.remove('hidden');
-                controlPanel.classList.remove('hidden');
-                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
-                video.src = URL.createObjectURL(file);
-            }
+    // 1. Check if a new file is selected in the caption modal
+    if (captionFilePicker && captionFilePicker.files.length > 0) {
+        const file = captionFilePicker.files[0];
+        playIcon.classList.add('hidden');
+        video.classList.remove('hidden');
+        controlPanel.classList.remove('hidden');
+        statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
+        video.src = URL.createObjectURL(file);
+    }
 
-            if (!video.src || video.src === "") {
-                return alert("Please select or upload a video file first!");
-            }
+    // 2. Error check if no video is loaded at all
+    if (!video.src || video.src === "") {
+        return alert("Please select or upload a video file first!");
+    }
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                return alert("Sorry! Your browser does not support Auto Captions. Please use Google Chrome.");
-            }
+    // 3. Web Speech API support check
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        return alert("Sorry! Your browser does not support Auto Captions. Please use Google Chrome.");
+    }
 
-            captionsBtn.innerText = "CAPTIONS ACTIVATED ✨";
-            captionsBtn.disabled = true;
-            
-            setTimeout(() => {
-                closeModal();
-                video.play();
-                alert("Auto Captions are ready! Play the video to see subtitles.");
-            }, 800);
+    // 4. Initialize Recognition BEFORE closing modal or playing
+    recognition = new SpeechRecognition();
+    recognition.lang = langSelect.value;
+    recognition.continuous = true;
+    recognition.interimResults = true;
 
-            recognition = new SpeechRecognition();
-            recognition.lang = langSelect.value;
-            recognition.continuous = true;
-            recognition.interimResults = true;
+    // 5. Setup Events
+    video.addEventListener('play', () => {
+        try {
+            recognition.start();
+            overlay.classList.remove('hidden');
+        } catch (e) { console.log("Recognition already started or error:", e); }
+    });
 
-            video.addEventListener('play', () => {
-                try {
-                    recognition.start();
-                    overlay.classList.remove('hidden');
-                } catch (e) { }
-            });
+    video.addEventListener('pause', () => {
+        try { recognition.stop(); } catch(e){}
+    });
+    
+    video.addEventListener('ended', () => {
+        try { recognition.stop(); } catch(e){}
+        overlay.classList.add('hidden');
+    });
 
-            video.addEventListener('pause', () => {
-                try { recognition.stop(); } catch(e){}
-            });
-            
-            video.addEventListener('ended', () => {
-                try { recognition.stop(); } catch(e){}
-                overlay.classList.add('hidden');
-            });
-
-            recognition.onresult = function(event) {
-                let currentResult = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    currentResult += event.results[i][0].transcript;
-                }
-                textBox.innerText = currentResult;
-            };
-
-            recognition.onerror = function(event) {
-                console.error("Speech Recognition Error: ", event.error);
-            };
+    recognition.onresult = function(event) {
+        let currentResult = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            currentResult += event.results[i][0].transcript;
         }
+        textBox.innerText = currentResult;
+    };
+
+    recognition.onerror = function(event) {
+        console.error("Speech Recognition Error: ", event.error);
+    };
+
+    // 6. UI Update and FORCE PLAY
+    captionsBtn.innerText = "CAPTIONS ACTIVATED ✨";
+    captionsBtn.disabled = true;
+    
+    closeModal(); // Close popup
+    
+    // Force the main player to play so the events triggered above actually run
+    video.muted = true; // High success rate for auto-play in browsers
+    video.play().then(() => {
+        video.muted = false; // Unmute after successful play
+    }).catch(err => {
+        alert("Click on the video player to start Auto Captions!");
+        console.log("Autoplay blocked, user interaction needed:", err);
+    });
+    }
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
