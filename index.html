@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,7 +119,7 @@
         <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-2 rounded-full flex justify-between items-center pl-6">
             <div class="flex items-center gap-2 text-gray-500 text-xs truncate">
                 <i class="fas fa-wand-magic-sparkles text-blue-500"></i>
-                <span>Try prompt: <span class="text-gray-300 italic">" dragon flying over cliffs"</span> or <span class="text-gray-300 italic">" UFO above farmland"</span></span>
+                <span>Try prompt: <span class="text-gray-300 italic">"🐉 dragon flying over cliffs"</span> or <span class="text-gray-300 italic">"🛸 UFO above farmland"</span></span>
             </div>
             <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition">Create with AI</button>
         </div>
@@ -137,12 +138,7 @@
                     <p class="text-xs font-bold text-gray-300">Click to Upload or Drag Video Here</p>
                     <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM</p>
                 </div>
-              <div onclick="openCaptionsStudio()" class="feature-box p-6 border-purple-500/30 bg-purple-950/5 text-center cursor-pointer">
-    <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
-    <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
-    <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
-              </div>
-              
+                <video id="live-studio-player" controls class="hidden w-full h-full object-contain"></video>
             </div>
 
             <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -178,11 +174,8 @@
             </div>
 
             <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
-            <div onclick="openCaptionsStudio()" class="feature-box p-6 border-purple-500/30 bg-purple-950/5 text-center cursor-pointer">
-    <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
-    <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
-    <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
-            </div>
+            <div onclick="showInfo('text-speech')" class="feature-box p-6 text-center"><i class="fas fa-comment-dots text-2xl text-green-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Text to Speech</h4></div>
+            <div onclick="showInfo('speech-text')" class="feature-box p-6 text-center"><i class="fas fa-quote-left text-2xl text-purple-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4></div>
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
@@ -279,30 +272,8 @@
                     <a id="bg-download-link" class="text-[11px] text-yellow-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-transparent.png"><i class="fas fa-download mr-1"></i> Download Image</a>
                 </div>
             `,
-            'speech-text': `
-    <i class="fas fa-quote-left text-4xl text-purple-500 mb-4 animate-pulse"></i>
-    <h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles AI</h3>
-    <p class="text-xs text-gray-400 mb-4">Select a video file from your device to generate real-time dynamic overlays.</p>
-    
-    <div class="space-y-4 text-left">
-        <div>
-            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Import Video Target</label>
-            <input type="file" id="caption-video-picker" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20">
-        </div>
-
-        <div>
-            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select Audio Language</label>
-            <select id="caption-lang" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                <option value="en-US">English (US)</option>
-                <option value="ur-PK">Urdu (Pakistan)</option>
-                <option value="hi-IN">Hindi / Hinglish</option>
-            </select>
-        </div>
-        <button onclick="generateAutoCaptions()" id="captions-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Captions </button>
-    </div>
-`,
-          
-          
+            'text-speech': `<i class="fas fa-comment-dots text-4xl text-green-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Text to Speech AI</h3><p class="text-xs text-gray-400">Convert text scripts into realistic human voices.</p>`,
+            'speech-text': `<i class="fas fa-quote-left text-4xl text-purple-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles</h3><p class="text-xs text-gray-400">Transcribe voice track audio data directly into high-fidelity custom styled overlays.</p>`,
             'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
             'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
             'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
@@ -331,7 +302,7 @@
                             <option value="9:16">Portrait (9:16) — TikTok/Reels</option>
                         </select>
                     </div>
-                    <button onclick="generateGrokVideo(event)" id="grok-video-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Grok Video </button>
+                    <button onclick="generateGrokVideo(event)" id="grok-video-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Grok Video 🎬</button>
                 </div>
                 <div id="grok-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-video bg-black flex flex-col items-center justify-center p-4 relative">
                     <div id="grok-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-[10px] font-bold text-blue-400 uppercase tracking-widest hidden">
@@ -482,7 +453,7 @@
                     downloadLink.classList.remove('hidden');
                    
                     actionBtn.disabled = false;
-                    actionBtn.innerText = "Generate Grok Video ";
+                    actionBtn.innerText = "Generate Grok Video 🎬";
                 }, 3000);
 
             } catch (error) {
@@ -490,7 +461,7 @@
                 alert("Grok Video Engine timeout. Try again!");
                 loader.classList.add('hidden');
                 actionBtn.disabled = false;
-                actionBtn.innerText = "Generate Grok Video ";
+                actionBtn.innerText = "Generate Grok Video 🎬";
             }
         }
 
@@ -723,90 +694,10 @@
             link.href = canvas.toDataURL();
             link.click();
         });
-        // --- DRAVOO AUTO CAPTIONS ENGINE (UPDATED VERSION) ---
-        let recognition;
-
-        function openCaptionsStudio() {
-            showInfo('speech-text');
-        }
-
-        function generateAutoCaptions() {
-            const video = document.getElementById('live-studio-player');
-            const captionsBtn = document.getElementById('captions-btn');
-            const langSelect = document.getElementById('caption-lang');
-            const overlay = document.getElementById('video-caption-overlay');
-            const textBox = document.getElementById('caption-text-box');
-            const captionFilePicker = document.getElementById('caption-video-picker');
-            const playIcon = document.getElementById('play-icon-placeholder');
-            const controlPanel = document.getElementById('trimmer-control-panel');
-            const statusText = document.getElementById('studio-status');
-
-            // اگر یوزر نے ماڈل کے اندر سے نئی ویڈیو سلیکٹ کی ہے تو اسے مین پلیئر میں لوڈ کریں
-            if (captionFilePicker && captionFilePicker.files.length > 0) {
-                const file = captionFilePicker.files[0];
-                playIcon.classList.add('hidden');
-                video.classList.remove('hidden');
-                controlPanel.classList.remove('hidden');
-                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
-                video.src = URL.createObjectURL(file);
-            }
-
-            // اگر نہ پہلے سے ویڈیو لوڈ ہے اور نہ ہی نئی سلیکٹ کی گئی ہے تو الرٹ دکھائیں
-            if (!video.src || video.src === "") {
-                return alert("Please select or upload a video file first!");
-            }
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                return alert("Sorry! Your browser does not support Auto Captions. Please use Google Chrome.");
-            }
-
-            captionsBtn.innerText = "CAPTIONS ACTIVATED ✨";
-            captionsBtn.disabled = true;
-            
-            setTimeout(() => {
-                closeModal();
-                video.play(); // ویڈیو خود بخود پلے ہو جائے گی
-                alert("Auto Captions are ready! Play the video to see subtitles.");
-            }, 800);
-
-            recognition = new SpeechRecognition();
-            recognition.lang = langSelect.value;
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            video.addEventListener('play', () => {
-                try {
-                    recognition.start();
-                    overlay.classList.remove('hidden');
-                } catch (e) { }
-            });
-
-            video.addEventListener('pause', () => {
-                try { recognition.stop(); } catch(e){}
-            });
-            
-            video.addEventListener('ended', () => {
-                try { recognition.stop(); } catch(e){}
-                overlay.classList.add('hidden');
-            });
-
-            recognition.onresult = function(event) {
-                let currentResult = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    currentResult += event.results[i][0].transcript;
-                }
-                textBox.innerText = currentResult;
-            };
-
-            recognition.onerror = function(event) {
-                console.error("Speech Recognition Error: ", event.error);
-            };
-            }
-    
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 
 </body>
 </html>
+
