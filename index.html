@@ -847,7 +847,7 @@
                 }, 1500);
             }
         }
-      // --- FACE CUTOUT ENGINE ---
+// --- FACE CUTOUT ENGINE ---
 async function processFaceCutout() {
     const fileInput = document.getElementById('face-upload-input');
     const btn = document.getElementById('face-cutout-btn');
@@ -857,7 +857,7 @@ async function processFaceCutout() {
     const downloadLink = document.getElementById('face-download-link');
     const loader = document.getElementById('face-loader');
 
-    if (!fileInput.files.length) return alert("First select any photo!");
+    if (!fileInput.files.length) return alert("Pehle koi photo select karein!");
 
     const file = fileInput.files[0];
     
@@ -882,7 +882,7 @@ async function processFaceCutout() {
     try {
         const response = await fetch('https://clipdrop-api.co/remove-background/v1', {
             method: 'POST',
-            headers: { 'X-Api-Key': '50a52638e0374b26b19b0c56348911f2' }
+            headers: { 'X-Api-Key': '50a52638e0374b26b19b0c56348911f2' },
             body: formData
         });
 
