@@ -188,10 +188,11 @@
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
             
+            <!-- NAME AND LOGO CHANGED TO AI BACKGROUND BLUR (PORTRAIT SLIDER ENGINE) BY MUDASSIR -->
             <div onclick="showInfo('face-cutout')" class="feature-box p-6 border-red-500/30 bg-red-950/5 text-center cursor-pointer">
-                <i class="fas fa-user-slash text-2xl text-red-500 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Person Remover</h4>
-                <p class="text-[10px] text-red-400 mt-1 font-semibold">Active Engine</p>
+                <i class="fas fa-sliders text-2xl text-red-500 mb-3"></i>
+                <h4 class="text-xs font-bold uppercase tracking-wide">AI Background Blur</h4>
+                <p class="text-[10px] text-red-400 mt-1 font-semibold">Portrait Engine</p>
             </div>
             
             <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
@@ -314,22 +315,22 @@
             'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
             'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
             
-            // --- UPDATED 100% WORKING PERSON REMOVER ENGINE INTERFACE ---
+            // --- UPDATED MODAL VIEW FOR BACKGROUND BLUR PORTRAIT STUDIO ---
             'face-cutout': `
-                <i class="fas fa-user-slash text-4xl text-red-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">AI Person & Object Remover</h3>
-                <p class="text-xs text-gray-400 mb-4">Upload a photo to instantly remove the person layer and keep the original background intact.</p>
+                <i class="fas fa-sliders text-4xl text-red-500 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2">AI Background Blur Studio</h3>
+                <p class="text-xs text-gray-400 mb-4">Upload a photo to isolate the person and apply a beautiful DSLR Cinematic Blur to the background.</p>
                 <div class="space-y-3">
                     <input type="file" id="face-upload-input" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-500/10 file:text-red-500 hover:file:bg-red-500/20">
-                    <button onclick="processPersonRemoval()" id="face-cutout-btn" class="w-full py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Erase Person ⚡</button>
+                    <button onclick="processBackgroundBlur()" id="face-cutout-btn" class="w-full py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Apply Blur ⚡</button>
                 </div>
                 <div id="face-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[150px]">
                     <div id="face-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-red-400 uppercase tracking-widest hidden">
-                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Processing Client Inpainting Engine...
+                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Isolating Subject & Blurring...
                     </div>
                     <canvas id="face-canvas-processor" class="hidden"></canvas>
                     <img id="face-result-img" class="max-w-full max-h-48 object-contain mb-3 hidden">
-                    <a id="face-download-link" class="text-[11px] text-red-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-background-preserved.png"><i class="fas fa-download mr-1"></i> Download Output</a>
+                    <a id="face-download-link" class="text-[11px] text-red-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-portrait-blur.png"><i class="fas fa-download mr-1"></i> Download Output</a>
                 </div>
             `,
             
@@ -761,7 +762,7 @@
             link.click();
         });
 
-        // --- DRAVOO AUTO CAPTIONS ENGINE (UPDATED VERSION) ---
+        // --- DRAVOO AUTO CAPTIONS ENGINE ---
         let recognition;
 
         function openCaptionsStudio() {
@@ -854,9 +855,9 @@
             }
         }
 
-        // --- NEW & OPTIMIZED CLIENT-SIDE PERSON REMOVAL / BACKGROUND KEEPER LOGIC ENGINE ---
-        // Yeh function image se insaan ka area isolate karega aur custom edge infill system se original background ko bacha kr rakhega!
-        async function processPersonRemoval() {
+        // --- 100% INVERTED: NEW BACKGROUND BLUR (PORTRAIT PRO) ENGINE SYSTEM ---
+        // Yeh function ab insaan ko perfect chhod dega aur piche wale pure background ko dslr ki tarah blur kar dega.
+        async function processBackgroundBlur() {
             const fileInput = document.getElementById('face-upload-input');
             const actionBtn = document.getElementById('face-cutout-btn');
             const resultContainer = document.getElementById('face-result-container');
@@ -871,7 +872,7 @@
 
             const file = fileInput.files[0];
             actionBtn.disabled = true;
-            actionBtn.innerText = "LOADING MODEL...";
+            actionBtn.innerText = "ISOLATING SUBJECT...";
             resultContainer.classList.remove('hidden');
             resultImg.classList.add('hidden');
             downloadLink.classList.add('hidden');
@@ -882,13 +883,12 @@
 
             img.onload = async function() {
                 try {
-                    // MediaPipe Selfie Segmentation Initialize kiya
                     const selfieSegmentation = new SelfieSegmentation({
                         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
                     });
 
                     selfieSegmentation.setOptions({
-                        modelSelection: 1, // Full body/Face isolation configuration
+                        modelSelection: 1, // Full body/Face focus segmentation tracking
                     });
 
                     selfieSegmentation.onResults((results) => {
@@ -896,78 +896,57 @@
                         canvas.height = img.naturalHeight;
                         const ctx = canvas.getContext('2d');
 
-                        // Step 1: Base image ko pure scale par render karna
+                        // Step 1: Pehle pure canvas par blurred background draw karna
+                        ctx.save();
+                        ctx.filter = 'blur(15px)'; // Yahan se blur control hota hai (15px standard DSLR depth h)
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        ctx.restore();
 
-                        // Step 2: Offscreen canvas banana mask computation ke liye
+                        // Step 2: Offscreen canvas par mask texture load karna
                         const maskCanvas = document.createElement('canvas');
                         maskCanvas.width = canvas.width;
                         maskCanvas.height = canvas.height;
                         const maskCtx = maskCanvas.getContext('2d');
                         maskCtx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
 
-                        // Step 3: Raw image aur mask pixels ka mathematical evaluation (Inpainting & Expansion)
-                        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const maskData = maskCtx.getImageData(0, 0, canvas.width, canvas.height);
-                        const pixels = imgData.data;
-                        const maskPixels = maskData.data;
+                        // Step 3: GlobalCompositeOperation se blurred layer ke upar original person cutout draw karna
+                        // Is step se background blurred reh jata h aur insaan bilkul crystal clear ho jata h.
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = canvas.width;
+                        tempCanvas.height = canvas.height;
+                        const tempCtx = tempCanvas.getContext('2d');
 
-                        // Local smart blend algorithm: Person area ko edge colors se mask karna
-                        for (let y = 0; y < canvas.height; y++) {
-                            for (let x = 0; x < canvas.width; x++) {
-                                const idx = (y * canvas.width + x) * 4;
-                                // Agar pixel person area ke andar match hota hai (>30 threshold)
-                                if (maskPixels[idx] > 30) {
-                                    // Piche wale pixel ya side wale valid background pixel ka address extract karna
-                                    let sourceX = x - 25;
-                                    if (sourceX < 0) sourceX = x + 25;
-                                    if (sourceX >= canvas.width) sourceX = canvas.width - 1;
+                        // Mask ke coding coordinates pick kiye
+                        tempCtx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+                        tempCtx.globalCompositeOperation = 'source-in';
+                        tempCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                                    const sourceIdx = (y * canvas.width + sourceX) * 4;
-                                    
-                                    // Person structural bits ko clean background bits se dynamic replace karna
-                                    pixels[idx] = pixels[sourceIdx];     // Red
-                                    pixels[idx+1] = pixels[sourceIdx+1]; // Green
-                                    pixels[idx+2] = pixels[sourceIdx+2]; // Blue
-                                }
-                            }
-                        }
+                        // Ab core portrait content ko main workspace top par overlap layer banana
+                        ctx.drawImage(tempCanvas, 0, 0);
 
-                        // Updated pixels ko main workspace canvas par shift karna
-                        ctx.putImageData(imgData, 0, 0);
-
-                        // Canvas par smooth transition ke liye lightweight gaussian patch texture overlay build karna
-                        ctx.globalCompositeOperation = 'destination-out';
-                        ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+                        // Final pipeline state data image format create karna
+                        const portraitResultUrl = canvas.toDataURL('image/png');
                         
-                        ctx.globalCompositeOperation = 'destination-over';
-                        ctx.filter = 'blur(12px)';
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        ctx.filter = 'none';
+                        resultImg.src = portraitResultUrl;
+                        downloadLink.href = portraitResultUrl;
 
-                        // Data layer URL format mein export link create karna
-                        const cleanBgUrl = canvas.toDataURL('image/png');
-                        
-                        resultImg.src = cleanBgUrl;
-                        downloadLink.href = cleanBgUrl;
-
-                        // UI Setup reset state
+                        // Reset layouts status loaders
                         loader.classList.add('hidden');
                         resultImg.classList.remove('hidden');
                         downloadLink.classList.remove('hidden');
                         actionBtn.disabled = false;
-                        actionBtn.innerText = "Erase Person ⚡";
+                        actionBtn.innerText = "Apply Blur ⚡";
                     });
 
-                    // Input elements data pipeline ko feed karna
+                    // MediaPipe segmentation frame pipeline data processing handle
                     await selfieSegmentation.send({ image: img });
 
                 } catch (err) {
-                    console.error("Engine Fault: ", err);
-                    alert("Local GPU AI Error! Model variables download hone ke liye internet check karein.");
+                    console.error("Portrait Blur Engine Error: ", err);
+                    alert("GPU Matrix Error! Internet connection re-verify karein core components load karne ke liye.");
                     loader.classList.add('hidden');
                     actionBtn.disabled = false;
-                    actionBtn.innerText = "Erase Person ⚡";
+                    actionBtn.innerText = "Apply Blur ⚡";
                 }
             };
         }
