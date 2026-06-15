@@ -186,11 +186,11 @@
             </div>
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
             <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
-            <div onclick="showInfo('blur-effect')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
+            <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
             
-            <div onclick="showInfo('blur-effect')" class="feature-box p-6 border-red-500/30 bg-red-950/5 text-center blur-pointer">
+            <div onclick="showInfo('face-cutout')" class="feature-box p-6 border-red-500/30 bg-red-950/5 text-center cursor-pointer">
                 <i class="fas fa-user-slash text-2xl text-red-500 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Blur Effect</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wide">Person Remover</h4>
                 <p class="text-[10px] text-red-400 mt-1 font-semibold">Active Engine</p>
             </div>
             
@@ -855,7 +855,7 @@
         }
 
         // --- NEW & OPTIMIZED CLIENT-SIDE PERSON REMOVAL / BACKGROUND KEEPER LOGIC ENGINE ---
-        
+        // Yeh function image se insaan ka area isolate karega aur custom edge infill system se original background ko bacha kr rakhega!
         async function processPersonRemoval() {
             const fileInput = document.getElementById('face-upload-input');
             const actionBtn = document.getElementById('face-cutout-btn');
