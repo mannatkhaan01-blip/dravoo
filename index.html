@@ -186,7 +186,6 @@
             </div>
             <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
             
-            <!-- COMPRESSOR LINK ACTIVATED AS 100% WORKING BY MUDASSIR -->
             <div onclick="showInfo('compressor')" class="feature-box p-6 border-orange-500/30 bg-orange-950/5 text-center cursor-pointer">
                 <i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4>
@@ -236,7 +235,7 @@
         </div>
     </div>
 
-    <section class="bg-[#08080a] py-12 border-t border-gray-900">
+    <section class="bg-[#08080a] py-12 border-t border-gray-900 mt-20">
         <div class="max-w-5xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-left">
                 <div class="space-y-3">
@@ -247,13 +246,15 @@
                 <div class="space-y-3">
                     <span onclick="showInfo('privacy')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Privacy Policy</span>
                     <span onclick="showInfo('creator-tos')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Creator Terms of Service</span>
-                    <span onclick="showInfo('privacy-choices')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer"><i class="fas fa-circle-check text-blue-500 text-xs mr-1"></i> Your Privacy Choices</span>
+                    <span onclick="showInfo('privacy-choices')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer flex items-center gap-1"><i class="fas fa-circle-check text-blue-500 text-xs"></i> Your Privacy Choices</span>
                 </div>
                 <div class="space-y-3">
+                    <span onclick="showInfo('about')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">About Us</span>
+                    <a href="mailto:dravooeditor@gmail.com" class="block text-sm font-semibold text-gray-400 hover:text-white transition">Feedback</a>
                     <span onclick="showInfo('cookies')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Cookies Policy</span>
                     <span onclick="showInfo('community')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Community Guidelines</span>
                 </div>
-                <div class="flex flex-col justify-center items-start md:items-end">
+                <div class="flex flex-col justify-start items-start md:items-end">
                     <h4 class="text-md font-black tracking-wider text-white flex items-center gap-2"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h4>
                     <p class="text-[10px] text-gray-500 mt-1">Next-Gen Client Side Processing</p>
                 </div>
@@ -262,12 +263,24 @@
     </section>
 
     <footer class="bg-[#050505] pt-8 pb-8 border-t border-gray-950 text-center text-xs text-gray-600">
-        <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
-            <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
-            <a href="mailto:dravooeditor@gmail.com" class="hover:text-white transition">Feedback</a>
-            <span onclick="showInfo('privacy')" class="hover:text-white transition cursor-pointer">Privacy Policy</span>
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8 mb-6 font-bold uppercase tracking-wider text-[11px]">
+            <a href="https://youtube.com/@dravooeditor?si=Au1Y8Jf5vqlmOGeC" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-red-500 transition duration-300">
+                <i class="fab fa-youtube text-md"></i> YouTube
+            </a>
+            <a href="https://www.instagram.com/dravooeditor?igsh=MXc1bmU5cGU2NHp5NQ==" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-pink-500 transition duration-300">
+                <i class="fab fa-instagram text-md"></i> Instagram
+            </a>
+            <a href="https://tiktok.com/@dravooeditor" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-white transition duration-300">
+                <i class="fab fa-tiktok text-md"></i> TikTok
+            </a>
+            <a href="https://x.com/DravooEditor" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-blue-400 transition duration-300">
+                <i class="fab fa-x-twitter text-md"></i> X / Twitter
+            </a>
+            <a href="https://www.facebook.com/share/1FwcYu2zhY/" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-blue-600 transition duration-300">
+                <i class="fab fa-facebook text-md"></i> Facebook
+            </a>
         </div>
-        <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
+        <p class="text-[9px] uppercase tracking-[4px] text-gray-500">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
     </footer>
 
     <script>
