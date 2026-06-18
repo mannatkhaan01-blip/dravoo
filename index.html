@@ -60,8 +60,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
-    <script src="https://js.puter.com/v2/"></script>
 
     <style>
         html { scroll-behavior: smooth; }
@@ -100,9 +98,6 @@
         </div>
        
         <div class="flex items-center gap-4">
-            <div class="bg-zinc-900 border border-zinc-700 px-3 py-1 rounded-full text-xs flex items-center gap-1.5 font-bold">
-                <i class="fas fa-bolt text-yellow-400"></i> Credits: <span id="nav-credit-count" class="text-blue-400">3</span>
-            </div>
             <div id="userDisplay" class="hidden flex items-center gap-3 bg-zinc-900/60 pl-3 pr-2 py-1 rounded-full border border-zinc-800">
                 <div class="text-right">
                     <p id="displayUsername" class="text-xs font-bold text-blue-400"></p>
@@ -142,11 +137,12 @@
                     <p class="text-xs font-bold text-gray-300">Click to Upload or Drag Video Here</p>
                     <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM</p>
                 </div>
-                
-                <video id="live-studio-player" controls loop class="w-full h-full object-contain hidden"></video>
-                <div id="video-caption-overlay" class="absolute bottom-10 left-0 right-0 hidden flex justify-center pointer-events-none">
-                    <div id="caption-text-box" class="bg-black/80 border border-zinc-800 px-4 py-2 rounded-xl text-xs md:text-sm text-yellow-400 font-bold max-w-[80%] text-center"></div>
-                </div>
+              <div onclick="openCaptionsStudio()" class="feature-box p-6 border-purple-500/30 bg-purple-950/5 text-center cursor-pointer">
+    <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
+    <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
+    <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
+              </div>
+              
             </div>
 
             <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -182,33 +178,15 @@
             </div>
 
             <div onclick="showInfo('bg-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-minus text-2xl text-yellow-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Remove Background</h4></div>
-            
             <div onclick="openCaptionsStudio()" class="feature-box p-6 border-purple-500/30 bg-purple-950/5 text-center cursor-pointer">
-                <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
-                <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
+    <i class="fas fa-quote-left text-2xl text-purple-400 mb-3"></i>
+    <h4 class="text-xs font-bold uppercase tracking-wide">Auto Captions</h4>
+    <p class="text-[10px] text-purple-400 mt-1 font-semibold">Active Studio</p>
             </div>
-            
-            <div onclick="showInfo('ai-tts-studio')" class="feature-box p-6 border-indigo-500/30 bg-indigo-950/5 text-center cursor-pointer">
-                <i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Studio (TTS)</h4>
-                <p class="text-[10px] text-indigo-400 mt-1 font-semibold">Free Puter Engine</p>
-            </div>
-            
-            <div onclick="showInfo('compressor')" class="feature-box p-6 border-orange-500/30 bg-orange-950/5 text-center cursor-pointer">
-                <i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4>
-                <p class="text-[10px] text-orange-400 mt-1 font-semibold">Active Engine</p>
-            </div>
-            
+            <div onclick="showInfo('ai-cloning')" class="feature-box p-6 text-center"><i class="fas fa-microphone-alt text-2xl text-indigo-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI Voice Cloning</h4></div>
+            <div onclick="showInfo('compressor')" class="feature-box p-6 text-center"><i class="fas fa-file-video text-2xl text-orange-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4></div>
             <div onclick="showInfo('people-remover')" class="feature-box p-6 text-center"><i class="fas fa-user-slash text-2xl text-teal-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">AI People Remover</h4></div>
-            
-            <div onclick="showInfo('face-cutout')" class="feature-box p-6 border-red-500/30 bg-red-950/5 text-center cursor-pointer">
-                <i class="fas fa-sliders text-2xl text-red-500 mb-3"></i>
-                <h4 class="text-xs font-bold uppercase tracking-wide">AI Background Blur</h4>
-                <p class="text-[10px] text-red-400 mt-1 font-semibold">Portrait Engine</p>
-            </div>
-            
+            <div onclick="showInfo('face-cutout')" class="feature-box p-6 text-center"><i class="fas fa-user-tie text-2xl text-red-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Face Cutout</h4></div>
             <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
             <div onclick="showInfo('banana-pro')" class="feature-box p-6 text-center"><i class="fas fa-image text-2xl text-lime-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Nano Banana Pro</h4></div>
             <div onclick="showInfo('gpt-image')" class="feature-box p-6 text-center"><i class="fas fa-bolt text-2xl text-amber-500 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">GPT Image 2</h4></div>
@@ -233,7 +211,7 @@
                 <div id="meme-text-bottom"></div>
             </div>
             <div class="space-y-3 text-left">
-                <button onclick="if(checkCredits()) { document.getElementById('meme-image-picker').click(); }" class="w-full bg-pink-500/10 border border-pink-500/30 py-2.5 rounded-xl text-xs uppercase font-bold text-pink-400 hover:bg-pink-500/20 transition"><i class="fas fa-image mr-2"></i>Upload Base Image</button>
+                <button onclick="document.getElementById('meme-image-picker').click()" class="w-full bg-pink-500/10 border border-pink-500/30 py-2.5 rounded-xl text-xs uppercase font-bold text-pink-400 hover:bg-pink-500/20 transition"><i class="fas fa-image mr-2"></i>Upload Base Image</button>
                 <input type="text" id="input-top" class="meme-input text-xs" placeholder="TOP FUNNY TEXT..." disabled>
                 <input type="text" id="input-bottom" class="meme-input text-xs" placeholder="BOTTOM FUNNY TEXT..." disabled>
             </div>
@@ -244,7 +222,7 @@
         </div>
     </div>
 
-    <section class="bg-[#08080a] py-12 border-t border-gray-900 mt-20">
+    <section class="bg-[#08080a] py-12 border-t border-gray-900">
         <div class="max-w-5xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-left">
                 <div class="space-y-3">
@@ -255,15 +233,13 @@
                 <div class="space-y-3">
                     <span onclick="showInfo('privacy')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Privacy Policy</span>
                     <span onclick="showInfo('creator-tos')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Creator Terms of Service</span>
-                    <span onclick="showInfo('privacy-choices')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer flex items-center gap-1"><i class="fas fa-circle-check text-blue-500 text-xs"></i> Your Privacy Choices</span>
+                    <span onclick="showInfo('privacy-choices')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer"><i class="fas fa-circle-check text-blue-500 text-xs mr-1"></i> Your Privacy Choices</span>
                 </div>
                 <div class="space-y-3">
-                    <span onclick="showInfo('about')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">About Us</span>
-                    <a href="mailto:dravooeditor@gmail.com" class="block text-sm font-semibold text-gray-400 hover:text-white transition">Feedback</a>
                     <span onclick="showInfo('cookies')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Cookies Policy</span>
                     <span onclick="showInfo('community')" class="block text-sm font-semibold text-gray-400 hover:text-white transition cursor-pointer">Community Guidelines</span>
                 </div>
-                <div class="flex flex-col justify-start items-start md:items-end">
+                <div class="flex flex-col justify-center items-start md:items-end">
                     <h4 class="text-md font-black tracking-wider text-white flex items-center gap-2"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO</h4>
                     <p class="text-[10px] text-gray-500 mt-1">Next-Gen Client Side Processing</p>
                 </div>
@@ -272,78 +248,20 @@
     </section>
 
     <footer class="bg-[#050505] pt-8 pb-8 border-t border-gray-950 text-center text-xs text-gray-600">
-        <div class="flex flex-wrap justify-center gap-6 md:gap-8 mb-6 font-bold uppercase tracking-wider text-[11px]">
-            <a href="https://youtube.com/@dravooeditor?si=Au1Y8Jf5vqlmOGeC" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-red-500 transition duration-300">
-                <i class="fab fa-youtube text-md"></i> YouTube
-            </a>
-            <a href="https://www.instagram.com/dravooeditor?igsh=MXc1bmU5cGU2NHp5NQ==" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-pink-500 transition duration-300">
-                <i class="fab fa-instagram text-md"></i> Instagram
-            </a>
-            <a href="https://tiktok.com/@dravooeditor" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-white transition duration-300">
-                <i class="fab fa-tiktok text-md"></i> TikTok
-            </a>
-            <a href="https://x.com/DravooEditor" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-blue-400 transition duration-300">
-                <i class="fab fa-x-twitter text-md"></i> X / Twitter
-            </a>
-            <a href="https://www.facebook.com/share/1FwcYu2zhY/" target="_blank" class="flex items-center gap-1.5 text-gray-400 hover:text-blue-600 transition duration-300">
-                <i class="fab fa-facebook text-md"></i> Facebook
-            </a>
+        <div class="flex justify-center gap-8 mb-6 font-bold uppercase tracking-wider text-[10px]">
+            <span onclick="showInfo('about')" class="hover:text-white transition cursor-pointer">About Us</span>
+            <a href="mailto:dravooeditor@gmail.com" class="hover:text-white transition">Feedback</a>
+            <span onclick="showInfo('privacy')" class="hover:text-white transition cursor-pointer">Privacy Policy</span>
         </div>
-        <p class="text-[9px] uppercase tracking-[4px] text-gray-500">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
+        <p class="text-[9px] uppercase tracking-[4px]">© 2026 Dravoo Studio | Developed by Mudassir Shabbir.</p>
     </footer>
 
     <script>
-        // --- 100% WORKING CREDIT MANAGEMENT SYSTEM BY MUDASSIR ---
-        const DEFAULT_MAX_CREDITS = 3;
-        
-        function getRemainingCredits() {
-            const saved = localStorage.getItem('dravoo_user_credits');
-            if (saved === null) {
-                localStorage.setItem('dravoo_user_credits', DEFAULT_MAX_CREDITS);
-                return DEFAULT_MAX_CREDITS;
-            }
-            return parseInt(saved, 10);
-        }
-
-        function updateCreditUI() {
-            const current = getRemainingCredits();
-            const navCounter = document.getElementById('nav-credit-count');
-            if (navCounter) {
-                navCounter.innerText = current;
-                if (current <= 0) {
-                    navCounter.className = "text-red-500 animate-pulse";
-                } else {
-                    navCounter.className = "text-blue-400";
-                }
-            }
-        }
-
-        function checkCredits() {
-            const current = getRemainingCredits();
-            if (current <= 0) {
-                alert("❌ Aap ke Free Credits khatam ho chuke hain!\n\nAage features use karne ke liye hamara Pro Plan ($3/Month) purchase karein. Mazeed details ke liye contact karein: dravooeditor@gmail.com");
-                return false;
-            }
-            return true;
-        }
-
-        function deductCredit() {
-            let current = getRemainingCredits();
-            if (current > 0) {
-                current -= 1;
-                localStorage.setItem('dravoo_user_credits', current);
-                updateCreditUI();
-                return true;
-            }
-            return false;
-        }
-
         function scrollToSection(id) {
             const element = document.getElementById(id);
             if (element) element.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // --- ALL ONE-STOP COMPONENT MODALS DATA INTERFACES ---
         const infoData = {
             'bg-remover': `
                 <i class="fas fa-user-minus text-4xl text-yellow-500 mb-4"></i>
@@ -362,115 +280,36 @@
                 </div>
             `,
             'speech-text': `
-                <i class="fas fa-quote-left text-4xl text-purple-500 mb-4 animate-pulse"></i>
-                <h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles AI</h3>
-                <p class="text-xs text-gray-400 mb-4">Select a video file from your device to generate real-time dynamic overlays.</p>
-                <div class="space-y-4 text-left">
-                    <div>
-                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Import Video Target</label>
-                        <input type="file" id="caption-video-picker" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select Audio Language</label>
-                        <select id="caption-lang" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                            <option value="en-US">English (US)</option>
-                            <option value="ur-PK">Urdu (Pakistan)</option>
-                            <option value="hi-IN">Hindi / Hinglish</option>
-                        </select>
-                    </div>
-                    <button onclick="generateAutoCaptions()" id="captions-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Captions </button>
-                </div>
-            `,
+    <i class="fas fa-quote-left text-4xl text-purple-500 mb-4 animate-pulse"></i>
+    <h3 class="text-lg font-bold mb-2">Auto Captions & Subtitles AI</h3>
+    <p class="text-xs text-gray-400 mb-4">Select a video file from your device to generate real-time dynamic overlays.</p>
+    
+    <div class="space-y-4 text-left">
+        <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Import Video Target</label>
+            <input type="file" id="caption-video-picker" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20">
+        </div>
+
+        <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Select Audio Language</label>
+            <select id="caption-lang" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
+                <option value="en-US">English (US)</option>
+                <option value="ur-PK">Urdu (Pakistan)</option>
+                <option value="hi-IN">Hindi / Hinglish</option>
+            </select>
+        </div>
+        <button onclick="generateAutoCaptions()" id="captions-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Captions </button>
+    </div>
+`,
           
-            // --- NEW FREE UNLIMITED PUTER.JS TTS ENGINE INTEGRATION ---
-            'ai-tts-studio': `
-                <i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">AI Voice Studio (TTS)</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter text to convert into realistic human voice instantly using free Puter AI engine.</p>
-                <div class="space-y-3 text-left">
-                    <textarea id="tts-input-text" class="meme-input text-xs w-full" rows="3" placeholder="Yahan apna text likhein ya paste karein..."></textarea>
-                    
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Provider Engine</label>
-                            <select id="tts-provider" class="meme-input text-xs py-2 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                                <option value="openai">OpenAI Hyper-Real</option>
-                                <option value="xai">xAI Grok Expressive</option>
-                                <option value="gemini">Google Gemini AI</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Target Language</label>
-                            <select id="tts-language" class="meme-input text-xs py-2 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                                <option value="en-US">English (US)</option>
-                                <option value="ur-PK">Urdu / Hindi</option>
-                                <option value="es-ES">Spanish</option>
-                                <option value="fr-FR">French</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button onclick="processPuterTTS()" id="tts-action-btn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold uppercase text-[10px] text-white transition tracking-wide">Generate Voice Output 🎙️</button>
-                </div>
-            `,
-            
-            'compressor': `
-                <i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3>
-                <p class="text-xs text-gray-400 mb-4">Upload your video to compress and lower payload size instantly right inside your browser scope.</p>
-                <div class="space-y-3 text-left">
-                    <input type="file" id="compressor-video-input" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-500/10 file:text-orange-500 hover:file:bg-orange-500/20">
-                    <div>
-                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Compression Level</label>
-                        <select id="compression-quality" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                            <option value="0.7">Medium Compression (Balanced Quality)</option>
-                            <option value="0.4">High Compression (Smallest Size / Fast)</option>
-                            <option value="0.85">Low Compression (Maximum Crisp Details)</option>
-                        </select>
-                    </div>
-                    <button onclick="processVideoCompression()" id="compressor-action-btn" class="w-full py-2.5 bg-orange-600 hover:bg-orange-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Compress Video ⚡</button>
-                </div>
-                <div id="compressor-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[120px]">
-                    <div id="compressor-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-orange-400 uppercase tracking-widest hidden">
-                        <i class="fas fa-circle-notch animate-spin mb-2 text-2xl"></i> Encoding & Downsizing Tracks...
-                    </div>
-                    <div id="compression-stats" class="text-[11px] text-gray-400 mb-2 font-mono text-center hidden"></div>
-                    <a id="compressor-download-link" class="text-[11px] text-orange-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-compressed.mp4"><i class="fas fa-download mr-1"></i> Download Compressed Video</a>
-                </div>
-            `,
-
-            'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400 mb-3">Seamlessly erase unwanted background crowd elements.</p><button onclick="if(checkCredits()){ deductCredit(); alert('Processing Engine Started...'); }" class="w-full py-2 bg-teal-600 rounded-xl text-xs font-bold uppercase">Trigger Module</button>`,
-            
-            'face-cutout': `
-                <i class="fas fa-sliders text-4xl text-red-500 mb-4"></i>
-                <h3 class="text-lg font-bold mb-2">AI Background Blur Studio</h3>
-                <p class="text-xs text-gray-400 mb-4">Upload a photo to isolate the person and apply a beautiful DSLR Cinematic Blur to the background.</p>
-                <div class="space-y-3">
-                    <input type="file" id="face-upload-input" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-500/10 file:text-red-500 hover:file:bg-red-500/20">
-                    <button onclick="processBackgroundBlur()" id="face-cutout-btn" class="w-full py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Apply Blur ⚡</button>
-                </div>
-                <div id="face-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[150px]">
-                    <div id="face-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-red-400 uppercase tracking-widest hidden">
-                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Isolating Subject & Blurring...
-                    </div>
-                    <canvas id="face-canvas-processor" class="hidden"></canvas>
-                    <img id="face-result-img" class="max-w-full max-h-48 object-contain mb-3 hidden">
-                    <a id="face-download-link" class="text-[11px] text-red-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-portrait-blur.png"><i class="fas fa-download mr-1"></i> Download Output</a>
-                </div>
-            `,
-            
-            'seedance': `
-                <i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4 animate-spin" style="animation-duration: 3s;"></i>
-                <h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3>
-                <p class="text-xs text-gray-400 mb-4">High-Performance Client Side Execution Framework.</p>
-                <div class="bg-black/50 p-4 border border-zinc-800 rounded-xl text-left font-mono text-[11px] text-cyan-400 space-y-1 mb-4">
-                    <p>> Initializing Seedance Core...</p>
-                    <p>> Virtual DOM Optimization: [ACTIVE]</p>
-                    <p>> Speed Boost Render Layer: [10X FAST]</p>
-                    <p class="text-green-400">> System Status: Stable & Ready ⚡</p>
-                </div>
-                <button onclick="activateSeedanceBoost()" id="seedance-boost-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Activate 10x Turbo Boost</button>
-            `,
+          
+            'ai-cloning': `<i class="fas fa-microphone-alt text-4xl text-indigo-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI Voice Cloning Lab</h3><p class="text-xs text-gray-400">Advanced vocal synthesizer module.</p>`,
+            'compressor': `<i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3><p class="text-xs text-gray-400">Reduce payload and file sizes without altering structural resolution parameters.</p>`,
+            'people-remover': `<i class="fas fa-user-slash text-4xl text-teal-500 mb-4"></i><h3 class="text-lg font-bold mb-2">AI People Remover</h3><p class="text-xs text-gray-400">Seamlessly erase unwanted background crowd elements.</p>`,
+            'face-cutout': `<i class="fas fa-user-tie text-4xl text-red-500 mb-4"></i><h3 class="text-lg font-bold mb-2">Face Cutout Engine</h3><p class="text-xs text-gray-400">Automated structural mask layer isolation for quick cinematic head replacement edits.</p>`,
+            'seedance': `<i class="fas fa-wand-magic-sparkles text-4xl text-cyan-400 mb-4"></i><h3 class="text-lg font-bold mb-2">Seedance 2.0 Engine</h3><p class="text-xs text-gray-400">Next-gen high-fidelity temporal video synthesis model optimized for fluid frame rates.</p>`,
+           
+            // --- MODALS TEXT FOR POLICIES ---
             'tos': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-file-contract text-blue-500"></i> Terms of Service</h3><p class="text-xs text-gray-400 leading-relaxed text-left">By using Dravoo, you agree to process videos locally on your browser. Any commercial usage of output assets generated via integration channels must adhere to local jurisdiction safety criteria.</p>`,
             'license': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-id-badge text-blue-500"></i> License Agreement</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Dravoo grants you a personal, non-exclusive license to utilize all embedded Client-Side logic components for standard content creations and non-malicious distribution formats.</p>`,
             'dsa': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-scale-balanced text-blue-500"></i> Digital Services Act (DSA)</h3><p class="text-xs text-gray-400 leading-relaxed text-left">In accordance with DSA protocols, Dravoo does not actively store or monitor automated operations since all visual transformation steps are completely structured client-side inside the browser scope.</p>`,
@@ -505,6 +344,7 @@
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
             'privacy': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-shield-halved text-blue-500"></i> Enterprise Data Security</h3><p class="text-xs text-gray-400">Dravoo runs client-side processing operations. Your files never upload to servers.</p>`,
            
+            // Banana Pro Fixed Modal UI Template Block
             'banana-pro': `
                 <i class="fas fa-image text-4xl text-lime-400 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">Nano Banana Pro</h3>
@@ -519,6 +359,7 @@
                 </div>
             `,
            
+            // GPT Image 2 Fixed Modal UI Template Block
             'gpt-image': `
                 <i class="fas fa-bolt text-4xl text-amber-500 mb-4"></i>
                 <h3 class="text-lg font-bold mb-2">GPT Image Gen 2</h3>
@@ -540,44 +381,9 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- PUTER.JS EXECUTION ENGINE LOOP FOR VOICE STUDIO ---
-        function processPuterTTS() {
-            if (!checkCredits()) return;
-
-            const ttsText = document.getElementById('tts-input-text').value.trim();
-            const providerElement = document.getElementById('tts-provider').value;
-            const langElement = document.getElementById('tts-language').value;
-            const actionBtn = document.getElementById('tts-action-btn');
-
-            if (!ttsText) return alert("Pehle kuch content likhein jiske audio banani ho!");
-
-            actionBtn.disabled = true;
-            actionBtn.innerText = "SYNTHESIZING VOICE...";
-
-            // Calling Puter API Engine parameters dynamically
-            puter.ai.txt2speech(ttsText, {
-                provider: providerElement,
-                language: langElement
-            })
-            .then((audio) => {
-                deductCredit(); // Deduction upon conversion success
-                audio.play();
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Generate Voice Output 🎙️";
-                alert("Voice generated successfully! Playing now.");
-            })
-            .catch((error) => {
-                console.error("Puter API Error:", error);
-                alert("TTS Generation Error. Re-verify network parameters.");
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Generate Voice Output 🎙️";
-            });
-        }
-
-        // --- FIXED HIGH-SPEED PIXABAY IMAGE RENDERING ENGINE ---
+        // --- 100% FIXED HIGH-SPEED PIXABAY IMAGE RENDERING ENGINE ---
+        // Mudassir Bhai, yeh aap ka naya super-fast aur hamesha free rehne wala Pixabay script hai!
         async function generateAIStudioImage(type) {
-            if (!checkCredits()) return;
-
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
             const resultDiv = document.getElementById(`ai-result-${type}`);
@@ -599,6 +405,7 @@
             loaderDiv.classList.remove('hidden');
             resultImg.classList.add('opacity-0');
 
+            // Pixabay API Key Configuration
             const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
             const targetPixabayUrl = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(promptText)}&image_type=photo&safesearch=true&per_page=3`;
 
@@ -609,12 +416,12 @@
                 const data = await response.json();
 
                 if (data.hits && data.hits.length > 0) {
+                    // Pixabay se web-optimized resolution ki picture uthana
                     const imageUrl = data.hits[0].webformatURL;
                     
                     resultImg.src = imageUrl;
                     
                     resultImg.onload = function() {
-                        deductCredit();
                         loaderDiv.classList.add('hidden');
                         resultImg.classList.remove('opacity-0');
                         genBtn.innerText = originalText;
@@ -638,7 +445,6 @@
         // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
         async function generateGrokVideo(e) {
             if (e) e.preventDefault();
-            if (!checkCredits()) return;
 
             const promptInput = document.getElementById('grok-video-prompt');
             const ratioSelect = document.getElementById('grok-video-ratio');
@@ -670,7 +476,6 @@
                 videoPlayer.poster = liveVideoUrl;
                
                 setTimeout(() => {
-                    deductCredit();
                     loader.classList.add('hidden');
                     videoPlayer.classList.remove('hidden');
                     downloadLink.href = liveVideoUrl;
@@ -691,7 +496,6 @@
 
         // --- GOOGLE SIGN-IN ---
         window.addEventListener('DOMContentLoaded', () => {
-            updateCreditUI(); // Refresh state structure logs
             const savedUser = localStorage.getItem('dravoo_user_name');
             const savedAvatar = localStorage.getItem('dravoo_user_avatar');
             if (savedUser && savedAvatar) {
@@ -739,17 +543,14 @@
             document.getElementById('userAvatar').src = avatarUrl;
         }
 
-        // Modified reset function preserves credits logic safely
         function logoutGoogle() {
-            localStorage.removeItem('dravoo_user_name');
-            localStorage.removeItem('dravoo_user_avatar');
+            localStorage.clear();
             location.reload();
         }
 
         // --- Remove.bg AI ---
         async function processBgRemoval(e) {
             if (e) e.preventDefault();
-            if (!checkCredits()) return;
 
             const fileInput = document.getElementById('bg-upload-input');
             const actionBtn = document.getElementById('bg-remove-btn');
@@ -793,7 +594,6 @@
                    
                     resultImg.classList.remove('hidden');
                     downloadLink.classList.remove('hidden');
-                    deductCredit();
                 } else {
                     const errorData = await response.json();
                     alert("AI Error: " + (errorData.errors[0].title || "API Key issue"));
@@ -825,11 +625,9 @@
 
         uploadTrigger.addEventListener('click', (e) => {
             if (e.target.closest('#trimmer-control-panel')) return;
-            if(checkCredits()) filePicker.click();
+            filePicker.click();
         });
-        if(trimmerCard) {
-            trimmerCard.addEventListener('click', () => { if(checkCredits()) filePicker.click(); });
-        }
+        trimmerCard.addEventListener('click', () => filePicker.click());
 
         filePicker.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -850,14 +648,12 @@
         });
 
         runTrimBtn.addEventListener('click', () => {
-            if (!checkCredits()) return;
             const sTime = parseFloat(startInput.value);
             const eTime = parseFloat(endInput.value);
             if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
            
             runTrimBtn.innerText = "PROCESSING CLIP DATA...";
             setTimeout(() => {
-                deductCredit();
                 targetStartTime = sTime;
                 targetEndTime = eTime;
                 studioPlayer.currentTime = targetStartTime;
@@ -878,7 +674,7 @@
         const bottomTextDiv = document.getElementById('meme-text-bottom');
         const downloadBtn = document.getElementById('download-meme-btn');
 
-        function openMemeStudio() { if(checkCredits()) memeModal.style.display = 'flex'; }
+        function openMemeStudio() { memeModal.style.display = 'flex'; }
         function closeMemeStudio() { memeModal.style.display = 'none'; }
 
         memeImgPicker.addEventListener('change', function(e) {
@@ -922,23 +718,19 @@
             ctx.fillText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
             ctx.strokeText(bottomTextInput.value.toUpperCase(), canvas.width / 2, canvas.height * 0.95);
 
-            deductCredit();
             const link = document.createElement('a');
             link.download = 'dravoo-studio-meme.png';
             link.href = canvas.toDataURL();
             link.click();
-            closeMemeStudio();
         });
-
-        // --- DRAVOO AUTO CAPTIONS ENGINE ---
+        // --- DRAVOO AUTO CAPTIONS ENGINE (UPDATED VERSION) ---
         let recognition;
 
         function openCaptionsStudio() {
-            if(checkCredits()) showInfo('speech-text');
+            showInfo('speech-text');
         }
 
         function generateAutoCaptions() {
-            if(!checkCredits()) return;
             const video = document.getElementById('live-studio-player');
             const captionsBtn = document.getElementById('captions-btn');
             const langSelect = document.getElementById('caption-lang');
@@ -949,6 +741,7 @@
             const controlPanel = document.getElementById('trimmer-control-panel');
             const statusText = document.getElementById('studio-status');
 
+            // اگر یوزر نے ماڈل کے اندر سے نئی ویڈیو سلیکٹ کی ہے تو اسے مین پلیئر میں لوڈ کریں
             if (captionFilePicker && captionFilePicker.files.length > 0) {
                 const file = captionFilePicker.files[0];
                 playIcon.classList.add('hidden');
@@ -958,6 +751,7 @@
                 video.src = URL.createObjectURL(file);
             }
 
+            // اگر نہ پہلے سے ویڈیو لوڈ ہے اور نہ ہی نئی سلیکٹ کی گئی ہے تو الرٹ دکھائیں
             if (!video.src || video.src === "") {
                 return alert("Please select or upload a video file first!");
             }
@@ -971,9 +765,8 @@
             captionsBtn.disabled = true;
             
             setTimeout(() => {
-                deductCredit();
                 closeModal();
-                video.play();
+                video.play(); // ویڈیو خود بخود پلے ہو جائے گی
                 alert("Auto Captions are ready! Play the video to see subtitles.");
             }, 800);
 
@@ -1009,204 +802,8 @@
             recognition.onerror = function(event) {
                 console.error("Speech Recognition Error: ", event.error);
             };
-        }
-
-        // Seedance 2.0 Turbo Booster Integration
-        function activateSeedanceBoost() {
-            if(!checkCredits()) return;
-            const boostBtn = document.getElementById('seedance-boost-btn');
-            if (boostBtn) {
-                boostBtn.innerText = "TUNING CORE ENGINE...";
-                boostBtn.disabled = true;
-                setTimeout(() => {
-                    deductCredit();
-                    boostBtn.innerText = "10X TURBO ACCELERATION ACTIVE! 🚀";
-                    boostBtn.style.background = "linear-gradient(135deg, #06b6d4, #10b981)";
-                    alert("Seedance 2.0 Engine has successfully optimized your browser cache! Dravoo Video Editor is now running at maximum performance.");
-                }, 1500);
             }
-        }
-
-        // --- BACKGROUND BLUR (PORTRAIT PRO) ENGINE SYSTEM ---
-        async function processBackgroundBlur() {
-            if (!checkCredits()) return;
-            const fileInput = document.getElementById('face-upload-input');
-            const actionBtn = document.getElementById('face-cutout-btn');
-            const resultContainer = document.getElementById('face-result-container');
-            const resultImg = document.getElementById('face-result-img');
-            const downloadLink = document.getElementById('face-download-link');
-            const loader = document.getElementById('face-loader');
-            const canvas = document.getElementById('face-canvas-processor');
-
-            if (!fileInput || fileInput.files.length === 0) {
-                return alert("Pehle apni koi photo select karein!");
-            }
-
-            const file = fileInput.files[0];
-            actionBtn.disabled = true;
-            actionBtn.innerText = "ISOLATING SUBJECT...";
-            resultContainer.classList.remove('hidden');
-            resultImg.classList.add('hidden');
-            downloadLink.classList.add('hidden');
-            loader.classList.remove('hidden');
-
-            const img = new Image();
-            img.src = URL.createObjectURL(file);
-
-            img.onload = async function() {
-                try {
-                    const selfieSegmentation = new SelfieSegmentation({
-                        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
-                    });
-
-                    selfieSegmentation.setOptions({ modelSelection: 1 });
-
-                    selfieSegmentation.onResults((results) => {
-                        canvas.width = img.naturalWidth;
-                        canvas.height = img.naturalHeight;
-                        const ctx = canvas.getContext('2d');
-
-                        ctx.save();
-                        ctx.filter = 'blur(15px)'; 
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        ctx.restore();
-
-                        const maskCanvas = document.createElement('canvas');
-                        maskCanvas.width = canvas.width;
-                        maskCanvas.height = canvas.height;
-                        const maskCtx = maskCanvas.getContext('2d');
-                        maskCtx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-
-                        const tempCanvas = document.createElement('canvas');
-                        tempCanvas.width = canvas.width;
-                        tempCanvas.height = canvas.height;
-                        const tempCtx = tempCanvas.getContext('2d');
-
-                        tempCtx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-                        tempCtx.globalCompositeOperation = 'source-in';
-                        tempCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                        ctx.drawImage(tempCanvas, 0, 0);
-
-                        const portraitResultUrl = canvas.toDataURL('image/png');
-                        
-                        resultImg.src = portraitResultUrl;
-                        downloadLink.href = portraitResultUrl;
-
-                        deductCredit();
-                        loader.classList.add('hidden');
-                        resultImg.classList.remove('hidden');
-                        downloadLink.classList.remove('hidden');
-                        actionBtn.disabled = false;
-                        actionBtn.innerText = "Apply Blur ⚡";
-                    });
-
-                    await selfieSegmentation.send({ image: img });
-
-                } catch (err) {
-                    console.error("Portrait Blur Engine Error: ", err);
-                    alert("GPU Matrix Error! Internet connection re-verify karein.");
-                    loader.classList.add('hidden');
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Apply Blur ⚡";
-                }
-            };
-        }
-
-        // --- 100% USEABLE CLIENT-SIDE VIDEO COMPRESSION ENGINE ENGINE BY MUDASSIR ---
-        async function processVideoCompression() {
-            if (!checkCredits()) return;
-            const fileInput = document.getElementById('compressor-video-input');
-            const actionBtn = document.getElementById('compressor-action-btn');
-            const resultContainer = document.getElementById('compressor-result-container');
-            const downloadLink = document.getElementById('compressor-download-link');
-            const loader = document.getElementById('compressor-loader');
-            const statsDiv = document.getElementById('compression-stats');
-            const qualitySelect = document.getElementById('compression-quality');
-
-            if (!fileInput || fileInput.files.length === 0) {
-                return alert("Pehle compression ke liye koi video select karein!");
-            }
-
-            const file = fileInput.files[0];
-            const originalSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-
-            actionBtn.disabled = true;
-            actionBtn.innerText = "Downsizing Video...";
-            resultContainer.classList.remove('hidden');
-            downloadLink.classList.add('hidden');
-            statsDiv.classList.add('hidden');
-            loader.classList.remove('hidden');
-
-            const video = document.createElement('video');
-            video.src = URL.createObjectURL(file);
-            video.muted = true;
-            video.playsInline = true;
-
-            video.onloadeddata = async function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                const targetScale = parseFloat(qualitySelect.value); 
-                canvas.width = video.videoWidth * (targetScale < 0.7 ? 0.6 : 0.8);
-                canvas.height = video.videoHeight * (targetScale < 0.7 ? 0.6 : 0.8);
-
-                const stream = canvas.captureStream(25); 
-                const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp8', 
-                    bitsPerSecond: targetScale * 1500000 
-                });
-
-                const chunks = [];
-                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
-
-                mediaRecorder.onstop = () => {
-                    const compressedBlob = new Blob(chunks, { type: 'video/mp4' });
-                    const compressedSizeMB = (compressedBlob.size / (1024 * 1024)).toFixed(2);
-                    const savedPercent = (((originalSizeMB - compressedSizeMB) / originalSizeMB) * 100).toFixed(0);
-
-                    const finalResultUrl = URL.createObjectURL(compressedBlob);
-                    downloadLink.href = finalResultUrl;
-
-                    statsDiv.innerHTML = `
-                        <p class="text-green-400 font-bold">✓ Compression Completed Success!</p>
-                        <p class="mt-1">Original: <span class="text-red-400">${originalSizeMB} MB</span> → Compressed: <span class="text-green-400">${compressedSizeMB} MB</span></p>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Saved roughly <strong>${savedPercent}%</strong> footprint space.</p>
-                    `;
-
-                    deductCredit();
-                    loader.classList.add('hidden');
-                    statsDiv.classList.remove('hidden');
-                    downloadLink.classList.remove('hidden');
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Compress Video ⚡";
-                };
-
-                video.play();
-                mediaRecorder.start();
-
-                function drawFrameLoop() {
-                    if (!video.paused && !video.ended) {
-                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        requestAnimationFrame(drawFrameLoop);
-                    } else {
-                        try { mediaRecorder.stop(); } catch(e){}
-                    }
-                }
-                drawFrameLoop();
-
-                video.onended = () => {
-                    try { mediaRecorder.stop(); } catch(e){}
-                };
-            };
-
-            video.onerror = function() {
-                alert("Compression Setup Fault! Video structure could not be parsed.");
-                loader.classList.add('hidden');
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Compress Video ⚡";
-            };
-        }
+    
     </script>
 
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
