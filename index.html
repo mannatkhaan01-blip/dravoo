@@ -422,25 +422,20 @@
 
             'ai-generation': `
                 <i class="fas fa-video text-4xl text-blue-500 mb-4 animate-pulse"></i>
-                <h3 class="text-lg font-bold mb-2">Grok AI Video Studio</h3>
-                <p class="text-xs text-gray-400 mb-4">Enter your prompt to generate high-fidelity AI video sequences:</p>
+                <h3 class="text-lg font-bold mb-2">Dravoo Videos Stock</h3>
+                <p class="text-xs text-gray-400 mb-4">Enter keywords to search high-fidelity royalty-free stock video sequences:</p>
                 <div class="space-y-3 text-left">
-                    <input type="text" id="grok-video-prompt" class="meme-input text-xs w-full" placeholder="e.g., Cinematic dragon flying over dark mountains, 4k resolution...">
-                    <div>
-                        <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Aspect Ratio</label>
-                        <select id="grok-video-ratio" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                            <option value="16:9">Landscape (16:9) — YouTube/PC</option>
-                            <option value="9:16">Portrait (9:16) — TikTok/Reels</option>
-                        </select>
-                    </div>
-                    <button onclick="generateGrokVideo(event)" id="grok-video-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Generate Grok Video </button>
+                    <input type="text" id="grok-video-prompt" class="meme-input text-xs w-full" placeholder="e.g., space, waterfall, cyberpunk, neon city...">
+                    <button onclick="generateGrokVideo(event)" id="grok-video-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider transition hover:opacity-90">Search Videos</button>
                 </div>
-                <div id="grok-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-video bg-black flex flex-col items-center justify-center p-4 relative">
+                <div id="grok-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden aspect-video bg-black flex flex-col items-center justify-center p-2 relative w-full max-w-md mx-auto shadow-2xl">
                     <div id="grok-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-[10px] font-bold text-blue-400 uppercase tracking-widest hidden">
-                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Grok Engine Rendering...
+                        <i class="fas fa-spinner animate-spin mb-2 text-2xl"></i> Pixabay Engine Fetching...
                     </div>
-                    <video id="grok-video-player" controls loop class="w-full h-full object-contain hidden"></video>
-                    <a id="grok-download-link" class="text-[11px] text-blue-400 font-bold uppercase tracking-wide flex items-center justify-center gap-1 hover:text-blue-300 mt-2 hidden" href="#" download="grok-ai-video.mp4"><i class="fas fa-download"></i> Download Video MP4</a>
+                    <video id="grok-video-player" controls loop class="w-full h-full object-contain hidden" playsinline></video>
+                </div>
+                <div class="mt-3">
+                    <a id="grok-download-link" class="text-[11px] text-blue-400 font-bold uppercase tracking-wide flex items-center justify-center gap-1 hover:text-blue-300 hidden" href="#" target="_blank"><i class="fas fa-download"></i> Download Video MP4</a>
                 </div>
             `,
             'about': `<h3 class="text-lg font-black mb-4 tracking-wider">FOUNDER & DEVELOPER INFO</h3><div class="text-left space-y-3 text-xs text-gray-300 bg-black/40 p-5 rounded-xl border border-zinc-800"><p><strong class="text-blue-400">Lead Engineer:</strong> Mudassir Shabbir</p><p><strong class="text-blue-400">Specialization:</strong> Next-Gen AI Video Architecture & Client-Side Logic Engine</p><p><strong class="text-blue-400">System Architecture:</strong> Dravoo Core Workspace v1.0 PRO</p></div>`,
@@ -658,12 +653,11 @@
             };
         }
 
-        // --- GROK PROMPT TO VIDEO GENERATION ENGINE ---
+        // --- 100% WORKING PIXABAY STOCK VIDEO FETCHING ENGINE ---
         async function generateGrokVideo(e) {
             if (e) e.preventDefault();
 
             const promptInput = document.getElementById('grok-video-prompt');
-            const ratioSelect = document.getElementById('grok-video-ratio');
             const actionBtn = document.getElementById('grok-video-btn');
             const resultContainer = document.getElementById('grok-result-container');
             const videoPlayer = document.getElementById('grok-video-player');
@@ -672,41 +666,57 @@
 
             const promptText = promptInput.value.trim();
             if (!promptText) {
-                return alert("Pehle koi cinematic prompt likhein!");
+                return alert("Pehle koi topic ya keyword likhein!");
             }
 
             actionBtn.disabled = true;
-            actionBtn.innerText = "RENDERING VIDEO...";
+            actionBtn.innerText = "FETCHING VIDEO...";
             resultContainer.classList.remove('hidden');
             videoPlayer.classList.add('hidden');
             downloadLink.classList.add('hidden');
             loader.classList.remove('hidden');
 
-            try {
-                const randomSeed = Math.floor(Math.random() * 999999);
-                const isPortrait = ratioSelect.value === "9:16";
-               
-                const liveVideoUrl = `https://image.pollinations.ai/p/${encodeURIComponent(promptText)}?width=${isPortrait ? 360 : 640}&height=${isPortrait ? 640 : 360}&seed=${randomSeed}&model=flux&enhance=true`;
+            const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
+            const targetUrl = `https://pixabay.com/api/videos/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(promptText)}&safesearch=true&per_page=3`;
 
-                videoPlayer.src = liveVideoUrl;
-                videoPlayer.poster = liveVideoUrl;
-               
-                setTimeout(() => {
+            try {
+                const response = await fetch(targetUrl);
+                if (!response.ok) throw new Error("Network configuration fault");
+
+                const data = await response.json();
+
+                if (data.hits && data.hits.length > 0) {
+                    const videoData = data.hits[0].videos;
+                    // Extracting high fidelity optimized video file URL safely
+                    const finalVideoUrl = videoData.medium.url || videoData.small.url;
+
+                    videoPlayer.src = finalVideoUrl;
+                    videoPlayer.load(); // Refresh stream component buffer trigger
+                    
+                    videoPlayer.onloadeddata = function() {
+                        loader.classList.add('hidden');
+                        videoPlayer.classList.remove('hidden');
+                        downloadLink.href = finalVideoUrl;
+                        downloadLink.classList.remove('hidden');
+                        
+                        actionBtn.disabled = false;
+                        actionBtn.innerText = "Search Videos";
+                    };
+                } else {
                     loader.classList.add('hidden');
-                    videoPlayer.classList.remove('hidden');
-                    downloadLink.href = liveVideoUrl;
-                    downloadLink.classList.remove('hidden');
-                   
+                    resultContainer.classList.add('hidden');
                     actionBtn.disabled = false;
-                    actionBtn.innerText = "Generate Grok Video ";
-                }, 3000);
+                    actionBtn.innerText = "Search Videos";
+                    alert("Pixabay par is keyword ki koi video nahi mili. Kuch aur likhein!");
+                }
 
             } catch (error) {
-                console.error(error);
-                alert("Grok Video Engine timeout. Try again!");
+                console.error("Pixabay Video Engine Fetch Error:", error);
+                alert("API Connection Error. Internets check karein aur dobara try karein!");
                 loader.classList.add('hidden');
+                resultContainer.classList.add('hidden');
                 actionBtn.disabled = false;
-                actionBtn.innerText = "Generate Grok Video ";
+                actionBtn.innerText = "Search Videos";
             }
         }
 
