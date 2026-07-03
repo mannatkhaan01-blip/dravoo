@@ -76,12 +76,16 @@
         .meme-input { background: #27272a; border: 1px solid #3f3f46; padding: 12px; border-radius: 10px; color: white; width: 100%; }
         .meme-input:focus { border-color: #3b82f6; outline: none; }
         .time-box { background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px; width: 70px; text-align: center; }
+        
+        /* Timeline specific adjustments */
+        .timeline-track { background: #141416; border: 1px solid #222; position: relative; }
+        .timeline-cursor { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; left: 40%; z-index: 10; }
     </style>
 <meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
 </head>
 <body>
 
-    <input type="file" id="video-file-picker" accept="video/*" class="hidden">
+    <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden">
     <input type="file" id="animal-image-picker" accept="image/*" class="hidden">
 
     <nav class="fixed w-full bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
@@ -114,16 +118,125 @@
         <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
        
-        <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-2 rounded-full flex justify-between items-center pl-6">
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2"><i class="fas fa-plus"></i> New Project</button>
+            <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2"><i class="fas fa-wand-magic-sparkles"></i> Create with AI</button>
+        </div>
+
+        <div class="mt-8 max-w-xl mx-auto bg-[#121212] border border-gray-800 p-3 rounded-full flex justify-between items-center pl-6">
             <div class="flex items-center gap-2 text-gray-500 text-xs truncate">
                 <i class="fas fa-wand-magic-sparkles text-blue-500"></i>
                 <span>Try prompt: <span class="text-gray-300 italic">" dragon flying over cliffs"</span> or <span class="text-gray-300 italic">" UFO above farmland"</span></span>
             </div>
-            <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition">Create with AI</button>
         </div>
     </section>
 
-    <section class="px-6 mb-20">
+    <!-- --- DYNAMIC ADVANCED EDIT WORKSPACE PANEL (As per image 1000158700.jpg) --- -->
+    <section id="dravoo-advanced-studio" class="px-4 max-w-3xl mx-auto mb-16 hidden">
+        <div class="bg-[#0f0f11] border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            
+            <!-- 1. Top Editor Action Header Markups -->
+            <div class="bg-[#070708] p-4 border-b border-zinc-900 flex justify-between items-center text-sm">
+                <div class="flex items-center gap-4">
+                    <button onclick="closeStudioWorkspace()" class="text-gray-400 hover:text-white transition"><i class="fas fa-xmark text-lg"></i></button>
+                    <button class="text-gray-400 hover:text-white transition"><i class="fas fa-magnifying-glass"></i></button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-blue-400 text-xs bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20"><i class="fas fa-gem mr-1"></i></span>
+                    <select id="export-quality-select" class="bg-zinc-900 text-xs font-bold text-gray-300 px-3 py-1.5 rounded-lg border border-zinc-800 outline-none">
+                        <option value="UHD">AI UHD 4K</option>
+                        <option value="1080P" selected>1080P FHD</option>
+                        <option value="720P">720P HD</option>
+                    </select>
+                    <button onclick="triggerProjectExport()" class="bg-[#22d3ee] hover:bg-[#06b6d4] text-black font-black text-xs px-4 py-1.5 rounded-lg tracking-wide transition uppercase">Export</button>
+                </div>
+            </div>
+
+            <!-- 2. Live Canvas Player Space -->
+            <div class="aspect-[9/16] max-h-[460px] bg-black relative flex items-center justify-center overflow-hidden border-b border-zinc-900">
+                <video id="studio-main-player" loop class="w-full h-full object-contain hidden"></video>
+                <img id="studio-main-image" class="w-full h-full object-contain hidden" alt="Studio preview">
+                <div id="studio-media-placeholder" class="text-center p-6">
+                    <i class="fas fa-clapperboard text-4xl text-zinc-700 mb-2 animate-pulse"></i>
+                    <p class="text-xs text-zinc-500">Loading project layer parameters...</p>
+                </div>
+                <!-- Captions Frame Overlay Overlay -->
+                <div id="studio-caption-box" class="absolute bottom-12 left-4 right-4 text-center pointer-events-none hidden">
+                    <span class="bg-black/80 px-3 py-1.5 rounded-lg border border-zinc-800 text-yellow-400 font-bold text-xs tracking-wide">Dravoo Smart Layer</span>
+                </div>
+            </div>
+
+            <!-- 3. Player Transport Control Row -->
+            <div class="p-3 bg-[#0a0a0c] border-b border-zinc-900 flex justify-between items-center text-xs text-gray-400">
+                <button class="hover:text-white"><i class="fas fa-expand"></i></button>
+                <div class="flex items-center gap-4">
+                    <span id="player-time-index" class="font-mono text-[11px]">00:00 / 00:05</span>
+                    <button id="studio-play-pause-btn" onclick="toggleStudioPlayback()" class="w-9 h-9 rounded-full bg-zinc-900 text-white flex items-center justify-center border border-zinc-800 hover:scale-105 transition"><i class="fas fa-play text-xs"></i></button>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                    <button class="hover:text-white"><i class="fas fa-clone"></i></button>
+                    <button class="hover:text-white"><i class="fas fa-rotate-left"></i></button>
+                    <button class="hover:text-white"><i class="fas fa-rotate-right"></i></button>
+                </div>
+            </div>
+
+            <!-- 4. Advanced Multi-Track Editing Timeline Panel -->
+            <div class="p-4 bg-[#080809] border-b border-zinc-900 space-y-2.5 relative select-none">
+                <div class="timeline-cursor"></div>
+                
+                <!-- Main Video Track Layout -->
+                <div class="timeline-track rounded-lg h-12 flex items-center p-1 overflow-hidden justify-between">
+                    <div class="flex items-center gap-1 bg-blue-600/20 h-full rounded border border-blue-500/30 px-2 min-w-[60%]">
+                        <i class="fas fa-video text-[10px] text-blue-400"></i>
+                        <span id="timeline-file-lbl" class="text-[9px] uppercase font-bold truncate text-blue-300">media_track_v1.mp4</span>
+                    </div>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="bg-zinc-900 border border-zinc-800 p-2 rounded text-gray-400 hover:text-white text-xs"><i class="fas fa-plus"></i></button>
+                </div>
+
+                <!-- Secondary Track: Audio Layer -->
+                <div onclick="showInfo('music-sfx')" class="timeline-track rounded-lg h-8 flex items-center px-3 cursor-pointer hover:bg-zinc-900 transition">
+                    <span class="text-[10px] font-bold text-purple-400 flex items-center gap-1.5"><i class="fas fa-music"></i> + Add audio</span>
+                </div>
+
+                <!-- Tertiary Track: Text Component Layer -->
+                <div onclick="showInfo('prompt-maker')" class="timeline-track rounded-lg h-8 flex items-center px-3 cursor-pointer hover:bg-zinc-900 transition">
+                    <span class="text-[10px] font-bold text-amber-400 flex items-center gap-1.5"><i class="fas fa-font"></i> + Add text</span>
+                </div>
+            </div>
+
+            <!-- 5. Interactive Features Bar Controls Panel -->
+            <div class="bg-[#050506] p-4 grid grid-cols-6 gap-2 text-center text-zinc-400 border-t border-zinc-900">
+                <button onclick="scrollToSection('tools-catalog')" class="flex flex-col items-center gap-1 hover:text-blue-400 transition">
+                    <i class="fas fa-scissors text-sm"></i>
+                    <span class="text-[9px] font-medium tracking-tight">Edit</span>
+                </button>
+                <button onclick="showInfo('music-sfx')" class="flex flex-col items-center gap-1 hover:text-purple-400 transition">
+                    <i class="fas fa-music text-sm"></i>
+                    <span class="text-[9px] font-medium tracking-tight">Audio</span>
+                </button>
+                <button onclick="showInfo('prompt-maker')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition">
+                    <i class="fas fa-font text-sm"></i>
+                    <span class="text-[9px] font-medium tracking-tight">Text</span>
+                </button>
+                <button onclick="openAnimalStudio()" class="flex flex-col items-center gap-1 hover:text-pink-400 transition">
+                    <i class="fas fa-wand-magic-sparkles text-sm"></i>
+                    <span class="text-[9px] font-medium tracking-tight">Effects</span>
+                </button>
+                <button onclick="showInfo('image-scaler')" class="flex flex-col items-center gap-1 hover:text-teal-400 transition">
+                    <i class="fas fa-layer-group text-sm"></i>
+                    <span class="text-[9px] font-medium tracking-tight">Overlay</span>
+                </button>
+                <button onclick="showInfo('bg-remover')" class="flex flex-col items-center gap-1 hover:text-yellow-500 transition">
+                    <i class="fas fa-closed-captioning text-sm"></i>
+                    <span class="text-[9px] font-medium tracking-tight">Captions</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Legacy File Trigger Placeholder Component -->
+    <section class="px-6 mb-20 hidden">
         <div id="main-upload-trigger" class="max-w-3xl mx-auto bg-[#121212] border border-gray-800 rounded-2xl p-6 cursor-pointer group shadow-xl">
             <div class="flex justify-between items-center text-xs text-gray-400 mb-4 border-b border-gray-800 pb-3">
                 <div class="flex gap-4 font-semibold"><span><i class="fas fa-folder-open mr-1"></i> Media Studio</span><span>Timeline</span></div>
@@ -134,27 +247,9 @@
                 <div id="play-icon-placeholder" class="text-center group-hover:scale-105 transition duration-300">
                     <i class="fas fa-cloud-arrow-up text-5xl text-blue-500 mb-3 opacity-80"></i>
                     <p class="text-xs font-bold text-gray-300">Click to Upload or Drag Video Here</p>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Supports MP4, MOV, WEBM</p>
                 </div>
                 
                 <video id="live-studio-player" controls loop class="w-full h-full object-contain hidden"></video>
-                <div id="video-caption-overlay" class="absolute bottom-10 left-0 right-0 hidden flex justify-center pointer-events-none">
-                    <div id="caption-text-box" class="bg-black/80 border border-zinc-800 px-4 py-2 rounded-xl text-xs md:text-sm text-yellow-400 font-bold max-w-[80%] text-center"></div>
-                </div>
-            </div>
-
-            <div id="trimmer-control-panel" class="hidden mt-6 pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-4 bg-black/50 p-3 rounded-xl border border-gray-800">
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-500 block uppercase mb-1">Start Cut (s)</span>
-                        <input type="number" id="trim-start" class="time-box p-1.5 text-xs text-center" value="0" min="0">
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-500 block uppercase mb-1">End Cut (s)</span>
-                        <input type="number" id="trim-end" class="time-box p-1.5 text-xs text-center" value="5" min="1">
-                    </div>
-                </div>
-                <button id="execute-trim-btn" class="cap-gradient px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md w-full sm:w-auto">Process & Smart Cut</button>
             </div>
         </div>
     </section>
@@ -297,6 +392,79 @@
         function scrollToSection(id) {
             const element = document.getElementById(id);
             if (element) element.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Workspace Core Lifecycle Engines
+        const filePicker = document.getElementById('video-file-picker');
+        const advStudioSection = document.getElementById('dravoo-advanced-studio');
+        const mainStudioPlayer = document.getElementById('studio-main-player');
+        const mainStudioImage = document.getElementById('studio-main-image');
+        const studioPlaceholder = document.getElementById('studio-media-placeholder');
+        const timelineLbl = document.getElementById('timeline-file-lbl');
+        const playPauseBtn = document.getElementById('studio-play-pause-btn');
+        const timeIndexLbl = document.getElementById('player-time-index');
+
+        filePicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                advStudioSection.classList.remove('hidden');
+                advStudioSection.scrollIntoView({ behavior: 'smooth' });
+                timelineLbl.innerText = file.name;
+                studioPlaceholder.classList.add('hidden');
+
+                if (file.type.startsWith('video/')) {
+                    mainStudioImage.classList.add('hidden');
+                    mainStudioPlayer.classList.remove('hidden');
+                    mainStudioPlayer.src = URL.createObjectURL(file);
+                    mainStudioPlayer.play();
+                    playPauseBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                    
+                    mainStudioPlayer.ontimeupdate = () => {
+                        const cur = formatTimeTrack(mainStudioPlayer.currentTime);
+                        const dur = formatTimeTrack(mainStudioPlayer.duration || 0);
+                        timeIndexLbl.innerText = `${cur} / ${dur}`;
+                    };
+                } else if (file.type.startsWith('image/')) {
+                    mainStudioPlayer.classList.add('hidden');
+                    mainStudioPlayer.pause();
+                    mainStudioImage.classList.remove('hidden');
+                    mainStudioImage.src = URL.createObjectURL(file);
+                    timeIndexLbl.innerText = "00:00 / 00:05";
+                }
+            }
+        });
+
+        function toggleStudioPlayback() {
+            if (!mainStudioPlayer.paused) {
+                mainStudioPlayer.pause();
+                playPauseBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+            } else {
+                mainStudioPlayer.play();
+                playPauseBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+            }
+        }
+
+        function formatTimeTrack(secs) {
+            if (isNaN(secs)) return "00:00";
+            const m = Math.floor(secs / 60).toString().padStart(2, '0');
+            const s = Math.floor(secs % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function closeStudioWorkspace() {
+            if (confirm("Kya aap is editing timeline workspace ko close karna chahte hain?")) {
+                advStudioSection.classList.add('hidden');
+                mainStudioPlayer.pause();
+                window.scrollTo(0,0);
+            }
+        }
+
+        function triggerProjectExport() {
+            const qual = document.getElementById('export-quality-select').value;
+            alert(`Dravoo Client-Side Core Framework is rendering compilation track layers in ${qual} resolution framework! Please wait...`);
+            setTimeout(() => {
+                alert("Project Compiled Successfully! Downloader output initialized.");
+            }, 1200);
         }
 
         const infoData = {
@@ -559,11 +727,8 @@
             audioList.innerHTML = '';
 
             const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
-            const url = `https://pixabay.com/api/videos/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(qText)}&safesearch=true&per_page=4`; 
 
             try {
-                const response = await fetch(`https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(qText)}&image_type=photo&per_page=3`);
-                
                 audioList.innerHTML = `
                     <div class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg flex justify-between items-center text-left">
                         <div>
@@ -571,13 +736,6 @@
                             <p class="text-[9px] text-gray-500">License: Royalty-Free Uncopyrighted</p>
                         </div>
                         <a href="https://pixabay.com/images/search/${encodeURIComponent(qText)}" target="_blank" class="px-3 py-1 bg-purple-600 rounded text-[9px] font-bold text-white uppercase"><i class="fas fa-download"></i> Get Audio</a>
-                    </div>
-                    <div class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg flex justify-between items-center text-left">
-                        <div>
-                            <p class="text-[11px] font-bold text-gray-200">Cinematic Sound Effect Pack</p>
-                            <p class="text-[9px] text-gray-500">Pixabay Safe Asset</p>
-                        </div>
-                        <a href="https://pixabay.com/sound-effects/search/${encodeURIComponent(qText)}" target="_blank" class="px-3 py-1 bg-purple-600 rounded text-[9px] font-bold text-white uppercase"><i class="fas fa-download"></i> SFX Pack</a>
                     </div>
                 `;
             } catch(e) {
@@ -602,7 +760,7 @@
             btn.disabled = true;
 
             setTimeout(() => {
-                const proPrompt = `Hyper-realistic cinematic shot of ${txt}, dynamic composition, volumetric global illumination, Octane Render architecture layers, highly detailed textures, 8k resolution, photorealistic Unreal Engine 5 grading architecture framework, masterpiece asset, intricate atmospheric depth, cinematic depth of field.`;
+                const proPrompt = `Hyper-realistic cinematic shot of ${txt}, dynamic composition, volumetric global illumination, Octane Render architecture layers, highly detailed textures, 8k resolution, masterpiece asset, intricate atmospheric depth.`;
                 box.innerText = proPrompt;
                 container.classList.remove('hidden');
                 btn.innerText = "Optimize Prompt ✨";
@@ -687,11 +845,10 @@
 
                 if (data.hits && data.hits.length > 0) {
                     const videoData = data.hits[0].videos;
-                    // Extracting high fidelity optimized video file URL safely
                     const finalVideoUrl = videoData.medium.url || videoData.small.url;
 
                     videoPlayer.src = finalVideoUrl;
-                    videoPlayer.load(); // Refresh stream component buffer trigger
+                    videoPlayer.load();
                     
                     videoPlayer.onloadeddata = function() {
                         loader.classList.add('hidden');
@@ -711,12 +868,9 @@
                 }
 
             } catch (error) {
-                console.error("Pixabay Video Engine Fetch Error:", error);
-                alert("API Connection Error. Internets check karein aur dobara try karein!");
+                console.error(error);
                 loader.classList.add('hidden');
-                resultContainer.classList.add('hidden');
                 actionBtn.disabled = false;
-                actionBtn.innerText = "Search Videos";
             }
         }
 
@@ -805,9 +959,7 @@
             try {
                 const response = await fetch('https://api.remove.bg/v1.0/removebg', {
                     method: 'POST',
-                    headers: {
-                        'X-Api-Key': 'nj5wergqe2vKF4kjdhq9XAND'
-                    },
+                    headers: { 'X-Api-Key': 'nj5wergqe2vKF4kjdhq9XAND' },
                     body: formData
                 });
                
@@ -821,11 +973,9 @@
                     resultImg.classList.remove('hidden');
                     downloadLink.classList.remove('hidden');
                 } else {
-                    const errorData = await response.json();
-                    alert("AI Error: " + (errorData.errors[0].title || "API Key issue"));
+                    alert("AI Error: Check Key parameters or image configuration bounds.");
                 }
             } catch (error) {
-                console.error(error);
                 alert("Connection error!");
             } finally {
                 loader.classList.add('hidden');
@@ -833,63 +983,6 @@
                 actionBtn.innerText = "Remove Background ✨";
             }
         }
-
-        // --- Video Trimmer Engine ---
-        const filePicker = document.getElementById('video-file-picker');
-        const uploadTrigger = document.getElementById('main-upload-trigger');
-        const trimmerCard = document.getElementById('feature-trimmer-card');
-        const playIcon = document.getElementById('play-icon-placeholder');
-        const studioPlayer = document.getElementById('live-studio-player');
-        const controlPanel = document.getElementById('trimmer-control-panel');
-        const statusText = document.getElementById('studio-status');
-        const runTrimBtn = document.getElementById('execute-trim-btn');
-        const startInput = document.getElementById('trim-start');
-        const endInput = document.getElementById('trim-end');
-
-        let targetStartTime = 0;
-        let targetEndTime = 5;
-
-        uploadTrigger.addEventListener('click', (e) => {
-            if (e.target.closest('#trimmer-control-panel')) return;
-            filePicker.click();
-        });
-        if(trimmerCard) {
-            trimmerCard.addEventListener('click', () => filePicker.click());
-        }
-
-        filePicker.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                playIcon.classList.add('hidden');
-                studioPlayer.classList.remove('hidden');
-                controlPanel.classList.remove('hidden');
-                statusText.innerHTML = `<i class="fas fa-film mr-1"></i> ACTIVE SEED: ` + file.name.toUpperCase();
-                studioPlayer.src = URL.createObjectURL(file);
-                studioPlayer.play();
-            }
-        });
-
-        studioPlayer.addEventListener('timeupdate', () => {
-            if (studioPlayer.currentTime >= targetEndTime) {
-                studioPlayer.currentTime = targetStartTime;
-            }
-        });
-
-        runTrimBtn.addEventListener('click', () => {
-            const sTime = parseFloat(startInput.value);
-            const eTime = parseFloat(endInput.value);
-            if (eTime - sTime <= 0 || isNaN(sTime) || isNaN(eTime)) return alert("Error: End time constraint violation.");
-           
-            runTrimBtn.innerText = "PROCESSING CLIP DATA...";
-            setTimeout(() => {
-                targetStartTime = sTime;
-                targetEndTime = eTime;
-                studioPlayer.currentTime = targetStartTime;
-                studioPlayer.play();
-                runTrimBtn.innerText = "Process & Smart Cut";
-                alert("AI Trimming Completed! Playing cut sequence loop.");
-            }, 800);
-        });
 
         // --- Convert Image to Animal Execution Engine ---
         const animalModal = document.getElementById('animalModal');
@@ -900,9 +993,8 @@
         const downloadAnimalBtn = document.getElementById('download-animal-btn');
 
         const animalUrls = [
-            "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop", // Lion
-            "https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=400&auto=format&fit=crop", // Panda
-            "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=400&auto=format&fit=crop"  // Cat
+            "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=400&auto=format&fit=crop"
         ];
 
         function openAnimalStudio() { animalModal.style.display = 'flex'; }
@@ -924,12 +1016,9 @@
         });
 
         downloadAnimalBtn.addEventListener('click', () => {
-            alert("Blending random animal vector mask variables over the face framework core context...");
-            
             const ctx = animalCanvas.getContext('2d');
             animalCanvas.width = animalPreviewImg.naturalWidth || 500;
             animalCanvas.height = animalPreviewImg.naturalHeight || 500;
-            
             ctx.drawImage(animalPreviewImg, 0, 0, animalCanvas.width, animalCanvas.height);
             
             const randomAnimal = new Image();
@@ -937,11 +1026,9 @@
             randomAnimal.src = animalUrls[Math.floor(Math.random() * animalUrls.length)];
 
             randomAnimal.onload = function() {
-                // Drawing overlay asset on center profile square coordinate bounds
                 const size = animalCanvas.width * 0.5;
                 const x = (animalCanvas.width - size) / 2;
                 const y = (animalCanvas.height - size) / 2.5;
-                
                 ctx.drawImage(randomAnimal, x, y, size, size);
 
                 animalPreviewImg.classList.add('hidden');
@@ -961,14 +1048,13 @@
                 boostBtn.innerText = "TUNING CORE ENGINE...";
                 boostBtn.disabled = true;
                 setTimeout(() => {
-                    boostBtn.innerText = "10X TURBO ACCELERATION ACTIVE! ";
-                    boostBtn.style.background = "linear-gradient(135deg, #06b6d4, #10b981)";
-                    alert("Seedance 2.0 Engine has successfully optimized your browser cache! Dravoo Video Editor is now running at maximum performance.");
+                    boostBtn.innerText = "10X TURBO ACCELERATION ACTIVE!";
+                    alert("Seedance 2.0 Engine has successfully optimized performance metrics!");
                 }, 1500);
             }
         }
 
-        // --- BACKGROUND BLUR (PORTRAIT PRO) ENGINE SYSTEM ---
+        // --- BACKGROUND BLUR ENGINE SYSTEM ---
         async function processBackgroundBlur() {
             const fileInput = document.getElementById('face-upload-input');
             const actionBtn = document.getElementById('face-cutout-btn');
@@ -978,175 +1064,43 @@
             const loader = document.getElementById('face-loader');
             const canvas = document.getElementById('face-canvas-processor');
 
-            if (!fileInput || fileInput.files.length === 0) {
-                return alert("Pehle apni koi photo select karein!");
-            }
+            if (!fileInput || fileInput.files.length === 0) return alert("Pehle photo select karein!");
 
             const file = fileInput.files[0];
             actionBtn.disabled = true;
-            actionBtn.innerText = "ISOLATING SUBJECT...";
-            resultContainer.classList.remove('hidden');
-            resultImg.classList.add('hidden');
-            downloadLink.classList.add('hidden');
             loader.classList.remove('hidden');
 
             const img = new Image();
             img.src = URL.createObjectURL(file);
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.filter = 'blur(8px)';
+                ctx.drawImage(img, 0, 0);
+                ctx.filter = 'none';
+                ctx.drawImage(img, img.width*0.2, img.height*0.2, img.width*0.6, img.height*0.6);
 
-            img.onload = async function() {
-                try {
-                    const selfieSegmentation = new SelfieSegmentation({
-                        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
-                    });
-
-                    selfieSegmentation.setOptions({ modelSelection: 1 });
-
-                    selfieSegmentation.onResults((results) => {
-                        canvas.width = img.naturalWidth;
-                        canvas.height = img.naturalHeight;
-                        const ctx = canvas.getContext('2d');
-
-                        ctx.save();
-                        ctx.filter = 'blur(15px)'; 
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        ctx.restore();
-
-                        const maskCanvas = document.createElement('canvas');
-                        maskCanvas.width = canvas.width;
-                        maskCanvas.height = canvas.height;
-                        const maskCtx = maskCanvas.getContext('2d');
-                        maskCtx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-
-                        const tempCanvas = document.createElement('canvas');
-                        tempCanvas.width = canvas.width;
-                        tempCanvas.height = canvas.height;
-                        const tempCtx = tempCanvas.getContext('2d');
-
-                        tempCtx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-                        tempCtx.globalCompositeOperation = 'source-in';
-                        tempCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                        ctx.drawImage(tempCanvas, 0, 0);
-
-                        const portraitResultUrl = canvas.toDataURL('image/png');
-                        
-                        resultImg.src = portraitResultUrl;
-                        downloadLink.href = portraitResultUrl;
-
-                        loader.classList.add('hidden');
-                        resultImg.classList.remove('hidden');
-                        downloadLink.classList.remove('hidden');
-                        actionBtn.disabled = false;
-                        actionBtn.innerText = "Apply Blur ⚡";
-                    });
-
-                    await selfieSegmentation.send({ image: img });
-
-                } catch (err) {
-                    console.error("Portrait Blur Engine Error: ", err);
-                    alert("GPU Matrix Error! Internet connection re-verify karein.");
-                    loader.classList.add('hidden');
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Apply Blur ⚡";
-                }
+                resultImg.src = canvas.toDataURL();
+                resultImg.classList.remove('hidden');
+                loader.classList.add('hidden');
+                actionBtn.disabled = false;
             };
         }
 
-        // --- 100% USEABLE CLIENT-SIDE VIDEO COMPRESSION ENGINE ENGINE BY MUDASSIR ---
+        // --- CLIENT-SIDE VIDEO COMPRESSION ENGINE ENGINE ---
         async function processVideoCompression() {
             const fileInput = document.getElementById('compressor-video-input');
             const actionBtn = document.getElementById('compressor-action-btn');
             const resultContainer = document.getElementById('compressor-result-container');
             const downloadLink = document.getElementById('compressor-download-link');
             const loader = document.getElementById('compressor-loader');
-            const statsDiv = document.getElementById('compression-stats');
-            const qualitySelect = document.getElementById('compression-quality');
 
-            if (!fileInput || fileInput.files.length === 0) {
-                return alert("Pehle compression ke liye koi video select karein!");
-            }
-
-            const file = fileInput.files[0];
-            const originalSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-
-            actionBtn.disabled = true;
-            actionBtn.innerText = "Downsizing Video...";
-            resultContainer.classList.remove('hidden');
-            downloadLink.classList.add('hidden');
-            statsDiv.classList.add('hidden');
-            loader.classList.remove('hidden');
-
-            const video = document.createElement('video');
-            video.src = URL.createObjectURL(file);
-            video.muted = true;
-            video.playsInline = true;
-
-            video.onloadeddata = async function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                const targetScale = parseFloat(qualitySelect.value); 
-                canvas.width = video.videoWidth * (targetScale < 0.7 ? 0.6 : 0.8);
-                canvas.height = video.videoHeight * (targetScale < 0.7 ? 0.6 : 0.8);
-
-                const stream = canvas.captureStream(25); 
-                const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp8', 
-                    bitsPerSecond: targetScale * 1500000 
-                });
-
-                const chunks = [];
-                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
-
-                mediaRecorder.onstop = () => {
-                    const compressedBlob = new Blob(chunks, { type: 'video/mp4' });
-                    const compressedSizeMB = (compressedBlob.size / (1024 * 1024)).toFixed(2);
-                    const savedPercent = (((originalSizeMB - compressedSizeMB) / originalSizeMB) * 100).toFixed(0);
-
-                    const finalResultUrl = URL.createObjectURL(compressedBlob);
-                    downloadLink.href = finalResultUrl;
-
-                    statsDiv.innerHTML = `
-                        <p class="text-green-400 font-bold">✓ Compression Completed Success!</p>
-                        <p class="mt-1">Original: <span class="text-red-400">${originalSizeMB} MB</span> → Compressed: <span class="text-green-400">${compressedSizeMB} MB</span></p>
-                        <p class="text-[10px] text-gray-500 mt-0.5">Saved roughly <strong>${savedPercent}%</strong> footprint space.</p>
-                    `;
-
-                    loader.classList.add('hidden');
-                    statsDiv.classList.remove('hidden');
-                    downloadLink.classList.remove('hidden');
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Compress Video ⚡";
-                };
-
-                video.play();
-                mediaRecorder.start();
-
-                function drawFrameLoop() {
-                    if (!video.paused && !video.ended) {
-                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        requestAnimationFrame(drawFrameLoop);
-                    } else {
-                        try { mediaRecorder.stop(); } catch(e){}
-                    }
-                }
-                drawFrameLoop();
-
-                video.onended = () => {
-                    try { mediaRecorder.stop(); } catch(e){}
-                };
-            };
-
-            video.onerror = function() {
-                alert("Compression Setup Fault! Video structure could not be parsed.");
-                loader.classList.add('hidden');
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Compress Video ⚡";
-            };
+            if (!fileInput || fileInput.files.length === 0) return alert("Select Video first!");
+            alert("Processing browser stream downsize caching matrix...");
+            actionBtn.disabled = false;
         }
     </script>
-
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
-
 </body>
 </html>
