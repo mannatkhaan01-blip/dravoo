@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <style>
+  /* نیا شامل کیا گیا باکس ڈیزائن */
   .dravoo-box {
     text-align: center;
     margin: 40px auto;
@@ -11,6 +12,7 @@
     border-radius: 15px;
     background-color: #f9f9f9;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
   }
   .dravoo-btn {
     padding: 12px 25px;
@@ -59,7 +61,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts Matrix Integration for Templates -->
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bungee&family=Italianno&family=Larken&family=Montra&family=Oswald&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bungee&family=Italianno&family=Larken&family=Montra&family=Oswald&family=Rubik:wght@400;700&family=Anton&family=Permanent+Marker&family=Lobster&family=Pacifico&family=Fascinate&display=swap" rel="stylesheet">
    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -95,6 +97,7 @@
             padding: 4px 8px;
             border: 1px dashed transparent;
             z-index: 20;
+            white-space: nowrap;
         }
         .canvas-text-overlay.active-node {
             border-color: #3b82f6;
@@ -113,6 +116,7 @@
         }
         .canvas-sticker-overlay.active-node {
             border-color: #db2777;
+            background: rgba(219, 39, 119, 0.15);
         }
 
         /* --- SLEEK PROFESSIONAL BOTTOM DRAWER COMPONENT --- */
@@ -184,7 +188,16 @@
         </div>
     </nav>
 
-    <section class="pt-32 pb-16 px-6 text-center max-w-4xl mx-auto">
+    <!-- نیا شامل کیا گیا ڈیش بورڈ باکس پینل -->
+    <div class="pt-28">
+        <div class="dravoo-box">
+            <h2 class="text-xl font-bold mb-2">Welcome to Dravoo Studio Hub</h2>
+            <p class="text-sm text-gray-600 mb-4">Start creating high-quality cinematic visuals right inside your browser window scale natively.</p>
+            <button onclick="document.getElementById('video-file-picker').click()" class="dravoo-btn">Launch Studio Picker</button>
+        </div>
+    </div>
+
+    <section class="pt-12 pb-16 px-6 text-center max-w-4xl mx-auto">
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
         <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
@@ -351,7 +364,7 @@
             <button class="tab-link" onclick="switchDrawerPanel('stickers')">Stickers</button>
         </div>
         <div class="tab-content-container">
-            <!-- 20+ Premium Content Templates -->
+            <!-- 50+ Premium Content Templates Panel -->
             <div class="content-panel active" id="drawer-templates-panel"></div>
             
             <!-- Google Web Fonts Panel -->
@@ -363,6 +376,10 @@
                 <div class="asset-card" style="font-family: 'Oswald';" onclick="applyActiveFont('Oswald')">Oswald</div>
                 <div class="asset-card" style="font-family: 'Larken';" onclick="applyActiveFont('Larken')">Larken</div>
                 <div class="asset-card" style="font-family: 'Montra';" onclick="applyActiveFont('Montra')">Montra</div>
+                <div class="asset-card" style="font-family: 'Anton';" onclick="applyActiveFont('Anton')">Anton</div>
+                <div class="asset-card" style="font-family: 'Permanent Marker';" onclick="applyActiveFont('Permanent Marker')">Marker</div>
+                <div class="asset-card" style="font-family: 'Lobster';" onclick="applyActiveFont('Lobster')">Lobster</div>
+                <div class="asset-card" style="font-family: 'Pacifico';" onclick="applyActiveFont('Pacifico')">Pacifico</div>
             </div>
 
             <!-- Real-time Text Styles Controls -->
@@ -376,6 +393,9 @@
                             <div class="color-dot" style="background:#ffcc00;" onclick="applyActiveColor('#ffcc00')"></div>
                             <div class="color-dot" style="background:#4cd964;" onclick="applyActiveColor('#4cd964')"></div>
                             <div class="color-dot" style="background:#3b82f6;" onclick="applyActiveColor('#3b82f6')"></div>
+                            <div class="color-dot" style="background:#e02424;" onclick="applyActiveColor('#e02424')"></div>
+                            <div class="color-dot" style="background:#9333ea;" onclick="applyActiveColor('#9333ea')"></div>
+                            <div class="color-dot" style="background:#06b6d4;" onclick="applyActiveColor('#06b6d4')"></div>
                         </div>
                     </div>
                     <div>
@@ -393,17 +413,8 @@
                 <div class="asset-card" style="border: 2px solid #3b82f6;" onclick="applyActiveFX('border')">Stroke Line</div>
             </div>
 
-            <!-- Stickers Collections -->
-            <div class="content-panel" id="drawer-stickers-panel">
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('🔥')">🔥</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('✨')">✨</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('🎯')">🎯</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('❤️')">❤️</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('👑')">👑</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('🚀')">🚀</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('💥')">💥</div>
-                <div class="asset-card text-2xl" onclick="injectCanvasSticker('✌️')">✌️</div>
-            </div>
+            <!-- 50+ Grid Stickers Collections Panel -->
+            <div class="content-panel" id="drawer-stickers-panel"></div>
         </div>
     </div>
 
@@ -460,7 +471,7 @@
                 <h4 class="text-xs font-bold uppercase tracking-wide">Compress Video</h4>
                 <p class="text-[10px] text-orange-400 mt-1 font-semibold">Active Engine</p>
             </div>
-            
+           
             <div onclick="showInfo('image-scaler')" class="feature-box p-6 text-center">
                 <i class="fas fa-expand-arrows-alt text-2xl text-teal-500 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">AI Image Scaler</h4>
@@ -473,7 +484,7 @@
             </div>
             
             <div onclick="showInfo('seedance')" class="feature-box p-6 text-center"><i class="fas fa-wand-magic-sparkles text-2xl text-cyan-400 mb-3"></i><h4 class="text-xs font-bold uppercase tracking-wide">Seedance 2.0 Engine</h4></div>
-            
+           
             <div onclick="showInfo('banana-pro')" class="feature-box p-6 text-center">
                 <i class="fas fa-image text-2xl text-lime-400 mb-3"></i>
                 <h4 class="text-xs font-bold uppercase tracking-wide">Ultra Realistic Images</h4>
@@ -664,7 +675,9 @@
         const studioDrawer = document.getElementById('dravooStudioDrawer');
         const drawerLiveInput = document.getElementById('drawerLiveInput');
         const templatesContainer = document.getElementById('drawer-templates-panel');
+        const stickersContainer = document.getElementById('drawer-stickers-panel');
 
+        // 50+ New Expanded Templates Matrix Configuration
         const premiumTemplates = [
             { name: "ABC Smart", style: "font-family:'Bangers'; color:#ffcc00; text-shadow:2px 2px 0px #000;" },
             { name: "Let's Go", style: "font-family:'Bungee'; color:#ff3b30; font-style:italic;" },
@@ -685,32 +698,75 @@
             { name: "TikTok Neon", style: "font-family:'Bungee'; color:#fff; text-shadow: 2px 2px #ff0055, -2px -2px #00f3ff;" },
             { name: "Luxury Sign", style: "font-family:'Larken'; color:#c5a059; letter-spacing: 2px;" },
             { name: "Comic Blast", style: "font-family:'Bangers'; color:#fffb00; -webkit-text-stroke: 1.5px #000;" },
-            { name: "Dravoo Aura", style: "font-family:'Rubik'; background:linear-gradient(to right, #3b82f6, #ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;" }
+            { name: "Dravoo Aura", style: "font-family:'Rubik'; background:linear-gradient(to right, #3b82f6, #ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;" },
+            { name: "Gamer Pro", style: "font-family:'Anton'; color:#fff; text-shadow: 3px 3px 0px #ff0055;" },
+            { name: "Tech Review", style: "font-family:'Oswald'; color:#00ff66; background:#111; border-left:4px solid #00ff66; padding:2px 8px;" },
+            { name: "Urban Vibe", style: "font-family:'Permanent Marker'; color:#ffea00;" },
+            { name: "Sweet Love", style: "font-family:'Pacifico'; color:#ff758c;" },
+            { name: "Cinematic 8K", style: "font-family:'Larken'; letter-spacing:6px; color:#ffffff; text-transform:uppercase;" },
+            { name: "Anime Intro", style: "font-family:'Bangers'; color:#ff3366; text-shadow:2px 2px 0px #fff;" },
+            { name: "Meme King", style: "font-family:'Anton'; color:#fff; -webkit-text-stroke: 2px #000;" },
+            { name: "Lo-Fi Beats", style: "font-family:'Rubik'; color:#b19ffb; font-style:italic;" },
+            { name: "Breaking News", style: "font-family:'Oswald'; background:#e11d48; color:#fff; padding:2px 10px; font-weight:900;" },
+            { name: "Luxury Hotel", style: "font-family:'Italianno'; color:#dfb76c; font-size:40px;" },
+            { name: "Fitness Beast", style: "font-family:'Anton'; color:#ff5722; text-transform:uppercase; font-style:oblique;" },
+            { name: "Crypto Moon", style: "font-family:'Bungee'; color:#eab308;" },
+            { name: "Neon Pink", style: "font-family:'Pacifico'; color:#f43f5e; text-shadow:0 0 10px #f43f5e;" },
+            { name: "Glitch Error", style: "font-family:'Oswald'; color:#fff; text-shadow:2px 0 #00fffa, -2px 0 #ff00c6;" },
+            { name: "Vintage Look", style: "font-family:'Larken'; color:#d4c5b9;" },
+            { name: "Wild West", style: "font-family:'Bangers'; color:#b45309;" },
+            { name: "Cyber Punk", style: "font-family:'Permanent Marker'; color:#06b6d4; text-shadow:2px 2px #000;" },
+            { name: "Sleek Fashion", style: "font-family:'Rubik'; letter-spacing:3px; text-transform:uppercase; font-weight:bold;" },
+            { name: "Ocean Wave", style: "font-family:'Lobster'; color:#0ea5e9;" },
+            { name: "Cozy Winter", style: "font-family:'Pacifico'; color:#93c5fd;" },
+            { name: "Epic Trailer", style: "font-family:'Anton'; letter-spacing:4px; color:#e2e8f0;" },
+            { name: "Hyper Drive", style: "font-family:'Bungee'; color:#a855f7;" },
+            { name: "Minimal Dark", style: "font-family:'Oswald'; color:#3f3f46;" },
+            { name: "Sunset Beach", style: "font-family:'Lobster'; color:#f97316;" },
+            { name: "Pixel Quest", style: "font-family:'Bungee'; color:#22c55e;" },
+            { name: "Graffiti Tag", style: "font-family:'Permanent Marker'; color:#ec4899;" },
+            { name: "Golden Royalty", style: "font-family:'Italianno'; color:#facc15; font-size:38px;" },
+            { name: "Fast Motion", style: "font-family:'Anton'; color:#10b981; font-style:italic;" },
+            { name: "Mystic Magic", style: "font-family:'Montra'; color:#6366f1; text-shadow:0 0 8px #6366f1;" },
+            { name: "End Screen", style: "font-family:'Oswald'; background:#ffffff; color:#000000; padding:2px 6px;" }
         ];
 
-        // Hydrate precisely 20 premium template components
+        // 50+ Expanded Stickers List Configuration
+        const extraStickers = [
+            '🔥','✨','🎯','❤️','👑','🚀','💥','✌️','😂','💯','🎉','🌟','👍','🙌','💀','💩','👾',
+            '🤖','🎃','🥶','🥵','😈','👀','👁️','📢','🔔','🇺🇸','🇵🇵','🎮','🍿','🎨','🎬','⚡','💡',
+            '🔮','💎','💰','📈','🌍','🍀','🍕','🍔','🥤','🍟','🎵','🎤','🎸','🎧','🐾','🐱','🦁'
+        ];
+
+        // Hydrate precisely 50 premium template components
         premiumTemplates.forEach((tpl) => {
             const card = document.createElement('div');
             card.className = 'asset-card font-bold';
             card.innerText = tpl.name;
             card.setAttribute('style', tpl.style + " cursor:pointer;");
             card.onclick = () => {
-                if(!activeTextNode) addNewCanvasTextNode();
-                if(activeTextNode) {
-                    activeTextNode.style.cssText = tpl.style;
-                    activeTextNode.innerText = tpl.name;
-                    drawerLiveInput.value = tpl.name;
-                    setupDraggableEngine(activeTextNode);
-                }
+                addNewCanvasTextNode(tpl.name, tpl.style);
             };
             templatesContainer.appendChild(card);
+        });
+
+        // Hydrate 50+ premium emoji stickers
+        extraStickers.forEach((emoji) => {
+            const card = document.createElement('div');
+            card.className = 'asset-card text-2xl';
+            card.innerText = emoji;
+            card.style.cursor = 'pointer';
+            card.onclick = () => {
+                injectCanvasSticker(emoji);
+            };
+            stickersContainer.appendChild(card);
         });
 
         function openStudioDrawer(tab) {
             studioDrawer.classList.add('open');
             switchDrawerPanel(tab);
-            if(!activeTextNode && tab !== 'stickers') {
-                addNewCanvasTextNode();
+            if(!activeTextNode && tab !== 'stickers' && tab !== 'templates') {
+                addNewCanvasTextNode("Dravoo Layer", "");
             }
         }
 
@@ -730,13 +786,17 @@
             if(targetPanel) targetPanel.classList.add('active');
         }
 
-        function addNewCanvasTextNode() {
+        function addNewCanvasTextNode(textValue = "Dravoo Layer", customStyle = "") {
             const node = document.createElement('div');
             node.className = "canvas-text-overlay active-node";
-            node.innerText = "Dravoo Layer";
+            node.innerText = textValue;
             node.style.left = "25%";
             node.style.top = "35%";
+            if(customStyle) {
+                node.style.cssText += customStyle;
+            }
             
+            // Text Node Event Selection
             node.addEventListener('click', (e) => {
                 e.stopPropagation();
                 document.querySelectorAll('.canvas-text-overlay, .canvas-sticker-overlay').forEach(n => n.classList.remove('active-node'));
@@ -745,16 +805,21 @@
                 drawerLiveInput.value = node.innerText;
             });
 
+            // Double Click deletion node logic
             node.addEventListener('dblclick', () => {
                 if(confirm("Kya aap is text layer ko delete karna chahte hain?")) {
                     node.remove();
-                    activeTextNode = null;
+                    if(activeTextNode === node) activeTextNode = null;
                     drawerLiveInput.value = '';
                 }
             });
 
             setupDraggableEngine(node);
             studioCanvasContainer.appendChild(node);
+            
+            document.querySelectorAll('.canvas-text-overlay, .canvas-sticker-overlay').forEach(n => n.classList.remove('active-node'));
+            node.classList.add('active-node');
+            
             activeTextNode = node;
             drawerLiveInput.value = node.innerText;
         }
@@ -773,11 +838,16 @@
             });
 
             stk.addEventListener('dblclick', () => {
-                stk.remove();
+                if(confirm("Kya aap is sticker ko delete karna chahte hain?")) {
+                    stk.remove();
+                }
             });
 
             setupDraggableEngine(stk);
             studioCanvasContainer.appendChild(stk);
+            
+            document.querySelectorAll('.canvas-text-overlay, .canvas-sticker-overlay').forEach(n => n.classList.remove('active-node'));
+            stk.classList.add('active-node');
         }
 
         drawerLiveInput.oninput = (e) => {
