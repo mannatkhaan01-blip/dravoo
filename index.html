@@ -157,6 +157,30 @@
         #styles-panel { grid-template-columns: 1fr; }
         .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .color-dot:hover { transform: scale(1.1); }
+
+        /* Draw Tools */
+        .draw-tool-btn {
+            background: #1c1c1f;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 11px;
+            transition: 0.2s;
+        }
+        .draw-tool-btn:hover { background: #2a2a2f; border-color: #3b82f6; }
+        .draw-tool-btn.active { border-color: #3b82f6; background: #2a2a2f; }
+        .color-picker-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .color-picker-btn:hover { transform: scale(1.1); }
+        .color-picker-btn.active { border-color: #fff; }
     </style>
 <meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
 </head>
@@ -190,16 +214,16 @@
         </div>
     </nav>
 
-    <!-- نیا شامل کیا گیا ڈیش بورڈ باکس پینل -->
-    <div class="pt-28">
+    <!-- نیا شامل کیا گیا ڈیش بورڈ باکس پینل - REMOVED as requested (white banner) -->
+    <!-- <div class="pt-28">
         <div class="dravoo-box">
             <h2 class="text-xl font-bold mb-2">Welcome to Dravoo Studio Hub</h2>
             <p class="text-sm text-gray-600 mb-4">Start creating high-quality cinematic visuals right inside your browser window scale natively.</p>
             <button onclick="document.getElementById('video-file-picker').click()" class="dravoo-btn">Launch Studio Picker</button>
         </div>
-    </div>
+    </div> -->
 
-    <section class="pt-12 pb-16 px-6 text-center max-w-4xl mx-auto">
+    <section class="pt-28 pb-16 px-6 text-center max-w-4xl mx-auto">
         <span class="bg-blue-500/10 text-blue-400 text-xs px-4 py-1.5 rounded-full font-semibold border border-blue-500/20">Free Online Video Editor</span>
         <h2 class="text-4xl md:text-6xl font-black mt-6 tracking-tight leading-none">Make videos free online <br>with <span class="cap-text-gradient">Smart AI Tools</span></h2>
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
@@ -312,7 +336,7 @@
                     <i class="fas fa-layer-group text-sm"></i>
                     <span class="text-[9px] font-medium tracking-tight">Overlay</span>
                 </button>
-                <button onclick="showInfo('bg-remover')" class="flex flex-col items-center gap-1 hover:text-yellow-500 transition">
+                <button onclick="openCaptionsDrawer()" class="flex flex-col items-center gap-1 hover:text-yellow-500 transition">
                     <i class="fas fa-closed-captioning text-sm"></i>
                     <span class="text-[9px] font-medium tracking-tight">Captions</span>
                 </button>
@@ -328,7 +352,7 @@
                     <i class="fas fa-plus text-sm"></i>
                     <span class="text-[9px] font-medium tracking-tight">Add text</span>
                 </button>
-                <button onclick="alert('Auto Captions rendering initialised...')" class="flex flex-col items-center gap-1 hover:text-blue-400 transition">
+                <button onclick="openAutoCaptions()" class="flex flex-col items-center gap-1 hover:text-blue-400 transition">
                     <i class="fas fa-closed-captioning text-sm"></i>
                     <span class="text-[9px] font-medium tracking-tight">Auto Captions</span>
                 </button>
@@ -340,7 +364,7 @@
                     <i class="fas fa-face-smile text-sm"></i>
                     <span class="text-[9px] font-medium tracking-tight">Stickers</span>
                 </button>
-                <button onclick="alert('Draw brushes active.')" class="flex flex-col items-center gap-1 hover:text-teal-400 transition">
+                <button onclick="openDrawTools()" class="flex flex-col items-center gap-1 hover:text-teal-400 transition">
                     <i class="fas fa-pen-blur text-sm"></i>
                     <span class="text-[9px] font-medium tracking-tight">Draw</span>
                 </button>
@@ -395,6 +419,80 @@
 
             <!-- 500+ Grid Stickers Collections Panel -->
             <div class="content-panel" id="drawer-stickers-panel"></div>
+        </div>
+    </div>
+
+    <!-- --- CAPTIONS DRAWER WITH TEMPLATE SELECTION --- -->
+    <div class="editor-drawer" id="captionsDrawer" style="max-width:768px;">
+        <div class="drawer-header">
+            <button class="text-zinc-400 hover:text-white text-md" onclick="closeCaptionsDrawer()">✕</button>
+            <div class="flex-grow">
+                <span class="text-sm font-bold text-white">Auto Captions</span>
+            </div>
+            <button class="text-blue-500 hover:text-blue-400 text-md font-bold" onclick="generateAutoCaptions()">Generate</button>
+        </div>
+        <div class="p-4 space-y-4 overflow-y-auto flex-1">
+            <div>
+                <label class="text-xs text-zinc-400 font-medium">Select Template Style</label>
+                <select id="captionTemplateSelect" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white text-sm mt-1">
+                    <option value="default">Default</option>
+                    <option value="cinematic">Cinematic</option>
+                    <option value="comic">Comic</option>
+                    <option value="elegant">Elegant</option>
+                    <option value="neon">Neon</option>
+                    <option value="retro">Retro</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="bold">Bold</option>
+                    <option value="graffiti">Graffiti</option>
+                    <option value="vintage">Vintage</option>
+                    <option value="cyber">Cyberpunk</option>
+                    <option value="dreamy">Dreamy</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs text-zinc-400 font-medium">Caption Text</label>
+                <textarea id="captionTextInput" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white text-sm mt-1 h-20" placeholder="Enter caption text or upload video for auto-generation..."></textarea>
+            </div>
+            <div>
+                <button onclick="document.getElementById('video-file-picker').click()" class="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white text-sm font-bold">Upload Video for Auto-Caption</button>
+            </div>
+            <div id="captionPreviewContainer" class="hidden border border-zinc-700 rounded-lg p-4 bg-black/50">
+                <p class="text-xs text-zinc-400 mb-2">Preview</p>
+                <div id="captionPreviewText" class="text-center text-white font-bold text-lg"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- DRAW TOOLS PANEL --- -->
+    <div class="editor-drawer" id="drawToolsDrawer" style="max-width:768px;">
+        <div class="drawer-header">
+            <button class="text-zinc-400 hover:text-white text-md" onclick="closeDrawTools()">✕</button>
+            <div class="flex-grow">
+                <span class="text-sm font-bold text-white">Draw Tools</span>
+            </div>
+            <button class="text-blue-500 hover:text-blue-400 text-md font-bold" onclick="closeDrawTools()">✓</button>
+        </div>
+        <div class="p-4 space-y-4 overflow-y-auto flex-1">
+            <div>
+                <p class="text-xs text-zinc-400 mb-2 font-medium">Brush Size</p>
+                <div class="flex gap-2 flex-wrap">
+                    <button class="draw-tool-btn" data-size="2" onclick="setBrushSize(2)">Thin</button>
+                    <button class="draw-tool-btn active" data-size="6" onclick="setBrushSize(6)">Medium</button>
+                    <button class="draw-tool-btn" data-size="12" onclick="setBrushSize(12)">Thick</button>
+                    <button class="draw-tool-btn" data-size="20" onclick="setBrushSize(20)">Extra Thick</button>
+                    <button class="draw-tool-btn" data-size="0" onclick="setEraserMode()" style="border-color:#ef4444;">Eraser</button>
+                </div>
+            </div>
+            <div>
+                <p class="text-xs text-zinc-400 mb-2 font-medium">Color</p>
+                <div class="flex flex-wrap gap-2" id="drawColorPalette"></div>
+            </div>
+            <div>
+                <button onclick="clearDrawCanvas()" class="w-full py-2 bg-red-600 hover:bg-red-500 rounded-lg text-white text-sm font-bold">Clear Drawing</button>
+            </div>
+            <div>
+                <canvas id="drawCanvas" class="w-full aspect-video bg-black rounded-lg border border-zinc-700" style="touch-action:none;"></canvas>
+            </div>
         </div>
     </div>
 
@@ -660,7 +758,7 @@
         const effectsContainer = document.getElementById('drawer-effects-panel');
         const colorPaletteContainer = document.getElementById('color-palette-container');
 
-        // 500+ Premium Templates Generation
+        // 500+ Premium Templates with diverse designs
         function generateTemplates(count) {
             const templateNames = [
                 "ABC Smart", "Let's Go", "Vlog Day", "Minimalist", "Cyber Neon", "Retro Wave", 
@@ -678,9 +776,11 @@
                 "Cyber Shield", "Laser Beam", "Star Burst", "Galaxy Twist", "Void Walker", "Shadow Step", "Phantom Dash",
                 "Mecha Core", "Stealth Mode", "Rapid Fire", "Frost Bite", "Scorch Mark", "Tidal Wave", "Solar Flare",
                 "Lunar Eclipse", "Cosmic Dust", "Nova Spark", "Pulsar Ray", "Quasar Glow", "Rift Walker", "Stellar Forge",
-                "Hyper Nova", "Omega Point", "Alpha Centauri", "Beta Hydri", "Gamma Cephei", "Delta Pavonis", "Epsilon Eridani"
+                "Hyper Nova", "Omega Point", "Alpha Centauri", "Beta Hydri", "Gamma Cephei", "Delta Pavonis", "Epsilon Eridani",
+                "Zeta Reticuli", "Eta Carinae", "Theta Orionis", "Iota Draconis", "Kappa Cephei", "Lambda Scorpii"
             ];
             
+            // Diverse style designs - each template gets a unique style
             const styles = [
                 "font-family:'Bangers'; color:#ffcc00; text-shadow:2px 2px 0px #000;",
                 "font-family:'Bungee'; color:#ff3b30; font-style:italic;",
@@ -731,7 +831,66 @@
                 "font-family:'Italianno'; color:#facc15; font-size:38px;",
                 "font-family:'Anton'; color:#10b981; font-style:italic;",
                 "font-family:'Montra'; color:#6366f1; text-shadow:0 0 8px #6366f1;",
-                "font-family:'Oswald'; background:#ffffff; color:#000000; padding:2px 6px;"
+                "font-family:'Oswald'; background:#ffffff; color:#000000; padding:2px 6px;",
+                "font-family:'Alfa Slab One'; color:#ff6b6b; text-shadow:3px 3px 0 #000;",
+                "font-family:'Architects Daughter'; color:#feca57; font-size:30px;",
+                "font-family:'Barlow Condensed'; color:#48dbfb; letter-spacing:5px;",
+                "font-family:'Bebas Neue'; color:#ff9ff3; text-shadow:2px 2px 0 #000;",
+                "font-family:'Black Ops One'; color:#ff6b6b; background:#000; padding:4px;",
+                "font-family:'Boogaloo'; color:#ffcc00; font-style:italic;",
+                "font-family:'Carter One'; color:#fff; background:#1dd1a1; padding:2px 8px;",
+                "font-family:'Changa One'; color:#f368e0; text-shadow:2px 2px 0 #000;",
+                "font-family:'Chewy'; color:#ff9f43; font-size:28px;",
+                "font-family:'Comfortaa'; color:#54a0ff; letter-spacing:3px;",
+                "font-family:'Courgette'; color:#ff6b6b; font-size:34px;",
+                "font-family:'Creepster'; color:#ff0000; text-shadow:2px 2px #000;",
+                "font-family:'Dancing Script'; color:#feca57; font-size:32px;",
+                "font-family:'Diplomata SC'; color:#c8d6e5; text-transform:uppercase;",
+                "font-family:'Dr Sugiyama'; color:#ff9ff3; font-size:38px;",
+                "font-family:'Exo 2'; color:#48dbfb; font-weight:700;",
+                "font-family:'Fredoka One'; color:#ff6b6b; text-shadow:3px 3px 0 #000;",
+                "font-family:'Gabriela'; color:#feca57; font-style:italic;",
+                "font-family:'Gloria Hallelujah'; color:#54a0ff; font-size:28px;",
+                "font-family:'Gochi Hand'; color:#ff9f43; font-weight:bold;",
+                "font-family:'Great Vibes'; color:#ff6b6b; font-size:36px;",
+                "font-family:'Hammersmith One'; color:#fff; background:#1dd1a1; padding:4px;",
+                "font-family:'Indie Flower'; color:#f368e0; font-size:30px;",
+                "font-family:'Josefin Sans'; color:#ffcc00; letter-spacing:4px;",
+                "font-family:'Julee'; color:#c8d6e5; font-style:italic;",
+                "font-family:'Kaushan Script'; color:#ff9ff3; font-size:34px;",
+                "font-family:'Knewave'; color:#ff6b6b; text-shadow:2px 2px 0 #000;",
+                "font-family:'Lato'; color:#48dbfb; font-weight:700;",
+                "font-family:'Lobster Two'; color:#feca57; font-size:32px;",
+                "font-family:'Mate SC'; color:#54a0ff; text-transform:uppercase;",
+                "font-family:'Monoton'; color:#ff6b6b; letter-spacing:6px;",
+                "font-family:'Montserrat'; color:#fff; font-weight:900;",
+                "font-family:'Mr Dafoe'; color:#ff9f43; font-size:38px;",
+                "font-family:'Neucha'; color:#ffcc00; font-weight:bold;",
+                "font-family:'Norican'; color:#f368e0; font-size:36px;",
+                "font-family:'Orbitron'; color:#48dbfb; letter-spacing:5px;",
+                "font-family:'Oregano'; color:#ff6b6b; font-style:italic;",
+                "font-family:'Oxygen'; color:#54a0ff; font-weight:700;",
+                "font-family:'Patrick Hand'; color:#feca57; font-size:28px;",
+                "font-family:'Playfair Display'; color:#fff; font-style:italic;",
+                "font-family:'Poiret One'; color:#ff9ff3; letter-spacing:4px;",
+                "font-family:'Quicksand'; color:#ff6b6b; font-weight:700;",
+                "font-family:'Raleway'; color:#48dbfb; font-weight:800;",
+                "font-family:'Ranchers'; color:#ffcc00; text-shadow:2px 2px 0 #000;",
+                "font-family:'Rock Salt'; color:#f368e0; font-size:28px;",
+                "font-family:'Rubik Bubbles'; color:#ff6b6b; font-size:30px;",
+                "font-family:'Satisfy'; color:#feca57; font-size:34px;",
+                "font-family:'Shadows Into Light'; color:#54a0ff; font-size:28px;",
+                "font-family:'Six Caps'; color:#fff; letter-spacing:8px;",
+                "font-family:'Special Elite'; color:#ff9f43; font-weight:bold;",
+                "font-family:'Staatliches'; color:#ff6b6b; letter-spacing:3px;",
+                "font-family:'Tangerine'; color:#f368e0; font-size:38px;",
+                "font-family:'Ultra'; color:#ffcc00; text-shadow:3px 3px 0 #000;",
+                "font-family:'Uncial Antiqua'; color:#c8d6e5; font-weight:bold;",
+                "font-family:'Vampiro One'; color:#ff6b6b; font-size:32px;",
+                "font-family:'Viga'; color:#48dbfb; font-weight:700;",
+                "font-family:'Wallpoet'; color:#ff9ff3; letter-spacing:4px;",
+                "font-family:'Yanone Kaffeesatz'; color:#54a0ff; font-weight:700;",
+                "font-family:'Zeyada'; color:#feca57; font-size:34px;"
             ];
 
             for (let i = 0; i < count; i++) {
@@ -748,7 +907,7 @@
             }
         }
 
-        // 500+ Fonts Generation
+        // 500+ Fonts Generation - FIXED (was missing)
         function generateFonts(count) {
             const fonts = [
                 'Rubik', 'Bangers', 'Bungee', 'Italianno', 'Oswald', 'Larken', 'Montra', 'Anton',
@@ -767,7 +926,14 @@
                 'Antic', 'Arapey', 'Arbutus', 'Arimo', 'Arizonia', 'Armata', 'Arsenal', 'Artifika', 'Asap',
                 'Aubrey', 'Audiowide', 'Autour One', 'Averia Serif', 'Bad Script', 'Balthazar', 'Baumans',
                 'Bayon', 'Belleza', 'Bentham', 'Berkshire Swash', 'Bigshot One', 'Bilbo', 'Bitter', 'Black Han Sans',
-                'Blinker', 'Bokor', 'Bonbon', 'Bowlby One', 'Brawler', 'Bree Serif', 'Bubblegum Sans', 'Buda'
+                'Blinker', 'Bokor', 'Bonbon', 'Bowlby One', 'Brawler', 'Bree Serif', 'Bubblegum Sans', 'Buda',
+                'Buenard', 'Bungee Shade', 'Butcherman', 'Butterfly Kids', 'Cabin', 'Cagliostro', 'Calligraffitti',
+                'Cambay', 'Candal', 'Cantarell', 'Cantata One', 'Cantora One', 'Capriola', 'Cardo', 'Carme',
+                'Carrois Gothic', 'Carter One', 'Catamaran', 'Caudex', 'Caveat', 'Cedarville Cursive', 'Ceviche One',
+                'Chakra Petch', 'Chango', 'Chathura', 'Chela One', 'Chelsea Market', 'Cherry Cream Soda', 'Cherry Swash',
+                'Chewy', 'Chicle', 'Chilanka', 'Chivo', 'Chonburi', 'Cinzel', 'Cinzel Decorative', 'Clicker Script',
+                'Coda', 'Coda Caption', 'Codystar', 'Coiny', 'Combo', 'Comfortaa', 'Comic Neue', 'Concert One',
+                'Condiment', 'Content', 'Contrail One', 'Convergence', 'Cookie', 'Copse', 'Corben', 'Cormorant'
             ];
             const uniqueFonts = [...new Set(fonts)];
             for (let i = 0; i < Math.min(count, uniqueFonts.length); i++) {
@@ -795,7 +961,10 @@
                 'Audio Visualizer', 'Waveform', 'Spectrum', 'Rainbow', 'Prism', 'Crystal', 'Diamond',
                 'Gold Plated', 'Silver Shine', 'Copper Tone', 'Bronze Age', 'Steel Metal', 'Titanium',
                 'Carbon Fiber', 'Wood Grain', 'Marble Texture', 'Stone Carved', 'Glass Reflection',
-                'Mirror Effect', 'Water Ripple', 'Smoke Plume', 'Fire Spark', 'Lightning Bolt', 'Star Burst'
+                'Mirror Effect', 'Water Ripple', 'Smoke Plume', 'Fire Spark', 'Lightning Bolt', 'Star Burst',
+                'Aurora', 'Sunset Glow', 'Moonlight', 'Starlight', 'Nebula', 'Galaxy', 'Cosmic',
+                'Psychedelic', 'Retro Wave', 'Synthwave', 'Outrun', 'Cyber Glow', 'Neon Pulse',
+                'Chromatic Aberration', 'Motion Blur', 'Radial Blur', 'Zoom Blur', 'Fisheye', 'Lens Flare'
             ];
             const uniqueEffects = [...new Set(effects)];
             for (let i = 0; i < Math.min(count, uniqueEffects.length); i++) {
@@ -863,7 +1032,10 @@
                 '#fd79a8', '#00b894', '#e17055', '#0984e3', '#fdcb6e', '#e84393', '#00cec9', '#ffeaa7',
                 '#dfe6e9', '#b2bec3', '#636e72', '#2d3436', '#ff7675', '#74b9ff', '#55efc4', '#81ecec',
                 '#fdcb6e', '#e17055', '#00b894', '#0984e3', '#6c5ce7', '#fd79a8', '#00cec9', '#ffeaa7',
-                '#dfe6e9', '#b2bec3', '#636e72', '#2d3436', '#ff7675', '#74b9ff', '#55efc4', '#81ecec'
+                '#dfe6e9', '#b2bec3', '#636e72', '#2d3436', '#ff7675', '#74b9ff', '#55efc4', '#81ecec',
+                '#f0932b', '#eb4d4b', '#6ab04c', '#22a6b3', '#be2edd', '#4834d4', '#130f40', '#535c68',
+                '#ff7979', '#badc58', '#f9ca24', '#7ed6df', '#e056fd', '#686de0', '#30336b', '#f6e58d',
+                '#ffbe76', '#c7ecee', '#dff9fb', '#c4e538', '#ffc312', '#ee5a24', '#009432', '#0652DD'
             ];
             const uniqueColors = [...new Set(colors)];
             uniqueColors.forEach(c => {
@@ -885,10 +1057,7 @@
                 '🐉','🦄','🐲','🐼','🐨','🦊','🐰','🐭','🐹','🐻','🐺','🐗','🐴','🦄','🐝','🐞','🦋',
                 '🐙','🦑','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🐘','🦏','🐪',
                 '🐫','🦒','🐃','🐂','🐄','🐖','🐏','🐑','🐐','🦌','🐕','🐩','🐈','🐓','🦃','🦚','🦜',
-                '🦢','🦩','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐞',
-                '🦋','🐙','🦑','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🐘','🦏',
-                '🐪','🐫','🦒','🐃','🐂','🐄','🐖','🐏','🐑','🐐','🦌','🐕','🐩','🐈','🐓','🦃','🦚',
-                '🦜','🦢','🦩','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','💖','💗','💓','💕','💜',
+                '🦢','🦩','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','💖','💗','💓','💕','💜',
                 '💙','💚','💛','🧡','❤️‍🔥','💔','❣️','💝','💘','💌','🌸','🌺','🌻','🌹','🌷','🌿','☘️',
                 '🍀','🌵','🌴','🌲','🌳','🌾','🍁','🍂','🍃','🌊','🌅','🌄','🌇','🌆','🌃','🌌','🌉',
                 '🌋','🌍','🌎','🌏','🌕','🌖','🌗','🌘','🌑','🌒','🌓','🌔','🌙','🌞','⭐','🌟','✨',
@@ -1017,6 +1186,189 @@
             activeTextNode.style.backgroundColor = fx === 'invert' ? '#fff' : 'transparent';
             activeTextNode.style.letterSpacing = fx === 'spacing' ? '6px' : 'normal';
             activeTextNode.style.webkitTextStroke = fx === 'border' ? '1px #3b82f6' : 'unset';
+        }
+
+        // --- CAPTIONS SYSTEM ---
+        function openCaptionsDrawer() {
+            document.getElementById('captionsDrawer').classList.add('open');
+        }
+
+        function closeCaptionsDrawer() {
+            document.getElementById('captionsDrawer').classList.remove('open');
+        }
+
+        function openAutoCaptions() {
+            openCaptionsDrawer();
+        }
+
+        function generateAutoCaptions() {
+            const text = document.getElementById('captionTextInput').value.trim();
+            const template = document.getElementById('captionTemplateSelect').value;
+            if (!text) {
+                alert("Please enter caption text or upload a video first!");
+                return;
+            }
+            
+            const previewContainer = document.getElementById('captionPreviewContainer');
+            const previewText = document.getElementById('captionPreviewText');
+            
+            // Apply template styles
+            const templateStyles = {
+                'default': 'font-family:Inter; color:#fff; text-shadow:2px 2px 4px #000;',
+                'cinematic': 'font-family:Playfair Display; color:#f5c842; text-shadow:0 0 20px rgba(245,200,66,0.3); letter-spacing:2px;',
+                'comic': 'font-family:Bangers; color:#ff3b30; text-shadow:3px 3px 0 #000;',
+                'elegant': 'font-family:Great Vibes; color:#d4af37; font-size:32px; text-shadow:0 0 15px rgba(212,175,55,0.2);',
+                'neon': 'font-family:Orbitron; color:#00f3ff; text-shadow:0 0 10px #00f3ff, 0 0 20px #00f3ff;',
+                'retro': 'font-family:Oswald; color:#ff007f; text-shadow:2px 2px #3f007f;',
+                'minimal': 'font-family:Rubik; color:#fff; letter-spacing:4px; font-weight:300;',
+                'bold': 'font-family:Anton; color:#fff; text-shadow:3px 3px 0px #ff0055; text-transform:uppercase;',
+                'graffiti': 'font-family:Permanent Marker; color:#ffea00; text-shadow:2px 2px 0 #000;',
+                'vintage': 'font-family:Larken; color:#d4c5b9; font-style:italic;',
+                'cyber': 'font-family:Black Ops One; color:#00ff66; text-shadow:0 0 10px #00ff66;',
+                'dreamy': 'font-family:Pacifico; color:#ff758c; text-shadow:0 0 15px rgba(255,117,140,0.3);'
+            };
+            
+            previewText.style.cssText = templateStyles[template] || templateStyles['default'];
+            previewText.textContent = text;
+            previewContainer.classList.remove('hidden');
+            
+            // Also create a text node on canvas with the template style
+            const styleStr = templateStyles[template] || templateStyles['default'];
+            addNewCanvasTextNode(text, styleStr);
+            closeCaptionsDrawer();
+        }
+
+        // --- DRAW TOOLS SYSTEM ---
+        let drawCanvas, drawCtx, isDrawing = false;
+        let currentBrushSize = 6;
+        let currentDrawColor = '#ffffff';
+        let isEraser = false;
+
+        function openDrawTools() {
+            document.getElementById('drawToolsDrawer').classList.add('open');
+            setTimeout(() => {
+                drawCanvas = document.getElementById('drawCanvas');
+                drawCtx = drawCanvas.getContext('2d');
+                drawCtx.fillStyle = '#000';
+                drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+                setupDrawEvents();
+                generateDrawColors();
+            }, 200);
+        }
+
+        function closeDrawTools() {
+            document.getElementById('drawToolsDrawer').classList.remove('open');
+        }
+
+        function generateDrawColors() {
+            const palette = document.getElementById('drawColorPalette');
+            const colors = [
+                '#ffffff', '#ff3b30', '#ffcc00', '#4cd964', '#3b82f6', '#e02424', '#9333ea', '#06b6d4',
+                '#f472b6', '#fb923c', '#22c55e', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1',
+                '#f43f5e', '#f97316', '#84cc16', '#14b8a6', '#d946ef', '#fd79a8', '#00b894', '#e17055',
+                '#0984e3', '#fdcb6e', '#e84393', '#00cec9', '#ffeaa7', '#dfe6e9', '#b2bec3', '#636e72',
+                '#2d3436', '#ff7675', '#74b9ff', '#55efc4', '#81ecec', '#fdcb6e', '#e17055', '#00b894'
+            ];
+            palette.innerHTML = '';
+            colors.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'color-picker-btn';
+                btn.style.background = c;
+                btn.onclick = () => {
+                    document.querySelectorAll('.color-picker-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentDrawColor = c;
+                    isEraser = false;
+                    document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active'));
+                };
+                palette.appendChild(btn);
+            });
+            // Select white by default
+            palette.firstChild?.classList.add('active');
+        }
+
+        function setBrushSize(size) {
+            currentBrushSize = size;
+            isEraser = false;
+            document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.draw-tool-btn[data-size="${size}"]`)?.classList.add('active');
+        }
+
+        function setEraserMode() {
+            isEraser = true;
+            document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.draw-tool-btn[data-size="0"]')?.classList.add('active');
+        }
+
+        function setupDrawEvents() {
+            drawCanvas.addEventListener('mousedown', startDraw);
+            drawCanvas.addEventListener('mousemove', draw);
+            drawCanvas.addEventListener('mouseup', endDraw);
+            drawCanvas.addEventListener('mouseleave', endDraw);
+            drawCanvas.addEventListener('touchstart', handleTouchStart);
+            drawCanvas.addEventListener('touchmove', handleTouchMove);
+            drawCanvas.addEventListener('touchend', endDraw);
+        }
+
+        function getCanvasCoords(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            const scaleX = drawCanvas.width / rect.width;
+            const scaleY = drawCanvas.height / rect.height;
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        function startDraw(e) {
+            isDrawing = true;
+            const pos = getCanvasCoords(e);
+            drawCtx.beginPath();
+            drawCtx.moveTo(pos.x, pos.y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getCanvasCoords(e);
+            drawCtx.lineWidth = isEraser ? currentBrushSize * 3 : currentBrushSize;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.strokeStyle = isEraser ? '#000' : currentDrawColor;
+            drawCtx.lineTo(pos.x, pos.y);
+            drawCtx.stroke();
+            drawCtx.beginPath();
+            drawCtx.moveTo(pos.x, pos.y);
+        }
+
+        function endDraw() {
+            isDrawing = false;
+            drawCtx.beginPath();
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            drawCanvas.dispatchEvent(mouseEvent);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            drawCanvas.dispatchEvent(mouseEvent);
+        }
+
+        function clearDrawCanvas() {
+            if (!drawCtx) return;
+            drawCtx.fillStyle = '#000';
+            drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
         }
 
         // --- MASTER UNIVERSAL DRAG LOGIC ---
@@ -1689,6 +2041,15 @@
             alert("Processing browser stream downsize caching matrix...");
             actionBtn.disabled = false;
         }
+
+        // Resize draw canvas when shown
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawCanvasEl = document.getElementById('drawCanvas');
+            if (drawCanvasEl) {
+                drawCanvasEl.width = drawCanvasEl.offsetWidth || 600;
+                drawCanvasEl.height = drawCanvasEl.offsetHeight || 400;
+            }
+        });
     </script>
 <script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 </body>
