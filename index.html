@@ -907,65 +907,6 @@
             }
         }
 
-        // 500+ Fonts Generation - FIXED (was missing)
-        function generateFonts(count) {
-            const fonts = [
-                'Rubik', 'Bangers', 'Bungee', 'Italianno', 'Oswald', 'Larken', 'Montra', 'Anton',
-                'Permanent Marker', 'Lobster', 'Pacifico', 'Fascinate', 'Alfa Slab One', 'Architects Daughter',
-                'Barlow Condensed', 'Bebas Neue', 'Black Ops One', 'Boogaloo', 'Carter One', 'Changa One',
-                'Chewy', 'Comfortaa', 'Courgette', 'Creepster', 'Dancing Script', 'Diplomata SC', 'Dr Sugiyama',
-                'Exo 2', 'Fredoka One', 'Gabriela', 'Gloria Hallelujah', 'Gochi Hand', 'Great Vibes', 'Hammersmith One',
-                'Indie Flower', 'Josefin Sans', 'Julee', 'Kaushan Script', 'Knewave', 'Lato', 'Lobster Two',
-                'Mate SC', 'Monoton', 'Montserrat', 'Mr Dafoe', 'Neucha', 'Norican', 'Orbitron', 'Oregano',
-                'Oxygen', 'Patrick Hand', 'Playfair Display', 'Poiret One', 'Quicksand', 'Raleway', 'Ranchers',
-                'Rock Salt', 'Rubik Bubbles', 'Satisfy', 'Shadows Into Light', 'Six Caps', 'Special Elite',
-                'Staatliches', 'Tangerine', 'Ultra', 'Uncial Antiqua', 'Vampiro One', 'Viga', 'Wallpoet',
-                'Yanone Kaffeesatz', 'Zeyada', 'Abril Fatface', 'Aclonica', 'Acme', 'Actor', 'Adamina',
-                'Advent Pro', 'Aguafina Script', 'Aladin', 'Aldrich', 'Alegreya', 'Alex Brush', 'Allan',
-                'Allerta', 'Amaranth', 'Amatic SC', 'Amiri', 'Anaheim', 'Andada', 'Angkor', 'Annie Use Your Telescope',
-                'Antic', 'Arapey', 'Arbutus', 'Arimo', 'Arizonia', 'Armata', 'Arsenal', 'Artifika', 'Asap',
-                'Aubrey', 'Audiowide', 'Autour One', 'Averia Serif', 'Bad Script', 'Balthazar', 'Baumans',
-                'Bayon', 'Belleza', 'Bentham', 'Berkshire Swash', 'Bigshot One', 'Bilbo', 'Bitter', 'Black Han Sans',
-                'Blinker', 'Bokor', 'Bonbon', 'Bowlby One', 'Brawler', 'Bree Serif', 'Bubblegum Sans', 'Buda',
-                'Buenard', 'Bungee Shade', 'Butcherman', 'Butterfly Kids', 'Cabin', 'Cagliostro', 'Calligraffitti',
-                'Cambay', 'Candal', 'Cantarell', 'Cantata One', 'Cantora One', 'Capriola', 'Cardo', 'Carme',
-                'Carrois Gothic', 'Carter One', 'Catamaran', 'Caudex', 'Caveat', 'Cedarville Cursive', 'Ceviche One',
-                'Chakra Petch', 'Chango', 'Chathura', 'Chela One', 'Chelsea Market', 'Cherry Cream Soda', 'Cherry Swash',
-                'Chewy', 'Chicle', 'Chilanka', 'Chivo', 'Chonburi', 'Cinzel', 'Cinzel Decorative', 'Clicker Script',
-                'Coda', 'Coda Caption', 'Codystar', 'Coiny', 'Combo', 'Comfortaa', 'Comic Neue', 'Concert One',
-                'Condiment', 'Content', 'Contrail One', 'Convergence', 'Cookie', 'Copse', 'Corben', 'Cormorant'
-            ];
-            const uniqueFonts = [...new Set(fonts)];
-            for (let i = 0; i < Math.min(count, uniqueFonts.length); i++) {
-                const f = uniqueFonts[i];
-                const card = document.createElement('div');
-                card.className = 'asset-card';
-                card.style.fontFamily = f;
-                card.innerText = f;
-                card.onclick = () => { if(activeTextNode) activeTextNode.style.fontFamily = f; };
-                fontsContainer.appendChild(card);
-            }
-        }
-
-        // 500+ Effects Generation
-        function generateEffects(count) {
-            const effects = [
-                'Glow Shadow', 'Invert UI', 'Spaced Out', 'Stroke Line', 'Neon Glow', 'Drop Shadow',
-                'Text Outline', 'Blur Effect', 'Gradient Fill', '3D Depth', 'Chrome Shine', 'Glassmorphism',
-                'Frosted Glass', 'Hologram', 'Cyberpunk', 'Vaporwave', 'Retro Neon', 'Pixelated', 'Distorted',
-                'Glitch Art', 'Scanlines', 'VHS Style', 'Film Grain', 'Cinematic', 'Dramatic', 'Soft Shadow',
-                'Hard Shadow', 'Emboss', 'Engrave', 'Bevel', 'Inset Shadow', 'Outset Shadow', 'Ripple',
-                'Warp', 'Twist', 'Squeeze', 'Stretch', 'Skew', 'Rotate 3D', 'Perspective', 'Liquid',
-                'Fire Effect', 'Ice Effect', 'Electric', 'Magnetic', 'Gravity', 'Black Hole', 'Wormhole',
-                'Time Warp', 'Speed Ramp', 'Slow Motion', 'Fast Forward', 'Rewind', 'Pulse', 'Beat Sync',
-                'Audio Visualizer', 'Waveform', 'Spectrum', 'Rainbow', 'Prism', 'Crystal', 'Diamond',
-                'Gold Plated', 'Silver Shine', 'Copper Tone', 'Bronze Age', 'Steel Metal', 'Titanium',
-                'Carbon Fiber', 'Wood Grain', 'Marble Texture', 'Stone Carved', 'Glass Reflection',
-                'Mirror Effect', 'Water Ripple', 'Smoke Plume', 'Fire Spark', 'Lightning Bolt', 'Star Burst',
-                'Aurora', 'Sunset Glow', 'Moonlight', 'Starlight', 'Nebula', 'Galaxy', 'Cosmic',
-                'Psychedelic', 'Retro Wave', 'Synthwave', 'Outrun', 'Cyber Glow', 'Neon Pulse',
-                'Chromatic Aberration', 'Motion Blur', 'Radial Blur', 'Zoom Blur', 'Fisheye', 'Lens Flare'
-            ];
             const uniqueEffects = [...new Set(effects)];
             for (let i = 0; i < Math.min(count, uniqueEffects.length); i++) {
                 const ef = uniqueEffects[i];
