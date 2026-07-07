@@ -6,7 +6,7 @@
     <title>Dravoo · Pro Editor</title>
     <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -74,7 +74,7 @@
         
         /* Canvas components */
         .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
-        .draw-overlay-canvas.active { pointer-events: auto; }
+        .draw-overlay-canvas.active { pointer-events: auto; cursor: crosshair; }
         
         /* Fixed Grid submenus style */
         .submenu-grid {
@@ -124,25 +124,34 @@
                 </div>
             </div>
 
-            <!-- Main Canvas Viewport -->
-            <div id="canvas-container" class="relative aspect-[9/16] max-h-[440px] bg-black flex items-center justify-center overflow-hidden border-b border-[#1c1c24]">
-                <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
-                <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
-                
-                <div id="media-placeholder" class="text-center p-6">
-                    <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
-                    <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
-                    <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
-                </div>
+            <!-- Main Canvas Viewport Parent -->
+            <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
+                <!-- Outer Video/Image Box ONLY changes aspect ratio now -->
+                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
+                    <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
+                    <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
+                    
+                    <!-- Real-time Text/Sticker Layer -->
+                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center flex-col text-center"></div>
 
-                <canvas id="drawCanvas" class="draw-overlay-canvas"></canvas>
-                
-                <!-- Floating Paint Utility Brush Controls -->
-                <div id="drawToolsPanel" class="absolute bottom-4 left-50 transform -translate-x-0 z-50 bg-[#111116] border border-zinc-800 rounded-full px-4 py-2 hidden items-center gap-3 shadow-2xl">
-                    <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(3)">Thin</button>
-                    <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(8)">Thick</button>
-                    <button onclick="clearDraw()" class="text-xs bg-red-600 px-2 py-1 rounded text-white">Clear Canvas</button>
-                    <button onclick="toggleDraw()" class="text-xs text-zinc-400">✕</button>
+                    <!-- Live Dynamic Overlay Layer -->
+                    <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
+
+                    <div id="media-placeholder" class="text-center p-6 z-10">
+                        <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
+                        <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
+                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
+                    </div>
+
+                    <canvas id="drawCanvas" class="draw-overlay-canvas"></canvas>
+                    
+                    <!-- Floating Paint Utility Brush Controls -->
+                    <div id="drawToolsPanel" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-[#111116] border border-zinc-800 rounded-full px-4 py-2 hidden items-center gap-3 shadow-2xl">
+                        <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(3)">Thin</button>
+                        <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(8)">Thick</button>
+                        <button onclick="clearDraw()" class="text-xs bg-red-600 px-2 py-1 rounded text-white">Clear</button>
+                        <button onclick="toggleDraw()" class="text-xs text-zinc-400">✕</button>
+                    </div>
                 </div>
             </div>
 
@@ -166,9 +175,9 @@
 
             <!-- ================= DYNAMIC WORKSPACE MENUS ================= -->
             
-            <!-- MASTER BOTTOM MENU (All 14 options requested) -->
+            <!-- MASTER BOTTOM MENU (Fixed Missing Icons) -->
             <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
-                <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video-slash text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
+                <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
                 <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
                 <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
                 <button onclick="showSubmenu('effects')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-wand-magic-sparkles text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
@@ -180,7 +189,7 @@
                 <button onclick="showSubmenu('generate-media')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-brain text-base text-teal-400"></i><span class="text-[10px] font-medium">Gen Media</span></button>
                 <button onclick="showSubmenu('ai-avatar')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-user-astronaut text-base text-violet-400"></i><span class="text-[10px] font-medium">AI Avatar</span></button>
                 <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
-                <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-bg text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
+                <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
             </div>
 
             <!-- DYNAMIC SUBMENUS -->
@@ -190,36 +199,36 @@
                 <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
                 <button onclick="triggerTool('Volume')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-high"></i>Volume</button>
                 <button onclick="triggerTool('Animation')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-film"></i>Animation</button>
-                <button onclick="triggerTool('Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-magic"></i>Effects</button>
+                <button onclick="triggerTool('Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wand-magic-sparkles"></i>Effects</button>
                 <button onclick="triggerTool('Delete')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-400"><i class="fas fa-trash"></i>Delete</button>
                 <button onclick="triggerTool('Speed')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-gauge-high"></i>Speed</button>
                 <button onclick="triggerTool('Beats')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-heart-pulse"></i>Beats</button>
-                <button onclick="triggerTool('AI Extends')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-expand"></i>AI Extend</button>
+                <button onclick="triggerTool('AI Extends')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-expand-arrows-alt"></i>AI Extend</button>
                 <button onclick="triggerTool('Crop')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-crop"></i>Crop</button>
                 <button onclick="triggerTool('Duplicate')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-clone"></i>Clone</button>
                 <button onclick="triggerTool('Replace')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-arrows-rotate"></i>Replace</button>
                 <button onclick="triggerTool('Overlay')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-layer-group"></i>Overlay</button>
                 <button onclick="triggerTool('Adjust')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-sliders"></i>Adjust</button>
                 <button onclick="triggerTool('Filter')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-filter"></i>Filter</button>
-                <button onclick="triggerTool('Retouch')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-sparkles"></i>Retouch</button>
+                <button onclick="triggerTool('Retouch')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-face-smile"></i>Retouch</button>
                 <button onclick="triggerTool('Video Quality')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-yellow-400"><i class="fas fa-wand-magic-sparkles"></i>4K Quality</button>
                 <button onclick="triggerTool('Remove BG')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-user-minus"></i>Remove BG</button>
                 <button onclick="triggerTool('AI Remove')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eraser"></i>AI Eraser</button>
-                <button onclick="triggerTool('AI Expand')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-arrows-maximize"></i>AI Expand</button>
+                <button onclick="triggerTool('AI Expand')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-maximize"></i>AI Expand</button>
                 <button onclick="triggerTool('AI Remix')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-shuffle"></i>AI Remix</button>
                 <button onclick="triggerTool('Eye Contact')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eye"></i>Eye Contact</button>
                 <button onclick="triggerTool('Relight')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-lightbulb"></i>Relight</button>
                 <button onclick="triggerTool('Opacity')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-circle-half-stroke"></i>Opacity</button>
                 <button onclick="triggerTool('Motion Blur')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wind"></i>Motion Blur</button>
-                <button onclick="triggerTool('Lip Sync')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-lips"></i>Lip Sync</button>
-                <button onclick="triggerTool('Transform Auto Reframe')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-expand-arrows-alt"></i>Reframe</button>
-                <button onclick="triggerTool('Stabilize')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-mobile-screen-button"></i>Stabilize</button>
+                <button onclick="triggerTool('Lip Sync')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-comment-dots"></i>Lip Sync</button>
+                <button onclick="triggerTool('Transform Auto Reframe')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-expand"></i>Reframe</button>
+                <button onclick="triggerTool('Stabilize')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-mobile-screen"></i>Stabilize</button>
                 <button onclick="triggerTool('Extract Audio')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-file-audio"></i>Extract Aud</button>
-                <button onclick="triggerTool('Isolate Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-microphone-lines-notch"></i>Isolate</button>
+                <button onclick="triggerTool('Isolate Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-microphone-lines"></i>Isolate</button>
                 <button onclick="triggerTool('Audio Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-waveform"></i>Aud FX</button>
-                <button onclick="triggerTool('Enhance Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-turn-up"></i>Enhance</button>
+                <button onclick="triggerTool('Enhance Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-low"></i>Enhance</button>
                 <button onclick="triggerTool('Video Translator')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-language"></i>Translate</button>
-                <button onclick="triggerTool('Freeze')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-icicles"></i>Freeze</button>
+                <button onclick="triggerTool('Freeze')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-snowflake"></i>Freeze</button>
                 <button onclick="triggerTool('Reverse')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-backward"></i>Reverse</button>
                 <button onclick="triggerTool('Mask')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-masks-theater"></i>Mask</button>
                 <button onclick="triggerTool('Unlink')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-300"><i class="fas fa-link-slash"></i>Unlink</button>
@@ -229,7 +238,7 @@
             <div id="submenu-audio" class="hidden submenu-grid">
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
                 <button onclick="triggerTool('Extract Audio')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
-                <button onclick="triggerTool('Sounds Pool')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-music"></i>Sounds</button>
+                <button onclick="soundsPool()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-music"></i>Sounds</button>
                 <button onclick="triggerTool('Sound Effects FX')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bolt"></i>FX Effects</button>
                 <button onclick="triggerTool('Record Audio Mic')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-microphone text-red-500"></i>Record</button>
                 <button onclick="triggerTool('Text to Audio Generator')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio"></i>Text To Aud</button>
@@ -292,10 +301,10 @@
                     <span class="text-xs font-bold text-orange-400">Pro Color Correction</span>
                 </div>
                 <div class="grid grid-cols-2 gap-3 text-xs text-zinc-300">
-                    <div>Auto Adjust: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="alert('Auto Correction Active')">Apply</button></div>
-                    <div>Colour Match: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="alert('Matching Palette')">Match</button></div>
-                    <div class="col-span-2"><span class="text-[11px] text-zinc-500">Sliders: Brightness, Contrast, Saturation, Brilliance, Sharpen, Clarity, HSL, Graph, Colour Wheel, Highlight, Shadows, White, Black, Temp, Hue, Fade, Vignette, Grain</span>
-                    <input type="range" class="w-full mt-1 accent-orange-500" /></div>
+                    <div>Auto Adjust: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('brightness(1.2) contrast(1.1) saturate(1.2)')">Apply</button></div>
+                    <div>Reset: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('none')">Reset</button></div>
+                    <div class="col-span-2"><span class="text-[11px] text-zinc-500">Live Custom Filter Slider:</span>
+                    <input type="range" min="50" max="150" value="100" class="w-full mt-1 accent-orange-500" oninput="adjustBrightness(this.value)" /></div>
                 </div>
             </div>
 
@@ -320,7 +329,7 @@
                 </div>
             </div>
 
-            <!-- 11. Aspect Ratio Submenu -->
+            <!-- 11. Aspect Ratio Submenu (FIXED THE BUG) -->
             <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
                 <div class="flex items-center justify-between mb-2">
                     <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
@@ -331,12 +340,6 @@
                     <button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">16:9 (YouTube)</button>
                     <button onclick="changeRatio('1/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">1:1 (Insta)</button>
                     <button onclick="changeRatio('4/3')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">4:3</button>
-                    <button onclick="changeRatio('3/4')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">3:4</button>
-                    <button onclick="changeRatio('5.8/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">5.8"</button>
-                    <button onclick="changeRatio('128/27')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">128:27</button>
-                    <button onclick="changeRatio('2/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">2:1</button>
-                    <button onclick="changeRatio('2.35/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">2.35:1</button>
-                    <button onclick="changeRatio('1.85/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">1.85:1</button>
                 </div>
             </div>
 
@@ -345,8 +348,8 @@
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
                 <button onclick="alert('Background Color Palette Selected')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-palette text-rose-400"></i>Solid Color</button>
                 <button onclick="alert('Import Custom BG Frame Image')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-image"></i>BG Image</button>
-                <button onclick="alert('Applying Gaussian Blur Matrix Context')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-clone"></i>Blur Frame</button>
-                <button onclick="alert('Brand Asset Identity Ecosystem loaded')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-circle-check"></i>Brand BG</button>
+                <button onclick="alert('Applying Gaussian Blur Matrix Context')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-sliders text-blue-400"></i>Blur Frame</button>
+                <button onclick="alert('Brand Asset Identity Ecosystem loaded')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-circle-check text-green-400"></i>Brand BG</button>
             </div>
 
         </div>
@@ -374,7 +377,22 @@
         const timelineLabel = document.getElementById('timelineLabel');
         const playBtn = document.getElementById('playBtn');
         const timeDisplay = document.getElementById('timeDisplay');
-        const container = document.getElementById('canvas-container');
+        const ratioBox = document.getElementById('video-ratio-box');
+        const elementsLayer = document.getElementById('canvas-elements-layer');
+        const overlayImg = document.getElementById('overlay-display-img');
+
+        // Canvas Drawing Setup
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let brushSize = 5;
+
+        // Resize Canvas to fit its boundings dynamically
+        function syncCanvasSize() {
+            canvas.width = ratioBox.clientWidth;
+            canvas.height = ratioBox.clientHeight;
+        }
+        window.addEventListener('resize', syncCanvasSize);
 
         // Main File Picker Binding
         picker.addEventListener('change', function(e) {
@@ -388,11 +406,13 @@
                 player.src = URL.createObjectURL(file);
                 player.play();
                 playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                setTimeout(syncCanvasSize, 100);
             } else {
                 player.classList.add('hidden');
                 imageEl.classList.remove('hidden');
                 imageEl.src = URL.createObjectURL(file);
                 timeDisplay.innerText = "00:00 / 00:05";
+                setTimeout(syncCanvasSize, 100);
             }
         });
 
@@ -404,7 +424,7 @@
 
         // Submenu Navigator System
         function showSubmenu(id) {
-            backToMaster(); // Hide all open ones first
+            backToMaster(); 
             document.getElementById('masterBottomMenu').classList.add('hidden');
             const sub = document.getElementById(`submenu-${id}`);
             if(sub) {
@@ -414,7 +434,6 @@
         }
 
         function backToMaster() {
-            // Hide all potential submenus
             const submenus = ['edit', 'audio', 'text', 'effects', 'overlay', 'caption', 'filters', 'adjust', 'generate-media', 'ai-avatar', 'aspect-ratio', 'background'];
             submenus.forEach(s => {
                 const el = document.getElementById(`submenu-${s}`);
@@ -427,34 +446,62 @@
             alert(`"${name}" options layer triggered natively.`);
         }
 
-        // Handle Overlays Selection
+        // WORKING OVERLAY FEATURE
         function handleOverlaySelected(input) {
             const file = input.files[0];
-            if(file) alert(`Overlay Selected successfully: ${file.name}`);
+            if(file) {
+                overlayImg.src = URL.createObjectURL(file);
+                overlayImg.classList.remove('hidden');
+            }
         }
 
-        // Canvas Aspect Ratio Transformer
+        // ADVANCED WORKING ADJUST FEATURE (Live CSS Filters)
+        function applyCSSFilter(filterValue) {
+            player.style.filter = filterValue;
+            imageEl.style.filter = filterValue;
+        }
+        function adjustBrightness(val) {
+            applyCSSFilter(`brightness(${val}%)`);
+        }
+
+        // FIXED CANVAS ASPECT RATIO (Only updates video box container)
         function changeRatio(ratioStr) {
-            if(ratioStr === '9/16') { container.style.aspectRatio = '9/16'; }
-            else if(ratioStr === '16/9') { container.style.aspectRatio = '16/9'; }
-            else if(ratioStr === '1/1') { container.style.aspectRatio = '1/1'; }
-            else { container.style.aspectRatio = '4/3'; }
-            alert(`Aspect Canvas Aspect Ratio modified to: ${ratioStr}`);
+            if(ratioStr === '9/16') {
+                ratioBox.style.aspectRatio = '9/16';
+                ratioBox.style.maxWidth = '280px';
+            } else if(ratioStr === '16/9') {
+                ratioBox.style.aspectRatio = '16/9';
+                ratioBox.style.maxWidth = '100%';
+            } else if(ratioStr === '1/1') {
+                ratioBox.style.aspectRatio = '1/1';
+                ratioBox.style.maxWidth = '360px';
+            } else if(ratioStr === '4/3') {
+                ratioBox.style.aspectRatio = '4/3';
+                ratioBox.style.maxWidth = '400px';
+            }
+            setTimeout(syncCanvasSize, 200); // clear & sync drawing layers
         }
 
         // 50+ Filters Component Builder Array Mock
         function generateFilters() {
             const container = document.getElementById('filtersContainer');
             if(container.children.length > 0) return;
-            const filterNames = ['4K Ultra', 'Cyberpunk', 'Warm Cinematic', 'B&W Vintage', 'Vivid', 'Moody Grain', 'Teal & Orange', 'Glitch Cam', 'Retro 90s', 'Noir Style'];
+            const filterClasses = [
+                {name: 'Warm', css: 'sepia(0.4) saturate(1.4)'},
+                {name: 'Cyber', css: 'hue-rotate(90deg) saturate(1.8)'},
+                {name: 'Vintage', css: 'grayscale(0.5) contrast(1.2)'},
+                {name: 'Vivid', css: 'saturate(2)'},
+                {name: 'Cool', css: 'contrast(1.1) brightness(0.9) hue-rotate(-30deg)'}
+            ];
             
             for(let i=1; i<=50; i++) {
-                const name = filterNames[i % filterNames.length] + ` #${i}`;
+                const currentFilter = filterClasses[i % filterClasses.length];
+                const displayName = currentFilter.name + ` #${i}`;
                 const div = document.createElement('div');
                 div.className = "flex-shrink-0 w-16 h-16 bg-zinc-800 rounded-lg flex flex-col justify-end p-1 text-[9px] text-zinc-300 font-bold cursor-pointer border border-zinc-700 hover:border-blue-500";
                 div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i}')`;
-                div.innerText = name;
-                div.onclick = () => alert(`Filter Applied: ${name}`);
+                div.innerText = displayName;
+                div.onclick = () => applyCSSFilter(currentFilter.css);
                 container.appendChild(div);
             }
         }
@@ -475,46 +522,75 @@
                     const el = document.createElement('div');
                     el.className = 'asset-card text-2xl';
                     el.innerText = e;
-                    el.onclick = () => { alert(`Sticker ${e} injected to canvas preview.`); closeDrawer(); };
+                    el.onclick = () => {
+                        elementsLayer.innerHTML += `<span class="text-4xl m-2 select-none animate-bounce" style="pointer-events:auto;">${e}</span>`;
+                        closeDrawer();
+                    };
                     drawerGrid.appendChild(el);
                 });
             } else if(type === 'fonts') {
-                const fonts = ['Impact', 'Arial', 'Courier', 'Georgia', 'Verdana', 'Comic Sans'];
-                fonts.forEach(f => {
+                const textPresets = ['Pro Editor', 'Viral Text', 'Dravoo AI', 'Trending'];
+                textPresets.forEach(f => {
                     const el = document.createElement('div');
-                    el.className = 'asset-card font-bold';
+                    el.className = 'asset-card font-bold text-center';
                     el.innerText = f;
-                    el.style.fontFamily = f;
-                    el.onclick = () => { alert(`Font Face ${f} bound contextually.`); closeDrawer(); };
+                    el.onclick = () => {
+                        elementsLayer.innerHTML += `<div class="text-white text-xl font-bold uppercase tracking-widest drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]" style="pointer-events:auto;">${f}</div>`;
+                        closeDrawer();
+                    };
                     drawerGrid.appendChild(el);
                 });
             } else {
-                drawerGrid.innerHTML = '<div class="col-span-full text-zinc-500 text-center py-4 text-xs">Standard templates and presets context populated.</div>';
+                drawerGrid.innerHTML = '<div class="col-span-full text-zinc-500 text-center py-4 text-xs">Presets loaded to timeline canvas.</div>';
             }
         }
         function closeDrawer() { drawer.classList.remove('open'); }
 
-        // Core Drawing System Handles
+        // WORKING DRAWING SYSTEM LOGIC
         let drawActive = false;
         function toggleDraw() {
             drawActive = !drawActive;
-            const canvas = document.getElementById('drawCanvas');
             const panel = document.getElementById('drawToolsPanel');
             if(drawActive) {
                 canvas.classList.add('active');
                 panel.classList.remove('hidden');
                 panel.classList.add('flex');
+                syncCanvasSize();
             } else {
                 canvas.classList.remove('active');
                 panel.classList.add('hidden');
             }
         }
+
         function clearDraw() {
-            const canvas = document.getElementById('drawCanvas');
-            const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
-        function setBrush(size) { alert(`Brush size configure value: ${size}px`); }
+
+        function setBrush(size) {
+            brushSize = size;
+        }
+
+        // Mouse & Touch Canvas Events
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; draw(e); });
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+        function draw(e) {
+            if(!isDrawing || !drawActive) return;
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#3b82f6'; // Dravoo Blue
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
     </script>
 </body>
 </html>
