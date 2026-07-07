@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dravoo Editor | New Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bungee&family=Italianno&family=Larken&family=Montra&family=Oswald&family=Rubik:wght@400;700&family=Anton&family=Permanent+Marker&family=Lobster&family=Pacifico&family=Fascinate&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Architects+Daughter&family=Barlow+Condensed&family=Bebas+Neue&family=Black+Ops+One&family=Boogaloo&family=Carter+One&family=Changa+One&family=Chewy&family=Comfortaa&family=Courgette&family=Creepster&family=Dancing+Script&family=Diplomata+SC&family=Dr+Sugiyama&family=Exo+2&family=Fredoka+One&family=Gabriela&family=Gloria+Hallelujah&family=Gochi+Hand&family=Great+Vibes&family=Hammersmith+One&family=Indie+Flower&family=Josefin+Sans&family=Julee&family=Kaushan+Script&family=Knewave&family=Lato&family=Lobster+Two&family=Mate+SC&family=Monoton&family=Montserrat&family=Mr+Dafoe&family=Neucha&family=Norican&family=Orbitron&family=Oregano&family=Oxygen&family=Patrick+Hand&family=Playfair+Display&family=Poiret+One&family=Quicksand&family=Raleway&family=Ranchers&family=Rock+Salt&family=Rubik+Bubbles&family=Satisfy&family=Shadows+Into+Light&family=Six+Caps&family=Special+Elite&family=Staatliches&family=Tangerine&family=Ultra&family=Uncial+Antiqua&family=Vampiro+One&family=Viga&family=Wallpoet&family=Yanone+Kaffeesatz&family=Zeyada&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bad+Script&family=Caveat+Brush&family=Cedarville+Cursive&family=Covered+By+Your+Grace&family=Crafty+Girls&family=Delius+Swash+Caps&family=Handlee&family=Just+Another+Hand&family=La+Belle+Aurore&family=League+Script&family=Loved+by+the+King&family=Merienda+One&family=Montez&family=Over+the+Rainbow&family=Rancho&family=Reenie+Beanie&family=Sacramento&family=Schoolbell&family=Sriracha&family=Sue+Ellen+Francisco&family=Waiting+for+the+Sunrise&family=Yellowtail&family=Dawning+of+a+New+Day&family=Petit+Formal+Script&family=Cutive+Mono&family=Arizonia&family=Berkshire+Swash&family=Calligraffitti&family=Coming+Soon&family=Condiment&family=Devonshire&family=Felipa&family=Give+You+Glory&family=Grand+Hotel&family=Marck+Script&family=Meddon&family=Parisienne&family=Rochester&family=WindSong&family=Yesteryear&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .cap-gradient { background: linear-gradient(135deg, #2563eb, #db2777); }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .content-card { background: #18181b; padding: 30px; border-radius: 24px; border: 1px solid #27272a; max-width: 480px; width: 90%; }
+        .meme-input { background: #27272a; border: 1px solid #3f3f46; padding: 12px; border-radius: 10px; color: white; width: 100%; }
+        .meme-input:focus { border-color: #3b82f6; outline: none; }
+        .timeline-track { background: #141416; border: 1px solid #222; position: relative; }
+        .timeline-cursor { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; left: 40%; z-index: 10; }
+        .canvas-text-overlay { position: absolute; color: #ffffff; font-weight: bold; font-size: 24px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); cursor: move; user-select: none; padding: 4px 8px; border: 1px dashed transparent; z-index: 20; white-space: nowrap; }
+        .canvas-text-overlay.active-node { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
+        .canvas-sticker-overlay { position: absolute; font-size: 45px; cursor: move; user-select: none; z-index: 21; padding: 4px; border: 1px dashed transparent; }
+        .canvas-sticker-overlay.active-node { border-color: #db2777; background: rgba(219, 39, 119, 0.15); }
+        .editor-drawer { position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 100%; max-width: 768px; height: 50vh; background: #111113; border-top-left-radius: 24px; border-top-right-radius: 24px; border-top: 1px solid #27272a; transition: bottom 0.3s cubic-bezier(0.1, 0.76, 0.55, 0.94); z-index: 150; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.9); }
+        .editor-drawer.open { bottom: 0; }
+        .drawer-header { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #1f2937; gap: 12px; }
+        .drawer-tabs { display: flex; overflow-x: auto; white-space: nowrap; padding: 4px 12px; border-bottom: 1px solid #1f2937; gap: 8px; }
+        .drawer-tabs::-webkit-scrollbar { display: none; }
+        .tab-link { padding: 10px 18px; color: #9ca3af; background: none; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .tab-link.active { color: #fff; border-bottom: 3px solid #3b82f6; }
+        .tab-content-container { flex-grow: 1; overflow-y: auto; padding: 16px; }
+        .content-panel { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        @media(min-width: 480px){ .content-panel { grid-template-columns: repeat(4, 1fr); } }
+        .content-panel.active { display: grid; }
+        .asset-card { background: #1c1c1f; border-radius: 12px; aspect-ratio: 1.1; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; text-align: center; padding: 8px; user-select: none; border: 1px solid #27272a; transition: 0.2s; overflow: hidden; }
+        .asset-card:hover { transform: scale(1.03); border-color: #3b82f6; background: #222226; }
+        .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-dot:hover { transform: scale(1.1); }
+        .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: auto; touch-action: none; display: none; }
+        .draw-overlay-canvas.active { display: block; }
+        .draw-tool-btn { background: #1c1c1f; border: 1px solid #27272a; border-radius: 8px; padding: 6px 12px; color: #fff; cursor: pointer; font-size: 11px; transition: 0.2s; }
+        .draw-tool-btn:hover { background: #2a2a2f; border-color: #3b82f6; }
+        .draw-tool-btn.active { border-color: #3b82f6; background: #2a2a2f; }
+        .draw-tool-btn.eraser-active { border-color: #ef4444; background: #2a2a2f; }
+        .color-picker-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+        .color-picker-btn:hover { transform: scale(1.1); }
+        .color-picker-btn.active { border-color: #fff; }
+        .draw-tools-panel { position: absolute; top: 10px; left: 10px; z-index: 35; background: rgba(0,0,0,0.85); border-radius: 12px; padding: 10px; border: 1px solid #27272a; display: none; gap: 6px; flex-wrap: wrap; max-width: 200px; }
+        .draw-tools-panel.active { display: flex; }
+        .draw-tools-panel .btn-close-draw { background: none; border: none; color: #9ca3af; font-size: 14px; cursor: pointer; padding: 2px 6px; }
+        .draw-tools-panel .btn-close-draw:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden">
+
+    <nav class="w-full bg-[#0a0a0a] border-b border-gray-800 z-50 px-6 py-4 flex justify-between items-center">
+        <h1 onclick="window.location.href='index.html'" class="text-xl font-black tracking-wider text-white flex items-center gap-2 cursor-pointer"><i class="fas fa-clapperboard text-blue-500"></i> DRAVOO <span class="text-xs text-blue-400 ml-2">Editor</span></h1>
+        <button onclick="window.location.href='index.html'" class="text-gray-400 hover:text-white text-sm"><i class="fas fa-home mr-1"></i> Home</button>
+    </nav>
+
+    <!-- Full Editor Workspace -->
+    <section class="px-4 max-w-3xl mx-auto my-6">
+        <div class="bg-[#0f0f11] border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            
+            <!-- Top Header -->
+            <div class="bg-[#070708] p-4 border-b border-zinc-900 flex justify-between items-center text-sm">
+                <div class="flex items-center gap-4">
+                    <span class="text-white font-bold text-sm">Project: Untitled</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="export-quality-select" class="bg-zinc-900 text-xs font-bold text-gray-300 px-3 py-1.5 rounded-lg border border-zinc-800 outline-none">
+                        <option value="UHD">AI UHD 4K</option>
+                        <option value="1080P" selected>1080P FHD</option>
+                        <option value="720P">720P HD</option>
+                    </select>
+                    <button onclick="triggerProjectExport()" class="bg-[#22d3ee] hover:bg-[#06b6d4] text-black font-black text-xs px-4 py-1.5 rounded-lg tracking-wide transition uppercase">Export</button>
+                </div>
+            </div>
+
+            <!-- Canvas Player -->
+            <div id="studio-canvas-container" class="aspect-[9/16] max-h-[460px] bg-black relative flex items-center justify-center overflow-hidden border-b border-zinc-900">
+                <video id="studio-main-player" loop class="w-full h-full object-contain hidden"></video>
+                <img id="studio-main-image" class="w-full h-full object-contain hidden" alt="Preview">
+                <div id="studio-media-placeholder" class="text-center p-6">
+                    <i class="fas fa-cloud-arrow-up text-4xl text-zinc-700 mb-2"></i>
+                    <p class="text-xs text-zinc-500 mb-3">Upload media to start editing</p>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-lg"><i class="fas fa-plus mr-1"></i> Add Media</button>
+                </div>
+                <canvas id="drawOverlayCanvas" class="draw-overlay-canvas"></canvas>
+                <div id="drawToolsPanel" class="draw-tools-panel">
+                    <button class="btn-close-draw" onclick="toggleDrawTools()">✕</button>
+                    <div style="display:flex; gap:4px; flex-wrap:wrap; align-items:center;">
+                        <button class="draw-tool-btn active" data-size="2" onclick="setBrushSize(2)">Thin</button>
+                        <button class="draw-tool-btn" data-size="6" onclick="setBrushSize(6)">Med</button>
+                        <button class="draw-tool-btn" data-size="12" onclick="setBrushSize(12)">Thick</button>
+                        <button class="draw-tool-btn" data-size="20" onclick="setBrushSize(20)">X-Thick</button>
+                        <button class="draw-tool-btn" data-size="0" onclick="toggleEraser()" id="eraserBtn">🧹</button>
+                    </div>
+                    <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:4px;" id="drawColorPaletteOverlay"></div>
+                    <button onclick="clearDrawOverlay()" style="background:#ef4444; border:none; color:#fff; padding:4px 10px; border-radius:6px; font-size:10px; cursor:pointer; margin-top:4px;">Clear</button>
+                </div>
+            </div>
+
+            <!-- Transport Controls -->
+            <div class="p-3 bg-[#0a0a0c] border-b border-zinc-900 flex justify-between items-center text-xs text-gray-400">
+                <span id="player-time-index" class="font-mono text-[11px]">00:00 / 00:05</span>
+                <button id="studio-play-pause-btn" onclick="toggleStudioPlayback()" class="w-9 h-9 rounded-full bg-zinc-900 text-white flex items-center justify-center border border-zinc-800 hover:scale-105 transition"><i class="fas fa-play text-xs"></i></button>
+                <div class="flex items-center gap-3 text-sm">
+                    <button onclick="toggleDrawTools()" class="hover:text-white"><i class="fas fa-pen"></i></button>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="p-4 bg-[#080809] border-b border-zinc-900 space-y-2.5 relative select-none">
+                <div class="timeline-cursor"></div>
+                <div class="timeline-track rounded-lg h-12 flex items-center p-1 overflow-hidden justify-between">
+                    <div class="flex items-center gap-1 bg-blue-600/20 h-full rounded border border-blue-500/30 px-2 min-w-[60%]">
+                        <i class="fas fa-video text-[10px] text-blue-400"></i>
+                        <span id="timeline-file-lbl" class="text-[9px] uppercase font-bold truncate text-blue-300">media_track_v1.mp4</span>
+                    </div>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="bg-zinc-900 border border-zinc-800 p-2 rounded text-gray-400 hover:text-white text-xs"><i class="fas fa-plus"></i></button>
+                </div>
+                <div onclick="switchToTextSubMenu()" class="timeline-track rounded-lg h-8 flex items-center px-3 cursor-pointer hover:bg-zinc-900 transition">
+                    <span class="text-[10px] font-bold text-amber-400 flex items-center gap-1.5"><i class="fas fa-font"></i> + Add text</span>
+                </div>
+            </div>
+
+            <!-- Main Menu -->
+            <div id="main-editor-menu" class="bg-[#050506] p-4 grid grid-cols-5 gap-2 text-center text-zinc-400 border-t border-zinc-900">
+                <button onclick="openStudioDrawer('templates')" class="flex flex-col items-center gap-1 hover:text-blue-400 transition">
+                    <i class="fas fa-paste text-sm"></i>
+                    <span class="text-[9px]">Templates</span>
+                </button>
+                <button onclick="openStudioDrawer('fonts')" class="flex flex-col items-center gap-1 hover:text-purple-400 transition">
+                    <i class="fas fa-font text-sm"></i>
+                    <span class="text-[9px]">Fonts</span>
+                </button>
+                <button onclick="openStudioDrawer('styles')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition">
+                    <i class="fas fa-palette text-sm"></i>
+                    <span class="text-[9px]">Styles</span>
+                </button>
+                <button onclick="openStudioDrawer('stickers')" class="flex flex-col items-center gap-1 hover:text-pink-400 transition">
+                    <i class="fas fa-face-smile text-sm"></i>
+                    <span class="text-[9px]">Stickers</span>
+                </button>
+                <button onclick="toggleDrawTools()" class="flex flex-col items-center gap-1 hover:text-teal-400 transition">
+                    <i class="fas fa-pen-blur text-sm"></i>
+                    <span class="text-[9px]">Draw</span>
+                </button>
+            </div>
+
+            <!-- Text Submenu -->
+            <div id="text-features-submenu" class="bg-[#050506] p-4 hidden grid grid-cols-5 gap-2 text-center text-zinc-400 border-t border-zinc-900">
+                <button onclick="exitTextSubMenu()" class="flex flex-col items-center gap-1 hover:text-white transition">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                    <span class="text-[9px]">Back</span>
+                </button>
+                <button onclick="openStudioDrawer('fonts')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition">
+                    <i class="fas fa-plus text-sm"></i>
+                    <span class="text-[9px]">Add text</span>
+                </button>
+                <button onclick="openStudioDrawer('templates')" class="flex flex-col items-center gap-1 hover:text-purple-400 transition">
+                    <i class="fas fa-paste text-sm"></i>
+                    <span class="text-[9px]">Templates</span>
+                </button>
+                <button onclick="openStudioDrawer('stickers')" class="flex flex-col items-center gap-1 hover:text-pink-400 transition">
+                    <i class="fas fa-face-smile text-sm"></i>
+                    <span class="text-[9px]">Stickers</span>
+                </button>
+                <button onclick="toggleDrawTools()" class="flex flex-col items-center gap-1 hover:text-teal-400 transition">
+                    <i class="fas fa-pen-blur text-sm"></i>
+                    <span class="text-[9px]">Draw</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Editor Drawer -->
+    <div class="editor-drawer" id="dravooStudioDrawer">
+        <div class="drawer-header">
+            <button class="text-zinc-400 hover:text-white text-md" onclick="closeStudioDrawer()">✕</button>
+            <div class="flex-grow">
+                <input type="text" id="drawerLiveInput" class="w-full bg-zinc-800 border-0 rounded-xl px-4 py-2 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500" placeholder="Type text here...">
+            </div>
+            <button class="text-blue-500 hover:text-blue-400 text-md font-bold" onclick="closeStudioDrawer()">✓</button>
+        </div>
+        <div class="drawer-tabs">
+            <button class="tab-link active" onclick="switchDrawerPanel('templates')">Templates</button>
+            <button class="tab-link" onclick="switchDrawerPanel('fonts')">Fonts</button>
+            <button class="tab-link" onclick="switchDrawerPanel('styles')">Styles</button>
+            <button class="tab-link" onclick="switchDrawerPanel('stickers')">Stickers</button>
+        </div>
+        <div class="tab-content-container">
+            <div class="content-panel active" id="drawer-templates-panel"></div>
+            <div class="content-panel" id="drawer-fonts-panel"></div>
+            <div class="content-panel" id="drawer-styles-panel">
+                <div class="w-full space-y-4">
+                    <p class="text-xs text-zinc-400 mb-2 font-medium">Text Color</p>
+                    <div class="flex flex-wrap gap-2" id="color-palette-container"></div>
+                    <p class="text-xs text-zinc-400 mb-2 font-medium">Font Size</p>
+                    <input type="range" min="16" max="70" value="24" class="w-full accent-blue-500" oninput="applyActiveSize(this.value)">
+                    <p class="text-xs text-zinc-400 mb-2 font-medium">Opacity</p>
+                    <input type="range" min="0.1" max="1" step="0.05" value="1" class="w-full accent-blue-500" oninput="applyActiveOpacity(this.value)">
+                </div>
+            </div>
+            <div class="content-panel" id="drawer-stickers-panel"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== SAME CORE LOGIC AS INDEX.HTML EDITOR ==========
+        const filePicker = document.getElementById('video-file-picker');
+        const mainStudioPlayer = document.getElementById('studio-main-player');
+        const mainStudioImage = document.getElementById('studio-main-image');
+        const studioPlaceholder = document.getElementById('studio-media-placeholder');
+        const timelineLbl = document.getElementById('timeline-file-lbl');
+        const playPauseBtn = document.getElementById('studio-play-pause-btn');
+        const timeIndexLbl = document.getElementById('player-time-index');
+        const mainEditorMenu = document.getElementById('main-editor-menu');
+        const textFeaturesSubmenu = document.getElementById('text-features-submenu');
+        const studioCanvasContainer = document.getElementById('studio-canvas-container');
+        let activeTextNode = null;
+
+        filePicker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                timelineLbl.innerText = file.name;
+                studioPlaceholder.classList.add('hidden');
+                if (file.type.startsWith('video/')) {
+                    mainStudioImage.classList.add('hidden');
+                    mainStudioPlayer.classList.remove('hidden');
+                    mainStudioPlayer.src = URL.createObjectURL(file);
+                    mainStudioPlayer.play();
+                    playPauseBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                    mainStudioPlayer.ontimeupdate = () => {
+                        timeIndexLbl.innerText = `${formatTimeTrack(mainStudioPlayer.currentTime)} / ${formatTimeTrack(mainStudioPlayer.duration || 0)}`;
+                    };
+                } else if (file.type.startsWith('image/')) {
+                    mainStudioPlayer.classList.add('hidden');
+                    mainStudioPlayer.pause();
+                    mainStudioImage.classList.remove('hidden');
+                    mainStudioImage.src = URL.createObjectURL(file);
+                    timeIndexLbl.innerText = "00:00 / 00:05";
+                }
+                initDrawOverlay();
+            }
+        });
+
+        function toggleStudioPlayback() {
+            if (!mainStudioPlayer.paused) {
+                mainStudioPlayer.pause();
+                playPauseBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+            } else {
+                mainStudioPlayer.play();
+                playPauseBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+            }
+        }
+
+        function formatTimeTrack(s) { if(isNaN(s)) return "00:00"; return `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`; }
+
+        function triggerProjectExport() { alert(`Exporting in ${document.getElementById('export-quality-select').value}... Done!`); }
+
+        function switchToTextSubMenu() { mainEditorMenu.classList.add('hidden'); textFeaturesSubmenu.classList.remove('hidden'); textFeaturesSubmenu.classList.add('grid'); }
+        function exitTextSubMenu() { textFeaturesSubmenu.classList.add('hidden'); textFeaturesSubmenu.classList.remove('grid'); mainEditorMenu.classList.remove('hidden'); }
+
+        // Drawer
+        const studioDrawer = document.getElementById('dravooStudioDrawer');
+        const drawerLiveInput = document.getElementById('drawerLiveInput');
+        const templatesContainer = document.getElementById('drawer-templates-panel');
+        const stickersContainer = document.getElementById('drawer-stickers-panel');
+        const fontsContainer = document.getElementById('drawer-fonts-panel');
+        const colorPaletteContainer = document.getElementById('color-palette-container');
+
+        // Templates (same full list including 50 new handwriting ones)
+        function generateTemplates(count) {
+            const templateStyles = [
+                {name:"ABC Smart", style:"font-family:'Bangers'; color:#ffcc00; text-shadow:2px 2px 0px #000; font-size:18px;"},
+                {name:"Neon Glow", style:"font-family:'Oswald'; color:#00f3ff; text-shadow:0 0 8px #00f3ff; font-size:22px;"},
+                {name:"Satisfy Cursive", style:"font-family:'Satisfy'; color:#6c5ce7; font-size:36px;"},
+                {name:"Great Vibes", style:"font-family:'Great Vibes'; color:#fdcb6e; font-size:38px;"},
+                {name:"Alex Brush", style:"font-family:'Alex Brush'; color:#a29bfe; font-size:34px;"},
+                {name:"Allura", style:"font-family:'Allura'; color:#f8a5c2; font-size:36px;"},
+                {name:"Pacifico", style:"font-family:'Pacifico'; color:#00cec9; font-size:30px;"},
+                {name:"Dancing Script", style:"font-family:'Dancing Script'; color:#fd79a8; font-size:32px;"},
+                {name:"Zeyada", style:"font-family:'Zeyada'; color:#e84393; font-size:34px;"},
+                {name:"Parisienne", style:"font-family:'Parisienne'; color:#ff758c; font-size:32px;"},
+                {name:"Tangerine", style:"font-family:'Tangerine'; color:#fdcb6e; font-size:34px;"},
+                {name:"Architects Daughter", style:"font-family:'Architects Daughter'; color:#2d3436; font-size:22px;"},
+                {name:"Indie Flower", style:"font-family:'Indie Flower'; color:#0984e3; font-size:28px;"},
+                {name:"Patrick Hand", style:"font-family:'Patrick Hand'; color:#00b894; font-size:26px;"},
+                {name:"Kaushan Script", style:"font-family:'Kaushan Script'; color:#e17055; font-size:30px;"},
+                {name:"Mr Dafoe", style:"font-family:'Mr Dafoe'; color:#fab1a0; font-size:40px;"},
+                {name:"Rock Salt", style:"font-family:'Rock Salt'; color:#2d3436; font-size:22px;"},
+                {name:"Caveat Brush", style:"font-family:'Caveat Brush'; color:#ff7675; font-size:28px;"},
+                {name:"Sacramento", style:"font-family:'Sacramento'; color:#6c5ce7; font-size:36px;"},
+                {name:"Marck Script", style:"font-family:'Marck Script'; color:#00f3ff; font-size:28px;"},
+                {name:"Rochester", style:"font-family:'Rochester'; color:#d4af37; font-size:30px;"},
+                {name:"WindSong", style:"font-family:'WindSong'; color:#48dbfb; font-size:28px;"},
+                {name:"Grand Hotel", style:"font-family:'Grand Hotel'; color:#f368e0; font-size:34px;"},
+                {name:"Meddon", style:"font-family:'Meddon'; color:#f8a5c2; font-size:26px;"},
+                {name:"Coming Soon", style:"font-family:'Coming Soon'; color:#54a0ff; font-size:22px;"}
+            ];
+
+            for (let i = 0; i < count; i++) {
+                const idx = i % templateStyles.length;
+                const tpl = templateStyles[idx];
+                const name = tpl.name + (i >= templateStyles.length ? ` ${Math.floor(i/templateStyles.length)+1}` : '');
+                const card = document.createElement('div');
+                card.className = 'asset-card font-bold';
+                card.innerText = name;
+                card.setAttribute('style', tpl.style + " cursor:pointer;");
+                card.onclick = () => addNewCanvasTextNode(name, tpl.style);
+                templatesContainer.appendChild(card);
+            }
+        }
+
+        function generateFonts(count) {
+            const fonts = ['Rubik','Bangers','Bungee','Italianno','Oswald','Anton','Permanent Marker','Lobster','Pacifico','Dancing Script','Great Vibes','Satisfy','Shadows Into Light','Kaushan Script','Mr Dafoe','Gochi Hand','Gloria Hallelujah','Neucha','Norican','Patrick Hand','Rock Salt','Alex Brush','Allura','Bad Script','Caveat Brush','Cedarville Cursive','Covered By Your Grace','Crafty Girls','Delius Swash Caps','Handlee','Just Another Hand','La Belle Aurore','League Script','Loved by the King','Merienda One','Montez','Over the Rainbow','Rancho','Reenie Beanie','Sacramento','Schoolbell','Sriracha','Sue Ellen Francisco','Tangerine','Waiting for the Sunrise','Yellowtail','Zeyada','Arizonia','Berkshire Swash','Calligraffitti','Coming Soon','Condiment','Devonshire','Felipa','Give You Glory','Grand Hotel','Marck Script','Meddon','Parisienne','Rochester','WindSong','Yesteryear'];
+            const uf = [...new Set(fonts)];
+            for(let i=0;i<Math.min(count,uf.length);i++){
+                const f=uf[i]; const c=document.createElement('div'); c.className='asset-card'; c.style.fontFamily=f; c.innerText=f;
+                c.onclick=()=>{if(activeTextNode)activeTextNode.style.fontFamily=f;}; fontsContainer.appendChild(c);
+            }
+        }
+
+        function generateStickers(count) {
+            const s=['🔥','✨','🎯','❤️','👑','🚀','💥','😂','💯','🎉','🌟','👍','🙌','💀','🤖','🎃','😈','👀','🎮','🎨','🎬','⚡','💡','🔮','💎','💰','🌍','🍕','🍔','🎵','🎤','🎸','🐾','🐱','🦁','🐉','🦄','🐼','🦊','🐰','🐻','🐺','💖','💙','💚','💛','🌸','🌺','🌻','🌹'];
+            const us=[...new Set(s)];
+            for(let i=0;i<Math.min(count,us.length);i++){
+                const e=us[i]; const c=document.createElement('div'); c.className='asset-card text-2xl'; c.innerText=e; c.style.cursor='pointer';
+                c.onclick=()=>injectCanvasSticker(e); stickersContainer.appendChild(c);
+            }
+        }
+
+        function generateColors() {
+            const cols=['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1','#000000','#ff6b6b','#4ecdc4','#f9ca24'];
+            [...new Set(cols)].forEach(c=>{
+                const d=document.createElement('div'); d.className='color-dot'; d.style.background=c;
+                d.style.border=c==='#ffffff'?'2px solid #333':'2px solid transparent';
+                d.onclick=()=>{if(activeTextNode)activeTextNode.style.color=c;}; colorPaletteContainer.appendChild(d);
+            });
+        }
+
+        generateTemplates(200);
+        generateFonts(100);
+        generateStickers(100);
+        generateColors();
+
+        function openStudioDrawer(tab){studioDrawer.classList.add('open');switchDrawerPanel(tab);}
+        function closeStudioDrawer(){studioDrawer.classList.remove('open');}
+        function switchDrawerPanel(pid){
+            document.querySelectorAll('.tab-link').forEach(l=>l.classList.remove('active'));
+            document.querySelectorAll('.content-panel').forEach(p=>p.classList.remove('active'));
+            const tl=Array.from(document.querySelectorAll('.tab-link')).find(l=>l.innerText.toLowerCase()===pid.toLowerCase());
+            if(tl)tl.classList.add('active');
+            const tp=document.getElementById(`drawer-${pid}-panel`);
+            if(tp)tp.classList.add('active');
+        }
+
+        function addNewCanvasTextNode(tv="Text",cs=""){
+            const n=document.createElement('div'); n.className="canvas-text-overlay active-node"; n.innerText=tv;
+            n.style.left="25%"; n.style.top="35%";
+            if(cs)n.style.cssText+=cs;
+            n.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.canvas-text-overlay,.canvas-sticker-overlay').forEach(x=>x.classList.remove('active-node'));n.classList.add('active-node');activeTextNode=n;drawerLiveInput.value=n.innerText;});
+            n.addEventListener('dblclick',()=>{if(confirm("Delete?")){n.remove();if(activeTextNode===n)activeTextNode=null;}});
+            setupDraggableEngine(n); studioCanvasContainer.appendChild(n);
+            activeTextNode=n; drawerLiveInput.value=n.innerText;
+        }
+
+        function injectCanvasSticker(emoji){
+            const s=document.createElement('div'); s.className="canvas-sticker-overlay active-node"; s.innerText=emoji;
+            s.style.left="40%"; s.style.top="45%";
+            s.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.canvas-text-overlay,.canvas-sticker-overlay').forEach(x=>x.classList.remove('active-node'));s.classList.add('active-node');});
+            s.addEventListener('dblclick',()=>{if(confirm("Delete?"))s.remove();});
+            setupDraggableEngine(s); studioCanvasContainer.appendChild(s);
+        }
+
+        drawerLiveInput.oninput=e=>{if(activeTextNode)activeTextNode.innerText=e.target.value;};
+        function applyActiveSize(s){if(activeTextNode)activeTextNode.style.fontSize=`${s}px`;}
+        function applyActiveOpacity(o){if(activeTextNode)activeTextNode.style.opacity=o;}
+
+        function setupDraggableEngine(el){
+            let p1=0,p2=0,p3=0,p4=0;
+            el.onmousedown=el.ontouchstart=function(e){
+                e=e||window.event; p3=e.clientX||(e.touches&&e.touches[0].clientX); p4=e.clientY||(e.touches&&e.touches[0].clientY);
+                document.onmouseup=document.ontouchend=stop; document.onmousemove=document.ontouchmove=move;
+            };
+            function move(e){e=e||window.event; let cx=e.clientX||(e.touches&&e.touches[0].clientX),cy=e.clientY||(e.touches&&e.touches[0].clientY); p1=p3-cx; p2=p4-cy; p3=cx; p4=cy; el.style.top=(el.offsetTop-p2)+"px"; el.style.left=(el.offsetLeft-p1)+"px";}
+            function stop(){document.onmouseup=document.onmousemove=document.ontouchend=document.ontouchmove=null;}
+        }
+
+        // Draw Tools
+        let drawCanvas,drawCtx,isDrawing=false,currentBrushSize=6,currentDrawColor='#ffffff',isEraser=false,drawToolsVisible=false;
+        function initDrawOverlay(){
+            drawCanvas=document.getElementById('drawOverlayCanvas'); if(!drawCanvas)return;
+            const ct=document.getElementById('studio-canvas-container');
+            drawCanvas.width=ct.offsetWidth||400; drawCanvas.height=ct.offsetHeight||700;
+            drawCtx=drawCanvas.getContext('2d'); drawCtx.fillStyle='rgba(0,0,0,0)'; drawCtx.fillRect(0,0,drawCanvas.width,drawCanvas.height);
+            drawCanvas.addEventListener('mousedown',sd); drawCanvas.addEventListener('mousemove',dr); drawCanvas.addEventListener('mouseup',ed); drawCanvas.addEventListener('mouseleave',ed);
+            drawCanvas.addEventListener('touchstart',ts); drawCanvas.addEventListener('touchmove',tm); drawCanvas.addEventListener('touchend',ed);
+            genDrawColors();
+        }
+        function gc(e){const r=drawCanvas.getBoundingClientRect(); return{x:(e.clientX-r.left)*(drawCanvas.width/r.width),y:(e.clientY-r.top)*(drawCanvas.height/r.height)};}
+        function sd(e){if(!drawToolsVisible)return; isDrawing=true; const p=gc(e); drawCtx.beginPath(); drawCtx.moveTo(p.x,p.y);}
+        function dr(e){if(!isDrawing||!drawToolsVisible)return; const p=gc(e); drawCtx.lineWidth=isEraser?currentBrushSize*3:currentBrushSize; drawCtx.lineCap='round'; drawCtx.globalCompositeOperation=isEraser?'destination-out':'source-over'; drawCtx.strokeStyle=isEraser?'rgba(0,0,0,1)':currentDrawColor; drawCtx.lineTo(p.x,p.y); drawCtx.stroke(); drawCtx.beginPath(); drawCtx.moveTo(p.x,p.y);}
+        function ed(){isDrawing=false; drawCtx.beginPath();}
+        function ts(e){e.preventDefault(); const t=e.touches[0]; drawCanvas.dispatchEvent(new MouseEvent('mousedown',{clientX:t.clientX,clientY:t.clientY}));}
+        function tm(e){e.preventDefault(); const t=e.touches[0]; drawCanvas.dispatchEvent(new MouseEvent('mousemove',{clientX:t.clientX,clientY:t.clientY}));}
+        function toggleDrawTools(){
+            drawToolsVisible=!drawToolsVisible; const p=document.getElementById('drawToolsPanel'),c=document.getElementById('drawOverlayCanvas');
+            if(drawToolsVisible){p.classList.add('active');c.classList.add('active');if(!drawCanvas)initDrawOverlay();}
+            else{p.classList.remove('active');c.classList.remove('active');}
+        }
+        function setBrushSize(s){currentBrushSize=s;isEraser=false;document.querySelectorAll('.draw-tool-btn').forEach(b=>b.classList.remove('active','eraser-active'));document.querySelector(`.draw-tool-btn[data-size="${s}"]`)?.classList.add('active');if(drawCtx)drawCtx.globalCompositeOperation='source-over';}
+        function toggleEraser(){isEraser=!isEraser; if(isEraser){if(drawCtx)drawCtx.globalCompositeOperation='destination-out'; document.getElementById('eraserBtn')?.classList.add('eraser-active');}else{if(drawCtx)drawCtx.globalCompositeOperation='source-over'; document.getElementById('eraserBtn')?.classList.remove('eraser-active');setBrushSize(currentBrushSize);}}
+        function clearDrawOverlay(){if(!drawCtx)return; drawCtx.globalCompositeOperation='source-over'; drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);}
+        function genDrawColors(){
+            const pal=document.getElementById('drawColorPaletteOverlay');
+            ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1'].forEach(c=>{
+                const b=document.createElement('button'); b.className='color-picker-btn'; b.style.background=c; b.style.width='22px'; b.style.height='22px';
+                b.onclick=()=>{document.querySelectorAll('#drawColorPaletteOverlay .color-picker-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentDrawColor=c;isEraser=false;setBrushSize(currentBrushSize);};
+                pal.appendChild(b);
+            });
+            pal.firstChild?.classList.add('active');
+        }
+
+        window.addEventListener('resize',()=>{if(drawCanvas){const ct=document.getElementById('studio-canvas-container'); drawCanvas.width=ct.offsetWidth||400; drawCanvas.height=ct.offsetHeight||700;}});
+        setTimeout(initDrawOverlay,500);
+    </script>
+</body>
+</html>
