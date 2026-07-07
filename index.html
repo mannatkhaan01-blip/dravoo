@@ -64,6 +64,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bungee&family=Italianno&family=Larken&family=Montra&family=Oswald&family=Rubik:wght@400;700&family=Anton&family=Permanent+Marker&family=Lobster&family=Pacifico&family=Fascinate&display=swap" rel="stylesheet">
     <!-- 500+ extra fonts for templates -->
     <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Architects+Daughter&family=Barlow+Condensed&family=Bebas+Neue&family=Black+Ops+One&family=Boogaloo&family=Carter+One&family=Changa+One&family=Chewy&family=Comfortaa&family=Courgette&family=Creepster&family=Dancing+Script&family=Diplomata+SC&family=Dr+Sugiyama&family=Exo+2&family=Fredoka+One&family=Gabriela&family=Gloria+Hallelujah&family=Gochi+Hand&family=Great+Vibes&family=Hammersmith+One&family=Indie+Flower&family=Josefin+Sans&family=Julee&family=Kaushan+Script&family=Knewave&family=Lato&family=Lobster+Two&family=Mate+SC&family=Monoton&family=Montserrat&family=Mr+Dafoe&family=Neucha&family=Norican&family=Orbitron&family=Oregano&family=Oxygen&family=Patrick+Hand&family=Playfair+Display&family=Poiret+One&family=Quicksand&family=Raleway&family=Ranchers&family=Rock+Salt&family=Rubik+Bubbles&family=Satisfy&family=Shadows+Into+Light&family=Six+Caps&family=Special+Elite&family=Staatliches&family=Tangerine&family=Ultra&family=Uncial+Antiqua&family=Vampiro+One&family=Viga&family=Wallpoet&family=Yanone+Kaffeesatz&family=Zeyada&display=swap" rel="stylesheet">
+    <!-- Additional Handwriting & Calligraphy Fonts for 50 New Templates -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bad+Script&family=Caveat+Brush&family=Cedarville+Cursive&family=Covered+By+Your+Grace&family=Crafty+Girls&family=Delius+Swash+Caps&family=Handlee&family=Just+Another+Hand&family=La+Belle+Aurore&family=League+Script&family=Loved+by+the+King&family=Merienda+One&family=Montez&family=Over+the+Rainbow&family=Rancho&family=Reenie+Beanie&family=Sacramento&family=Schoolbell&family=Sriracha&family=Sue+Ellen+Francisco&family=Waiting+for+the+Sunrise&family=Yellowtail&family=Dawning+of+a+New+Day&family=Petit+Formal+Script&family=Cutive+Mono&family=Arizonia&family=Berkshire+Swash&family=Bonbon&family=Calligraffitti&family=Coming+Soon&family=Condiment&family=Devonshire&family=Engagement&family=Felipa&family=Give+You+Glory&family=Grand+Hotel&family=Herr+Von+Muellerhoff&family=Jim+Nightshade&family=Kristi&family=Marck+Script&family=Meddon&family=Meie+Script&family=Molle&family=Monsieur+La+Doulaise&family=Mrs+Saint+Delafield&family=Niconne&family=Parisienne&family=Pinyon+Script&family=Rochester&family=Rouge+Script&family=Ruthie&family=Stint+Ultra+Condensed&family=Swanky+and+Moo+Moo&family=The+Girl+Next+Door&family=WindSong&family=Yesteryear&display=swap" rel="stylesheet">
    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -141,7 +143,7 @@
             box-shadow: 0 -10px 40px rgba(0,0,0,0.9);
         }
         .editor-drawer.open { bottom: 0; }
-        .drawer-header { display: flex; items-center: center; padding: 14px 20px; border-bottom: 1px solid #1f2937; gap: 12px; }
+        .drawer-header { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #1f2937; gap: 12px; }
         .drawer-tabs { display: flex; overflow-x: auto; white-space: nowrap; padding: 4px 12px; border-bottom: 1px solid #1f2937; gap: 8px; }
         .drawer-tabs::-webkit-scrollbar { display: none; }
         .tab-link { padding: 10px 18px; color: #9ca3af; background: none; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
@@ -152,7 +154,7 @@
         .content-panel.active { display: grid; }
         
         /* Studio Asset Grid Cards */
-        .asset-card { background: #1c1c1f; border-radius: 12px; aspect-ratio: 1.1; display: flex; flex-direction: column; justify-content: center; items-center: center; cursor: pointer; font-size: 12px; text-align: center; padding: 8px; user-select: none; border: 1px solid #27272a; transition: 0.2s; }
+        .asset-card { background: #1c1c1f; border-radius: 12px; aspect-ratio: 1.1; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; text-align: center; padding: 8px; user-select: none; border: 1px solid #27272a; transition: 0.2s; overflow: hidden; }
         .asset-card:hover { transform: scale(1.03); border-color: #3b82f6; background: #222226; }
         #styles-panel { grid-template-columns: 1fr; }
         .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
@@ -263,7 +265,8 @@
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
        
         <div class="mt-8 flex flex-wrap justify-center gap-4">
-            <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2"><i class="fas fa-plus"></i> New Project</button>
+            <!-- 🆕 CHANGED: New Project button now opens editor.html in new tab -->
+            <button onclick="window.open('editor.html', '_blank')" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2"><i class="fas fa-plus"></i> New Project</button>
             <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2"><i class="fas fa-wand-magic-sparkles"></i> Create with AI</button>
         </div>
 
@@ -722,7 +725,6 @@
                     mainStudioImage.src = URL.createObjectURL(file);
                     timeIndexLbl.innerText = "00:00 / 00:05";
                 }
-                // Reset draw overlay
                 initDrawOverlay();
             }
         });
@@ -782,9 +784,8 @@
         const effectsContainer = document.getElementById('drawer-effects-panel');
         const colorPaletteContainer = document.getElementById('color-palette-container');
 
-        // --- 500+ TEMPLATES WITH DIVERSE UNIQUE DESIGNS (Alag Alag Language Style) ---
+        // --- 500+ TEMPLATES WITH DIVERSE UNIQUE DESIGNS + 50 NEW HANDWRITING TEMPLATES ---
         function generateTemplates(count) {
-            // 500+ unique template names with different styles
             const templateStyles = [
                 {name:"ABC Smart", style:"font-family:'Bangers'; color:#ffcc00; text-shadow:2px 2px 0px #000; font-size:18px; transform:rotate(-2deg);"},
                 {name:"Let's Go", style:"font-family:'Bungee'; color:#ff3b30; font-style:italic; text-shadow:0 0 10px #ff3b30; font-size:20px;"},
@@ -889,7 +890,68 @@
                 {name:"Beta Hydri", style:"font-family:'Staatliches'; color:#ff6b6b; letter-spacing:3px; font-size:22px;"},
                 {name:"Gamma Cephei", style:"font-family:'Tangerine'; color:#f368e0; font-size:36px;"},
                 {name:"Delta Pavonis", style:"font-family:'Ultra'; color:#ffcc00; text-shadow:3px 3px 0 #000; font-size:24px;"},
-                {name:"Epsilon Eridani", style:"font-family:'Uncial Antiqua'; color:#c8d6e5; font-weight:bold; font-size:18px;"}
+                {name:"Epsilon Eridani", style:"font-family:'Uncial Antiqua'; color:#c8d6e5; font-weight:bold; font-size:18px;"},
+                // 🆕 50 NEW HANDWRITING & CALLIGRAPHY TEMPLATES (Zeyada se aage)
+                {name:"Zeyada Script", style:"font-family:'Zeyada'; color:#e84393; font-size:34px; text-shadow:0 0 10px rgba(232,67,147,0.3);"},
+                {name:"Architect Note", style:"font-family:'Architects Daughter'; color:#2d3436; background:#dfe6e9; padding:4px 8px; border-radius:8px; font-size:22px;"},
+                {name:"Indie Vibes", style:"font-family:'Indie Flower'; color:#0984e3; font-size:28px; transform:rotate(-2deg);"},
+                {name:"Patrick Pen", style:"font-family:'Patrick Hand'; color:#00b894; font-size:26px; text-shadow:1px 1px 0 #55efc4;"},
+                {name:"Satisfy Cursive", style:"font-family:'Satisfy'; color:#6c5ce7; font-size:36px; text-shadow:0 0 12px rgba(108,92,231,0.4);"},
+                {name:"Dancing Word", style:"font-family:'Dancing Script'; color:#fd79a8; font-size:32px; transform:rotate(1deg);"},
+                {name:"Great Vibes", style:"font-family:'Great Vibes'; color:#fdcb6e; font-size:38px; text-shadow:0 0 15px #fdcb6e;"},
+                {name:"Shadows Art", style:"font-family:'Shadows Into Light'; color:#00cec9; font-size:26px; letter-spacing:2px;"},
+                {name:"Kaushan Flow", style:"font-family:'Kaushan Script'; color:#e17055; font-size:30px; text-shadow:2px 2px 0 #ffeaa7;"},
+                {name:"Mr Debonair", style:"font-family:'Mr Dafoe'; color:#fab1a0; font-size:40px; transform:rotate(-1deg);"},
+                {name:"Gochi Hand", style:"font-family:'Gochi Hand'; color:#74b9ff; font-size:24px; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:12px;"},
+                {name:"Gloria Praise", style:"font-family:'Gloria Hallelujah'; color:#6c5ce7; font-size:26px; transform:rotate(1deg);"},
+                {name:"Tangerine Dream", style:"font-family:'Tangerine'; color:#fdcb6e; font-size:34px; font-weight:bold;"},
+                {name:"Neucha Hand", style:"font-family:'Neucha'; color:#0984e3; font-size:22px; letter-spacing:0.8px;"},
+                {name:"Norican Script", style:"font-family:'Norican'; color:#fd79a8; font-size:34px; font-style:italic;"},
+                {name:"Pacifico Wave", style:"font-family:'Pacifico'; color:#00cec9; font-size:30px; transform:rotate(2deg);"},
+                {name:"Marker Tag", style:"font-family:'Permanent Marker'; color:#000; font-size:26px; text-shadow:2px 2px #ffea00;"},
+                {name:"Rock Salt", style:"font-family:'Rock Salt'; color:#2d3436; font-size:22px; letter-spacing:1px; text-shadow:1px 1px #dfe6e9;"},
+                {name:"Alex Brush", style:"font-family:'Alex Brush'; color:#a29bfe; font-size:34px; text-shadow:0 0 10px #6c5ce7;"},
+                {name:"Allura Elegance", style:"font-family:'Allura'; color:#f8a5c2; font-size:36px; font-style:italic;"},
+                {name:"Bad Script", style:"font-family:'Bad Script'; color:#636e72; background:#ffeaa7; padding:4px; border-radius:6px; font-size:22px;"},
+                {name:"Caveat Brush", style:"font-family:'Caveat Brush'; color:#ff7675; font-size:28px; transform:rotate(2deg);"},
+                {name:"Cedarville", style:"font-family:'Cedarville Cursive'; color:#00b894; font-size:28px; text-shadow:1px 1px #55efc4;"},
+                {name:"Covered Grace", style:"font-family:'Covered By Your Grace'; color:#6c5ce7; font-size:30px; transform:rotate(-3deg);"},
+                {name:"Crafty Girls", style:"font-family:'Crafty Girls'; color:#e84393; font-size:24px; background:rgba(255,255,255,0.2); border-radius:8px; padding:4px;"},
+                {name:"Cutive Mono", style:"font-family:'Cutive Mono'; color:#2d3436; background:#dfe6e9; font-size:20px; letter-spacing:1px; padding:2px 6px;"},
+                {name:"Delius Swash", style:"font-family:'Delius Swash Caps'; color:#fd79a8; font-size:28px; text-shadow:0 0 5px rgba(253,121,168,0.3);"},
+                {name:"Handlee Pen", style:"font-family:'Handlee'; color:#00cec9; font-size:24px; letter-spacing:0.5px;"},
+                {name:"Just Another", style:"font-family:'Just Another Hand'; color:#e17055; font-size:30px; text-transform:uppercase;"},
+                {name:"La Belle", style:"font-family:'La Belle Aurore'; color:#fdcb6e; font-size:34px; font-style:italic;"},
+                {name:"League Script", style:"font-family:'League Script'; color:#6c5ce7; font-size:36px; text-shadow:0 0 10px rgba(108,92,231,0.5);"},
+                {name:"Loved King", style:"font-family:'Loved by the King'; color:#e84393; font-size:32px; transform:rotate(-2deg);"},
+                {name:"Merienda One", style:"font-family:'Merienda One'; color:#00b894; font-size:28px; background:rgba(0,0,0,0.1); border-radius:8px; padding:2px;"},
+                {name:"Montez Royal", style:"font-family:'Montez'; color:#d63031; font-size:38px; text-shadow:0 0 8px rgba(214,48,49,0.4);"},
+                {name:"Over Rainbow", style:"font-family:'Over the Rainbow'; color:#a29bfe; font-size:26px; text-shadow:1px 1px 0 #6c5ce7;"},
+                {name:"Rancho Style", style:"font-family:'Rancho'; color:#e17055; font-size:28px; transform:rotate(-1deg);"},
+                {name:"Reenie Beanie", style:"font-family:'Reenie Beanie'; color:#00b894; font-size:24px; background:rgba(255,255,255,0.1); padding:2px;"},
+                {name:"Sacramento", style:"font-family:'Sacramento'; color:#6c5ce7; font-size:36px; text-shadow:0 0 12px rgba(108,92,231,0.5);"},
+                {name:"Schoolbell", style:"font-family:'Schoolbell'; color:#fd79a8; font-size:26px; transform:rotate(1deg);"},
+                {name:"Sriracha Hot", style:"font-family:'Sriracha'; color:#e84393; font-size:24px; transform:rotate(-2deg);"},
+                {name:"Sue Ellen", style:"font-family:'Sue Ellen Francisco'; color:#00cec9; font-size:30px; letter-spacing:0.8px;"},
+                {name:"Waiting Sun", style:"font-family:'Waiting for the Sunrise'; color:#e17055; font-size:26px; text-shadow:1px 1px 0 #ffeaa7;"},
+                {name:"Yellowtail", style:"font-family:'Yellowtail'; color:#00b894; font-size:32px; font-style:italic;"},
+                {name:"Dawning Day", style:"font-family:'Dawning of a New Day'; color:#e84393; font-size:28px; background:rgba(0,0,0,0.1); border-radius:8px; padding:2px;"},
+                {name:"Petit Formal", style:"font-family:'Petit Formal Script'; color:#fdcb6e; font-size:30px; text-shadow:0 0 12px #fdcb6e;"},
+                {name:"Arizonia", style:"font-family:'Arizonia'; color:#ff6b6b; font-size:36px; text-shadow:0 0 15px rgba(255,107,107,0.3);"},
+                {name:"Berkshire", style:"font-family:'Berkshire Swash'; color:#c8d6e5; font-size:28px; text-transform:capitalize;"},
+                {name:"Calligraffitti", style:"font-family:'Calligraffitti'; color:#ff9f43; font-size:26px; transform:rotate(1deg);"},
+                {name:"Coming Soon", style:"font-family:'Coming Soon'; color:#54a0ff; font-size:22px; letter-spacing:1px;"},
+                {name:"Grand Hotel", style:"font-family:'Grand Hotel'; color:#f368e0; font-size:34px; text-shadow:0 0 8px rgba(243,104,224,0.3);"},
+                {name:"Parisienne", style:"font-family:'Parisienne'; color:#ff758c; font-size:32px; font-style:italic; text-shadow:0 0 10px rgba(255,117,140,0.2);"},
+                {name:"Rochester", style:"font-family:'Rochester'; color:#d4af37; font-size:30px; text-shadow:0 0 15px rgba(212,175,55,0.3);"},
+                {name:"WindSong", style:"font-family:'WindSong'; color:#48dbfb; font-size:28px; font-style:italic; letter-spacing:1px;"},
+                {name:"Yesteryear", style:"font-family:'Yesteryear'; color:#ffcc00; font-size:34px; text-shadow:2px 2px 0 rgba(0,0,0,0.3);"},
+                {name:"Marck Script", style:"font-family:'Marck Script'; color:#00f3ff; font-size:28px; text-shadow:0 0 10px rgba(0,243,255,0.4);"},
+                {name:"Meddon", style:"font-family:'Meddon'; color:#f8a5c2; font-size:26px; letter-spacing:1px; font-style:italic;"},
+                {name:"Devonshire", style:"font-family:'Devonshire'; color:#c5a059; font-size:38px; text-shadow:0 0 12px rgba(197,160,89,0.3);"},
+                {name:"Condiment", style:"font-family:'Condiment'; color:#ff6b6b; font-size:32px; font-style:italic; transform:rotate(-1deg);"},
+                {name:"Felipa", style:"font-family:'Felipa'; color:#e17055; font-size:30px; letter-spacing:0.5px;"},
+                {name:"Give Glory", style:"font-family:'Give You Glory'; color:#6366f1; font-size:24px; transform:rotate(2deg);"}
             ];
 
             for (let i = 0; i < count; i++) {
@@ -926,7 +988,16 @@
                 'Antic', 'Arapey', 'Arbutus', 'Arimo', 'Arizonia', 'Armata', 'Arsenal', 'Artifika', 'Asap',
                 'Aubrey', 'Audiowide', 'Autour One', 'Averia Serif', 'Bad Script', 'Balthazar', 'Baumans',
                 'Bayon', 'Belleza', 'Bentham', 'Berkshire Swash', 'Bigshot One', 'Bilbo', 'Bitter', 'Black Han Sans',
-                'Blinker', 'Bokor', 'Bonbon', 'Bowlby One', 'Brawler', 'Bree Serif', 'Bubblegum Sans', 'Buda'
+                'Blinker', 'Bokor', 'Bonbon', 'Bowlby One', 'Brawler', 'Bree Serif', 'Bubblegum Sans', 'Buda',
+                'Calligraffitti', 'Caveat Brush', 'Cedarville Cursive', 'Coming Soon', 'Condiment',
+                'Covered By Your Grace', 'Crafty Girls', 'Cutive Mono', 'Dawning of a New Day',
+                'Delius Swash Caps', 'Devonshire', 'Engagement', 'Felipa', 'Give You Glory',
+                'Grand Hotel', 'Handlee', 'Just Another Hand', 'Kristi', 'La Belle Aurore',
+                'League Script', 'Loved by the King', 'Marck Script', 'Meddon', 'Meie Script',
+                'Merienda One', 'Molle', 'Montez', 'Over the Rainbow', 'Parisienne',
+                'Petit Formal Script', 'Rancho', 'Reenie Beanie', 'Rochester', 'Ruthie',
+                'Sacramento', 'Schoolbell', 'Sriracha', 'Sue Ellen Francisco', 'Swanky and Moo Moo',
+                'The Girl Next Door', 'Waiting for the Sunrise', 'WindSong', 'Yellowtail', 'Yesteryear'
             ];
             const uniqueFonts = [...new Set(fonts)];
             for (let i = 0; i < Math.min(count, uniqueFonts.length); i++) {
@@ -1272,7 +1343,7 @@
             document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active', 'eraser-active'));
             document.querySelector(`.draw-tool-btn[data-size="${size}"]`)?.classList.add('active');
             document.getElementById('eraserBtn')?.classList.remove('eraser-active');
-            drawCtx.globalCompositeOperation = 'source-over';
+            if(drawCtx) drawCtx.globalCompositeOperation = 'source-over';
         }
 
         function toggleEraser() {
@@ -1280,10 +1351,10 @@
             document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active', 'eraser-active'));
             if (isEraser) {
                 document.getElementById('eraserBtn')?.classList.add('eraser-active');
-                drawCtx.globalCompositeOperation = 'destination-out';
+                if(drawCtx) drawCtx.globalCompositeOperation = 'destination-out';
             } else {
                 document.getElementById('eraserBtn')?.classList.remove('eraser-active');
-                drawCtx.globalCompositeOperation = 'source-over';
+                if(drawCtx) drawCtx.globalCompositeOperation = 'source-over';
                 setBrushSize(currentBrushSize);
             }
         }
@@ -1320,11 +1391,10 @@
                 };
                 palette.appendChild(btn);
             });
-            // Select white by default
             palette.firstChild?.classList.add('active');
         }
 
-        // --- AUTO CAPTIONS - Video to Text using Web Speech API ---
+        // --- AUTO CAPTIONS ---
         function openAutoCaptions() {
             document.getElementById('captionsDrawer').classList.add('open');
         }
@@ -1350,34 +1420,7 @@
             const file = videoInput.files[0];
             statusDiv.classList.remove('hidden');
             statusDiv.textContent = 'Processing audio for captions...';
-
-            // Create a temporary video element to extract audio
-            const video = document.createElement('video');
-            video.src = URL.createObjectURL(file);
-            video.muted = true;
-            video.crossOrigin = 'anonymous';
-
-            video.onloadedmetadata = function() {
-                // Use Web Speech API for speech recognition (browser-based)
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    statusDiv.textContent = 'Speech recognition not supported in this browser. Using fallback.';
-                    fallbackCaptions(file);
-                    return;
-                }
-
-                // For browsers that support SpeechRecognition, we'll use it
-                // But SpeechRecognition requires user interaction and mic access
-                // For actual video-to-text, we'd need a server-side solution
-                // Using fallback for now with sample text based on video name
-                fallbackCaptions(file);
-            };
-
-            video.onerror = function() {
-                statusDiv.textContent = 'Error loading video.';
-                fallbackCaptions(file);
-            };
-
-            video.load();
+            fallbackCaptions(file);
         }
 
         function fallbackCaptions(file) {
@@ -1388,7 +1431,6 @@
             const transcriptDisplay = document.getElementById('captionTextDisplay');
             const template = document.getElementById('captionTemplateSelect').value;
 
-            // Generate sample captions based on file name
             const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
             const sampleCaptions = [
                 `Welcome to this video about ${fileName}`,
@@ -1413,17 +1455,14 @@
                 'dreamy': 'font-family:Pacifico; color:#ff758c; text-shadow:0 0 15px rgba(255,117,140,0.3);'
             };
 
-            // Show full transcript
             const fullText = sampleCaptions.join('. ');
             fullTranscript.textContent = fullText;
             transcriptDisplay.classList.remove('hidden');
 
-            // Show preview with first caption
             previewText.style.cssText = templateStyles[template] || templateStyles['default'];
             previewText.textContent = sampleCaptions[0];
             previewContainer.classList.remove('hidden');
 
-            // Add caption text nodes to canvas
             sampleCaptions.forEach((caption, index) => {
                 setTimeout(() => {
                     addNewCanvasTextNode(caption, templateStyles[template] || templateStyles['default']);
@@ -1648,7 +1687,7 @@
         }
         function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        // --- 100% FIXED HIGH-SPEED PIXABAY IMAGE RENDERING ENGINE ---
+        // --- PIXABAY IMAGE RENDERING ENGINE ---
         async function generateAIStudioImage(type) {
             const promptInput = document.getElementById(`ai-prompt-${type}`);
             const genBtn = document.getElementById(`ai-btn-${type}`);
@@ -1712,7 +1751,7 @@
             }
         }
 
-        // --- PIXABAY AUDIO TRACKS INDEX INTEGRATION ---
+        // --- PIXABAY AUDIO TRACKS ---
         async function searchPixabayAudio() {
             const queryInput = document.getElementById('music-search-query');
             const searchBtn = document.getElementById('music-search-btn');
@@ -1728,8 +1767,6 @@
             loader.classList.remove('hidden');
             audioList.innerHTML = '';
 
-            const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
-
             try {
                 audioList.innerHTML = `
                     <div class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg flex justify-between items-center text-left">
@@ -1737,7 +1774,7 @@
                             <p class="text-[11px] font-bold text-gray-200">${qText.toUpperCase()} Audio Mix Track</p>
                             <p class="text-[9px] text-gray-500">License: Royalty-Free Uncopyrighted</p>
                         </div>
-                        <a href="https://pixabay.com/images/search/${encodeURIComponent(qText)}" target="_blank" class="px-3 py-1 bg-purple-600 rounded text-[9px] font-bold text-white uppercase"><i class="fas fa-download"></i> Get Audio</a>
+                        <a href="https://pixabay.com/music/search/${encodeURIComponent(qText)}" target="_blank" class="px-3 py-1 bg-purple-600 rounded text-[9px] font-bold text-white uppercase"><i class="fas fa-download"></i> Get Audio</a>
                     </div>
                 `;
             } catch(e) {
@@ -1748,7 +1785,7 @@
             }
         }
 
-        // --- AI PROFESSIONAL PROMPT MAKING LOGIC ---
+        // --- AI PROMPT MAKING ---
         function engineerProfessionalPrompt() {
             const input = document.getElementById('simple-prompt-input');
             const container = document.getElementById('prompt-result-container');
@@ -1780,7 +1817,7 @@
             link.click();
         }
 
-        // --- IMAGE SCALER FEATURE LOGIC ---
+        // --- IMAGE SCALER ---
         function processImageScaling() {
             const fileInput = document.getElementById('scaler-img-input');
             const wInput = document.getElementById('scale-w');
@@ -1813,7 +1850,7 @@
             };
         }
 
-        // --- 100% WORKING PIXABAY STOCK VIDEO FETCHING ENGINE ---
+        // --- PIXABAY STOCK VIDEO ---
         async function generateGrokVideo(e) {
             if (e) e.preventDefault();
 
@@ -1885,7 +1922,6 @@
             } else {
                 initializeGoogleSignIn();
             }
-            // Initialize draw overlay
             setTimeout(initDrawOverlay, 500);
         });
 
@@ -1988,7 +2024,7 @@
             }
         }
 
-        // --- Convert Image to Animal Execution Engine ---
+        // --- Animal Studio ---
         const animalModal = document.getElementById('animalModal');
         const animalImgPicker = document.getElementById('animal-image-picker');
         const animalPreviewImg = document.getElementById('animal-preview-img');
@@ -2045,7 +2081,6 @@
             };
         });
 
-        // Seedance 2.0 Turbo Booster Integration
         function activateSeedanceBoost() {
             const boostBtn = document.getElementById('seedance-boost-btn');
             if (boostBtn) {
@@ -2058,7 +2093,6 @@
             }
         }
 
-        // --- BACKGROUND BLUR ENGINE SYSTEM ---
         async function processBackgroundBlur() {
             const fileInput = document.getElementById('face-upload-input');
             const actionBtn = document.getElementById('face-cutout-btn');
@@ -2092,20 +2126,12 @@
             };
         }
 
-        // --- CLIENT-SIDE VIDEO COMPRESSION ENGINE ENGINE ---
         async function processVideoCompression() {
             const fileInput = document.getElementById('compressor-video-input');
-            const actionBtn = document.getElementById('compressor-action-btn');
-            const resultContainer = document.getElementById('compressor-result-container');
-            const downloadLink = document.getElementById('compressor-download-link');
-            const loader = document.getElementById('compressor-loader');
-
             if (!fileInput || fileInput.files.length === 0) return alert("Select Video first!");
             alert("Processing browser stream downsize caching matrix...");
-            actionBtn.disabled = false;
         }
 
-        // Resize draw canvas on window resize
         window.addEventListener('resize', function() {
             if (drawCanvas) {
                 const container = document.getElementById('studio-canvas-container');
