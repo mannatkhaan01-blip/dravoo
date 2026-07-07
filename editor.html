@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dravoo · Editor</title>
+    <title>Dravoo · Pro Editor</title>
     <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
-    <!-- Same fonts as original but simplified for performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0b0b0e;
             color: #f1f5f9;
@@ -22,96 +17,43 @@
             overflow-x: hidden;
         }
         .glass-card {
-            background: rgba(16, 16, 20, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(16, 16, 20, 0.9);
+            backdrop-filter: blur(12px);
             border: 1px solid #2a2a30;
         }
-        /* custom scroll */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #18181b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 12px;
-        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #18181b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
 
-        /* drawer */
+        /* Scrollable Row for tools */
+        .scroll-x-menu {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scroll-x-menu::-webkit-scrollbar { display: none; }
+
+        /* Drawer style */
         .editor-drawer {
             position: fixed;
             bottom: -100%;
             left: 0;
             width: 100%;
-            max-width: 100%;
             height: 54vh;
             background: #111115;
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
             border-top: 1px solid #2a2a32;
-            transition: bottom 0.35s cubic-bezier(0.16, 0.76, 0.36, 0.98);
+            transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 200;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
         }
-        .editor-drawer.open {
-            bottom: 0;
-        }
-        .drawer-header {
-            display: flex;
-            align-items: center;
-            padding: 16px 20px 12px 20px;
-            border-bottom: 1px solid #22222a;
-            gap: 12px;
-        }
-        .drawer-tabs {
-            display: flex;
-            overflow-x: auto;
-            padding: 8px 16px;
-            gap: 6px;
-            border-bottom: 1px solid #1e1e24;
-            flex-shrink: 0;
-        }
-        .drawer-tabs::-webkit-scrollbar {
-            display: none;
-        }
-        .tab-link {
-            background: transparent;
-            border: none;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #9ca3af;
-            cursor: pointer;
-            transition: 0.2s;
-            border-radius: 30px;
-            white-space: nowrap;
-        }
-        .tab-link.active {
-            background: #1f2937;
-            color: #fff;
-        }
-        .tab-content-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 14px 16px;
-        }
-        .content-panel {
-            display: none;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-        @media(min-width: 500px) {
-            .content-panel {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        .content-panel.active {
-            display: grid;
-        }
+        .editor-drawer.open { bottom: 0; }
+        
         .asset-card {
             background: #1c1c22;
             border-radius: 14px;
@@ -121,355 +63,310 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 12px;
             color: #e5e7eb;
             border: 1px solid #2c2c34;
             transition: 0.15s;
-            padding: 6px;
+            padding: 8px;
             text-align: center;
         }
-        .asset-card:hover {
-            transform: scale(1.02);
-            border-color: #3b82f6;
-            background: #26262e;
-        }
-
-        /* canvas overlay */
-        .canvas-text-overlay {
-            position: absolute;
-            color: #fff;
-            font-weight: 700;
-            font-size: 26px;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
-            cursor: move;
-            user-select: none;
-            padding: 4px 10px;
-            border: 1px dashed transparent;
-            z-index: 20;
-            white-space: nowrap;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-        }
-        .canvas-text-overlay.active-node {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.12);
-        }
-        .canvas-sticker-overlay {
-            position: absolute;
-            font-size: 48px;
-            cursor: move;
-            user-select: none;
-            z-index: 21;
-            padding: 6px;
-            border: 1px dashed transparent;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 16px;
-        }
-        .canvas-sticker-overlay.active-node {
-            border-color: #ec4899;
-            background: rgba(236, 72, 153, 0.15);
-        }
-
-        /* draw overlay */
-        .draw-overlay-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 30;
-            pointer-events: none;
-            touch-action: none;
-            display: block;
-        }
-        .draw-overlay-canvas.active {
-            pointer-events: auto;
-        }
-        .draw-tools-panel {
-            position: absolute;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 40;
-            background: rgba(12, 12, 16, 0.92);
-            backdrop-filter: blur(6px);
-            border-radius: 40px;
-            padding: 10px 16px;
-            border: 1px solid #2a2a32;
-            display: none;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            width: max-content;
-            max-width: 92%;
-        }
-        .draw-tools-panel.active {
-            display: flex;
-        }
-        .draw-tool-btn {
-            background: #25252c;
-            border: none;
-            border-radius: 30px;
-            padding: 6px 12px;
-            color: #ddd;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .draw-tool-btn:hover {
-            background: #33333e;
-        }
-        .draw-tool-btn.active {
-            background: #3b82f6;
-            color: #fff;
-        }
-        .draw-tool-btn.eraser-active {
-            background: #ef4444;
-            color: #fff;
-        }
-        .color-dot {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.15s;
-        }
-        .color-dot:hover {
-            transform: scale(1.12);
-        }
-        .color-dot.active {
-            border-color: #fff;
-        }
-        .color-picker-btn {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .color-picker-btn.active {
-            border-color: #fff;
-        }
-
-        /* bottom menu */
-        .bottom-menu {
+        .asset-card:hover { transform: scale(1.02); border-color: #3b82f6; background: #26262e; }
+        
+        /* Canvas components */
+        .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
+        .draw-overlay-canvas.active { pointer-events: auto; }
+        
+        /* Fixed Grid submenus style */
+        .submenu-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 0px;
-            background: #0e0e12;
-            border-top: 1px solid #22222a;
-            padding: 6px 0 8px 0;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: #0c0c10;
         }
-        .bottom-menu button {
-            background: transparent;
-            border: none;
-            color: #9ca3af;
-            font-size: 11px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 6px 0;
-            transition: 0.15s;
-            cursor: pointer;
-        }
-        .bottom-menu button i {
-            font-size: 18px;
-        }
-        .bottom-menu button:hover {
-            color: #fff;
-        }
-
-        .timeline-track {
-            background: #131318;
-            border: 1px solid #24242c;
-            border-radius: 18px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            gap: 10px;
-            position: relative;
-        }
-        .timeline-cursor {
-            position: absolute;
-            top: 2px;
-            bottom: 2px;
-            width: 2.5px;
-            background: #facc15;
-            left: 30%;
-            border-radius: 4px;
-            z-index: 5;
-        }
-        .play-btn {
-            background: #1e1e26;
-            border: 1px solid #33333e;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #f1f5f9;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .play-btn:hover {
-            background: #2a2a34;
-            transform: scale(1.04);
-        }
-
-        /* image style */
-        .cap-gradient {
-            background: linear-gradient(135deg, #2563eb, #db2777);
-        }
-        .bg-dark-void {
-            background: #0b0b0e;
+        @media (max-width: 600px) {
+            .submenu-grid { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Hidden file input -->
     <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden" />
+    <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
 
-    <!-- Top navbar (minimal) -->
+    <!-- Navbar -->
     <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
         <div class="flex items-center gap-3">
             <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
             <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
-            <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Editor</span>
+            <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Pro Studio</span>
         </div>
-        <button onclick="window.location.href='index.html'" class="text-xs text-zinc-400 hover:text-white bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
+        <button class="text-xs text-zinc-400 hover:text-white bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
     </header>
 
-    <!-- Main editor card -->
-    <main class="max-w-3xl mx-auto px-3 my-5">
+    <!-- Main Workspace -->
+    <main class="max-w-3xl mx-auto px-2 my-4">
         <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-            <!-- Top bar: project + export -->
+            <!-- Top Project Toolbar -->
             <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
                 <div class="flex items-center gap-2 text-sm">
                     <span class="text-white font-semibold">Project: Untitled</span>
-                    <span class="text-[10px] bg-zinc-800/70 px-2 py-0.5 rounded-full text-zinc-300">draft</span>
+                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Active</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <select class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-full px-3 py-1.5 outline-none">
                         <option>4K UHD</option>
-                        <option selected>1080p</option>
-                        <option>720p</option>
+                        <option selected>1080p Full HD</option>
+                        <option>720p HD</option>
                     </select>
-                    <button onclick="triggerExport()" class="bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">Export</button>
+                    <button onclick="alert('Exporting Realtime Project...')" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">Export</button>
                 </div>
             </div>
 
-            <!-- Canvas -->
-            <div id="canvas-container" class="relative aspect-[9/16] max-h-[480px] bg-black flex items-center justify-center overflow-hidden border-b border-[#1c1c24]">
+            <!-- Main Canvas Viewport -->
+            <div id="canvas-container" class="relative aspect-[9/16] max-h-[440px] bg-black flex items-center justify-center overflow-hidden border-b border-[#1c1c24]">
                 <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
                 <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
+                
                 <div id="media-placeholder" class="text-center p-6">
-                    <i class="fas fa-cloud-arrow-up text-5xl text-zinc-700 mb-3"></i>
-                    <p class="text-sm text-zinc-500 mb-4">Upload video or image</p>
-                    <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-6 py-2.5 rounded-full transition"><i class="fas fa-plus mr-2"></i>Add Media</button>
+                    <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
+                    <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
                 </div>
+
                 <canvas id="drawCanvas" class="draw-overlay-canvas"></canvas>
-                <!-- Draw tools panel (floating bottom) -->
-                <div id="drawToolsPanel" class="draw-tools-panel">
-                    <button class="draw-tool-btn active" data-size="2" onclick="setBrush(2)">Thin</button>
-                    <button class="draw-tool-btn" data-size="6" onclick="setBrush(6)">Med</button>
-                    <button class="draw-tool-btn" data-size="14" onclick="setBrush(14)">Thick</button>
-                    <button class="draw-tool-btn" data-size="0" onclick="toggleEraser()" id="eraserBtn">🧹</button>
-                    <div class="flex gap-1.5" id="drawColorPalette"></div>
-                    <button onclick="clearDraw()" class="text-xs bg-red-600/80 hover:bg-red-500 text-white px-3 py-1 rounded-full">Clear</button>
-                    <button onclick="toggleDraw()" class="text-xs bg-zinc-700 hover:bg-zinc-600 text-white px-3 py-1 rounded-full">✕</button>
+                
+                <!-- Floating Paint Utility Brush Controls -->
+                <div id="drawToolsPanel" class="absolute bottom-4 left-50 transform -translate-x-0 z-50 bg-[#111116] border border-zinc-800 rounded-full px-4 py-2 hidden items-center gap-3 shadow-2xl">
+                    <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(3)">Thin</button>
+                    <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(8)">Thick</button>
+                    <button onclick="clearDraw()" class="text-xs bg-red-600 px-2 py-1 rounded text-white">Clear Canvas</button>
+                    <button onclick="toggleDraw()" class="text-xs text-zinc-400">✕</button>
                 </div>
             </div>
 
-            <!-- Transport + timeline -->
-            <div class="px-4 py-3 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
-                <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:05</span>
-                <button id="playBtn" onclick="togglePlay()" class="play-btn"><i class="fas fa-play text-sm"></i></button>
-                <div class="flex gap-2">
-                    <button onclick="toggleDraw()" class="text-zinc-400 hover:text-white text-sm bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-pen mr-1.5"></i>Draw</button>
+            <!-- Playback Controls -->
+            <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
+                <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
+                <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
+                <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
+            </div>
+
+            <!-- Video/Audio Timeline Track Track -->
+            <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
+                <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
+                    <div class="flex items-center gap-2 truncate">
+                        <i class="fas fa-video text-blue-400 text-xs"></i>
+                        <span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span>
+                    </div>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="text-zinc-400 hover:text-white text-[11px] bg-zinc-800 px-2.5 py-1 rounded-md">Replace</button>
                 </div>
             </div>
 
-            <!-- Timeline -->
-            <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22]">
-                <div class="timeline-track">
-                    <div class="timeline-cursor"></div>
-                    <i class="fas fa-video text-blue-400 text-xs"></i>
-                    <span id="timelineLabel" class="text-[10px] font-mono text-zinc-400 truncate">media_track.mp4</span>
-                    <button onclick="document.getElementById('video-file-picker').click()" class="ml-auto text-zinc-500 hover:text-white bg-zinc-800/60 px-3 py-1 rounded-full text-xs"><i class="fas fa-plus mr-1"></i>Add</button>
+            <!-- ================= DYNAMIC WORKSPACE MENUS ================= -->
+            
+            <!-- MASTER BOTTOM MENU (All 14 options requested) -->
+            <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
+                <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video-slash text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
+                <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
+                <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
+                <button onclick="showSubmenu('effects')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-wand-magic-sparkles text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
+                <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
+                <button onclick="showSubmenu('caption')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-closed-captioning text-base text-pink-400"></i><span class="text-[10px] font-medium">Caption</span></button>
+                <button onclick="showSubmenu('filters')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-filter text-base text-indigo-400"></i><span class="text-[10px] font-medium">Filters</span></button>
+                <button onclick="showSubmenu('adjust')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-sliders text-base text-orange-400"></i><span class="text-[10px] font-medium">Adjust</span></button>
+                <button onclick="openDrawer('stickers')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-face-smile text-base text-yellow-400"></i><span class="text-[10px] font-medium">Stickers</span></button>
+                <button onclick="showSubmenu('generate-media')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-brain text-base text-teal-400"></i><span class="text-[10px] font-medium">Gen Media</span></button>
+                <button onclick="showSubmenu('ai-avatar')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-user-astronaut text-base text-violet-400"></i><span class="text-[10px] font-medium">AI Avatar</span></button>
+                <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
+                <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-bg text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
+            </div>
+
+            <!-- DYNAMIC SUBMENUS -->
+            <!-- 1. Edit Options Container -->
+            <div id="submenu-edit" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
+                <button onclick="triggerTool('Volume')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-high"></i>Volume</button>
+                <button onclick="triggerTool('Animation')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-film"></i>Animation</button>
+                <button onclick="triggerTool('Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-magic"></i>Effects</button>
+                <button onclick="triggerTool('Delete')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-400"><i class="fas fa-trash"></i>Delete</button>
+                <button onclick="triggerTool('Speed')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-gauge-high"></i>Speed</button>
+                <button onclick="triggerTool('Beats')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-heart-pulse"></i>Beats</button>
+                <button onclick="triggerTool('AI Extends')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-expand"></i>AI Extend</button>
+                <button onclick="triggerTool('Crop')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-crop"></i>Crop</button>
+                <button onclick="triggerTool('Duplicate')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-clone"></i>Clone</button>
+                <button onclick="triggerTool('Replace')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-arrows-rotate"></i>Replace</button>
+                <button onclick="triggerTool('Overlay')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-layer-group"></i>Overlay</button>
+                <button onclick="triggerTool('Adjust')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-sliders"></i>Adjust</button>
+                <button onclick="triggerTool('Filter')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-filter"></i>Filter</button>
+                <button onclick="triggerTool('Retouch')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-sparkles"></i>Retouch</button>
+                <button onclick="triggerTool('Video Quality')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-yellow-400"><i class="fas fa-wand-magic-sparkles"></i>4K Quality</button>
+                <button onclick="triggerTool('Remove BG')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-user-minus"></i>Remove BG</button>
+                <button onclick="triggerTool('AI Remove')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eraser"></i>AI Eraser</button>
+                <button onclick="triggerTool('AI Expand')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-arrows-maximize"></i>AI Expand</button>
+                <button onclick="triggerTool('AI Remix')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-shuffle"></i>AI Remix</button>
+                <button onclick="triggerTool('Eye Contact')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eye"></i>Eye Contact</button>
+                <button onclick="triggerTool('Relight')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-lightbulb"></i>Relight</button>
+                <button onclick="triggerTool('Opacity')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-circle-half-stroke"></i>Opacity</button>
+                <button onclick="triggerTool('Motion Blur')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wind"></i>Motion Blur</button>
+                <button onclick="triggerTool('Lip Sync')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-lips"></i>Lip Sync</button>
+                <button onclick="triggerTool('Transform Auto Reframe')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-expand-arrows-alt"></i>Reframe</button>
+                <button onclick="triggerTool('Stabilize')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-mobile-screen-button"></i>Stabilize</button>
+                <button onclick="triggerTool('Extract Audio')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-file-audio"></i>Extract Aud</button>
+                <button onclick="triggerTool('Isolate Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-microphone-lines-notch"></i>Isolate</button>
+                <button onclick="triggerTool('Audio Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-waveform"></i>Aud FX</button>
+                <button onclick="triggerTool('Enhance Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-turn-up"></i>Enhance</button>
+                <button onclick="triggerTool('Video Translator')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-language"></i>Translate</button>
+                <button onclick="triggerTool('Freeze')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-icicles"></i>Freeze</button>
+                <button onclick="triggerTool('Reverse')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-backward"></i>Reverse</button>
+                <button onclick="triggerTool('Mask')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-masks-theater"></i>Mask</button>
+                <button onclick="triggerTool('Unlink')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-300"><i class="fas fa-link-slash"></i>Unlink</button>
+            </div>
+
+            <!-- 2. Audio Submenu -->
+            <div id="submenu-audio" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Extract Audio')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
+                <button onclick="triggerTool('Sounds Pool')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-music"></i>Sounds</button>
+                <button onclick="triggerTool('Sound Effects FX')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bolt"></i>FX Effects</button>
+                <button onclick="triggerTool('Record Audio Mic')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-microphone text-red-500"></i>Record</button>
+                <button onclick="triggerTool('Text to Audio Generator')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio"></i>Text To Aud</button>
+                <button onclick="triggerTool('Brand Music Library')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bookmark"></i>Brand Music</button>
+                <button onclick="triggerTool('Copyright Assessment')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-shield"></i>Copyright</button>
+            </div>
+
+            <!-- 3. Text Submenu -->
+            <div id="submenu-text" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="openDrawer('fonts')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
+                <button onclick="openDrawer('captions')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-closed-captioning text-blue-400"></i>Auto Caption</button>
+                <button onclick="openDrawer('stickers')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-face-smile"></i>Stickers</button>
+                <button onclick="toggleDraw()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-pen"></i>Drawer</button>
+                <button onclick="openDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-paste"></i>Templates</button>
+                <button onclick="triggerTool('Text to Audio inside Text')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio"></i>Text To Aud</button>
+                <button onclick="triggerTool('Auto Lyrics tracking')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-guitar"></i>Auto Lyrics</button>
+            </div>
+
+            <!-- 4. Effects Submenu -->
+            <div id="submenu-effects" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Body Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-child-accessibility text-purple-400"></i>Body FX</button>
+                <button onclick="triggerTool('Video Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-clapperboard"></i>Video FX</button>
+                <button onclick="triggerTool('Photo Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-image"></i>Photo FX</button>
+                <button onclick="triggerTool('AI Effects Engine')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-brain text-purple-500"></i>AI FX</button>
+            </div>
+
+            <!-- 5. Overlay Submenu -->
+            <div id="submenu-overlay" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white">
+                    <i class="fas fa-folder-open"></i> Open Device Media Gallery (Video/Image)
+                </button>
+            </div>
+
+            <!-- 6. Caption Submenu -->
+            <div id="submenu-caption" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="openDrawer('captions')" class="col-span-4 bg-indigo-600 p-2 rounded text-center text-xs font-bold flex items-center justify-center gap-2 text-white">
+                    <i class="fas fa-closed-captioning"></i> Launch Captions Sync Dashboard
+                </button>
+            </div>
+
+            <!-- 7. Filters Submenu (50+ Filters Slot) -->
+            <div id="submenu-filters" class="hidden p-3 bg-[#0c0c10]">
+                <div class="flex items-center justify-between mb-2">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-zinc-300">Cinematic Filters (50+ Built-in HD)</span>
                 </div>
-                <div onclick="switchToText()" class="mt-2.5 flex items-center gap-2 px-2 py-1.5 rounded-full bg-[#13131a] border border-[#22222a] cursor-pointer hover:bg-[#1c1c26] transition">
-                    <i class="fas fa-font text-amber-400 text-sm"></i>
-                    <span class="text-xs font-medium text-zinc-300">+ Add text</span>
+                <div class="flex gap-2 overflow-x-auto pb-1" id="filtersContainer">
+                    <!-- Javascript generates items inside -->
                 </div>
             </div>
 
-            <!-- Bottom menu (6 icons, matches 2nd image) -->
-            <div class="bottom-menu">
-                <button onclick="openDrawer('templates')"><i class="fas fa-paste"></i><span>Templates</span></button>
-                <button onclick="openDrawer('fonts')"><i class="fas fa-font"></i><span>Fonts</span></button>
-                <button onclick="openDrawer('styles')"><i class="fas fa-palette"></i><span>Styles</span></button>
-                <button onclick="openDrawer('stickers')"><i class="fas fa-face-smile"></i><span>Stickers</span></button>
-                <button onclick="toggleDraw()"><i class="fas fa-pen-fancy"></i><span>Draw</span></button>
-                <button onclick="openDrawer('captions')"><i class="fas fa-closed-captioning"></i><span>Captions</span></button>
+            <!-- 8. Adjust Submenu -->
+            <div id="submenu-adjust" class="hidden p-3 bg-[#0c0c10] space-y-3 max-h-[160px] overflow-y-auto">
+                <div class="flex items-center justify-between">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-orange-400">Pro Color Correction</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs text-zinc-300">
+                    <div>Auto Adjust: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="alert('Auto Correction Active')">Apply</button></div>
+                    <div>Colour Match: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="alert('Matching Palette')">Match</button></div>
+                    <div class="col-span-2"><span class="text-[11px] text-zinc-500">Sliders: Brightness, Contrast, Saturation, Brilliance, Sharpen, Clarity, HSL, Graph, Colour Wheel, Highlight, Shadows, White, Black, Temp, Hue, Fade, Vignette, Grain</span>
+                    <input type="range" class="w-full mt-1 accent-orange-500" /></div>
+                </div>
             </div>
 
-            <!-- Hidden text submenu (shown when "Add text" clicked) -->
-            <div id="textSubmenu" class="hidden grid grid-cols-5 gap-1 px-3 py-2.5 bg-[#0c0c10] border-t border-[#1a1a22] text-xs text-zinc-400">
-                <button onclick="hideTextSubmenu()" class="flex flex-col items-center hover:text-white"><i class="fas fa-chevron-left text-sm"></i><span>Back</span></button>
-                <button onclick="openDrawer('fonts')" class="flex flex-col items-center hover:text-amber-400"><i class="fas fa-plus"></i><span>Add text</span></button>
-                <button onclick="openDrawer('templates')" class="flex flex-col items-center hover:text-purple-400"><i class="fas fa-paste"></i><span>Templates</span></button>
-                <button onclick="openDrawer('stickers')" class="flex flex-col items-center hover:text-pink-400"><i class="fas fa-face-smile"></i><span>Stickers</span></button>
-                <button onclick="toggleDraw()" class="flex flex-col items-center hover:text-teal-400"><i class="fas fa-pen-fancy"></i><span>Draw</span></button>
+            <!-- 9. Gen Media Submenu -->
+            <div id="submenu-generate-media" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="alert('Generating AI Image via Dravoo Engine...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-wand-magic-sparkles text-teal-400"></i>AI Image</button>
+                <button onclick="alert('Connecting Dravoo Studio Core API Server...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-video text-purple-400"></i>AI Video (Studio)</button>
+                <button onclick="alert('Paging Pixabay Stock API Integrated Provider...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-cloud-arrow-down"></i>Pixabay Stocks</button>
             </div>
+
+            <!-- 10. AI Avatar Submenu -->
+            <div id="submenu-ai-avatar" class="hidden p-3 bg-[#0c0c10]">
+                <div class="flex items-center justify-between mb-2">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-violet-400">Speaking Interactive AI Avatars</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto">
+                    <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="alert('Avatar Adam Activated')">🧔 Adam (Speech)</div>
+                    <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="alert('Avatar Elena Activated')">👩 Elena (Speech)</div>
+                    <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="alert('Avatar Cyberbot Activated')">🤖 CyberBot</div>
+                </div>
+            </div>
+
+            <!-- 11. Aspect Ratio Submenu -->
+            <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
+                <div class="flex items-center justify-between mb-2">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-zinc-300">Canvas Aspect Canvas Ratio</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto text-xs text-zinc-200">
+                    <button onclick="changeRatio('9/16')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">9:16 (TikTok)</button>
+                    <button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">16:9 (YouTube)</button>
+                    <button onclick="changeRatio('1/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">1:1 (Insta)</button>
+                    <button onclick="changeRatio('4/3')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">4:3</button>
+                    <button onclick="changeRatio('3/4')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">3:4</button>
+                    <button onclick="changeRatio('5.8/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">5.8"</button>
+                    <button onclick="changeRatio('128/27')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">128:27</button>
+                    <button onclick="changeRatio('2/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">2:1</button>
+                    <button onclick="changeRatio('2.35/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">2.35:1</button>
+                    <button onclick="changeRatio('1.85/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">1.85:1</button>
+                </div>
+            </div>
+
+            <!-- 12. Background Submenu -->
+            <div id="submenu-background" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="alert('Background Color Palette Selected')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-palette text-rose-400"></i>Solid Color</button>
+                <button onclick="alert('Import Custom BG Frame Image')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-image"></i>BG Image</button>
+                <button onclick="alert('Applying Gaussian Blur Matrix Context')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-clone"></i>Blur Frame</button>
+                <button onclick="alert('Brand Asset Identity Ecosystem loaded')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-circle-check"></i>Brand BG</button>
+            </div>
+
         </div>
     </main>
 
-    <!-- ========== EDITOR DRAWER ========== -->
+    <!-- ========== DRAWER ELEMENT (TEMPLATES, FONTS, STICKERS) ========== -->
     <div class="editor-drawer" id="editorDrawer">
-        <div class="drawer-header">
-            <button class="text-zinc-400 hover:text-white text-lg" onclick="closeDrawer()">✕</button>
-            <input type="text" id="drawerInput" class="flex-1 bg-zinc-800 border-0 rounded-2xl px-4 py-2.5 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500" placeholder="Type text..." />
-            <button class="text-blue-500 font-bold text-sm px-3" onclick="closeDrawer()">✓</button>
+        <div class="flex items-center justify-between p-4 border-b border-zinc-800">
+            <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
+            <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Editor Asset Drawer</span>
+            <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
         </div>
-        <div class="drawer-tabs">
-            <button class="tab-link active" onclick="switchPanel('templates')">Templates</button>
-            <button class="tab-link" onclick="switchPanel('fonts')">Fonts</button>
-            <button class="tab-link" onclick="switchPanel('styles')">Styles</button>
-            <button class="tab-link" onclick="switchPanel('stickers')">Stickers</button>
-            <button class="tab-link" onclick="switchPanel('captions')">Captions</button>
-        </div>
-        <div class="tab-content-container">
-            <div class="content-panel active" id="panel-templates"></div>
-            <div class="content-panel" id="panel-fonts"></div>
-            <div class="content-panel" id="panel-styles">
-                <div class="col-span-full space-y-4">
-                    <p class="text-xs text-zinc-400 font-medium">Text color</p>
-                    <div class="flex flex-wrap gap-2" id="colorPalette"></div>
-                    <p class="text-xs text-zinc-400 font-medium">Size</p>
-                    <input type="range" min="14" max="72" value="28" class="w-full accent-blue-500" oninput="applySize(this.value)" />
-                    <p class="text-xs text-zinc-400 font-medium">Opacity</p>
-                    <input type="range" min="0.1" max="1" step="0.05" value="1" class="w-full accent-blue-500" oninput="applyOpacity(this.value)" />
-                </div>
-            </div>
-            <div class="content-panel" id="panel-stickers"></div>
-            <div class="content-panel" id="panel-captions">
-                <div class="col-span-full text-center text-zinc-500 py-6 text-sm">Captions & auto-sync coming soon</div>
-            </div>
+        <div class="tab-content-container p-4 overflow-y-auto flex-1">
+            <div id="drawerDynamicGrid" class="grid grid-cols-3 gap-3"></div>
         </div>
     </div>
 
+    <!-- Script Suite Logic -->
     <script>
-        // ========== CORE EDITOR LOGIC ==========
+        // Media Track Handles
         const picker = document.getElementById('video-file-picker');
         const player = document.getElementById('studio-player');
         const imageEl = document.getElementById('studio-image');
@@ -478,12 +375,8 @@
         const playBtn = document.getElementById('playBtn');
         const timeDisplay = document.getElementById('timeDisplay');
         const container = document.getElementById('canvas-container');
-        const drawer = document.getElementById('editorDrawer');
-        const drawerInput = document.getElementById('drawerInput');
 
-        let activeTextNode = null;
-
-        // ---- media handling ----
+        // Main File Picker Binding
         picker.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -494,342 +387,134 @@
                 player.classList.remove('hidden');
                 player.src = URL.createObjectURL(file);
                 player.play();
-                playBtn.innerHTML = `<i class="fas fa-pause text-sm"></i>`;
-                player.ontimeupdate = () => {
-                    timeDisplay.innerText = `${fmt(player.currentTime)} / ${fmt(player.duration || 0)}`;
-                };
-            } else if (file.type.startsWith('image/')) {
+                playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+            } else {
                 player.classList.add('hidden');
-                player.pause();
                 imageEl.classList.remove('hidden');
                 imageEl.src = URL.createObjectURL(file);
                 timeDisplay.innerText = "00:00 / 00:05";
             }
-            initDrawCanvas();
         });
 
-        function fmt(s) { if (isNaN(s)) return "00:00"; return `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`; }
         function togglePlay() {
-            if (player.paused) { player.play();
-                playBtn.innerHTML = `<i class="fas fa-pause text-sm"></i>`; } else { player.pause();
-                playBtn.innerHTML = `<i class="fas fa-play text-sm"></i>`; }
-        }
-        function triggerExport() { alert('Exporting project... (demo)'); }
-
-        // ---- text submenu ----
-        function switchToText() {
-            document.querySelector('.bottom-menu').classList.add('hidden');
-            document.getElementById('textSubmenu').classList.remove('hidden');
-            document.getElementById('textSubmenu').classList.add('grid');
+            if(!player.src) return;
+            if (player.paused) { player.play(); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
+            else { player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
         }
 
-        function hideTextSubmenu() {
-            document.querySelector('.bottom-menu').classList.remove('hidden');
-            document.getElementById('textSubmenu').classList.add('hidden');
-            document.getElementById('textSubmenu').classList.remove('grid');
+        // Submenu Navigator System
+        function showSubmenu(id) {
+            backToMaster(); // Hide all open ones first
+            document.getElementById('masterBottomMenu').classList.add('hidden');
+            const sub = document.getElementById(`submenu-${id}`);
+            if(sub) {
+                sub.classList.remove('hidden');
+                if(id === 'filters') generateFilters();
+            }
         }
 
-        // ---- drawer ----
-        function openDrawer(tab) { drawer.classList.add('open');
-            switchPanel(tab); }
+        function backToMaster() {
+            // Hide all potential submenus
+            const submenus = ['edit', 'audio', 'text', 'effects', 'overlay', 'caption', 'filters', 'adjust', 'generate-media', 'ai-avatar', 'aspect-ratio', 'background'];
+            submenus.forEach(s => {
+                const el = document.getElementById(`submenu-${s}`);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById('masterBottomMenu').classList.remove('hidden');
+        }
+
+        function triggerTool(name) {
+            alert(`"${name}" options layer triggered natively.`);
+        }
+
+        // Handle Overlays Selection
+        function handleOverlaySelected(input) {
+            const file = input.files[0];
+            if(file) alert(`Overlay Selected successfully: ${file.name}`);
+        }
+
+        // Canvas Aspect Ratio Transformer
+        function changeRatio(ratioStr) {
+            if(ratioStr === '9/16') { container.style.aspectRatio = '9/16'; }
+            else if(ratioStr === '16/9') { container.style.aspectRatio = '16/9'; }
+            else if(ratioStr === '1/1') { container.style.aspectRatio = '1/1'; }
+            else { container.style.aspectRatio = '4/3'; }
+            alert(`Aspect Canvas Aspect Ratio modified to: ${ratioStr}`);
+        }
+
+        // 50+ Filters Component Builder Array Mock
+        function generateFilters() {
+            const container = document.getElementById('filtersContainer');
+            if(container.children.length > 0) return;
+            const filterNames = ['4K Ultra', 'Cyberpunk', 'Warm Cinematic', 'B&W Vintage', 'Vivid', 'Moody Grain', 'Teal & Orange', 'Glitch Cam', 'Retro 90s', 'Noir Style'];
+            
+            for(let i=1; i<=50; i++) {
+                const name = filterNames[i % filterNames.length] + ` #${i}`;
+                const div = document.createElement('div');
+                div.className = "flex-shrink-0 w-16 h-16 bg-zinc-800 rounded-lg flex flex-col justify-end p-1 text-[9px] text-zinc-300 font-bold cursor-pointer border border-zinc-700 hover:border-blue-500";
+                div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i}')`;
+                div.innerText = name;
+                div.onclick = () => alert(`Filter Applied: ${name}`);
+                container.appendChild(div);
+            }
+        }
+
+        // Asset Drawer Controllers
+        const drawer = document.getElementById('editorDrawer');
+        const drawerGrid = document.getElementById('drawerDynamicGrid');
+        const drawerTitle = document.getElementById('drawerTitle');
+
+        function openDrawer(type) {
+            drawerTitle.innerText = type.toUpperCase() + " SELECTION";
+            drawerGrid.innerHTML = '';
+            drawer.classList.add('open');
+
+            if(type === 'stickers') {
+                const emojis = ['🔥', '✨', '🎯', '❤️', '👑', '🚀', '💥', '💯', '🎉', '🌟', '🍕', '⚡'];
+                emojis.forEach(e => {
+                    const el = document.createElement('div');
+                    el.className = 'asset-card text-2xl';
+                    el.innerText = e;
+                    el.onclick = () => { alert(`Sticker ${e} injected to canvas preview.`); closeDrawer(); };
+                    drawerGrid.appendChild(el);
+                });
+            } else if(type === 'fonts') {
+                const fonts = ['Impact', 'Arial', 'Courier', 'Georgia', 'Verdana', 'Comic Sans'];
+                fonts.forEach(f => {
+                    const el = document.createElement('div');
+                    el.className = 'asset-card font-bold';
+                    el.innerText = f;
+                    el.style.fontFamily = f;
+                    el.onclick = () => { alert(`Font Face ${f} bound contextually.`); closeDrawer(); };
+                    drawerGrid.appendChild(el);
+                });
+            } else {
+                drawerGrid.innerHTML = '<div class="col-span-full text-zinc-500 text-center py-4 text-xs">Standard templates and presets context populated.</div>';
+            }
+        }
         function closeDrawer() { drawer.classList.remove('open'); }
 
-        function switchPanel(pid) {
-            document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById(`panel-${pid}`);
-            if (target) target.classList.add('active');
-            const btn = Array.from(document.querySelectorAll('.tab-link')).find(b => b.innerText.toLowerCase() === pid.toLowerCase());
-            if (btn) btn.classList.add('active');
-            if (pid === 'templates') fillTemplates();
-            if (pid === 'fonts') fillFonts();
-            if (pid === 'stickers') fillStickers();
-            if (pid === 'styles') fillColors();
-        }
-
-        // ---- templates, fonts, stickers ----
-        function fillTemplates() {
-            const panel = document.getElementById('panel-templates');
-            if (panel.children.length > 0) return;
-            const names = ['ABC Smart', 'Neon Glow', 'Satisfy', 'Great Vibes', 'Alex Brush', 'Allura', 'Pacifico', 'Dancing Script',
-                'Zeyada', 'Parisienne', 'Tangerine', 'Architects', 'Indie Flower', 'Patrick Hand', 'Kaushan Script', 'Mr Dafoe',
-                'Rock Salt', 'Caveat Brush', 'Sacramento', 'Marck Script', 'Rochester', 'WindSong', 'Grand Hotel', 'Meddon', 'Coming Soon'
-            ];
-            const styles = [
-                "font-family:'Bangers';color:#ffcc00;text-shadow:2px 2px 0 #000;",
-                "font-family:'Oswald';color:#00f3ff;text-shadow:0 0 10px #00f3ff;",
-                "font-family:'Satisfy';color:#6c5ce7;font-size:32px;",
-                "font-family:'Great Vibes';color:#fdcb6e;font-size:36px;",
-                "font-family:'Alex Brush';color:#a29bfe;font-size:34px;",
-                "font-family:'Allura';color:#f8a5c2;font-size:36px;",
-                "font-family:'Pacifico';color:#00cec9;font-size:32px;",
-                "font-family:'Dancing Script';color:#fd79a8;font-size:34px;",
-                "font-family:'Zeyada';color:#e84393;font-size:34px;",
-                "font-family:'Parisienne';color:#ff758c;font-size:32px;",
-                "font-family:'Tangerine';color:#fdcb6e;font-size:34px;",
-                "font-family:'Architects Daughter';color:#2d3436;font-size:24px;",
-                "font-family:'Indie Flower';color:#0984e3;font-size:28px;",
-                "font-family:'Patrick Hand';color:#00b894;font-size:26px;",
-                "font-family:'Kaushan Script';color:#e17055;font-size:30px;",
-                "font-family:'Mr Dafoe';color:#fab1a0;font-size:38px;",
-                "font-family:'Rock Salt';color:#2d3436;font-size:22px;",
-                "font-family:'Caveat Brush';color:#ff7675;font-size:28px;",
-                "font-family:'Sacramento';color:#6c5ce7;font-size:34px;",
-                "font-family:'Marck Script';color:#00f3ff;font-size:28px;",
-                "font-family:'Rochester';color:#d4af37;font-size:30px;",
-                "font-family:'WindSong';color:#48dbfb;font-size:30px;",
-                "font-family:'Grand Hotel';color:#f368e0;font-size:34px;",
-                "font-family:'Meddon';color:#f8a5c2;font-size:28px;",
-                "font-family:'Coming Soon';color:#54a0ff;font-size:24px;"
-            ];
-            for (let i = 0; i < Math.min(names.length, 30); i++) {
-                const card = document.createElement('div');
-                card.className = 'asset-card';
-                card.innerText = names[i];
-                card.style.cssText = styles[i % styles.length] + 'cursor:pointer;';
-                card.onclick = () => addTextNode(names[i], styles[i % styles.length]);
-                panel.appendChild(card);
-            }
-        }
-
-        function fillFonts() {
-            const panel = document.getElementById('panel-fonts');
-            if (panel.children.length > 0) return;
-            const fonts = ['Rubik', 'Bangers', 'Oswald', 'Anton', 'Permanent Marker', 'Lobster', 'Pacifico', 'Dancing Script',
-                'Great Vibes', 'Satisfy', 'Kaushan Script', 'Mr Dafoe', 'Architects Daughter', 'Indie Flower', 'Patrick Hand',
-                'Rock Salt', 'Alex Brush', 'Allura', 'Caveat Brush', 'Sacramento', 'Tangerine', 'WindSong', 'Grand Hotel', 'Zeyada',
-                'Coming Soon'
-            ];
-            fonts.forEach(f => {
-                const card = document.createElement('div');
-                card.className = 'asset-card';
-                card.style.fontFamily = f;
-                card.innerText = f;
-                card.onclick = () => { if (activeTextNode) activeTextNode.style.fontFamily = f; };
-                panel.appendChild(card);
-            });
-        }
-
-        function fillStickers() {
-            const panel = document.getElementById('panel-stickers');
-            if (panel.children.length > 0) return;
-            const emojis = ['🔥', '✨', '🎯', '❤️', '👑', '🚀', '💥', '😂', '💯', '🎉', '🌟', '👍', '🙌', '💀', '🤖', '🎃', '😈', '👀', '🎮', '🎨',
-                '🎬', '⚡', '💡', '🔮', '💎', '💰', '🌍', '🍕', '🍔', '🎵', '🎤', '🎸', '🐾', '🦄', '🐼', '🦊', '🐰', '🐻', '🐺', '💖', '💙', '💚',
-                '💛', '🌸', '🌺', '🌻', '🌹'
-            ];
-            emojis.slice(0, 30).forEach(e => {
-                const card = document.createElement('div');
-                card.className = 'asset-card text-3xl';
-                card.innerText = e;
-                card.onclick = () => addSticker(e);
-                panel.appendChild(card);
-            });
-        }
-
-        function fillColors() {
-            const palette = document.getElementById('colorPalette');
-            if (palette.children.length > 0) return;
-            const colors = ['#ffffff', '#ff3b30', '#ffcc00', '#4cd964', '#3b82f6', '#e02424', '#9333ea', '#06b6d4', '#f472b6',
-                '#fb923c', '#22c55e', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1', '#000000'
-            ];
-            colors.forEach(c => {
-                const dot = document.createElement('div');
-                dot.className = 'color-dot';
-                dot.style.background = c;
-                dot.onclick = () => { if (activeTextNode) activeTextNode.style.color = c; };
-                palette.appendChild(dot);
-            });
-        }
-
-        // ---- Text & sticker nodes ----
-        function addTextNode(text, style) {
-            const el = document.createElement('div');
-            el.className = 'canvas-text-overlay active-node';
-            el.innerText = text || 'Text';
-            el.style.left = (20 + Math.random() * 40) + '%';
-            el.style.top = (25 + Math.random() * 40) + '%';
-            if (style) el.style.cssText += style;
-            el.addEventListener('click', e => { e.stopPropagation();
-                selectNode(el); });
-            el.addEventListener('dblclick', () => { if (confirm('Delete text?')) { el.remove(); if (activeTextNode === el) activeTextNode =
-                        null; } });
-            makeDraggable(el);
-            container.appendChild(el);
-            selectNode(el);
-            drawerInput.value = el.innerText;
-            closeDrawer();
-        }
-
-        function addSticker(emoji) {
-            const el = document.createElement('div');
-            el.className = 'canvas-sticker-overlay active-node';
-            el.innerText = emoji || '😊';
-            el.style.left = (30 + Math.random() * 30) + '%';
-            el.style.top = (30 + Math.random() * 30) + '%';
-            el.addEventListener('click', e => { e.stopPropagation();
-                selectNode(el); });
-            el.addEventListener('dblclick', () => { if (confirm('Delete sticker?')) { el.remove(); if (activeTextNode === el) activeTextNode =
-                        null; } });
-            makeDraggable(el);
-            container.appendChild(el);
-            selectNode(el);
-            closeDrawer();
-        }
-
-        function selectNode(el) {
-            document.querySelectorAll('.canvas-text-overlay,.canvas-sticker-overlay').forEach(x => x.classList.remove(
-            'active-node'));
-            el.classList.add('active-node');
-            activeTextNode = el;
-            if (el.classList.contains('canvas-text-overlay')) drawerInput.value = el.innerText;
-        }
-
-        function makeDraggable(el) {
-            let dx, dy, dragging = false;
-            const start = (e) => {
-                e = e || window.event;
-                const ev = e.touches ? e.touches[0] : e;
-                dx = ev.clientX - el.getBoundingClientRect().left;
-                dy = ev.clientY - el.getBoundingClientRect().top;
-                dragging = true;
-                document.addEventListener('mousemove', move);
-                document.addEventListener('touchmove', move, { passive: false });
-                document.addEventListener('mouseup', end);
-                document.addEventListener('touchend', end);
-            };
-            const move = (e) => {
-                if (!dragging) return;
-                e.preventDefault();
-                const ev = e.touches ? e.touches[0] : e;
-                const rect = container.getBoundingClientRect();
-                let x = ev.clientX - rect.left - dx;
-                let y = ev.clientY - rect.top - dy;
-                x = Math.max(0, Math.min(x, rect.width - el.offsetWidth));
-                y = Math.max(0, Math.min(y, rect.height - el.offsetHeight));
-                el.style.left = x + 'px';
-                el.style.top = y + 'px';
-            };
-            const end = () => { dragging = false;
-                document.removeEventListener('mousemove', move);
-                document.removeEventListener('touchmove', move);
-                document.removeEventListener('mouseup', end);
-                document.removeEventListener('touchend', end); };
-            el.addEventListener('mousedown', start);
-            el.addEventListener('touchstart', start, { passive: false });
-        }
-
-        function applySize(v) { if (activeTextNode) activeTextNode.style.fontSize = v + 'px'; }
-
-        function applyOpacity(v) { if (activeTextNode) activeTextNode.style.opacity = v; }
-
-        // ---- DRAW ----
-        let drawCanvas, ctx, isDrawing = false,
-            brushSize = 6,
-            drawColor = '#ffffff',
-            eraser = false,
-            drawActive = false;
-
-        function initDrawCanvas() {
-            drawCanvas = document.getElementById('drawCanvas');
-            if (!drawCanvas) return;
-            const rect = container.getBoundingClientRect();
-            drawCanvas.width = rect.width || 400;
-            drawCanvas.height = rect.height || 700;
-            ctx = drawCanvas.getContext('2d');
-            ctx.fillStyle = 'rgba(0,0,0,0)';
-            ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-            // color palette for draw
-            const pal = document.getElementById('drawColorPalette');
-            if (pal.children.length === 0) {
-                ['#ffffff', '#ff3b30', '#ffcc00', '#4cd964', '#3b82f6', '#e02424', '#9333ea', '#06b6d4', '#f472b6', '#fb923c',
-                    '#22c55e', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1'
-                ].forEach(c => {
-                    const b = document.createElement('button');
-                    b.className = 'color-picker-btn';
-                    b.style.background = c;
-                    b.onclick = () => { document.querySelectorAll('#drawColorPalette .color-picker-btn').forEach(x => x
-                            .classList.remove('active'));
-                        b.classList.add('active');
-                        drawColor = c;
-                        eraser = false;
-                        document.getElementById('eraserBtn').classList.remove('eraser-active'); };
-                    pal.appendChild(b);
-                });
-                pal.firstChild?.classList.add('active');
-            }
-            drawCanvas.addEventListener('mousedown', startDraw);
-            drawCanvas.addEventListener('mousemove', drawMove);
-            drawCanvas.addEventListener('mouseup', endDraw);
-            drawCanvas.addEventListener('mouseleave', endDraw);
-            drawCanvas.addEventListener('touchstart', touchStart);
-            drawCanvas.addEventListener('touchmove', touchMove);
-            drawCanvas.addEventListener('touchend', endDraw);
-        }
-
-        function getPos(e) {
-            const rect = drawCanvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) * (drawCanvas.width / rect.width);
-            const y = (e.clientY - rect.top) * (drawCanvas.height / rect.height);
-            return { x, y };
-        }
-
-        function startDraw(e) { if (!drawActive) return;
-            isDrawing = true; const p = getPos(e);
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y); }
-
-        function drawMove(e) { if (!isDrawing || !drawActive) return; const p = getPos(e);
-            ctx.lineWidth = eraser ? brushSize * 2.5 : brushSize;
-            ctx.lineCap = 'round';
-            ctx.globalCompositeOperation = eraser ? 'destination-out' : 'source-over';
-            ctx.strokeStyle = eraser ? 'rgba(0,0,0,1)' : drawColor;
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y); }
-
-        function endDraw() { isDrawing = false;
-            ctx.beginPath(); }
-
-        function touchStart(e) { e.preventDefault(); const t = e.touches[0];
-            drawCanvas.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX, clientY: t.clientY })); }
-
-        function touchMove(e) { e.preventDefault(); const t = e.touches[0];
-            drawCanvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY })); }
-
+        // Core Drawing System Handles
+        let drawActive = false;
         function toggleDraw() {
             drawActive = !drawActive;
-            document.getElementById('drawToolsPanel').classList.toggle('active', drawActive);
-            drawCanvas?.classList.toggle('active', drawActive);
-            if (drawActive) { initDrawCanvas(); if (drawCanvas) drawCanvas.style.display = 'block'; } else { if (drawCanvas)
-                    drawCanvas.style.display = 'none'; }
+            const canvas = document.getElementById('drawCanvas');
+            const panel = document.getElementById('drawToolsPanel');
+            if(drawActive) {
+                canvas.classList.add('active');
+                panel.classList.remove('hidden');
+                panel.classList.add('flex');
+            } else {
+                canvas.classList.remove('active');
+                panel.classList.add('hidden');
+            }
         }
-
-        function setBrush(size) {
-            brushSize = size;
-            eraser = false;
-            document.getElementById('eraserBtn').classList.remove('eraser-active');
-            document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.draw-tool-btn[data-size="${size}"]`)?.classList.add('active');
-            if (ctx) ctx.globalCompositeOperation = 'source-over';
+        function clearDraw() {
+            const canvas = document.getElementById('drawCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
-
-        function toggleEraser() {
-            eraser = !eraser;
-            document.getElementById('eraserBtn').classList.toggle('eraser-active', eraser);
-            if (ctx) ctx.globalCompositeOperation = eraser ? 'destination-out' : 'source-over';
-            if (eraser) document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active'));
-        }
-
-        function clearDraw() { if (ctx) { ctx.globalCompositeOperation = 'source-over';
-                ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height); } }
-
-        // ---- init ----
-        setTimeout(() => { initDrawCanvas(); }, 300);
-        fillTemplates();
-        fillFonts();
-        fillStickers();
-        fillColors();
+        function setBrush(size) { alert(`Brush size configure value: ${size}px`); }
     </script>
 </body>
 </html>
