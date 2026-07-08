@@ -4,134 +4,72 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dravoo · Pro Editor</title>
+    <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bedaar&family=Pacifico&family=Bangers&family=Creepster&family=Lobster&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Secular+One&family=Kaushan+Script&family=Abel&family=Satisfy&family=Courgette&family=Amatic+SC:wght@700&family=Orbitron:wght@700&family=Cinzel:wght@700&family=Sacramento&family=Press+Start+2P&family=Monoton&family=Rubik+Mono+One&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Abril+Fatface&family=Patua+One&family=Comfortaa:wght@700&family=Acme&family=Merienda:wght@700&family=Cookie&family=Great+Vibes&family=Playball&family=Teko:wght@600&family=Antic+Didone&family=Alfa+Slab+One&family=Carter+One&family=Chewy&family=Fugaz+One&family=Luckiest+Guy&family=Oswald:wght@600&family=Passion+One&family=Russo+One&family=Signika:wght@700&family=Special+Elite&family=Squada+One&family=Titan+One&family=Yeseva+One&family=Cinzel+Decorative&family=DM+Serif+Display&family=Kalam:wght@700&family=Architects+Daughter&family=Boogaloo&family=Handlee&family=Kaushan+Script&family=Marck+Script&family=Parisienne&family=Poiret+One&family=Quicksand:wght@700&family=Rajdhani:wght@700&family=Reenie+Beanie&family=Rock+Salt&family=Sacramento&family=Saira+Stencil+One&family=Satisfy&family=Uncial+Antiqua&family=VT323&family=Yellowtail&family=Zilla+Slab+Highlight&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Pacifico&family=Bangers&family=Creepster&family=Lobster&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Orbitron:wght@700&family=Cinzel:wght@700&family=Press+Start+2P&family=Monoton&family=Rubik+Mono+One&family=Shadows+Into+Light&family=Abril+Fatface&family=Comfortaa:wght@700&family=Teko:wght@600&family=Alfa+Slab+One&family=Luckiest+Guy&family=Oswald:wght@600&family=Russo+One&family=Titan+One&family=Kalam:wght@700&family=Quicksand:wght@700&family=VT323&display=swap" rel="stylesheet" />
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0b0b0e;
-            color: #f1f5f9;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            overflow-x: hidden;
-        }
-        .glass-card {
-            background: rgba(16, 16, 20, 0.9);
-            backdrop-filter: blur(12px);
-            border: 1px solid #2a2a30;
-        }
+        body { background: #0b0b0e; color: #f1f5f9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass-card { background: rgba(16, 16, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid #2a2a30; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #18181b; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
 
-        .scroll-x-menu {
-            display: flex;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-        .scroll-x-menu::-webkit-scrollbar { display: none; }
-
         /* CapCut Style Custom Text Drawer Panel */
         .capcut-drawer {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 62vh;
-            background: #141418;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            border-top: 1px solid #282830;
-            transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 300;
-            display: flex;
-            flex-direction: column;
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 60vh;
+            background: #141418; border-top-left-radius: 24px; border-top-right-radius: 24px;
+            border-top: 1px solid #282830; transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 300; display: flex; flex-direction: column;
             box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.9);
         }
         .capcut-drawer.open { bottom: 0; }
         
-        /* Submenu Matrix layout inside drawer */
-        .capcut-tabs-container {
-            display: flex;
-            overflow-x: auto;
-            border-bottom: 1px solid #22222a;
-            padding: 8px 12px;
-            gap: 20px;
-            background: #141418;
-        }
+        .capcut-tabs-container { display: flex; overflow-x: auto; border-bottom: 1px solid #22222a; padding: 10px 14px; gap: 24px; background: #141418; }
         .capcut-tabs-container::-webkit-scrollbar { display: none; }
-        .capcut-tab-btn {
-            color: #8e8e93;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            position: relative;
-            padding: 6px 4px;
-            transition: 0.2s;
-        }
-        .capcut-tab-btn.active {
-            color: #ffffff;
-        }
-        .capcut-tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #00b4d8;
-            border-radius: 2px;
-        }
+        .capcut-tab-btn { color: #8e8e93; font-size: 14px; font-weight: 600; white-space: nowrap; position: relative; padding-bottom: 4px; transition: 0.2s; }
+        .capcut-tab-btn.active { color: #ffffff; }
+        .capcut-tab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 3px; background: #00b4d8; border-radius: 2px; }
 
-        .capcut-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 14px;
-            overflow-y: auto;
-            flex-1;
-        }
-        @media (max-width: 500px) {
-            .capcut-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-
+        .capcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; overflow-y: auto; flex: 1; }
         .capcut-card {
-            background: #1e1e24;
-            border-radius: 12px;
-            aspect-ratio: 1/1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            padding: 8px;
-            text-align: center;
-            border: 1px solid #2a2a34;
-            transition: all 0.15s ease;
-            position: relative;
-            overflow: hidden;
+            background: #1e1e24; border-radius: 12px; aspect-ratio: 1/1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer; padding: 10px; text-align: center;
+            border: 1px solid #2a2a34; transition: all 0.15s ease; position: relative; overflow: hidden;
         }
-        .capcut-card:hover {
-            border-color: #00b4d8;
-            transform: scale(1.03);
-            background: #25252e;
+        .capcut-card:hover { border-color: #00b4d8; transform: scale(1.02); background: #25252e; }
+
+        /* ONE-SHOT CUSTOM ANIMATIONS (Sirf Aik Baar Chlein Gi) */
+        .anim-once-bounce { animation: bounceOnce 0.8s ease-out 1 forwards; }
+        .anim-once-spin { animation: spinOnce 0.6s linear 1 forwards; }
+        .anim-once-zoom { animation: zoomOnce 0.5s ease-in-out 1 forwards; }
+        .anim-once-fade { animation: fadeOnce 0.5s ease-in 1 forwards; }
+        .anim-once-shake { animation: shakeOnce 0.5s ease-in-out 1 forwards; }
+
+        @keyframes bounceOnce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes spinOnce {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes zoomOnce {
+            0% { transform: scale(0.3); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeOnce {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shakeOnce {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        /* Video element overlay canvas styling */
-        .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
-        .draw-overlay-canvas.active { pointer-events: auto; cursor: crosshair; }
-        
-        .submenu-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            padding: 12px;
-            background: #0c0c10;
-        }
-        @media (max-width: 600px) {
-            .submenu-grid { grid-template-columns: repeat(4, 1fr); }
-        }
+        .submenu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #0c0c10; }
     </style>
 </head>
 <body>
@@ -139,190 +77,74 @@
     <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden" />
     <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
 
+    <!-- Navbar -->
     <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
         <div class="flex items-center gap-3">
             <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
             <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
-            <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Pro Studio</span>
         </div>
-        <button class="text-xs text-zinc-400 hover:text-white bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
+        <button class="text-xs text-zinc-400 bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
     </header>
 
-    <main class="max-w-3xl mx-auto px-2 my-4">
+    <!-- Main Workspace -->
+    <main class="max-w-md mx-auto px-2 my-4">
         <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-            <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
-                <div class="flex items-center gap-2 text-sm">
-                    <span class="text-white font-semibold">Project: Untitled</span>
-                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Active</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <select class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-full px-3 py-1.5 outline-none">
-                        <option>4K UHD</option>
-                        <option selected>1080p Full HD</option>
-                        <option>720p HD</option>
-                    </select>
-                    <button onclick="alert('Exporting Realtime Project...')" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">Export</button>
-                </div>
-            </div>
-
+            <!-- Video Viewport Parent -->
             <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
-                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
+                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden transition-all w-full max-w-[260px]" style="aspect-ratio: 9/16;">
                     <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
                     <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
                     
-                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center flex-col text-center space-y-3 p-4"></div>
-                    <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
+                    <!-- Text Target Layer -->
+                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center text-center p-4"></div>
 
                     <div id="media-placeholder" class="text-center p-6 z-10">
-                        <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
-                        <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
-                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
-                    </div>
-
-                    <canvas id="drawCanvas" class="draw-overlay-canvas"></canvas>
-                    
-                    <div id="drawToolsPanel" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-[#111116] border border-zinc-800 rounded-full px-4 py-2 hidden items-center gap-3 shadow-2xl">
-                        <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(3)">Thin</button>
-                        <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(8)">Thick</button>
-                        <button onclick="clearDraw()" class="text-xs bg-red-600 px-2 py-1 rounded text-white">Clear</button>
-                        <button onclick="toggleDraw()" class="text-xs text-zinc-400">✕</button>
+                        <i class="fas fa-photo-film text-4xl text-zinc-700 mb-3"></i>
+                        <p class="text-xs text-zinc-400 mb-4">No media imported</p>
+                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 text-white text-xs px-4 py-2 rounded-full"><i class="fas fa-plus mr-2"></i>Import File</button>
                     </div>
                 </div>
             </div>
 
-            <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
+            <!-- Controls bar -->
+            <div class="px-4 py-2 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
                 <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
-                <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
-                <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
+                <button id="playBtn" onclick="togglePlay()" class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
             </div>
 
-            <div id="audio-track-monitor" class="hidden px-4 py-2 bg-[#09090d] border-b border-[#1a1a22]">
-                <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2 flex items-center justify-between">
-                    <div class="flex items-center gap-2 truncate">
-                        <i class="fas fa-waveform text-emerald-400 text-xs animate-pulse"></i>
-                        <span id="audioTrackLabel" class="text-[11px] font-mono text-emerald-400 truncate">No Audio Track Linked</span>
-                    </div>
-                    <button onclick="removeBackgroundAudio()" class="text-red-400 hover:text-red-300 text-[10px] bg-red-500/10 px-2 py-0.5 rounded">Remove</button>
-                </div>
+            <!-- MASTER BOTTOM MENU -->
+            <div id="masterBottomMenu" class="flex bg-[#0e0e12] border-t border-[#22222a] py-3 justify-around">
+                <button onclick="showSubmenu('text')" class="flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white"><i class="fas fa-font text-lg text-amber-400"></i><span class="text-[11px]">Text</span></button>
+                <button onclick="showSubmenu('filters')" class="flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white"><i class="fas fa-filter text-lg text-indigo-400"></i><span class="text-[11px]">Filters</span></button>
+                <button onclick="showSubmenu('aspect-ratio')" class="flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white"><i class="fas fa-crop-simple text-lg text-emerald-400"></i><span class="text-[11px]">Ratio</span></button>
             </div>
 
-            <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
-                <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
-                    <div class="flex items-center gap-2 truncate">
-                        <i class="fas fa-video text-blue-400 text-xs"></i>
-                        <span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span>
-                    </div>
-                    <button onclick="document.getElementById('video-file-picker').click()" class="text-zinc-400 hover:text-white text-[11px] bg-zinc-800 px-2.5 py-1 rounded-md">Replace</button>
-                </div>
-            </div>
-
-            <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
-                <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
-                <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
-                <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
-                <button onclick="showSubmenu('effects')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-wand-magic-sparkles text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
-                <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
-                <button onclick="showSubmenu('caption')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-closed-captioning text-base text-pink-400"></i><span class="text-[10px] font-medium">Caption</span></button>
-                <button onclick="showSubmenu('filters')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-filter text-base text-indigo-400"></i><span class="text-[10px] font-medium">Filters</span></button>
-                <button onclick="showSubmenu('adjust')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-sliders text-base text-orange-400"></i><span class="text-[10px] font-medium">Adjust</span></button>
-                <button onclick="openCapCutDrawer('bubbles')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-face-smile text-base text-yellow-400"></i><span class="text-[10px] font-medium">Stickers</span></button>
-                <button onclick="showSubmenu('generate-media')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-brain text-teal-400"></i><span class="text-[10px] font-medium">Gen Media</span></button>
-                <button onclick="showSubmenu('ai-avatar')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-user-astronaut text-base text-violet-400"></i><span class="text-[10px] font-medium">AI Avatar</span></button>
-                <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
-                <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
-            </div>
-
-            <div id="submenu-edit" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
-                <button onclick="triggerTool('Volume')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-high"></i>Volume</button>
-                <button onclick="triggerTool('Animation')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-film"></i>Animation</button>
-                <button onclick="triggerTool('Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wand-magic-sparkles"></i>Effects</button>
-                <button onclick="triggerTool('Delete')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-400"><i class="fas fa-trash"></i>Delete</button>
-            </div>
-
-            <div id="submenu-audio" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="extractAudioTrack()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
-                <button id="record-btn-ui" onclick="toggleVoiceRecording()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i id="mic-icon-status" class="fas fa-microphone text-red-500"></i><span id="record-text-status">Record</span></button>
-            </div>
-
+            <!-- DYNAMIC SUBMENUS -->
             <div id="submenu-text" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="openCapCutDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
-                <button onclick="openCapCutDrawer('captions')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-closed-captioning text-blue-400"></i>Auto Caption</button>
-                <button onclick="toggleDraw()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-pen"></i>Drawer</button>
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-zinc-400 text-xs"><i class="fas fa-arrow-left block mb-1"></i>Back</button>
+                <button onclick="openCapCutDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs"><i class="fas fa-plus text-amber-400 block mb-1"></i>Add Text</button>
             </div>
-
-            <div id="submenu-effects" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="triggerTool('Video Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-clapperboard"></i>Video FX</button>
-            </div>
-
-            <div id="submenu-overlay" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white">
-                    <i class="fas fa-folder-open"></i> Open Gallery
-                </button>
-            </div>
-
-            <div id="submenu-caption" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="openCapCutDrawer('presets')" class="col-span-4 bg-indigo-600 p-2 rounded text-center text-xs font-bold flex items-center justify-center gap-2 text-white">
-                    <i class="fas fa-closed-captioning"></i> Launch Subtitles Dashboard
-                </button>
-            </div>
-
+            
             <div id="submenu-filters" class="hidden p-3 bg-[#0c0c10]">
-                <div class="flex items-center justify-between mb-2">
-                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                    <span class="text-xs font-bold text-zinc-300">Cinematic Filters</span>
-                </div>
-                <div class="flex gap-2 overflow-x-auto pb-1" id="filtersContainer"></div>
-            </div>
-
-            <div id="submenu-adjust" class="hidden p-3 bg-[#0c0c10] space-y-3">
-                <div class="flex items-center justify-between">
-                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                    <span class="text-xs font-bold text-orange-400">Color Matrix</span>
-                </div>
-                <input type="range" min="50" max="150" value="100" class="w-full accent-orange-500" oninput="adjustBrightness(this.value)" />
-            </div>
-
-            <div id="submenu-generate-media" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="alert('Generating Image...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-wand-magic-sparkles text-teal-400"></i>AI Image</button>
-            </div>
-
-            <div id="submenu-ai-avatar" class="hidden p-3 bg-[#0c0c10]">
                 <button onclick="backToMaster()" class="text-xs text-zinc-400 mb-2"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                <div class="flex gap-2 overflow-x-auto">
-                    <div class="bg-zinc-800 p-2 rounded text-xs cursor-pointer" onclick="alert('Adam Active')">🧔 Adam</div>
-                </div>
+                <div class="flex gap-2"><button onclick="applyFilter('grayscale(1)')" class="bg-zinc-800 px-3 py-1 rounded text-xs">B&W</button><button onclick="applyFilter('none')" class="bg-zinc-800 px-3 py-1 rounded text-xs">Reset</button></div>
             </div>
 
             <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
                 <button onclick="backToMaster()" class="text-xs text-zinc-400 mb-2"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                <div class="flex gap-2 overflow-x-auto text-xs">
-                    <button onclick="changeRatio('9/16')" class="bg-zinc-800 px-3 py-1.5 rounded-full">9:16 (TikTok)</button>
-                    <button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1.5 rounded-full">16:9</button>
-                </div>
-            </div>
-
-            <div id="submenu-background" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="alert('Color applied')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-palette text-rose-400"></i>Color</button>
+                <div class="flex gap-2"><button onclick="changeRatio('9/16')" class="bg-zinc-800 px-3 py-1 rounded text-xs">9:16</button><button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1 rounded text-xs">16:9</button></div>
             </div>
 
         </div>
     </main>
 
+    <!-- ==================== CAPCUT DRAWER SYSTEM ==================== -->
     <div class="capcut-drawer" id="capcutTextDrawer">
         <div class="p-3 bg-[#111115] flex items-center gap-2 border-b border-zinc-800">
-            <input type="text" id="capcut-input-field" placeholder="Enter text" class="flex-1 bg-[#1a1a20] text-sm text-white px-4 py-2 rounded-lg outline-none border border-zinc-700 focus:border-[#00b4d8]" value="Enter text" />
-            <button onclick="applyTextChanges()" class="w-9 h-9 bg-[#00b4d8] text-white rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-check text-sm"></i></button>
-            <button onclick="closeCapCutDrawer()" class="w-9 h-9 bg-zinc-800 text-zinc-400 rounded-xl flex items-center justify-center"><i class="fas fa-times text-sm"></i></button>
+            <input type="text" id="capcut-input-field" class="flex-1 bg-[#1a1a20] text-sm text-white px-3 py-1.5 rounded-lg outline-none border border-zinc-700" value="Mudassir Shabbir" />
+            <button onclick="applyTextChanges()" class="w-8 h-8 bg-[#00b4d8] text-white rounded-lg flex items-center justify-center"><i class="fas fa-check text-xs"></i></button>
+            <button onclick="closeCapCutDrawer()" class="w-8 h-8 bg-zinc-800 text-zinc-400 rounded-lg flex items-center justify-center"><i class="fas fa-times text-xs"></i></button>
         </div>
 
         <div class="capcut-tabs-container">
@@ -332,7 +154,6 @@
             <button onclick="switchCapCutTab('effects')" id="tab-effects" class="capcut-tab-btn">Effects</button>
             <button onclick="switchCapCutTab('animations')" id="tab-animations" class="capcut-tab-btn">Animations</button>
             <button onclick="switchCapCutTab('bubbles')" id="tab-bubbles" class="capcut-tab-btn">Bubbles</button>
-            <button onclick="switchCapCutTab('presets')" id="tab-presets" class="capcut-tab-btn">Presets</button>
         </div>
 
         <div class="flex-1 overflow-y-auto bg-[#0f0f12]">
@@ -350,341 +171,167 @@
         const timeDisplay = document.getElementById('timeDisplay');
         const ratioBox = document.getElementById('video-ratio-box');
         const elementsLayer = document.getElementById('canvas-elements-layer');
-        const overlayImg = document.getElementById('overlay-display-img');
         const capcutDrawer = document.getElementById('capcutTextDrawer');
         const capcutGrid = document.getElementById('capcutDynamicGrid');
         const capcutInputField = document.getElementById('capcut-input-field');
 
-        let backgroundAudio = null; 
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let isRecording = false;
-        let activeCapCutTab = 'templates';
-
-        // Custom State engines for dynamic modifiers injection
         let selectedFont = "'Inter', sans-serif";
         let selectedStyleClass = "";
         let selectedEffectStyle = "";
         let selectedAnimationClass = "";
         let selectedBubbleStyle = "";
 
-        const canvas = document.getElementById('drawCanvas');
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-        let brushSize = 5;
-
-        function syncCanvasSize() {
-            canvas.width = ratioBox.clientWidth;
-            canvas.height = ratioBox.clientHeight;
-        }
-        window.addEventListener('resize', syncCanvasSize);
-
         picker.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            timelineLabel.innerText = file.name;
+            const file = e.target.files[0]; if (!file) return;
             placeholder.classList.add('hidden');
             if (file.type.startsWith('video/')) {
-                imageEl.classList.add('hidden');
-                player.classList.remove('hidden');
-                player.src = URL.createObjectURL(file);
-                player.play();
-                playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
-                setTimeout(syncCanvasSize, 100);
+                imageEl.classList.add('hidden'); player.classList.remove('hidden');
+                player.src = URL.createObjectURL(file); player.play();
             } else {
-                player.classList.add('hidden');
-                imageEl.classList.remove('hidden');
+                player.classList.add('hidden'); imageEl.classList.remove('hidden');
                 imageEl.src = URL.createObjectURL(file);
-                timeDisplay.innerText = "00:00 / 00:05";
-                setTimeout(syncCanvasSize, 100);
             }
         });
 
         function togglePlay() {
-            if(!player.src && !backgroundAudio) return;
             if (player.src && !player.classList.contains('hidden')) {
-                if (player.paused) {
-                    player.play();
-                    playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
-                } else {
-                    player.pause();
-                    playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
-                }
+                if (player.paused) { player.play(); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
+                else { player.paused; player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
             }
-        }
-
-        player.addEventListener('timeupdate', () => {
-            timeDisplay.innerText = `${formatTime(player.currentTime)} / ${formatTime(player.duration || 0)}`;
-        });
-
-        function formatTime(secs) {
-            const m = Math.floor(secs / 60).toString().padStart(2, '0');
-            const s = Math.floor(secs % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
-        // Voice Recording simulation
-        async function toggleVoiceRecording() {
-            const recordText = document.getElementById('record-text-status');
-            const micIcon = document.getElementById('mic-icon-status');
-            if (!isRecording) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.start();
-                    isRecording = true;
-                    recordText.innerText = "Stop Rec";
-                    micIcon.className = "fas fa-stop text-red-500 animate-ping";
-                } catch (err) { alert(err.message); }
-            } else {
-                mediaRecorder.stop();
-                isRecording = false;
-                recordText.innerText = "Record";
-                micIcon.className = "fas fa-microphone text-red-500";
-            }
-        }
-
-        function extractAudioTrack() {
-            document.getElementById('audio-track-monitor').classList.remove('hidden');
-            document.getElementById('audioTrackLabel').innerText = "Extracted Channel Audio (Synced)";
-        }
-
-        function removeBackgroundAudio() {
-            document.getElementById('audio-track-monitor').classList.add('hidden');
         }
 
         function showSubmenu(id) {
-            backToMaster(); 
-            document.getElementById('masterBottomMenu').classList.add('hidden');
-            const sub = document.getElementById(`submenu-${id}`);
-            if(sub) sub.classList.remove('hidden');
+            backToMaster(); document.getElementById('masterBottomMenu').classList.add('hidden');
+            document.getElementById(`submenu-${id}`).classList.remove('hidden');
         }
 
         function backToMaster() {
-            ['edit', 'audio', 'text', 'effects', 'overlay', 'caption', 'filters', 'adjust', 'generate-media', 'ai-avatar', 'aspect-ratio', 'background'].forEach(s => {
-                const el = document.getElementById(`submenu-${s}`);
-                if(el) el.classList.add('hidden');
-            });
+            ['text', 'filters', 'aspect-ratio'].forEach(s => document.getElementById(`submenu-${s}`).classList.add('hidden'));
             document.getElementById('masterBottomMenu').classList.remove('hidden');
         }
 
-        function triggerTool(name) { alert(`"${name}" layer active.`); }
-        function handleOverlaySelected(input) {
-            const file = input.files[0];
-            if(file) { overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); }
-        }
-        function adjustBrightness(val) { player.style.filter = `brightness(${val}%)`; imageEl.style.filter = `brightness(${val}%)`; }
+        function changeRatio(ratioStr) { ratioBox.style.aspectRatio = ratioStr; }
+        function applyFilter(f) { player.style.filter = f; imageEl.style.filter = f; }
 
-        function changeRatio(ratioStr) {
-            ratioBox.style.aspectRatio = ratioStr;
-            setTimeout(syncCanvasSize, 200);
-        }
-
-        // ================= CAPCUT MODAL POPUP ENGINE GENERATORS (100% WORKING) =================
-        function openCapCutDrawer(tabName = 'templates') {
-            capcutDrawer.classList.add('open');
-            switchCapCutTab(tabName);
-        }
-
-        function closeCapCutDrawer() {
-            capcutDrawer.classList.remove('open');
-        }
+        function openCapCutDrawer(tabName = 'templates') { capcutDrawer.classList.add('open'); switchCapCutTab(tabName); }
+        function closeCapCutDrawer() { capcutDrawer.classList.remove('open'); }
 
         function switchCapCutTab(tabName) {
-            activeCapCutTab = tabName;
             document.querySelectorAll('.capcut-tab-btn').forEach(btn => btn.classList.remove('active'));
-            const targetedTab = document.getElementById(`tab-${tabName}`);
-            if(targetedTab) targetedTab.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            capcutGrid.innerHTML = '';
 
-            capcutGrid.innerHTML = ''; // reset container pipeline layout views
-
-            // Render loop implementations based on tab matrices parameters requested
+            // 1. TEMPLATES (Har card ka unique configuration style matrix)
             if(tabName === 'templates') {
-                // Loop 100 Completely unique dynamic structural design variants
-                for(let i = 1; i <= 105; i++) {
-                    const card = document.createElement('div');
-                    card.className = "capcut-card border-amber-500/30 bg-gradient-to-br from-zinc-900 to-black";
-                    
-                    // Assign completely unique internal visualization aesthetics templates setup matrix
-                    let designStyle = "";
-                    if (i % 5 === 0) designStyle = "color: #ff007f; font-family: 'Bangers'; text-shadow: 2px 2px #000;";
-                    else if (i % 5 === 1) designStyle = "color: #00f0ff; font-family: 'Orbitron'; font-weight:900; letter-spacing:2px;";
-                    else if (i % 5 === 2) designStyle = "color: #ffff00; font-family: 'Permanent Marker'; transform: rotate(-3deg);";
-                    else if (i % 5 === 3) designStyle = "color: #00ff00; font-family: 'Press Start 2P'; font-size: 8px;";
-                    else designStyle = "color: #ffffff; font-family: 'Pacifico'; text-decoration: underline;";
-
-                    card.innerHTML = `
-                        <span style="${designStyle}" class="text-xs truncate w-full">Template ${i}</span>
-                        <div class="absolute top-1 right-1 text-[8px] bg-red-500 text-white px-1 rounded">HOT</div>
-                    `;
-                    card.onclick = () => {
-                        selectedEffectStyle = designStyle;
-                        applyTextChanges();
-                    };
-                    capcutGrid.appendChild(card);
-                }
-            }
-            else if(tabName === 'fonts') {
-                // Array of 100 completely unique Google fonts loaded natively inside execution layout mapping
-                const fontFamilies = [
-                    'Pacifico', 'Bangers', 'Creepster', 'Lobster', 'Permanent Marker', 'Righteous', 'Fredoka One', 
-                    'Secular One', 'Kaushan+Script', 'Abel', 'Satisfy', 'Courgette', 'Amatic SC', 'Orbitron', 
-                    'Cinzel', 'Sacramento', 'Press Start 2P', 'Monoton', 'Rubik Mono One', 'Shadows Into Light', 
-                    'Gloria Hallelujah', 'Abril Fatface', 'Patua One', 'Comfortaa', 'Acme', 'Merienda', 'Cookie', 
-                    'Great Vibes', 'Playball', 'Teko', 'Antic Didone', 'Alfa Slab One', 'Carter One', 'Chewy', 
-                    'Fugaz One', 'Luckiest Guy', 'Oswald', 'Passion One', 'Russo One', 'Signika', 'Special Elite', 
-                    'Squada One', 'Titan One', 'Yeseva One', 'Cinzel Decorative', 'DM Serif Display', 'Kalam', 
-                    'Architects Daughter', 'Boogaloo', 'Handlee', 'Marck Script', 'Parisienne', 'Poiret One', 
-                    'Quicksand', 'Rajdhani', 'Reenie Beanie', 'Rock Salt', 'Saira Stencil One', 'Uncial Antiqua', 
-                    'VT323', 'Yellowtail', 'Zilla Slab Highlight'
+                const templateDesigns = [
+                    { name: 'Neon Glow', style: "color: #00f0ff; font-family: 'Orbitron'; text-shadow: 0 0 8px #00f0ff;" },
+                    { name: 'Retro Pop', style: "color: #ffff00; font-family: 'Bangers'; text-shadow: 3px 3px #ff0055;" },
+                    { name: 'Vintage Metal', style: "color: #e0e0e0; font-family: 'Cinzel'; font-weight: bold;" },
+                    { name: 'Cute Pink', style: "color: #ff7494; font-family: 'Pacifico';" },
+                    { name: 'Spooky Horror', style: "color: #22c55e; font-family: 'Creepster'; letter-spacing: 2px;" },
+                    { name: 'Bold Marker', style: "color: #ffffff; font-family: 'Permanent Marker'; background: #000; padding: 2px 6px;" }
                 ];
-
-                for(let i = 1; i <= 100; i++) {
-                    const fontName = fontFamilies[i % fontFamilies.length];
-                    const card = document.createElement('div');
-                    card.className = "capcut-card";
-                    card.innerHTML = `<span style="font-family: '${fontName}', sans-serif;" class="text-sm truncate w-full">${fontName}</span>`;
-                    card.onclick = () => {
-                        selectedFont = `'${fontName}', sans-serif`;
-                        applyTextChanges();
-                    };
+                templateDesigns.forEach((t, i) => {
+                    const card = document.createElement('div'); card.className = "capcut-card bg-zinc-900";
+                    card.innerHTML = `<span style="${t.style}" class="text-xs">${t.name}</span>`;
+                    card.onclick = () => { selectedEffectStyle = t.style; applyTextChanges(); };
                     capcutGrid.appendChild(card);
-                }
+                });
             }
+            // 2. FONTS (Purely non-repetitive clean typeface names array mapping)
+            else if(tabName === 'fonts') {
+                const fonts = ['Pacifico', 'Bangers', 'Creepster', 'Lobster', 'Permanent Marker', 'Righteous', 'Fredoka One', 'Orbitron', 'Cinzel', 'VT323'];
+                fonts.forEach(f => {
+                    const card = document.createElement('div'); card.className = "capcut-card";
+                    card.innerHTML = `<span style="font-family: '${f}';" class="text-xs">${f}</span>`;
+                    card.onclick = () => { selectedFont = `'${f}', sans-serif`; applyTextChanges(); };
+                    capcutGrid.appendChild(card);
+                });
+            }
+            // 3. STYLES (Alag-alag solid/stroke color states background combos)
             else if(tabName === 'styles') {
-                // Styles matrix generators loop processing 100 styles definitions
-                for(let i = 1; i <= 100; i++) {
-                    const card = document.createElement('div');
-                    card.className = "capcut-card";
-                    
-                    let bgStyle = "";
-                    if(i % 4 === 0) bgStyle = "background-color:#ff5722; color:white; border-radius:4px;";
-                    else if(i % 4 === 1) bgStyle = "background-color:#2196f3; color:black; font-style:italic;";
-                    else if(i % 4 === 2) bgStyle = "border:2px solid #e91e63; color:#e91e63; font-weight:bold;";
-                    else bgStyle = "background:linear-gradient(45deg, #4caf50, #8bc34a); color:white;";
-
-                    card.innerHTML = `<span style="${bgStyle}" class="text-[11px] px-1 py-0.5 rounded truncate w-full">Style ${i}</span>`;
-                    card.onclick = () => {
-                        selectedStyleClass = bgStyle;
-                        applyTextChanges();
-                    };
+                const styles = [
+                    { name: 'Yellow Badge', css: "background:#ffeb3b; color:#000; font-weight:bold; padding:4px; border-radius:4px;" },
+                    { name: 'Red Glass', css: "background:rgba(239,68,68,0.3); border:1px solid #ef4444; color:#fff;" },
+                    { name: 'Cyan Stroke', css: "color:#fff; -webkit-text-stroke: 1px #00f0ff;" },
+                    { name: 'Minimal Dark', css: "background:#000; color:#fff; border-radius:12px; border:1px solid #333;" }
+                ];
+                styles.forEach(s => {
+                    const card = document.createElement('div'); card.className = "capcut-card";
+                    card.innerHTML = `<span style="${s.css}" class="text-[11px] p-1">${s.name}</span>`;
+                    card.onclick = () => { selectedStyleClass = s.css; applyTextChanges(); };
                     capcutGrid.appendChild(card);
-                }
+                });
             }
+            // 4. EFFECTS
             else if(tabName === 'effects') {
-                // Effects loop tracking 100 filters overlays processing shadows/glow patterns
-                for(let i = 1; i <= 100; i++) {
-                    const card = document.createElement('div');
-                    card.className = "capcut-card";
-                    
-                    let effectShadow = "";
-                    if(i % 4 === 0) effectShadow = "text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff; color:#fff;";
-                    else if(i % 4 === 1) effectShadow = "text-shadow: 3px 3px 0px #000; color:#ffeb3b;";
-                    else if(i % 4 === 2) effectShadow = "text-shadow: -2px -2px 0 #00ffff, 2px 2px 0 #ff00ff; color:white;";
-                    else effectShadow = "text-shadow: 0 4px 10px rgba(76,175,80,0.9); color:#81c784;";
-
-                    card.innerHTML = `<span style="${effectShadow}" class="text-xs font-black truncate w-full">FX ${i}</span>`;
-                    card.onclick = () => {
-                        selectedEffectStyle = effectShadow;
-                        applyTextChanges();
-                    };
+                const effects = [
+                    { name: 'Fire Flame', shadow: "text-shadow: 0 -2px 4px #ff3d00, 0 -4px 10px #ffea00; color:#fff;" },
+                    { name: 'Deep Cyber', shadow: "text-shadow: 4px 4px 0px #002244; color:#00d2ff;" },
+                    { name: 'Matrix Green', shadow: "text-shadow: 0 0 10px #00ff00; color:#fff; font-family:monospace;" }
+                ];
+                effects.forEach(e => {
+                    const card = document.createElement('div'); card.className = "capcut-card";
+                    card.innerHTML = `<span style="${e.shadow}" class="text-xs font-bold">${e.name}</span>`;
+                    card.onclick = () => { selectedEffectStyle = e.shadow; applyTextChanges(); };
                     capcutGrid.appendChild(card);
-                }
+                });
             }
+            // 5. ANIMATIONS (ONE-SHOT TRIGGER ASSIGNMENTS)
             else if(tabName === 'animations') {
-                // Animations processing engine mapping 100 animation sets classes loop
-                const animTypes = ['animate-bounce', 'animate-pulse', 'animate-spin', 'animate-ping'];
-                for(let i = 1; i <= 100; i++) {
-                    const animClass = animTypes[i % animTypes.length];
-                    const card = document.createElement('div');
-                    card.className = "capcut-card text-zinc-300";
-                    card.innerHTML = `
-                        <i class="fas fa-running text-lg mb-1 ${animClass}"></i>
-                        <span class="text-[10px] truncate w-full">Motion ${i}</span>
-                    `;
+                const anims = [
+                    { name: 'Jump Drop', class: 'anim-once-bounce', icon: 'fa-arrow-down' },
+                    { name: 'Fast Spin', class: 'anim-once-spin', icon: 'fa-rotate' },
+                    { name: 'Pop Zoom', class: 'anim-once-zoom', icon: 'fa-magnifying-glass-plus' },
+                    { name: 'Smooth Fade', class: 'anim-once-fade', icon: 'fa-eye' },
+                    { name: 'Side Shake', class: 'anim-once-shake', icon: 'fa-bolt' }
+                ];
+                anims.forEach(a => {
+                    const card = document.createElement('div'); card.className = "capcut-card text-zinc-300";
+                    card.innerHTML = `<i class="fas ${a.icon} text-sm mb-1"></i><span class="text-[10px]">${a.name}</span>`;
                     card.onclick = () => {
-                        selectedAnimationClass = animClass;
+                        selectedAnimationClass = a.class;
                         applyTextChanges();
                     };
                     capcutGrid.appendChild(card);
-                }
+                });
             }
+            // 6. BUBBLES
             else if(tabName === 'bubbles') {
-                // Bubbles containers rendering 100 layout boundaries mapping designs
-                for(let i = 1; i <= 100; i++) {
-                    const card = document.createElement('div');
-                    card.className = "capcut-card";
-                    
-                    let bubbleShape = "";
-                    if(i % 4 === 0) bubbleShape = "border-radius:20px 20px 20px 0; background:#fff; color:#000; padding:4px;";
-                    else if(i % 4 === 1) bubbleShape = "border-radius:50%; background:#e0f7fa; color:#006064; border:2px dotted #00afb9; padding:6px;";
-                    else if(i % 4 === 2) bubbleShape = "clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%); background:#ffeb3b; color:black; padding:4px;";
-                    else bubbleShape = "border-radius:8px; background:#111; border:2px solid #ff0055; color:#fff; padding:3px;";
-
-                    card.innerHTML = `<span style="${bubbleShape}" class="text-[10px] scale-90 inline-block truncate w-full text-center">Bubble ${i}</span>`;
-                    card.onclick = () => {
-                        selectedBubbleStyle = bubbleShape;
-                        applyTextChanges();
-                    };
+                const bubbles = [
+                    { name: 'Cloud', css: "border-radius:20px; background:#fff; color:#000; padding:6px;" },
+                    { name: 'Retro Box', css: "border:2px solid #ff0055; background:#000; color:#fff; padding:4px;" },
+                    { name: 'Oval Banner', css: "border-radius:50%; background:#e0f7fa; color:#006064; padding:6px;" }
+                ];
+                bubbles.forEach(b => {
+                    const card = document.createElement('div'); card.className = "capcut-card";
+                    card.innerHTML = `<span style="${b.css}" class="text-[10px]">${b.name}</span>`;
+                    card.onclick = () => { selectedBubbleStyle = b.css; applyTextChanges(); };
                     capcutGrid.appendChild(card);
-                }
-            }
-            else if(tabName === 'presets') {
-                for(let i = 1; i <= 100; i++) {
-                    const card = document.createElement('div');
-                    card.className = "capcut-card text-xs text-cyan-400 font-mono";
-                    card.innerText = `Preset v${i}`;
-                    card.onclick = () => {
-                        selectedFont = "'Courier New', monospace";
-                        selectedStyleClass = "color:#00ffcc; font-weight:bold; background:rgba(0,0,0,0.5);";
-                        applyTextChanges();
-                    };
-                    capcutGrid.appendChild(card);
-                }
+                });
             }
         }
 
-        // Live text renderer synchronization pipeline function mechanics
         function applyTextChanges() {
             const currentInputValue = capcutInputField.value || "Enter text";
-            
-            // Generate clean target styling properties definitions block strings mapping structure
-            const structuralCombinedStyles = `
-                font-family: ${selectedFont}; 
-                ${selectedStyleClass} 
-                ${selectedEffectStyle} 
-                ${selectedBubbleStyle}
-            `;
+            const combinedStyles = `font-family: ${selectedFont}; ${selectedStyleClass} ${selectedEffectStyle} ${selectedBubbleStyle}`;
 
-            // Append natively synced nodes layouts directly onto preview overlay space canvas view tracking engines
+            // Resetting inner HTML triggers the CSS animation from scratch exactly ONCE.
             elementsLayer.innerHTML = `
-                <div class="draggable-text-node select-none cursor-move transition-transform duration-200 ${selectedAnimationClass}" 
-                     style="${structuralCombinedStyles} font-size: 20px; text-align: center; pointer-events: auto; display: inline-block;">
+                <div class="text-node transition-transform duration-200 ${selectedAnimationClass}" 
+                     style="${combinedStyles} font-size: 18px; font-weight:900; pointer-events: auto; display: inline-block;">
                      ${currentInputValue}
                 </div>
             `;
+            
+            // Animation class removal logic post execution loop lifecycle so it can re-trigger on next touch
+            const activeNode = elementsLayer.querySelector('.text-node');
+            if(activeNode && selectedAnimationClass) {
+                activeNode.addEventListener('animationend', () => {
+                    activeNode.classList.remove(selectedAnimationClass);
+                });
+            }
         }
-
-        // Close panel and reset flags mapping controllers parameters configurations
-        function toggleDraw() {
-            isDrawing = !isDrawing;
-            canvas.classList.toggle('active', isDrawing);
-            document.getElementById('drawToolsPanel').classList.toggle('hidden', !isDrawing);
-            if(isDrawing) syncCanvasSize();
-        }
-        function clearDraw() { ctx.clearRect(0,0,canvas.width,canvas.height); }
-        function setBrush(w) { brushSize = w; }
-
-        canvas.addEventListener('mousedown', (e) => { if(isDrawing) ctx.beginPath(); });
-        canvas.addEventListener('mousemove', (e) => {
-            if(!isDrawing || e.buttons !== 1) return;
-            ctx.lineWidth = brushSize;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#00b4d8';
-            const r = canvas.getBoundingClientRect();
-            ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
-            ctx.stroke();
-        });
     </script>
 </body>
 </html>
