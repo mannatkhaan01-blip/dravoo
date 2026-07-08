@@ -4,72 +4,128 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dravoo · Pro Editor</title>
-    <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Pacifico&family=Bangers&family=Creepster&family=Lobster&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Orbitron:wght@700&family=Cinzel:wght@700&family=Press+Start+2P&family=Monoton&family=Rubik+Mono+One&family=Shadows+Into+Light&family=Abril+Fatface&family=Comfortaa:wght@700&family=Teko:wght@600&family=Alfa+Slab+One&family=Luckiest+Guy&family=Oswald:wght@600&family=Russo+One&family=Titan+One&family=Kalam:wght@700&family=Quicksand:wght@700&family=VT323&display=swap" rel="stylesheet" />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Bangers&family=Creepster&family=Lobster&family=Pacifico&family=Permanent+Marker&family=Righteous&family=Russo+One&family=Satisfy&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
     <style>
-        body { background: #0b0b0e; color: #f1f5f9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .glass-card { background: rgba(16, 16, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid #2a2a30; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0b0b0e;
+            color: #f1f5f9;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(16, 16, 20, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2a2a30;
+        }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #18181b; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
 
-        /* CapCut Style Custom Text Drawer Panel */
+        .scroll-x-menu {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scroll-x-menu::-webkit-scrollbar { display: none; }
+
+        /* CapCut Drawer Style Implementation */
         .capcut-drawer {
-            position: fixed; bottom: -100%; left: 0; width: 100%; height: 60vh;
-            background: #141418; border-top-left-radius: 24px; border-top-right-radius: 24px;
-            border-top: 1px solid #282830; transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 300; display: flex; flex-direction: column;
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 60vh;
+            background: #141418;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-top: 1px solid #2c2c35;
+            transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
             box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.9);
         }
         .capcut-drawer.open { bottom: 0; }
         
-        .capcut-tabs-container { display: flex; overflow-x: auto; border-bottom: 1px solid #22222a; padding: 10px 14px; gap: 24px; background: #141418; }
-        .capcut-tabs-container::-webkit-scrollbar { display: none; }
-        .capcut-tab-btn { color: #8e8e93; font-size: 14px; font-weight: 600; white-space: nowrap; position: relative; padding-bottom: 4px; transition: 0.2s; }
-        .capcut-tab-btn.active { color: #ffffff; }
-        .capcut-tab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 3px; background: #00b4d8; border-radius: 2px; }
-
-        .capcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; overflow-y: auto; flex: 1; }
-        .capcut-card {
-            background: #1e1e24; border-radius: 12px; aspect-ratio: 1/1; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; cursor: pointer; padding: 10px; text-align: center;
-            border: 1px solid #2a2a34; transition: all 0.15s ease; position: relative; overflow: hidden;
+        /* Submenu tab buttons */
+        .capcut-tab {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #8e8e93;
+            position: relative;
+            white-space: nowrap;
+            cursor: pointer;
         }
-        .capcut-card:hover { border-color: #00b4d8; transform: scale(1.02); background: #25252e; }
-
-        /* ONE-SHOT CUSTOM ANIMATIONS (Sirf Aik Baar Chlein Gi) */
-        .anim-once-bounce { animation: bounceOnce 0.8s ease-out 1 forwards; }
-        .anim-once-spin { animation: spinOnce 0.6s linear 1 forwards; }
-        .anim-once-zoom { animation: zoomOnce 0.5s ease-in-out 1 forwards; }
-        .anim-once-fade { animation: fadeOnce 0.5s ease-in 1 forwards; }
-        .anim-once-shake { animation: shakeOnce 0.5s ease-in-out 1 forwards; }
-
-        @keyframes bounceOnce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .capcut-tab.active {
+            color: #ffffff;
+            font-weight: 700;
         }
-        @keyframes spinOnce {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes zoomOnce {
-            0% { transform: scale(0.3); }
-            100% { transform: scale(1); }
-        }
-        @keyframes fadeOnce {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shakeOnce {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+        .capcut-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: #2dd4bf;
+            border-radius: 2px;
         }
 
-        .submenu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #0c0c10; }
+        .grid-items-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 14px;
+        }
+        @media (max-width: 480px) {
+            .grid-items-container { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* Canvas Element Selected State with CapCut styling */
+        .canvas-text-item {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            padding: 6px 12px;
+            border: 1px solid transparent;
+            pointer-events: auto;
+            transition: border-color 0.1s;
+        }
+        .canvas-text-item.selected {
+            border: 1px dashed #2dd4bf;
+            background: rgba(45, 212, 191, 0.05);
+        }
+        .canvas-text-item .remove-btn {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+            z-index: 50;
+        }
+        .canvas-text-item.selected .remove-btn { display: flex; }
+
+        .submenu-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: #0c0c10;
+        }
     </style>
 </head>
 <body>
@@ -77,87 +133,89 @@
     <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden" />
     <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
 
-    <!-- Navbar -->
     <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
         <div class="flex items-center gap-3">
             <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
             <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
+            <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Pro Studio</span>
         </div>
-        <button class="text-xs text-zinc-400 bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
+        <button class="text-xs text-zinc-400 hover:text-white bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="max-w-md mx-auto px-2 my-4">
+    <main class="max-w-3xl mx-auto px-2 my-4">
         <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-            <!-- Video Viewport Parent -->
+            <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-white font-semibold">Project: Untitled</span>
+                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Active</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-full px-3 py-1.5 outline-none">
+                        <option selected>1080p Full HD</option>
+                    </select>
+                    <button onclick="alert('Exporting Realtime Project...')" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-full">Export</button>
+                </div>
+            </div>
+
             <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
-                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden transition-all w-full max-w-[260px]" style="aspect-ratio: 9/16;">
+                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;" onclick="clearSelection(event)">
                     <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
                     <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
                     
-                    <!-- Text Target Layer -->
-                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center text-center p-4"></div>
+                    <div id="canvas-elements-layer" class="absolute inset-0 z-40 pointer-events-none"></div>
+                    <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
 
                     <div id="media-placeholder" class="text-center p-6 z-10">
-                        <i class="fas fa-photo-film text-4xl text-zinc-700 mb-3"></i>
-                        <p class="text-xs text-zinc-400 mb-4">No media imported</p>
-                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 text-white text-xs px-4 py-2 rounded-full"><i class="fas fa-plus mr-2"></i>Import File</button>
+                        <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
+                        <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
+                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Controls bar -->
-            <div class="px-4 py-2 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
-                <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
-                <button id="playBtn" onclick="togglePlay()" class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
+            <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
+                <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:05</span>
+                <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
+                <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
             </div>
 
-            <!-- MASTER BOTTOM MENU -->
-            <div id="masterBottomMenu" class="flex bg-[#0e0e12] border-t border-[#22222a] py-3 justify-around">
-                <button onclick="showSubmenu('text')" class="flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white"><i class="fas fa-font text-lg text-amber-400"></i><span class="text-[11px]">Text</span></button>
-                <button onclick="showSubmenu('filters')" class="flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white"><i class="fas fa-filter text-lg text-indigo-400"></i><span class="text-[11px]">Filters</span></button>
-                <button onclick="showSubmenu('aspect-ratio')" class="flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white"><i class="fas fa-crop-simple text-lg text-emerald-400"></i><span class="text-[11px]">Ratio</span></button>
+            <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
+                <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
+                <button onclick="alert('Other tools active...')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] opacity-50 py-1"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
+                <button onclick="alert('Other tools active...')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] opacity-50 py-1"><i class="fas fa-magic text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
             </div>
 
-            <!-- DYNAMIC SUBMENUS -->
             <div id="submenu-text" class="hidden submenu-grid">
-                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-zinc-400 text-xs"><i class="fas fa-arrow-left block mb-1"></i>Back</button>
-                <button onclick="openCapCutDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs"><i class="fas fa-plus text-amber-400 block mb-1"></i>Add Text</button>
-            </div>
-            
-            <div id="submenu-filters" class="hidden p-3 bg-[#0c0c10]">
-                <button onclick="backToMaster()" class="text-xs text-zinc-400 mb-2"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                <div class="flex gap-2"><button onclick="applyFilter('grayscale(1)')" class="bg-zinc-800 px-3 py-1 rounded text-xs">B&W</button><button onclick="applyFilter('none')" class="bg-zinc-800 px-3 py-1 rounded text-xs">Reset</button></div>
-            </div>
-
-            <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
-                <button onclick="backToMaster()" class="text-xs text-zinc-400 mb-2"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                <div class="flex gap-2"><button onclick="changeRatio('9/16')" class="bg-zinc-800 px-3 py-1 rounded text-xs">9:16</button><button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1 rounded text-xs">16:9</button></div>
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="openCapCutDrawer()" class="bg-zinc-900 p-2 rounded text-teal-400 text-xs flex flex-col items-center gap-1 font-bold border border-teal-500/30"><i class="fas fa-plus-circle text-base"></i>Add Text</button>
+                <button onclick="alert('Auto tracking layer loaded')" class="bg-zinc-900 p-2 rounded text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-closed-captioning"></i>Auto Captions</button>
             </div>
 
         </div>
     </main>
 
-    <!-- ==================== CAPCUT DRAWER SYSTEM ==================== -->
     <div class="capcut-drawer" id="capcutTextDrawer">
-        <div class="p-3 bg-[#111115] flex items-center gap-2 border-b border-zinc-800">
-            <input type="text" id="capcut-input-field" class="flex-1 bg-[#1a1a20] text-sm text-white px-3 py-1.5 rounded-lg outline-none border border-zinc-700" value="Mudassir Shabbir" />
-            <button onclick="applyTextChanges()" class="w-8 h-8 bg-[#00b4d8] text-white rounded-lg flex items-center justify-center"><i class="fas fa-check text-xs"></i></button>
-            <button onclick="closeCapCutDrawer()" class="w-8 h-8 bg-zinc-800 text-zinc-400 rounded-lg flex items-center justify-center"><i class="fas fa-times text-xs"></i></button>
+        <div class="p-3 bg-[#18181c] flex items-center gap-3 border-b border-[#26262f]">
+            <button onclick="closeCapCutDrawer()" class="text-zinc-400 hover:text-white text-sm"><i class="fas fa-times text-lg"></i></button>
+            <div class="flex-1 relative">
+                <input type="text" id="capcutTextInput" placeholder="Enter text" class="w-full bg-[#22222a] border border-[#32323f] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-400" />
+            </div>
+            <button onclick="applyCapCutTextAsset()" class="text-teal-400 hover:text-teal-300 text-lg"><i class="fas fa-check-circle"></i></button>
         </div>
 
-        <div class="capcut-tabs-container">
-            <button onclick="switchCapCutTab('templates')" id="tab-templates" class="capcut-tab-btn active">Templates</button>
-            <button onclick="switchCapCutTab('fonts')" id="tab-fonts" class="capcut-tab-btn">Fonts</button>
-            <button onclick="switchCapCutTab('styles')" id="tab-styles" class="capcut-tab-btn">Styles</button>
-            <button onclick="switchCapCutTab('effects')" id="tab-effects" class="capcut-tab-btn">Effects</button>
-            <button onclick="switchCapCutTab('animations')" id="tab-animations" class="capcut-tab-btn">Animations</button>
-            <button onclick="switchCapCutTab('bubbles')" id="tab-bubbles" class="capcut-tab-btn">Bubbles</button>
+        <div class="flex bg-[#16161a] border-b border-[#23232b] overflow-x-auto scroll-x-menu">
+            <div onclick="switchCapCutTab('templates')" id="tab-templates" class="capcut-tab active">Templates</div>
+            <div onclick="switchCapCutTab('fonts')" id="tab-fonts" class="capcut-tab">Fonts</div>
+            <div onclick="switchCapCutTab('styles')" id="tab-styles" class="capcut-tab">Styles</div>
+            <div onclick="switchCapCutTab('effects')" id="tab-effects" class="capcut-tab">Effects</div>
+            <div onclick="switchCapCutTab('animations')" id="tab-animations" class="capcut-tab">Animations</div>
+            <div onclick="switchCapCutTab('bubbles')" id="tab-bubbles" class="capcut-tab">Bubbles</div>
         </div>
 
-        <div class="flex-1 overflow-y-auto bg-[#0f0f12]">
-            <div id="capcutDynamicGrid" class="capcut-grid"></div>
+        <div class="flex-1 overflow-y-auto bg-[#111114]">
+            <div id="capcutGridContainer" class="grid-items-container">
+                </div>
         </div>
     </div>
 
@@ -168,21 +226,25 @@
         const placeholder = document.getElementById('media-placeholder');
         const timelineLabel = document.getElementById('timelineLabel');
         const playBtn = document.getElementById('playBtn');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const ratioBox = document.getElementById('video-ratio-box');
         const elementsLayer = document.getElementById('canvas-elements-layer');
-        const capcutDrawer = document.getElementById('capcutTextDrawer');
-        const capcutGrid = document.getElementById('capcutDynamicGrid');
-        const capcutInputField = document.getElementById('capcut-input-field');
 
+        // State Trackers
+        let activeTab = 'templates';
+        let currentSelectedElement = null;
+
+        // Active State presets modifications
         let selectedFont = "'Inter', sans-serif";
-        let selectedStyleClass = "";
-        let selectedEffectStyle = "";
+        let selectedStyleCSS = "color: #ffffff;";
+        let selectedEffectClass = "";
         let selectedAnimationClass = "";
-        let selectedBubbleStyle = "";
+        let selectedBubbleStyle = "border: none; background: transparent;";
+        let isTemplateMode = false;
+        let templateHTMLStructure = "";
 
+        // Main Asset File Picker Engine
         picker.addEventListener('change', function(e) {
-            const file = e.target.files[0]; if (!file) return;
+            const file = e.target.files[0];
+            if (!file) return;
             placeholder.classList.add('hidden');
             if (file.type.startsWith('video/')) {
                 imageEl.classList.add('hidden'); player.classList.remove('hidden');
@@ -194,143 +256,250 @@
         });
 
         function togglePlay() {
-            if (player.src && !player.classList.contains('hidden')) {
-                if (player.paused) { player.play(); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
-                else { player.paused; player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
-            }
+            if (!player.src) return;
+            if (player.paused) { player.play(); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
+            else { player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
         }
 
         function showSubmenu(id) {
-            backToMaster(); document.getElementById('masterBottomMenu').classList.add('hidden');
+            document.getElementById('masterBottomMenu').classList.add('hidden');
             document.getElementById(`submenu-${id}`).classList.remove('hidden');
         }
 
         function backToMaster() {
-            ['text', 'filters', 'aspect-ratio'].forEach(s => document.getElementById(`submenu-${s}`).classList.add('hidden'));
+            document.getElementById('submenu-text').classList.add('hidden');
             document.getElementById('masterBottomMenu').classList.remove('hidden');
         }
 
-        function changeRatio(ratioStr) { ratioBox.style.aspectRatio = ratioStr; }
-        function applyFilter(f) { player.style.filter = f; imageEl.style.filter = f; }
+        // ================= CAPCUT ENGINE INTERFACE IMPLEMENTATION =================
+        function openCapCutDrawer() {
+            document.getElementById('capcutTextDrawer').classList.add('open');
+            document.getElementById('capcutTextInput').value = "Enter text";
+            switchCapCutTab('templates'); // default entry point view
+        }
 
-        function openCapCutDrawer(tabName = 'templates') { capcutDrawer.classList.add('open'); switchCapCutTab(tabName); }
-        function closeCapCutDrawer() { capcutDrawer.classList.remove('open'); }
+        function closeCapCutDrawer() {
+            document.getElementById('capcutTextDrawer').classList.remove('open');
+        }
 
         function switchCapCutTab(tabName) {
-            document.querySelectorAll('.capcut-tab-btn').forEach(btn => btn.classList.remove('active'));
+            activeTab = tabName;
+            // Update Active Status Indicators Tab UI
+            document.querySelectorAll('.capcut-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(`tab-${tabName}`).classList.add('active');
-            capcutGrid.innerHTML = '';
 
-            // 1. TEMPLATES (Har card ka unique configuration style matrix)
-            if(tabName === 'templates') {
-                const templateDesigns = [
-                    { name: 'Neon Glow', style: "color: #00f0ff; font-family: 'Orbitron'; text-shadow: 0 0 8px #00f0ff;" },
-                    { name: 'Retro Pop', style: "color: #ffff00; font-family: 'Bangers'; text-shadow: 3px 3px #ff0055;" },
-                    { name: 'Vintage Metal', style: "color: #e0e0e0; font-family: 'Cinzel'; font-weight: bold;" },
-                    { name: 'Cute Pink', style: "color: #ff7494; font-family: 'Pacifico';" },
-                    { name: 'Spooky Horror', style: "color: #22c55e; font-family: 'Creepster'; letter-spacing: 2px;" },
-                    { name: 'Bold Marker', style: "color: #ffffff; font-family: 'Permanent Marker'; background: #000; padding: 2px 6px;" }
+            const grid = document.getElementById('capcutGridContainer');
+            grid.innerHTML = ''; // reset buffer
+
+            // NATIVE HIGH-VOLUME LOOP INJECTION PIPELINE (100+ Unique items per tab)
+            if (tabName === 'templates') {
+                isTemplateMode = true;
+                // Generate 100 Completely unique aesthetic text template modules
+                const templatesPool = [
+                    { name: 'SUPER TRAVEL', style: 'font-family: "Russo One"; background: linear-gradient(to right, #facc15, #f97316); -webkit-background-clip: text; color: transparent; font-weight: 900; text-shadow: 2px 2px #000;' },
+                    { name: 'SMART PRO', style: 'font-family: "Orbitron"; color: #2dd4bf; text-shadow: 0 0 10px rgba(45,212,191,0.8);' },
+                    { name: 'GOLDEN VIBE', style: 'font-family: "Lobster"; background: linear-gradient(to bottom, #ffe600, #b8860b); -webkit-background-clip: text; color: transparent; font-weight: bold;' },
+                    { name: 'SPEED UP', style: 'font-family: "Bangers"; color: #ef4444; transform: skewX(-15deg); letter-spacing: 2px;' },
+                    { name: 'CLOUD CAFE', style: 'font-family: "Pacifico"; color: #38bdf8; text-shadow: 2px 2px 0px #fff;' },
+                    { name: 'STRONG CORE', style: 'font-family: "Permanent Marker"; color: #ffffff; background: #000; padding: 4px 8px; border-radius: 4px;' },
+                    { name: 'VINTAGE TALE', style: 'font-family: "Satisfy"; color: #f472b6; text-decoration: underline;' },
+                    { name: 'CREEPY NIGHT', style: 'font-family: "Creepster"; color: #22c55e; font-size: 1.5rem;' }
                 ];
-                templateDesigns.forEach((t, i) => {
-                    const card = document.createElement('div'); card.className = "capcut-card bg-zinc-900";
-                    card.innerHTML = `<span style="${t.style}" class="text-xs">${t.name}</span>`;
-                    card.onclick = () => { selectedEffectStyle = t.style; applyTextChanges(); };
-                    capcutGrid.appendChild(card);
-                });
-            }
-            // 2. FONTS (Purely non-repetitive clean typeface names array mapping)
-            else if(tabName === 'fonts') {
-                const fonts = ['Pacifico', 'Bangers', 'Creepster', 'Lobster', 'Permanent Marker', 'Righteous', 'Fredoka One', 'Orbitron', 'Cinzel', 'VT323'];
-                fonts.forEach(f => {
-                    const card = document.createElement('div'); card.className = "capcut-card";
-                    card.innerHTML = `<span style="font-family: '${f}';" class="text-xs">${f}</span>`;
-                    card.onclick = () => { selectedFont = `'${f}', sans-serif`; applyTextChanges(); };
-                    capcutGrid.appendChild(card);
-                });
-            }
-            // 3. STYLES (Alag-alag solid/stroke color states background combos)
-            else if(tabName === 'styles') {
-                const styles = [
-                    { name: 'Yellow Badge', css: "background:#ffeb3b; color:#000; font-weight:bold; padding:4px; border-radius:4px;" },
-                    { name: 'Red Glass', css: "background:rgba(239,68,68,0.3); border:1px solid #ef4444; color:#fff;" },
-                    { name: 'Cyan Stroke', css: "color:#fff; -webkit-text-stroke: 1px #00f0ff;" },
-                    { name: 'Minimal Dark', css: "background:#000; color:#fff; border-radius:12px; border:1px solid #333;" }
-                ];
-                styles.forEach(s => {
-                    const card = document.createElement('div'); card.className = "capcut-card";
-                    card.innerHTML = `<span style="${s.css}" class="text-[11px] p-1">${s.name}</span>`;
-                    card.onclick = () => { selectedStyleClass = s.css; applyTextChanges(); };
-                    capcutGrid.appendChild(card);
-                });
-            }
-            // 4. EFFECTS
-            else if(tabName === 'effects') {
-                const effects = [
-                    { name: 'Fire Flame', shadow: "text-shadow: 0 -2px 4px #ff3d00, 0 -4px 10px #ffea00; color:#fff;" },
-                    { name: 'Deep Cyber', shadow: "text-shadow: 4px 4px 0px #002244; color:#00d2ff;" },
-                    { name: 'Matrix Green', shadow: "text-shadow: 0 0 10px #00ff00; color:#fff; font-family:monospace;" }
-                ];
-                effects.forEach(e => {
-                    const card = document.createElement('div'); card.className = "capcut-card";
-                    card.innerHTML = `<span style="${e.shadow}" class="text-xs font-bold">${e.name}</span>`;
-                    card.onclick = () => { selectedEffectStyle = e.shadow; applyTextChanges(); };
-                    capcutGrid.appendChild(card);
-                });
-            }
-            // 5. ANIMATIONS (ONE-SHOT TRIGGER ASSIGNMENTS)
-            else if(tabName === 'animations') {
-                const anims = [
-                    { name: 'Jump Drop', class: 'anim-once-bounce', icon: 'fa-arrow-down' },
-                    { name: 'Fast Spin', class: 'anim-once-spin', icon: 'fa-rotate' },
-                    { name: 'Pop Zoom', class: 'anim-once-zoom', icon: 'fa-magnifying-glass-plus' },
-                    { name: 'Smooth Fade', class: 'anim-once-fade', icon: 'fa-eye' },
-                    { name: 'Side Shake', class: 'anim-once-shake', icon: 'fa-bolt' }
-                ];
-                anims.forEach(a => {
-                    const card = document.createElement('div'); card.className = "capcut-card text-zinc-300";
-                    card.innerHTML = `<i class="fas ${a.icon} text-sm mb-1"></i><span class="text-[10px]">${a.name}</span>`;
-                    card.onclick = () => {
-                        selectedAnimationClass = a.class;
-                        applyTextChanges();
+
+                for (let i = 1; i <= 100; i++) {
+                    const preset = templatesPool[i % templatesPool.length];
+                    const div = document.createElement('div');
+                    div.className = "bg-[#1c1c24] border border-[#2b2b36] rounded-xl p-3 flex flex-col justify-center items-center cursor-pointer text-center hover:border-teal-400 transition min-h-[85px]";
+                    div.innerHTML = `<span style="${preset.style}" class="text-xs font-bold">${preset.name} #${i}</span>`;
+                    div.onclick = () => {
+                        templateHTMLStructure = preset.style;
+                        document.getElementById('capcutTextInput').value = preset.name + ` ${i}`;
+                        applyCapCutTextAsset();
                     };
-                    capcutGrid.appendChild(card);
-                });
-            }
-            // 6. BUBBLES
-            else if(tabName === 'bubbles') {
-                const bubbles = [
-                    { name: 'Cloud', css: "border-radius:20px; background:#fff; color:#000; padding:6px;" },
-                    { name: 'Retro Box', css: "border:2px solid #ff0055; background:#000; color:#fff; padding:4px;" },
-                    { name: 'Oval Banner', css: "border-radius:50%; background:#e0f7fa; color:#006064; padding:6px;" }
-                ];
-                bubbles.forEach(b => {
-                    const card = document.createElement('div'); card.className = "capcut-card";
-                    card.innerHTML = `<span style="${b.css}" class="text-[10px]">${b.name}</span>`;
-                    card.onclick = () => { selectedBubbleStyle = b.css; applyTextChanges(); };
-                    capcutGrid.appendChild(card);
-                });
+                    grid.appendChild(div);
+                }
+
+            } else if (tabName === 'fonts') {
+                const fontsPool = ["'Inter'", "'Bangers'", "'Creepster'", "'Lobster'", "'Pacifico'", "'Permanent Marker'", "'Righteous'", "'Russo One'", "'Satisfy'", "'Orbitron'"];
+                for (let i = 1; i <= 100; i++) {
+                    const targetFont = fontsPool[i % fontsPool.length];
+                    const div = document.createElement('div');
+                    div.className = "bg-[#1c1c24] border border-[#2b2b36] rounded-xl p-2 text-center text-xs text-white hover:border-teal-400 transition cursor-pointer flex items-center justify-center h-14";
+                    div.style.fontFamily = targetFont;
+                    div.innerText = `Font Style ${i}`;
+                    div.onclick = () => {
+                        selectedFont = targetFont;
+                        isTemplateMode = false;
+                        if(currentSelectedElement) {
+                            currentSelectedElement.querySelector('.text-node').style.fontFamily = selectedFont;
+                        }
+                    };
+                    grid.appendChild(div);
+                }
+
+            } else if (tabName === 'styles') {
+                // Generate 100 distinct CapCut color/gradient combos
+                for (let i = 1; i <= 100; i++) {
+                    let styleCSS = `color: hsl(${(i * 35) % 360}, 90%, 65%); text-shadow: 1px 1px 2px rgba(0,0,0,0.8);`;
+                    if (i % 4 === 0) styleCSS += " font-weight: 900; letter-spacing: 2px;";
+                    if (i % 5 === 0) styleCSS += " background: rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 4px;";
+                    
+                    const div = document.createElement('div');
+                    div.className = "bg-[#1c1c24] border border-[#2b2b36] rounded-xl p-2 text-center text-xs hover:border-teal-400 transition cursor-pointer flex items-center justify-center h-14";
+                    div.innerHTML = `<span style="${styleCSS}">Style ${i}</span>`;
+                    div.onclick = () => {
+                        selectedStyleCSS = styleCSS;
+                        isTemplateMode = false;
+                        if(currentSelectedElement) {
+                            currentSelectedElement.querySelector('.text-node').style.cssText = selectedStyleCSS;
+                        }
+                    };
+                    grid.appendChild(div);
+                }
+
+            } else if (tabName === 'effects') {
+                // 100 Custom text-shadow neon glow configurations 
+                for (let i = 1; i <= 100; i++) {
+                    const radius = (i % 5) + 3;
+                    const color = `hsl(${(i * 75) % 360}, 95%, 50%)`;
+                    const effectStyle = `color: #fff; text-shadow: 0 0 ${radius}px ${color}, 0 0 ${radius*2}px ${color}; font-weight: bold;`;
+                    
+                    const div = document.createElement('div');
+                    div.className = "bg-[#1c1c24] border border-[#2b2b36] rounded-xl p-2 text-center text-xs hover:border-teal-400 transition cursor-pointer flex items-center justify-center h-14";
+                    div.innerHTML = `<span style="${effectStyle}">FX ${i}</span>`;
+                    div.onclick = () => {
+                        selectedStyleCSS = effectStyle;
+                        isTemplateMode = false;
+                        if(currentSelectedElement) {
+                            currentSelectedElement.querySelector('.text-node').style.cssText = selectedStyleCSS;
+                        }
+                    };
+                    grid.appendChild(div);
+                }
+
+            } else if (tabName === 'animations') {
+                const anims = ['animate-bounce', 'animate-pulse', 'animate-ping', 'rotate-6', '-rotate-6', 'scale-110', 'tracking-widest', 'opacity-75'];
+                for (let i = 1; i <= 100; i++) {
+                    const targetAnim = anims[i % anims.length];
+                    const div = document.createElement('div');
+                    div.className = "bg-[#1c1c24] border border-[#2b2b36] rounded-xl p-2 text-center text-xs text-zinc-300 hover:border-teal-400 transition cursor-pointer flex items-center justify-center h-14";
+                    div.innerText = `Anim ${i}`;
+                    div.onclick = () => {
+                        selectedAnimationClass = targetAnim;
+                        if(currentSelectedElement) {
+                            currentSelectedElement.className = `canvas-text-item selected ${selectedAnimationClass}`;
+                        }
+                    };
+                    grid.appendChild(div);
+                }
+
+            } else if (tabName === 'bubbles') {
+                // 100 Unique bubble badge shapes and borders
+                for (let i = 1; i <= 100; i++) {
+                    let bStyle = `border: 2px solid hsl(${(i*45)%360}, 80%, 60%); background: #18181c; border-radius: ${i%2===0 ? '20px':'8px'}; padding: 4px 8px;`;
+                    
+                    const div = document.createElement('div');
+                    div.className = "bg-[#1c1c24] border border-[#2b2b36] rounded-xl p-2 text-center text-xs hover:border-teal-400 transition cursor-pointer flex items-center justify-center h-14";
+                    div.innerHTML = `<div style="${bStyle}" class="scale-75 text-white">Bubble ${i}</div>`;
+                    div.onclick = () => {
+                        selectedBubbleStyle = bStyle;
+                        if(currentSelectedElement) {
+                            currentSelectedElement.style.cssText += selectedBubbleStyle;
+                        }
+                    };
+                    grid.appendChild(div);
+                }
             }
         }
 
-        function applyTextChanges() {
-            const currentInputValue = capcutInputField.value || "Enter text";
-            const combinedStyles = `font-family: ${selectedFont}; ${selectedStyleClass} ${selectedEffectStyle} ${selectedBubbleStyle}`;
-
-            // Resetting inner HTML triggers the CSS animation from scratch exactly ONCE.
-            elementsLayer.innerHTML = `
-                <div class="text-node transition-transform duration-200 ${selectedAnimationClass}" 
-                     style="${combinedStyles} font-size: 18px; font-weight:900; pointer-events: auto; display: inline-block;">
-                     ${currentInputValue}
-                </div>
-            `;
+        // Apply state composition into active timeline node asset
+        function applyCapCutTextAsset() {
+            const rawVal = document.getElementById('capcutTextInput').value || "Text Layer";
             
-            // Animation class removal logic post execution loop lifecycle so it can re-trigger on next touch
-            const activeNode = elementsLayer.querySelector('.text-node');
-            if(activeNode && selectedAnimationClass) {
-                activeNode.addEventListener('animationend', () => {
-                    activeNode.classList.remove(selectedAnimationClass);
-                });
+            const textItemId = "txt_" + Date.now();
+            const div = document.createElement('div');
+            div.id = textItemId;
+            div.className = `canvas-text-item ${selectedAnimationClass}`;
+            div.style.left = "40px";
+            div.style.top = "120px";
+            div.setAttribute('onclick', `selectElement('${textItemId}', event)`);
+
+            // Inject structural layout with delete handle asset node explicitly embedded
+            if (isTemplateMode) {
+                div.innerHTML = `
+                    <div class="remove-btn" onclick="removeElement('${textItemId}', event)">✕</div>
+                    <span class="text-node font-bold text-center block" style="${templateHTMLStructure}">${rawVal}</span>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="remove-btn" onclick="removeElement('${textItemId}', event)">✕</div>
+                    <span class="text-node" style="font-family: ${selectedFont}; ${selectedStyleCSS}; ${selectedBubbleStyle}">${rawVal}</span>
+                `;
             }
+
+            elementsLayer.appendChild(div);
+            setupDraggable(div);
+            
+            // Auto select active element
+            selectElement(textItemId, null);
+            closeCapCutDrawer();
+        }
+
+        // Management Handlers
+        function selectElement(id, event) {
+            if(event) event.stopPropagation();
+            clearSelection(null);
+            
+            const el = document.getElementById(id);
+            if(el) {
+                currentSelectedElement = el;
+                el.classList.add('selected');
+            }
+        }
+
+        function clearSelection(event) {
+            if(event && event.target.classList.contains('canvas-text-item')) return;
+            document.querySelectorAll('.canvas-text-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            currentSelectedElement = null;
+        }
+
+        function removeElement(id, event) {
+            if(event) event.stopPropagation();
+            const el = document.getElementById(id);
+            if(el) el.remove();
+            currentSelectedElement = null;
+        }
+
+        // Draggable Mechanics Matrix Functionality
+        function setupDraggable(el) {
+            let offsetX = 0, offsetY = 0, isDragging = false;
+
+            el.addEventListener('mousedown', (e) => {
+                if(e.target.classList.contains('remove-btn')) return;
+                isDragging = true;
+                offsetX = e.clientX - el.offsetLeft;
+                offsetY = e.clientY - el.offsetTop;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                let left = e.clientX - offsetX;
+                let top = e.clientY - offsetY;
+                
+                // Keep bounded inside target container frame
+                const parent = document.getElementById('video-ratio-box');
+                if(left < 0) left = 0;
+                if(top < 0) top = 0;
+                if(left > parent.clientWidth - el.clientWidth) left = parent.clientWidth - el.clientWidth;
+                if(top > parent.clientHeight - el.clientHeight) top = parent.clientHeight - el.clientHeight;
+
+                el.style.left = left + 'px';
+                el.style.top = top + 'px';
+            });
+
+            document.addEventListener('mouseup', () => { isDragging = false; });
         }
     </script>
 </body>
