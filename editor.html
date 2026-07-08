@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dravoo · full editor</title>
+  <!-- Tailwind + Font Awesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
@@ -15,7 +16,7 @@
     ::-webkit-scrollbar-track { background:#18181b; }
     ::-webkit-scrollbar-thumb { background:#3b82f6; border-radius:12px; }
 
-    /* toolbar */
+    /* main toolbar – horizontal scroll */
     .toolbar-scroll {
       display: flex;
       gap: 4px;
@@ -49,7 +50,7 @@
     .tool-btn:hover { color:#fff; background:#1e1e28; border-color:#2f2f3a; }
     .tool-btn.active { color:#fff; background:#1f2937; border-color:#3b82f6; }
 
-    /* floating panels */
+    /* dropdown panel – floating */
     .float-panel {
       position: absolute;
       top: 110%;
@@ -58,15 +59,15 @@
       border: 1px solid #2e2e38;
       border-radius: 24px;
       padding: 16px 18px;
-      min-width: 280px;
-      max-width: 520px;
+      min-width: 260px;
+      max-width: 480px;
       z-index: 300;
       backdrop-filter: blur(12px);
       box-shadow: 0 20px 60px rgba(0,0,0,0.9);
       display: none;
       flex-wrap: wrap;
       gap: 6px;
-      max-height: 400px;
+      max-height: 380px;
       overflow-y: auto;
     }
     .float-panel.open { display: flex; }
@@ -87,14 +88,14 @@
     .float-panel .opt:hover { background:#33333e; color:#fff; }
     .float-panel .opt i { font-size:14px; width:18px; }
 
-    /* canvas */
+    /* canvas & overlay */
     .canvas-wrapper { position:relative; background:#000; border-radius:24px; overflow:hidden; }
     .canvas-text-overlay { position:absolute; color:#fff; font-weight:700; font-size:28px; text-shadow:0 2px 12px rgba(0,0,0,0.9); cursor:move; user-select:none; padding:4px 12px; border:1px dashed transparent; z-index:20; white-space:nowrap; background:rgba(0,0,0,0.2); border-radius:12px; }
     .canvas-text-overlay.active-node { border-color:#3b82f6; background:rgba(59,130,246,0.15); }
     .canvas-sticker-overlay { position:absolute; font-size:48px; cursor:move; user-select:none; z-index:21; padding:6px; border:1px dashed transparent; background:rgba(0,0,0,0.1); border-radius:16px; }
     .canvas-sticker-overlay.active-node { border-color:#ec4899; background:rgba(236,72,153,0.15); }
 
-    /* drawer */
+    /* drawer (for text/stickers) */
     .editor-drawer {
       position:fixed; bottom:-100%; left:0; width:100%; max-width:480px; margin:0 auto; right:0;
       height:52vh; background:#111115; border-top-left-radius:28px; border-top-right-radius:28px;
@@ -145,10 +146,10 @@
         <p class="text-sm text-zinc-500 mb-4">Upload video or image</p>
         <button onclick="document.getElementById('mediaPicker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-6 py-2.5 rounded-full"><i class="fas fa-plus mr-2"></i>Add Media</button>
       </div>
-      <!-- overlays injected here -->
+      <!-- overlays will be injected here -->
     </div>
 
-    <!-- transport -->
+    <!-- transport + timeline (minimal) -->
     <div class="px-4 py-2 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
       <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:05</span>
       <button id="playBtn" onclick="togglePlay()" class="bg-zinc-800 hover:bg-zinc-700 w-10 h-10 rounded-full flex items-center justify-center text-white border border-zinc-700"><i class="fas fa-play text-sm"></i></button>
@@ -157,7 +158,7 @@
       </div>
     </div>
 
-    <!-- ========== TOOLBAR with full feature lists ========== -->
+    <!-- ========== TOOLBAR (all 15+ options) ========== -->
     <div class="bg-[#0a0a0e] border-b border-[#1a1a22] relative" id="toolbarWrapper">
       <div class="toolbar-scroll">
         <!-- 1. Edit -->
@@ -172,25 +173,25 @@
         <button class="tool-btn" data-panel="overlayPanel"><i class="fas fa-layer-group"></i>Overlay</button>
         <!-- 6. Caption -->
         <button class="tool-btn" data-panel="captionPanel"><i class="fas fa-closed-captioning"></i>Caption</button>
-        <!-- 7. Filters -->
+        <!-- 7. Filters (renamed from 8) -->
         <button class="tool-btn" data-panel="filtersPanel"><i class="fas fa-filter"></i>Filters</button>
         <!-- 8. Adjust -->
         <button class="tool-btn" data-panel="adjustPanel"><i class="fas fa-adjust"></i>Adjust</button>
-        <!-- 9. Stickers -->
+        <!-- 9. Stickers (built-in) -->
         <button class="tool-btn" data-panel="stickersPanel"><i class="fas fa-face-smile"></i>Stickers</button>
-        <!-- 10. Generate -->
+        <!-- 10. Generate media -->
         <button class="tool-btn" data-panel="generatePanel"><i class="fas fa-wand-magic-sparkles"></i>Generate</button>
         <!-- 11. AI Avatar -->
         <button class="tool-btn" data-panel="avatarPanel"><i class="fas fa-robot"></i>AI Avatar</button>
-        <!-- 12. Aspect -->
+        <!-- 12. Aspect ratio -->
         <button class="tool-btn" data-panel="aspectPanel"><i class="fas fa-expand"></i>Aspect</button>
         <!-- 13. Background -->
         <button class="tool-btn" data-panel="bgPanel"><i class="fas fa-image"></i>Background</button>
-        <!-- Draw -->
+        <!-- extra: Draw (integrated) -->
         <button class="tool-btn" onclick="toggleDraw()"><i class="fas fa-pen-fancy"></i>Draw</button>
       </div>
 
-      <!-- floating panels (each with full feature list) -->
+      <!-- floating panels (each tool) -->
       <div id="editPanel" class="float-panel"></div>
       <div id="audioPanel" class="float-panel"></div>
       <div id="textPanel" class="float-panel"></div>
@@ -208,7 +209,7 @@
   </div>
 </main>
 
-<!-- ====== DRAWER ====== -->
+<!-- ====== DRAWER (text/stickers) ====== -->
 <div class="editor-drawer" id="editorDrawer">
   <div class="drawer-header">
     <button class="text-zinc-400 hover:text-white" onclick="closeDrawer()">✕</button>
@@ -226,7 +227,7 @@
 
 <script>
   // --------------------------------------------------------------
-  // MEDIA / PLAYER
+  // 1. MEDIA / PLAYER
   // --------------------------------------------------------------
   const picker = document.getElementById('mediaPicker');
   const player = document.getElementById('studioPlayer');
@@ -264,31 +265,17 @@
   function triggerExport() { alert('Export project (demo)'); }
 
   // --------------------------------------------------------------
-  // FULL FEATURE LISTS (exactly as requested)
+  // 2. TOOLBAR FLOATING PANELS (all options)
   // --------------------------------------------------------------
   const panelData = {
-    editPanel: [
-      'Split','Volume','Animation','Effects','Delete','Speed','Beats','AI Extends','Crop','Duplicate','Replace',
-      'Overlay','Adjust','Filter','Retouch','Video Quality','Remove BG','AI Remove','AI Expand','AI Remix',
-      'Eye Contact','Relight','Opacity','Motion Blur','Lip Sync','Transform','Auto Reframe','Stabilize',
-      'Extract Audio','Isolate Voice','Audio Effects','Enhance Voice','Video Translator','Freeze','Reverse','Mask','Unlink'
-    ],
+    editPanel: ['Split','Volume','Animation','Effects','Delete','Speed','Beats','AI Extends','Crop','Duplicate','Replace','Overlay','Adjust','Filter','Retouch','Video Quality','Remove BG','AI Remove','AI Expand','AI Remix','Eye Contact','Relight','Opacity','Motion Blur','Lip Sync','Transform','Auto Reframe','Stabilize','Extract Audio','Isolate Voice','Audio Effects','Enhance Voice','Video Translator','Freeze','Reverse','Mask','Unlink'],
     audioPanel: ['Extract','Sounds','Sound Effects','Record','Text to Audio','Brand Music','Copyright'],
     textPanel: ['Add Text','Auto Caption','Stickers','Draw','Templates','Text to Audio','Auto Lyrics'],
     effectsPanel: ['Body Effects','Video Effects','Photo Effects','AI Effects'],
     overlayPanel: ['Gallery (open)','Add Image','Add Video','Overlay Blend'],
     captionPanel: ['Auto Caption','Manual Caption','Style','Position'],
-    filtersPanel: [
-      '4K','HD','Vivid','Cinematic','Retro','Monochrome','Warm','Cool','Dramatic','Soft','HDR','Film','Noir',
-      'Pastel','Neon','Vintage','Sepia','Fade','Boost','Clarity','Sharp','Mellow','Contrast+','Bright','Natural',
-      'Dreamy','Glow','Matte','Rustic','Sunset','Ocean','Forest','Urban','Gold','Silver','Cream','Lemon','Cherry',
-      'Sky','Lavender','Mint','Coral','Amber','Graphite','Pearl','Denim','Olive','Rose','Choco','Ivory'
-    ],
-    adjustPanel: [
-      'Auto Adjust','Colour Match','Colour Correction','Brightness','Contrast','Saturation','Brilliance',
-      'Sharpen','Clarity','HSL','Graph','Colour Wheel','Highlight','Shadows','White','Black','Temp','Hue',
-      'Fade','Vignette','Grain'
-    ],
+    filtersPanel: ['4K','HD','Vivid','Cinematic','Retro','Monochrome','Warm','Cool','Dramatic','Soft','HDR','Film','Noir','Pastel','Neon','Vintage','Sepia','Fade','Boost','Clarity','Sharp','Mellow','Contrast+','Bright','Natural','Dreamy','Glow','Matte','Rustic','Sunset','Ocean','Forest','Urban','Gold','Silver','Cream','Lemon','Cherry','Sky','Lavender','Mint','Coral','Amber','Graphite','Pearl','Denim','Olive','Rose','Choco','Ivory'],  // 50 approx
+    adjustPanel: ['Auto Adjust','Colour Match','Colour Correction','Brightness','Contrast','Saturation','Brilliance','Sharpen','Clarity','HSL','Graph','Colour Wheel','Highlight','Shadows','White','Black','Temp','Hue','Fade','Vignette','Grain'],
     stickersPanel: ['🔥','✨','🎯','❤️','👑','🚀','💥','😂','💯','🎉','🌟','👍','🙌','💀','🤖','🎃','😈','👀','🎮','🎨','🎬','⚡','💡','🔮','💎','💰','🌍','🍕','🍔','🎵','🎤','🎸','🐾','🦄','🐼','🦊','🐰','🐻','🐺','💖','💙','💚','💛','🌸','🌺','🌻','🌹'],
     generatePanel: ['AI Image','AI Video','Dravoo Studio','Pixabay API'],
     avatarPanel: ['Avatar 1','Avatar 2','Avatar 3','Avatar 4','Avatar 5','Avatar 6','Avatar 7','Avatar 8'],
@@ -296,45 +283,20 @@
     bgPanel: ['Color','Image','Blur','Brand Background']
   };
 
-  // build panels with icons and click handlers
+  // build panels
   Object.keys(panelData).forEach(id => {
     const panel = document.getElementById(id);
     if (!panel) return;
     panelData[id].forEach(label => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      // add specific icon for some
-      let icon = 'fa-circle';
-      if (label.includes('Split') || label.includes('Volume')) icon = 'fa-scissors';
-      else if (label.includes('Audio')) icon = 'fa-music';
-      else if (label.includes('Filter') || label.includes('4K')) icon = 'fa-filter';
-      else if (label.includes('Brightness') || label.includes('Contrast')) icon = 'fa-sun';
-      else if (label.includes('AI')) icon = 'fa-brain';
-      else if (label.includes('Avatar')) icon = 'fa-robot';
-      else if (label.includes('Gallery')) icon = 'fa-images';
-      btn.innerHTML = `<i class="fas ${icon}" style="font-size:12px;color:#3b82f6;"></i> ${label}`;
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        // if sticker, add to canvas
-        if (id === 'stickersPanel') {
-          addSticker(label);
-          closeAllPanels();
-          return;
-        }
-        // if overlay -> open gallery
-        if (id === 'overlayPanel' && label.includes('Gallery')) {
-          document.getElementById('mediaPicker').click();
-          closeAllPanels();
-          return;
-        }
-        alert(`🔧 ${label} (demo action)`);
-        closeAllPanels();
-      };
+      btn.innerHTML = `<i class="fas fa-circle" style="font-size:8px;color:#3b82f6;"></i> ${label}`;
+      btn.onclick = () => { alert(`Action: ${label}`); closeAllPanels(); };
       panel.appendChild(btn);
     });
   });
 
-  // toggle panels
+  // toggle panels on tool click
   document.querySelectorAll('.tool-btn[data-panel]').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -346,6 +308,7 @@
       if (!isOpen) {
         panel.classList.add('open');
         this.classList.add('active');
+        // position
         const rect = this.getBoundingClientRect();
         const wrapper = document.getElementById('toolbarWrapper');
         const wrapperRect = wrapper.getBoundingClientRect();
@@ -364,7 +327,7 @@
   document.addEventListener('click', closeAllPanels);
 
   // --------------------------------------------------------------
-  // TEXT / STICKERS overlays + DRAWER
+  // 3. TEXT / STICKERS overlays + DRAWER
   // --------------------------------------------------------------
   let activeNode = null;
   const drawerEl = document.getElementById('editorDrawer');
@@ -385,7 +348,7 @@
     let items = [];
     if (tab === 'fonts') items = ['Rubik','Bangers','Oswald','Anton','Permanent Marker','Lobster','Pacifico','Dancing Script','Great Vibes','Satisfy','Kaushan Script','Mr Dafoe','Architects Daughter','Indie Flower','Patrick Hand','Rock Salt','Alex Brush','Allura','Caveat Brush','Sacramento','Tangerine','WindSong'];
     else if (tab === 'templates') items = ['ABC Smart','Neon Glow','Satisfy','Great Vibes','Alex Brush','Allura','Pacifico','Dancing Script','Zeyada','Parisienne','Tangerine','Architects','Indie Flower','Patrick Hand','Kaushan Script','Mr Dafoe','Rock Salt','Caveat Brush','Sacramento','Marck Script','Rochester','WindSong','Grand Hotel','Meddon','Coming Soon'];
-    else if (tab === 'styles') {
+    else if (tab === 'styles') { // color picker
       const colors = ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1','#000000'];
       colors.forEach(c => {
         const dot = document.createElement('div');
@@ -479,17 +442,22 @@
   }
 
   // --------------------------------------------------------------
-  // DRAW (toggle)
+  // 4. DRAW (simple toggle)
   // --------------------------------------------------------------
   let drawActive = false;
   function toggleDraw() {
     drawActive = !drawActive;
-    alert(drawActive ? '🖌️ Draw mode ON (demo)' : 'Draw mode OFF');
+    alert(drawActive ? 'Draw mode ON (demo)' : 'Draw mode OFF');
   }
 
   // --------------------------------------------------------------
-  // init
+  // 5. extra: overlay panel -> gallery picker
   // --------------------------------------------------------------
+  document.querySelector('#overlayPanel .opt')?.addEventListener('click', () => {
+    document.getElementById('mediaPicker').click();
+  });
+
+  // init drawer fonts
   fillDrawer('fonts');
 </script>
 </body>
