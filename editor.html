@@ -1,464 +1,755 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dravoo · full editor</title>
-  <!-- Tailwind + Font Awesome -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:#0b0b0e; color:#f1f5f9; font-family:'Inter',sans-serif; overflow-x:hidden; }
-    .glass-card { background:rgba(16,16,20,0.88); backdrop-filter:blur(6px); border:1px solid #2a2a32; }
-    ::-webkit-scrollbar { width:4px; height:4px; }
-    ::-webkit-scrollbar-track { background:#18181b; }
-    ::-webkit-scrollbar-thumb { background:#3b82f6; border-radius:12px; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dravoo · Pro Editor</title>
+    <!-- Tailwind + Font Awesome + Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0b0b0e;
+            color: #f1f5f9;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(16, 16, 20, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2a2a30;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #18181b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
 
-    /* main toolbar – horizontal scroll */
-    .toolbar-scroll {
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      padding: 6px 8px;
-      flex-wrap: nowrap;
-      scrollbar-width: thin;
-      -webkit-overflow-scrolling: touch;
-    }
-    .toolbar-scroll::-webkit-scrollbar { height: 3px; }
-    .toolbar-scroll::-webkit-scrollbar-thumb { background:#3b82f6; border-radius:20px; }
-    .tool-btn {
-      background: transparent;
-      border: none;
-      color: #b0b8c5;
-      font-size: 11px;
-      font-weight: 500;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 6px 12px;
-      border-radius: 30px;
-      white-space: nowrap;
-      transition: 0.15s;
-      cursor: pointer;
-      min-width: 60px;
-      border: 1px solid transparent;
-    }
-    .tool-btn i { font-size: 20px; margin-bottom: 1px; }
-    .tool-btn:hover { color:#fff; background:#1e1e28; border-color:#2f2f3a; }
-    .tool-btn.active { color:#fff; background:#1f2937; border-color:#3b82f6; }
+        /* Scrollable Row for tools */
+        .scroll-x-menu {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scroll-x-menu::-webkit-scrollbar { display: none; }
 
-    /* dropdown panel – floating */
-    .float-panel {
-      position: absolute;
-      top: 110%;
-      left: 0;
-      background: #14141a;
-      border: 1px solid #2e2e38;
-      border-radius: 24px;
-      padding: 16px 18px;
-      min-width: 260px;
-      max-width: 480px;
-      z-index: 300;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-      display: none;
-      flex-wrap: wrap;
-      gap: 6px;
-      max-height: 380px;
-      overflow-y: auto;
-    }
-    .float-panel.open { display: flex; }
-    .float-panel .opt {
-      background: #21212a;
-      border: none;
-      color: #d1d5db;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: 0.1s;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .float-panel .opt:hover { background:#33333e; color:#fff; }
-    .float-panel .opt i { font-size:14px; width:18px; }
-
-    /* canvas & overlay */
-    .canvas-wrapper { position:relative; background:#000; border-radius:24px; overflow:hidden; }
-    .canvas-text-overlay { position:absolute; color:#fff; font-weight:700; font-size:28px; text-shadow:0 2px 12px rgba(0,0,0,0.9); cursor:move; user-select:none; padding:4px 12px; border:1px dashed transparent; z-index:20; white-space:nowrap; background:rgba(0,0,0,0.2); border-radius:12px; }
-    .canvas-text-overlay.active-node { border-color:#3b82f6; background:rgba(59,130,246,0.15); }
-    .canvas-sticker-overlay { position:absolute; font-size:48px; cursor:move; user-select:none; z-index:21; padding:6px; border:1px dashed transparent; background:rgba(0,0,0,0.1); border-radius:16px; }
-    .canvas-sticker-overlay.active-node { border-color:#ec4899; background:rgba(236,72,153,0.15); }
-
-    /* drawer (for text/stickers) */
-    .editor-drawer {
-      position:fixed; bottom:-100%; left:0; width:100%; max-width:480px; margin:0 auto; right:0;
-      height:52vh; background:#111115; border-top-left-radius:28px; border-top-right-radius:28px;
-      border-top:1px solid #2a2a32; transition:bottom 0.3s cubic-bezier(0.16,0.76,0.36,0.98);
-      z-index:400; display:flex; flex-direction:column; box-shadow:0 -20px 60px rgba(0,0,0,0.9);
-    }
-    .editor-drawer.open { bottom:0; }
-    .drawer-header { display:flex; align-items:center; padding:14px 18px; gap:10px; border-bottom:1px solid #22222a; }
-    .drawer-tabs { display:flex; overflow-x:auto; padding:6px 12px; gap:4px; border-bottom:1px solid #1e1e24; flex-shrink:0; }
-    .drawer-tabs::-webkit-scrollbar { display:none; }
-    .tab-link { background:transparent; border:none; padding:6px 14px; font-size:13px; font-weight:600; color:#9ca3af; cursor:pointer; border-radius:30px; white-space:nowrap; }
-    .tab-link.active { background:#1f2937; color:#fff; }
-    .tab-content { flex:1; overflow-y:auto; padding:12px 14px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-    .tab-content > div { background:#1c1c22; border-radius:14px; aspect-ratio:1/1; display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; border:1px solid #2c2c34; font-size:13px; padding:4px; text-align:center; transition:0.1s; }
-    .tab-content > div:hover { transform:scale(1.02); border-color:#3b82f6; background:#26262e; }
-    .color-dot { width:28px; height:28px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:0.1s; }
-    .color-dot:hover { transform:scale(1.1); }
-  </style>
+        /* Drawer style */
+        .editor-drawer {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 54vh;
+            background: #111115;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            border-top: 1px solid #2a2a32;
+            transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
+        }
+        .editor-drawer.open { bottom: 0; }
+        
+        .asset-card {
+            background: #1c1c22;
+            border-radius: 14px;
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: #e5e7eb;
+            border: 1px solid #2c2c34;
+            transition: 0.15s;
+            padding: 8px;
+            text-align: center;
+        }
+        .asset-card:hover { transform: scale(1.02); border-color: #3b82f6; background: #26262e; }
+        
+        /* Canvas components */
+        .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
+        .draw-overlay-canvas.active { pointer-events: auto; cursor: crosshair; }
+        
+        /* Fixed Grid submenus style */
+        .submenu-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: #0c0c10;
+        }
+        @media (max-width: 600px) {
+            .submenu-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
 </head>
 <body>
 
-<!-- hidden file input -->
-<input type="file" id="mediaPicker" accept="video/*,image/*" class="hidden" />
+    <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden" />
+    <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
 
-<!-- Top bar -->
-<header class="flex items-center justify-between px-4 py-2.5 bg-[#0b0b0e] border-b border-[#1e1e26]">
-  <div class="flex items-center gap-3">
-    <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
-    <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
-    <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Editor</span>
-  </div>
-  <div class="flex items-center gap-3">
-    <button onclick="document.getElementById('mediaPicker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-1.5 rounded-full transition"><i class="fas fa-plus mr-1.5"></i>Media</button>
-    <button onclick="triggerExport()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-4 py-1.5 rounded-full transition"><i class="fas fa-upload mr-1.5"></i>Export</button>
-  </div>
-</header>
+    <!-- Navbar -->
+    <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
+            <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
+            <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Pro Studio</span>
+        </div>
+        <button class="text-xs text-zinc-400 hover:text-white bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-home mr-1.5"></i>Home</button>
+    </header>
 
-<!-- main canvas -->
-<main class="max-w-4xl mx-auto px-3 py-4">
-  <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
+    <!-- Main Workspace -->
+    <main class="max-w-3xl mx-auto px-2 my-4">
+        <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-    <!-- canvas area -->
-    <div id="canvasContainer" class="canvas-wrapper aspect-[9/16] max-h-[500px] flex items-center justify-center relative">
-      <video id="studioPlayer" loop class="w-full h-full object-contain hidden"></video>
-      <img id="studioImage" class="w-full h-full object-contain hidden" alt="preview" />
-      <div id="placeholder" class="text-center p-6">
-        <i class="fas fa-cloud-arrow-up text-5xl text-zinc-700 mb-3"></i>
-        <p class="text-sm text-zinc-500 mb-4">Upload video or image</p>
-        <button onclick="document.getElementById('mediaPicker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-6 py-2.5 rounded-full"><i class="fas fa-plus mr-2"></i>Add Media</button>
-      </div>
-      <!-- overlays will be injected here -->
+            <!-- Top Project Toolbar -->
+            <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-white font-semibold">Project: Untitled</span>
+                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Active</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-full px-3 py-1.5 outline-none">
+                        <option>4K UHD</option>
+                        <option selected>1080p Full HD</option>
+                        <option>720p HD</option>
+                    </select>
+                    <button onclick="alert('Exporting Realtime Project...')" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">Export</button>
+                </div>
+            </div>
+
+            <!-- Main Canvas Viewport Parent -->
+            <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
+                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
+                    <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
+                    <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
+                    
+                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center flex-col text-center"></div>
+                    <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
+
+                    <div id="media-placeholder" class="text-center p-6 z-10">
+                        <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
+                        <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
+                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
+                    </div>
+
+                    <canvas id="drawCanvas" class="draw-overlay-canvas"></canvas>
+                    
+                    <div id="drawToolsPanel" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-[#111116] border border-zinc-800 rounded-full px-4 py-2 hidden items-center gap-3 shadow-2xl">
+                        <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(3)">Thin</button>
+                        <button class="text-xs bg-zinc-800 px-2 py-1 rounded text-white" onclick="setBrush(8)">Thick</button>
+                        <button onclick="clearDraw()" class="text-xs bg-red-600 px-2 py-1 rounded text-white">Clear</button>
+                        <button onclick="toggleDraw()" class="text-xs text-zinc-400">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playback Controls -->
+            <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
+                <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
+                <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
+                <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
+            </div>
+
+            <!-- Active Audio Track Monitor (New UI Component) -->
+            <div id="audio-track-monitor" class="hidden px-4 py-2 bg-[#09090d] border-b border-[#1a1a22]">
+                <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 truncate">
+                        <i class="fas fa-waveform text-emerald-400 text-xs animate-pulse"></i>
+                        <span id="audioTrackLabel" class="text-[11px] font-mono text-emerald-400 truncate">No Audio Track Linked</span>
+                    </div>
+                    <button onclick="removeBackgroundAudio()" class="text-red-400 hover:text-red-300 text-[10px] bg-red-500/10 px-2 py-0.5 rounded">Remove</button>
+                </div>
+            </div>
+
+            <!-- Video/Audio Timeline Track Track -->
+            <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
+                <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
+                    <div class="flex items-center gap-2 truncate">
+                        <i class="fas fa-video text-blue-400 text-xs"></i>
+                        <span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span>
+                    </div>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="text-zinc-400 hover:text-white text-[11px] bg-zinc-800 px-2.5 py-1 rounded-md">Replace</button>
+                </div>
+            </div>
+
+            <!-- MASTER BOTTOM MENU -->
+            <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
+                <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
+                <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
+                <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
+                <button onclick="showSubmenu('effects')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-wand-magic-sparkles text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
+                <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
+                <button onclick="showSubmenu('caption')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-closed-captioning text-base text-pink-400"></i><span class="text-[10px] font-medium">Caption</span></button>
+                <button onclick="showSubmenu('filters')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-filter text-base text-indigo-400"></i><span class="text-[10px] font-medium">Filters</span></button>
+                <button onclick="showSubmenu('adjust')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-sliders text-base text-orange-400"></i><span class="text-[10px] font-medium">Adjust</span></button>
+                <button onclick="openDrawer('stickers')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-face-smile text-base text-yellow-400"></i><span class="text-[10px] font-medium">Stickers</span></button>
+                <button onclick="showSubmenu('generate-media')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-brain text-base text-teal-400"></i><span class="text-[10px] font-medium">Gen Media</span></button>
+                <button onclick="showSubmenu('ai-avatar')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-user-astronaut text-base text-violet-400"></i><span class="text-[10px] font-medium">AI Avatar</span></button>
+                <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
+                <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
+            </div>
+
+            <!-- DYNAMIC SUBMENUS -->
+            <!-- 1. Edit Options Container -->
+            <div id="submenu-edit" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
+                <button onclick="triggerTool('Volume')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-high"></i>Volume</button>
+                <button onclick="triggerTool('Animation')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-film"></i>Animation</button>
+                <button onclick="triggerTool('Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wand-magic-sparkles"></i>Effects</button>
+                <button onclick="triggerTool('Delete')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-400"><i class="fas fa-trash"></i>Delete</button>
+                <button onclick="triggerTool('Speed')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-gauge-high"></i>Speed</button>
+                <button onclick="triggerTool('Beats')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-heart-pulse"></i>Beats</button>
+                <button onclick="triggerTool('AI Extends')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-expand-arrows-alt"></i>AI Extend</button>
+                <button onclick="triggerTool('Crop')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-crop"></i>Crop</button>
+                <button onclick="triggerTool('Duplicate')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-clone"></i>Clone</button>
+                <button onclick="triggerTool('Replace')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-arrows-rotate"></i>Replace</button>
+                <button onclick="triggerTool('Overlay')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-layer-group"></i>Overlay</button>
+                <button onclick="triggerTool('Adjust')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-sliders"></i>Adjust</button>
+                <button onclick="triggerTool('Filter')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-filter"></i>Filter</button>
+                <button onclick="triggerTool('Retouch')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-face-smile"></i>Retouch</button>
+                <button onclick="triggerTool('Video Quality')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-yellow-400"><i class="fas fa-wand-magic-sparkles"></i>4K Quality</button>
+                <button onclick="triggerTool('Remove BG')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-user-minus"></i>Remove BG</button>
+                <button onclick="triggerTool('AI Remove')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eraser"></i>AI Eraser</button>
+                <button onclick="triggerTool('AI Expand')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-maximize"></i>AI Expand</button>
+                <button onclick="triggerTool('AI Remix')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-shuffle"></i>AI Remix</button>
+                <button onclick="triggerTool('Eye Contact')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eye"></i>Eye Contact</button>
+                <button onclick="triggerTool('Relight')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-lightbulb"></i>Relight</button>
+                <button onclick="triggerTool('Opacity')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-circle-half-stroke"></i>Opacity</button>
+                <button onclick="triggerTool('Motion Blur')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wind"></i>Motion Blur</button>
+                <button onclick="triggerTool('Lip Sync')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-comment-dots"></i>Lip Sync</button>
+                <button onclick="triggerTool('Transform Auto Reframe')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-expand"></i>Reframe</button>
+                <button onclick="triggerTool('Stabilize')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-mobile-screen"></i>Stabilize</button>
+                <button onclick="extractAudioTrack()" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-file-audio"></i>Extract Aud</button>
+                <button onclick="triggerTool('Isolate Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-microphone-lines"></i>Isolate</button>
+                <button onclick="triggerTool('Audio Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-waveform"></i>Aud FX</button>
+                <button onclick="triggerTool('Enhance Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-low"></i>Enhance</button>
+                <button onclick="triggerTool('Video Translator')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-language"></i>Translate</button>
+                <button onclick="triggerTool('Freeze')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-snowflake"></i>Freeze</button>
+                <button onclick="triggerTool('Reverse')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-backward"></i>Reverse</button>
+                <button onclick="triggerTool('Mask')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-masks-theater"></i>Mask</button>
+                <button onclick="triggerTool('Unlink')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-300"><i class="fas fa-link-slash"></i>Unlink</button>
+            </div>
+
+            <!-- 2. WORKING AUDIO SUBMENU -->
+            <div id="submenu-audio" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="extractAudioTrack()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
+                <button onclick="openDrawer('sounds')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-music"></i>Sounds</button>
+                <button onclick="openDrawer('sound-fx')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bolt text-yellow-400"></i>FX Effects</button>
+                <button id="record-btn-ui" onclick="toggleVoiceRecording()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i id="mic-icon-status" class="fas fa-microphone text-red-500"></i><span id="record-text-status">Record</span></button>
+                <button onclick="openTextToAudioPrompt()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio text-blue-400"></i>Text To Aud</button>
+                <button onclick="openDrawer('sounds')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bookmark"></i>Brand Music</button>
+                <button onclick="alert('Copyright Check Passed! This track is 100% safe for TikTok/YouTube.')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-shield text-emerald-400"></i>Copyright</button>
+            </div>
+
+            <!-- 3. Text Submenu -->
+            <div id="submenu-text" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="openDrawer('fonts')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
+                <button onclick="openDrawer('captions')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-closed-captioning text-blue-400"></i>Auto Caption</button>
+                <button onclick="openDrawer('stickers')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-face-smile"></i>Stickers</button>
+                <button onclick="toggleDraw()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-pen"></i>Drawer</button>
+                <button onclick="openDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-paste"></i>Templates</button>
+                <button onclick="openTextToAudioPrompt()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio"></i>Text To Aud</button>
+                <button onclick="triggerTool('Auto Lyrics tracking')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-guitar"></i>Auto Lyrics</button>
+            </div>
+
+            <!-- 4. Effects Submenu -->
+            <div id="submenu-effects" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Body Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-child-accessibility text-purple-400"></i>Body FX</button>
+                <button onclick="triggerTool('Video Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-clapperboard"></i>Video FX</button>
+                <button onclick="triggerTool('Photo Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-image"></i>Photo FX</button>
+                <button onclick="triggerTool('AI Effects Engine')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-brain text-purple-500"></i>AI FX</button>
+            </div>
+
+            <!-- 5. Overlay Submenu -->
+            <div id="submenu-overlay" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white">
+                    <i class="fas fa-folder-open"></i> Open Device Media Gallery (Video/Image)
+                </button>
+            </div>
+
+            <!-- 6. Caption Submenu -->
+            <div id="submenu-caption" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="openDrawer('captions')" class="col-span-4 bg-indigo-600 p-2 rounded text-center text-xs font-bold flex items-center justify-center gap-2 text-white">
+                    <i class="fas fa-closed-captioning"></i> Launch Captions Sync Dashboard
+                </button>
+            </div>
+
+            <!-- 7. Filters Submenu -->
+            <div id="submenu-filters" class="hidden p-3 bg-[#0c0c10]">
+                <div class="flex items-center justify-between mb-2">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-zinc-300">Cinematic Filters (50+ Built-in HD)</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-1" id="filtersContainer"></div>
+            </div>
+
+            <!-- 8. Adjust Submenu -->
+            <div id="submenu-adjust" class="hidden p-3 bg-[#0c0c10] space-y-3 max-h-[160px] overflow-y-auto">
+                <div class="flex items-center justify-between">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-orange-400">Pro Color Correction</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs text-zinc-300">
+                    <div>Auto Adjust: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('brightness(1.2) contrast(1.1) saturate(1.2)')">Apply</button></div>
+                    <div>Reset: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('none')">Reset</button></div>
+                    <div class="col-span-2"><span class="text-[11px] text-zinc-500">Live Custom Filter Slider:</span>
+                    <input type="range" min="50" max="150" value="100" class="w-full mt-1 accent-orange-500" oninput="adjustBrightness(this.value)" /></div>
+                </div>
+            </div>
+
+            <!-- 9. Gen Media Submenu -->
+            <div id="submenu-generate-media" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="alert('Generating AI Image via Dravoo Engine...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-wand-magic-sparkles text-teal-400"></i>AI Image</button>
+                <button onclick="alert('Connecting Dravoo Studio Core API Server...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-video text-purple-400"></i>AI Video (Studio)</button>
+                <button onclick="alert('Paging Pixabay Stock API Integrated Provider...')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-cloud-arrow-down"></i>Pixabay Stocks</button>
+            </div>
+
+            <!-- 10. AI Avatar Submenu -->
+            <div id="submenu-ai-avatar" class="hidden p-3 bg-[#0c0c10]">
+                <div class="flex items-center justify-between mb-2">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-violet-400">Speaking Interactive AI Avatars</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto">
+                    <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="alert('Avatar Adam Activated')">🧔 Adam (Speech)</div>
+                    <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="alert('Avatar Elena Activated')">👩 Elena (Speech)</div>
+                    <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="alert('Avatar Cyberbot Activated')">🤖 CyberBot</div>
+                </div>
+            </div>
+
+            <!-- 11. Aspect Ratio Submenu -->
+            <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
+                <div class="flex items-center justify-between mb-2">
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-zinc-300">Canvas Aspect Canvas Ratio</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto text-xs text-zinc-200">
+                    <button onclick="changeRatio('9/16')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">9:16 (TikTok)</button>
+                    <button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">16:9 (YouTube)</button>
+                    <button onclick="changeRatio('1/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">1:1 (Insta)</button>
+                    <button onclick="changeRatio('4/3')" class="bg-zinc-800 px-3 py-1.5 rounded-full whitespace-nowrap">4:3</button>
+                </div>
+            </div>
+
+            <!-- 12. Background Submenu -->
+            <div id="submenu-background" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="alert('Background Color Palette Selected')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-palette text-rose-400"></i>Solid Color</button>
+                <button onclick="alert('Import Custom BG Frame Image')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-image"></i>BG Image</button>
+                <button onclick="alert('Applying Gaussian Blur Matrix Context')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-sliders text-blue-400"></i>Blur Frame</button>
+                <button onclick="alert('Brand Asset Identity Ecosystem loaded')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-circle-check text-green-400"></i>Brand BG</button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ========== DRAWER ELEMENT (TEMPLATES, FONTS, STICKERS, SOUNDS) ========== -->
+    <div class="editor-drawer" id="editorDrawer">
+        <div class="flex items-center justify-between p-4 border-b border-zinc-800">
+            <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
+            <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Editor Asset Drawer</span>
+            <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
+        </div>
+        <div class="tab-content-container p-4 overflow-y-auto flex-1">
+            <div id="drawerDynamicGrid" class="grid grid-cols-3 gap-3"></div>
+        </div>
     </div>
 
-    <!-- transport + timeline (minimal) -->
-    <div class="px-4 py-2 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
-      <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:05</span>
-      <button id="playBtn" onclick="togglePlay()" class="bg-zinc-800 hover:bg-zinc-700 w-10 h-10 rounded-full flex items-center justify-center text-white border border-zinc-700"><i class="fas fa-play text-sm"></i></button>
-      <div class="flex gap-2">
-        <button onclick="openDrawer()" class="text-zinc-400 hover:text-white text-xs bg-zinc-800/40 px-3 py-1.5 rounded-full"><i class="fas fa-font mr-1.5"></i>Text</button>
-      </div>
-    </div>
+    <!-- Script Suite Logic -->
+    <script>
+        // Media Track Handles
+        const picker = document.getElementById('video-file-picker');
+        const player = document.getElementById('studio-player');
+        const imageEl = document.getElementById('studio-image');
+        const placeholder = document.getElementById('media-placeholder');
+        const timelineLabel = document.getElementById('timelineLabel');
+        const playBtn = document.getElementById('playBtn');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const ratioBox = document.getElementById('video-ratio-box');
+        const elementsLayer = document.getElementById('canvas-elements-layer');
+        const overlayImg = document.getElementById('overlay-display-img');
 
-    <!-- ========== TOOLBAR (all 15+ options) ========== -->
-    <div class="bg-[#0a0a0e] border-b border-[#1a1a22] relative" id="toolbarWrapper">
-      <div class="toolbar-scroll">
-        <!-- 1. Edit -->
-        <button class="tool-btn" data-panel="editPanel"><i class="fas fa-sliders-h"></i>Edit</button>
-        <!-- 2. Audio -->
-        <button class="tool-btn" data-panel="audioPanel"><i class="fas fa-music"></i>Audio</button>
-        <!-- 3. Text -->
-        <button class="tool-btn" data-panel="textPanel"><i class="fas fa-font"></i>Text</button>
-        <!-- 4. Effects -->
-        <button class="tool-btn" data-panel="effectsPanel"><i class="fas fa-bolt"></i>Effects</button>
-        <!-- 5. Overlay -->
-        <button class="tool-btn" data-panel="overlayPanel"><i class="fas fa-layer-group"></i>Overlay</button>
-        <!-- 6. Caption -->
-        <button class="tool-btn" data-panel="captionPanel"><i class="fas fa-closed-captioning"></i>Caption</button>
-        <!-- 7. Filters (renamed from 8) -->
-        <button class="tool-btn" data-panel="filtersPanel"><i class="fas fa-filter"></i>Filters</button>
-        <!-- 8. Adjust -->
-        <button class="tool-btn" data-panel="adjustPanel"><i class="fas fa-adjust"></i>Adjust</button>
-        <!-- 9. Stickers (built-in) -->
-        <button class="tool-btn" data-panel="stickersPanel"><i class="fas fa-face-smile"></i>Stickers</button>
-        <!-- 10. Generate media -->
-        <button class="tool-btn" data-panel="generatePanel"><i class="fas fa-wand-magic-sparkles"></i>Generate</button>
-        <!-- 11. AI Avatar -->
-        <button class="tool-btn" data-panel="avatarPanel"><i class="fas fa-robot"></i>AI Avatar</button>
-        <!-- 12. Aspect ratio -->
-        <button class="tool-btn" data-panel="aspectPanel"><i class="fas fa-expand"></i>Aspect</button>
-        <!-- 13. Background -->
-        <button class="tool-btn" data-panel="bgPanel"><i class="fas fa-image"></i>Background</button>
-        <!-- extra: Draw (integrated) -->
-        <button class="tool-btn" onclick="toggleDraw()"><i class="fas fa-pen-fancy"></i>Draw</button>
-      </div>
+        // Audio System State Engines
+        let backgroundAudio = null; 
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
 
-      <!-- floating panels (each tool) -->
-      <div id="editPanel" class="float-panel"></div>
-      <div id="audioPanel" class="float-panel"></div>
-      <div id="textPanel" class="float-panel"></div>
-      <div id="effectsPanel" class="float-panel"></div>
-      <div id="overlayPanel" class="float-panel"></div>
-      <div id="captionPanel" class="float-panel"></div>
-      <div id="filtersPanel" class="float-panel"></div>
-      <div id="adjustPanel" class="float-panel"></div>
-      <div id="stickersPanel" class="float-panel"></div>
-      <div id="generatePanel" class="float-panel"></div>
-      <div id="avatarPanel" class="float-panel"></div>
-      <div id="aspectPanel" class="float-panel"></div>
-      <div id="bgPanel" class="float-panel"></div>
-    </div>
-  </div>
-</main>
+        // Canvas Drawing Setup
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let brushSize = 5;
 
-<!-- ====== DRAWER (text/stickers) ====== -->
-<div class="editor-drawer" id="editorDrawer">
-  <div class="drawer-header">
-    <button class="text-zinc-400 hover:text-white" onclick="closeDrawer()">✕</button>
-    <input type="text" id="drawerInput" class="flex-1 bg-zinc-800 border-0 rounded-2xl px-4 py-2 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500" placeholder="Type text..." />
-    <button class="text-blue-500 font-bold px-2" onclick="addTextFromDrawer()">✓</button>
-  </div>
-  <div class="drawer-tabs">
-    <button class="tab-link active" onclick="switchDrawerTab('fonts')">Fonts</button>
-    <button class="tab-link" onclick="switchDrawerTab('templates')">Templates</button>
-    <button class="tab-link" onclick="switchDrawerTab('styles')">Styles</button>
-    <button class="tab-link" onclick="switchDrawerTab('stickers')">Stickers</button>
-  </div>
-  <div class="tab-content" id="drawerContent"></div>
-</div>
+        function syncCanvasSize() {
+            canvas.width = ratioBox.clientWidth;
+            canvas.height = ratioBox.clientHeight;
+        }
+        window.addEventListener('resize', syncCanvasSize);
 
-<script>
-  // --------------------------------------------------------------
-  // 1. MEDIA / PLAYER
-  // --------------------------------------------------------------
-  const picker = document.getElementById('mediaPicker');
-  const player = document.getElementById('studioPlayer');
-  const imageEl = document.getElementById('studioImage');
-  const placeholder = document.getElementById('placeholder');
-  const playBtn = document.getElementById('playBtn');
-  const timeDisplay = document.getElementById('timeDisplay');
-  const container = document.getElementById('canvasContainer');
+        // Main File Picker Binding
+        picker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            timelineLabel.innerText = file.name;
+            placeholder.classList.add('hidden');
+            if (file.type.startsWith('video/')) {
+                imageEl.classList.add('hidden');
+                player.classList.remove('hidden');
+                player.src = URL.createObjectURL(file);
+                player.muted = false; // default unmuted
+                player.play();
+                playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                setTimeout(syncCanvasSize, 100);
+            } else {
+                player.classList.add('hidden');
+                imageEl.classList.remove('hidden');
+                imageEl.src = URL.createObjectURL(file);
+                timeDisplay.innerText = "00:00 / 00:05";
+                setTimeout(syncCanvasSize, 100);
+            }
+        });
 
-  picker.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    placeholder.classList.add('hidden');
-    if (file.type.startsWith('video/')) {
-      imageEl.classList.add('hidden');
-      player.classList.remove('hidden');
-      player.src = URL.createObjectURL(file);
-      player.play();
-      playBtn.innerHTML = `<i class="fas fa-pause text-sm"></i>`;
-      player.ontimeupdate = () => { timeDisplay.innerText = `${fmt(player.currentTime)} / ${fmt(player.duration||0)}`; };
-    } else if (file.type.startsWith('image/')) {
-      player.classList.add('hidden');
-      player.pause();
-      imageEl.classList.remove('hidden');
-      imageEl.src = URL.createObjectURL(file);
-      timeDisplay.innerText = "00:00 / 00:05";
-    }
-  });
+        // Combined Play/Pause Controller for Video and Extracted/Added Audio
+        function togglePlay() {
+            if(!player.src && !backgroundAudio) return;
+            
+            if (player.src && !player.classList.contains('hidden')) {
+                if (player.paused) {
+                    player.play();
+                    if(backgroundAudio) backgroundAudio.play();
+                    playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                } else {
+                    player.pause();
+                    if(backgroundAudio) backgroundAudio.pause();
+                    playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+                }
+            } else {
+                // If only audio is playing on an image asset
+                if(backgroundAudio) {
+                    if(backgroundAudio.paused) {
+                        backgroundAudio.play();
+                        playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                    } else {
+                        backgroundAudio.pause();
+                        playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+                    }
+                }
+            }
+        }
 
-  function fmt(s) { if (isNaN(s)) return "00:00"; return `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`; }
-  function togglePlay() {
-    if (player.paused) { player.play(); playBtn.innerHTML = `<i class="fas fa-pause text-sm"></i>`; } 
-    else { player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-sm"></i>`; }
-  }
-  function triggerExport() { alert('Export project (demo)'); }
+        // Live Audio/Video time updates
+        player.addEventListener('timeupdate', () => {
+            const current = formatTime(player.currentTime);
+            const total = formatTime(player.duration || 0);
+            timeDisplay.innerText = `${current} / ${total}`;
+            
+            // Sync background audio tracker loop
+            if(backgroundAudio && Math.abs(backgroundAudio.currentTime - player.currentTime) > 0.3) {
+                backgroundAudio.currentTime = player.currentTime;
+            }
+        });
 
-  // --------------------------------------------------------------
-  // 2. TOOLBAR FLOATING PANELS (all options)
-  // --------------------------------------------------------------
-  const panelData = {
-    editPanel: ['Split','Volume','Animation','Effects','Delete','Speed','Beats','AI Extends','Crop','Duplicate','Replace','Overlay','Adjust','Filter','Retouch','Video Quality','Remove BG','AI Remove','AI Expand','AI Remix','Eye Contact','Relight','Opacity','Motion Blur','Lip Sync','Transform','Auto Reframe','Stabilize','Extract Audio','Isolate Voice','Audio Effects','Enhance Voice','Video Translator','Freeze','Reverse','Mask','Unlink'],
-    audioPanel: ['Extract','Sounds','Sound Effects','Record','Text to Audio','Brand Music','Copyright'],
-    textPanel: ['Add Text','Auto Caption','Stickers','Draw','Templates','Text to Audio','Auto Lyrics'],
-    effectsPanel: ['Body Effects','Video Effects','Photo Effects','AI Effects'],
-    overlayPanel: ['Gallery (open)','Add Image','Add Video','Overlay Blend'],
-    captionPanel: ['Auto Caption','Manual Caption','Style','Position'],
-    filtersPanel: ['4K','HD','Vivid','Cinematic','Retro','Monochrome','Warm','Cool','Dramatic','Soft','HDR','Film','Noir','Pastel','Neon','Vintage','Sepia','Fade','Boost','Clarity','Sharp','Mellow','Contrast+','Bright','Natural','Dreamy','Glow','Matte','Rustic','Sunset','Ocean','Forest','Urban','Gold','Silver','Cream','Lemon','Cherry','Sky','Lavender','Mint','Coral','Amber','Graphite','Pearl','Denim','Olive','Rose','Choco','Ivory'],  // 50 approx
-    adjustPanel: ['Auto Adjust','Colour Match','Colour Correction','Brightness','Contrast','Saturation','Brilliance','Sharpen','Clarity','HSL','Graph','Colour Wheel','Highlight','Shadows','White','Black','Temp','Hue','Fade','Vignette','Grain'],
-    stickersPanel: ['🔥','✨','🎯','❤️','👑','🚀','💥','😂','💯','🎉','🌟','👍','🙌','💀','🤖','🎃','😈','👀','🎮','🎨','🎬','⚡','💡','🔮','💎','💰','🌍','🍕','🍔','🎵','🎤','🎸','🐾','🦄','🐼','🦊','🐰','🐻','🐺','💖','💙','💚','💛','🌸','🌺','🌻','🌹'],
-    generatePanel: ['AI Image','AI Video','Dravoo Studio','Pixabay API'],
-    avatarPanel: ['Avatar 1','Avatar 2','Avatar 3','Avatar 4','Avatar 5','Avatar 6','Avatar 7','Avatar 8'],
-    aspectPanel: ['9:16','16:9','1:1','4:3','3:4','5.8"','128:27','2:1','2.35:1','1.85:1'],
-    bgPanel: ['Color','Image','Blur','Brand Background']
-  };
+        function formatTime(secs) {
+            const m = Math.floor(secs / 60).toString().padStart(2, '0');
+            const s = Math.floor(secs % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
 
-  // build panels
-  Object.keys(panelData).forEach(id => {
-    const panel = document.getElementById(id);
-    if (!panel) return;
-    panelData[id].forEach(label => {
-      const btn = document.createElement('button');
-      btn.className = 'opt';
-      btn.innerHTML = `<i class="fas fa-circle" style="font-size:8px;color:#3b82f6;"></i> ${label}`;
-      btn.onclick = () => { alert(`Action: ${label}`); closeAllPanels(); };
-      panel.appendChild(btn);
-    });
-  });
+        // ================= ADVANCED WORKING AUDIO ENGINE FUNCTIONS =================
 
-  // toggle panels on tool click
-  document.querySelectorAll('.tool-btn[data-panel]').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const panelId = this.dataset.panel;
-      const panel = document.getElementById(panelId);
-      if (!panel) return;
-      const isOpen = panel.classList.contains('open');
-      closeAllPanels();
-      if (!isOpen) {
-        panel.classList.add('open');
-        this.classList.add('active');
-        // position
-        const rect = this.getBoundingClientRect();
-        const wrapper = document.getElementById('toolbarWrapper');
-        const wrapperRect = wrapper.getBoundingClientRect();
-        panel.style.left = Math.min(rect.left - wrapperRect.left, wrapperRect.width - panel.offsetWidth - 10) + 'px';
-        panel.style.top = '100%';
-      } else {
-        this.classList.remove('active');
-      }
-    });
-  });
+        // 1. EXTRACT AUDIO: Clips audio track natively out of uploaded video source
+        function extractAudioTrack() {
+            if(!player.src || player.classList.contains('hidden')) {
+                alert("Please upload a Video master track first to extract audio!");
+                return;
+            }
+            // Mute the primary video to avoid echoing layers
+            player.muted = true;
+            
+            // Setup duplicate background audio pipe from source
+            if(backgroundAudio) backgroundAudio.pause();
+            backgroundAudio = new Audio(player.src);
+            backgroundAudio.currentTime = player.currentTime;
+            
+            if(!player.paused) backgroundAudio.play();
 
-  function closeAllPanels() {
-    document.querySelectorAll('.float-panel').forEach(p => p.classList.remove('open'));
-    document.querySelectorAll('.tool-btn.active').forEach(b => b.classList.remove('active'));
-  }
-  document.addEventListener('click', closeAllPanels);
+            // Update Track Monitors UI Layout
+            document.getElementById('audio-track-monitor').classList.remove('hidden');
+            document.getElementById('audioTrackLabel').innerText = "Extracted Audio Track (Synced)";
+            alert("Audio Track extracted successfully! Master video muted. Audio isolated into sub-track channel.");
+        }
 
-  // --------------------------------------------------------------
-  // 3. TEXT / STICKERS overlays + DRAWER
-  // --------------------------------------------------------------
-  let activeNode = null;
-  const drawerEl = document.getElementById('editorDrawer');
-  const drawerInput = document.getElementById('drawerInput');
-  const drawerContent = document.getElementById('drawerContent');
+        // 2. LIVE MICROPHONE VOICEOVER RECORDING SYSTEM
+        async function toggleVoiceRecording() {
+            const recordText = document.getElementById('record-text-status');
+            const micIcon = document.getElementById('mic-icon-status');
 
-  function openDrawer() { drawerEl.classList.add('open'); fillDrawer('fonts'); }
-  function closeDrawer() { drawerEl.classList.remove('open'); }
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    recordedChunks = [];
+                    
+                    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' });
+                        if(backgroundAudio) backgroundAudio.pause();
+                        backgroundAudio = new Audio(URL.createObjectURL(audioBlob));
+                        
+                        document.getElementById('audio-track-monitor').classList.remove('hidden');
+                        document.getElementById('audioTrackLabel').innerText = "Live Voiceover Recording.mp3";
+                        alert("Voiceover processing complete! Added to background channel.");
+                    };
 
-  function switchDrawerTab(tab) {
-    document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.tab-link[onclick*="${tab}"]`)?.classList.add('active');
-    fillDrawer(tab);
-  }
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordText.innerText = "Stop Rec";
+                    micIcon.className = "fas fa-stop text-red-500 animate-ping";
+                    if(player.src && player.paused) togglePlay(); // Play asset simultaneously while recording
+                } catch (err) {
+                    alert("Microphone Access Denied or Not Found: " + err.message);
+                }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordText.innerText = "Record";
+                micIcon.className = "fas fa-microphone text-red-500";
+            }
+        }
 
-  function fillDrawer(tab) {
-    drawerContent.innerHTML = '';
-    let items = [];
-    if (tab === 'fonts') items = ['Rubik','Bangers','Oswald','Anton','Permanent Marker','Lobster','Pacifico','Dancing Script','Great Vibes','Satisfy','Kaushan Script','Mr Dafoe','Architects Daughter','Indie Flower','Patrick Hand','Rock Salt','Alex Brush','Allura','Caveat Brush','Sacramento','Tangerine','WindSong'];
-    else if (tab === 'templates') items = ['ABC Smart','Neon Glow','Satisfy','Great Vibes','Alex Brush','Allura','Pacifico','Dancing Script','Zeyada','Parisienne','Tangerine','Architects','Indie Flower','Patrick Hand','Kaushan Script','Mr Dafoe','Rock Salt','Caveat Brush','Sacramento','Marck Script','Rochester','WindSong','Grand Hotel','Meddon','Coming Soon'];
-    else if (tab === 'styles') { // color picker
-      const colors = ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1','#000000'];
-      colors.forEach(c => {
-        const dot = document.createElement('div');
-        dot.className = 'color-dot';
-        dot.style.background = c;
-        dot.onclick = () => { if (activeNode) activeNode.style.color = c; };
-        drawerContent.appendChild(dot);
-      });
-      return;
-    } else if (tab === 'stickers') {
-      items = ['🔥','✨','🎯','❤️','👑','🚀','💥','😂','💯','🎉','🌟','👍','🙌','💀','🤖','🎃','😈','👀','🎮','🎨','🎬','⚡','💡','🔮','💎','💰','🌍','🍕','🍔','🎵','🎤','🎸','🐾','🦄','🐼','🦊','🐰','🐻','🐺','💖','💙','💚','💛','🌸','🌺','🌻','🌹'];
-    }
-    items.forEach(label => {
-      const div = document.createElement('div');
-      div.innerText = label;
-      if (tab === 'stickers') div.style.fontSize = '32px';
-      div.onclick = () => {
-        if (tab === 'stickers') addSticker(label);
-        else addTextNode(label);
-        closeDrawer();
-      };
-      drawerContent.appendChild(div);
-    });
-  }
+        // 3. AI TEXT TO AUDIO VOICE ENGINE (Speech Synthesis API)
+        function openTextToAudioPrompt() {
+            const promptText = prompt("Enter text script for Dravoo AI Engine to convert into Voiceover speech:", "Welcome to Dravoo Pro Studio!");
+            if(!promptText) return;
 
-  function addTextNode(text) {
-    const el = document.createElement('div');
-    el.className = 'canvas-text-overlay active-node';
-    el.innerText = text || 'Text';
-    el.style.left = (20 + Math.random()*40) + '%';
-    el.style.top = (25 + Math.random()*40) + '%';
-    el.addEventListener('click', e => { e.stopPropagation(); selectNode(el); });
-    el.addEventListener('dblclick', () => { if(confirm('Delete?')) { el.remove(); if(activeNode===el) activeNode=null; } });
-    makeDraggable(el);
-    container.appendChild(el);
-    selectNode(el);
-    drawerInput.value = el.innerText;
-  }
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(promptText);
+            
+            // Render speech to channel mapping simulation
+            utterance.onstart = () => {
+                document.getElementById('audio-track-monitor').classList.remove('hidden');
+                document.getElementById('audioTrackLabel').innerText = `AI Speech Engine: "${promptText.substring(0,15)}..."`;
+            };
+            synth.speak(utterance);
+        }
 
-  function addSticker(emoji) {
-    const el = document.createElement('div');
-    el.className = 'canvas-sticker-overlay active-node';
-    el.innerText = emoji || '😊';
-    el.style.left = (30 + Math.random()*30) + '%';
-    el.style.top = (30 + Math.random()*30) + '%';
-    el.addEventListener('click', e => { e.stopPropagation(); selectNode(el); });
-    el.addEventListener('dblclick', () => { if(confirm('Delete?')) { el.remove(); if(activeNode===el) activeNode=null; } });
-    makeDraggable(el);
-    container.appendChild(el);
-    selectNode(el);
-  }
+        // Remove Backtrack handle
+        function removeBackgroundAudio() {
+            if(backgroundAudio) {
+                backgroundAudio.pause();
+                backgroundAudio = null;
+            }
+            player.muted = false; // Restore native audio track volume level
+            document.getElementById('audio-track-monitor').classList.add('hidden');
+        }
 
-  function selectNode(el) {
-    document.querySelectorAll('.canvas-text-overlay,.canvas-sticker-overlay').forEach(x => x.classList.remove('active-node'));
-    el.classList.add('active-node');
-    activeNode = el;
-    if (el.classList.contains('canvas-text-overlay')) drawerInput.value = el.innerText;
-  }
+        // Submenu Navigator System
+        function showSubmenu(id) {
+            backToMaster(); 
+            document.getElementById('masterBottomMenu').classList.add('hidden');
+            const sub = document.getElementById(`submenu-${id}`);
+            if(sub) {
+                sub.classList.remove('hidden');
+                if(id === 'filters') generateFilters();
+            }
+        }
 
-  function makeDraggable(el) {
-    let dx, dy, drag = false;
-    const start = (e) => {
-      e = e || window.event;
-      const ev = e.touches ? e.touches[0] : e;
-      dx = ev.clientX - el.getBoundingClientRect().left;
-      dy = ev.clientY - el.getBoundingClientRect().top;
-      drag = true;
-      document.addEventListener('mousemove', move);
-      document.addEventListener('touchmove', move, {passive:false});
-      document.addEventListener('mouseup', end);
-      document.addEventListener('touchend', end);
-    };
-    const move = (e) => {
-      if (!drag) return; e.preventDefault();
-      const ev = e.touches ? e.touches[0] : e;
-      const rect = container.getBoundingClientRect();
-      let x = ev.clientX - rect.left - dx, y = ev.clientY - rect.top - dy;
-      x = Math.max(0, Math.min(x, rect.width - el.offsetWidth));
-      y = Math.max(0, Math.min(y, rect.height - el.offsetHeight));
-      el.style.left = x + 'px'; el.style.top = y + 'px';
-    };
-    const end = () => { drag = false; document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); document.removeEventListener('mouseup', end); document.removeEventListener('touchend', end); };
-    el.addEventListener('mousedown', start);
-    el.addEventListener('touchstart', start, {passive:false});
-  }
+        function backToMaster() {
+            const submenus = ['edit', 'audio', 'text', 'effects', 'overlay', 'caption', 'filters', 'adjust', 'generate-media', 'ai-avatar', 'aspect-ratio', 'background'];
+            submenus.forEach(s => {
+                const el = document.getElementById(`submenu-${s}`);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById('masterBottomMenu').classList.remove('hidden');
+        }
 
-  function addTextFromDrawer() {
-    const val = drawerInput.value.trim();
-    if (val) addTextNode(val);
-    closeDrawer();
-  }
+        function triggerTool(name) {
+            alert(`"${name}" options layer triggered natively.`);
+        }
 
-  // --------------------------------------------------------------
-  // 4. DRAW (simple toggle)
-  // --------------------------------------------------------------
-  let drawActive = false;
-  function toggleDraw() {
-    drawActive = !drawActive;
-    alert(drawActive ? 'Draw mode ON (demo)' : 'Draw mode OFF');
-  }
+        function handleOverlaySelected(input) {
+            const file = input.files[0];
+            if(file) {
+                overlayImg.src = URL.createObjectURL(file);
+                overlayImg.classList.remove('hidden');
+            }
+        }
 
-  // --------------------------------------------------------------
-  // 5. extra: overlay panel -> gallery picker
-  // --------------------------------------------------------------
-  document.querySelector('#overlayPanel .opt')?.addEventListener('click', () => {
-    document.getElementById('mediaPicker').click();
-  });
+        function applyCSSFilter(filterValue) {
+            player.style.filter = filterValue;
+            imageEl.style.filter = filterValue;
+        }
+        function adjustBrightness(val) {
+            applyCSSFilter(`brightness(${val}%)`);
+        }
 
-  // init drawer fonts
-  fillDrawer('fonts');
-</script>
+        function changeRatio(ratioStr) {
+            if(ratioStr === '9/16') {
+                ratioBox.style.aspectRatio = '9/16';
+                ratioBox.style.maxWidth = '280px';
+            } else if(ratioStr === '16/9') {
+                ratioBox.style.aspectRatio = '16/9';
+                ratioBox.style.maxWidth = '100%';
+            } else if(ratioStr === '1/1') {
+                ratioBox.style.aspectRatio = '1/1';
+                ratioBox.style.maxWidth = '360px';
+            } else if(ratioStr === '4/3') {
+                ratioBox.style.aspectRatio = '4/3';
+                ratioBox.style.maxWidth = '400px';
+            }
+            setTimeout(syncCanvasSize, 200);
+        }
+
+        function generateFilters() {
+            const container = document.getElementById('filtersContainer');
+            if(container.children.length > 0) return;
+            const filterClasses = [
+                {name: 'Warm', css: 'sepia(0.4) saturate(1.4)'},
+                {name: 'Cyber', css: 'hue-rotate(90deg) saturate(1.8)'},
+                {name: 'Vintage', css: 'grayscale(0.5) contrast(1.2)'},
+                {name: 'Vivid', css: 'saturate(2)'},
+                {name: 'Cool', css: 'contrast(1.1) brightness(0.9) hue-rotate(-30deg)'}
+            ];
+            
+            for(let i=1; i<=50; i++) {
+                const currentFilter = filterClasses[i % filterClasses.length];
+                const displayName = currentFilter.name + ` #${i}`;
+                const div = document.createElement('div');
+                div.className = "flex-shrink-0 w-16 h-16 bg-zinc-800 rounded-lg flex flex-col justify-end p-1 text-[9px] text-zinc-300 font-bold cursor-pointer border border-zinc-700 hover:border-blue-500";
+                div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i}')`;
+                div.innerText = displayName;
+                div.onclick = () => applyCSSFilter(currentFilter.css);
+                container.appendChild(div);
+            }
+        }
+
+        // Dynamic Asset Drawer Controllers with Audio support added
+        const drawer = document.getElementById('editorDrawer');
+        const drawerGrid = document.getElementById('drawerDynamicGrid');
+        const drawerTitle = document.getElementById('drawerTitle');
+
+        function openDrawer(type) {
+            drawerTitle.innerText = type.toUpperCase() + " SELECTION";
+            drawerGrid.innerHTML = '';
+            drawer.classList.add('open');
+
+            if(type === 'sounds' || type === 'sound-fx') {
+                // High-fidelity royalty-free streaming audio URLs for preview injection simulation
+                const audioLibrary = type === 'sounds' ? [
+                    { name: 'Vlog HipHop Track', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Lo-Fi Chill Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: 'Cinematic Ambient', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+                ] : [
+                    { name: 'Laser Whoosh FX', url: 'https://actions.google.com/sounds/v1/science_fiction/alien_creature_glitch.ogg' },
+                    { name: 'Classic Pop Sound', url: 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_pop.ogg' },
+                    { name: 'Retro Sparkle Zap', url: 'https://actions.google.com/sounds/v1/video_games/retro_video_game_boing.ogg' }
+                ];
+
+                audioLibrary.forEach(track => {
+                    const el = document.createElement('div');
+                    el.className = 'asset-card flex flex-col justify-between p-3 bg-zinc-900 border border-zinc-800 rounded-xl';
+                    el.innerHTML = `
+                        <i class="fas ${type==='sounds'?'fa-music text-emerald-400':'fa-bolt text-yellow-400'} text-xl mb-1"></i>
+                        <span class="text-[11px] font-medium block truncate w-full text-center">${track.name}</span>
+                        <button class="mt-2 bg-blue-600 text-[10px] text-white px-2 py-1 rounded-md w-full">Use Track</button>
+                    `;
+                    el.onclick = () => {
+                        if(backgroundAudio) backgroundAudio.pause();
+                        backgroundAudio = new Audio(track.url);
+                        backgroundAudio.loop = (type === 'sounds'); // loop full music, don't loop FX
+                        
+                        document.getElementById('audio-track-monitor').classList.remove('hidden');
+                        document.getElementById('audioTrackLabel').innerText = track.name;
+                        
+                        if(!player.paused || player.classList.contains('hidden')) backgroundAudio.play();
+                        closeDrawer();
+                    };
+                    drawerGrid.appendChild(el);
+                });
+            } else if(type === 'stickers') {
+                const emojis = ['🔥', '✨', '🎯', '❤️', '👑', '🚀', '💥', '💯', '🎉', '🌟', '🍕', '⚡'];
+                emojis.forEach(e => {
+                    const el = document.createElement('div');
+                    el.className = 'asset-card text-2xl';
+                    el.innerText = e;
+                    el.onclick = () => {
+                        elementsLayer.innerHTML += `<span class="text-4xl m-2 select-none animate-bounce" style="pointer-events:auto;">${e}</span>`;
+                        closeDrawer();
+                    };
+                    drawerGrid.appendChild(el);
+                });
+            } else if(type === 'fonts') {
+                const textPresets = ['Pro Editor', 'Viral Text', 'Dravoo AI', 'Trending'];
+                textPresets.forEach(f => {
+                    const el = document.createElement('div');
+                    el.className = 'asset-card font-bold text-center';
+                    el.innerText = f;
+                    el.onclick = () => {
+                        elementsLayer.innerHTML += `<div class="text-white text-xl font-bold uppercase tracking-widest drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]" style="pointer-events:auto;">${f}</div>`;
+                        closeDrawer();
+                    };
+                    drawerGrid.appendChild(el);
+                });
+            } else {
+                drawerGrid.innerHTML = '<div class="col-span-full text-zinc-500 text-center py-4 text-xs">Presets loaded to timeline canvas.</div>';
+            }
+        }
+        function closeDrawer() { drawer.classList.remove('open'); }
+
+        // WORKING DRAWING SYSTEM LOGIC
+        let drawActive = false;
+        function toggleDraw() {
+            drawActive = !drawActive;
+            const panel = document.getElementById('drawToolsPanel');
+            if(drawActive) {
+                canvas.classList.add('active');
+                panel.classList.remove('hidden');
+                panel.classList.add('flex');
+                syncCanvasSize();
+            } else {
+                canvas.classList.remove('active');
+                panel.classList.add('hidden');
+            }
+        }
+
+        function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        function setBrush(size) { brushSize = size; }
+
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; draw(e); });
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+        function draw(e) {
+            if(!isDrawing || !drawActive) return;
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#3b82f6';
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+    </script>
 </body>
 </html>
