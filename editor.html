@@ -87,6 +87,13 @@
         @media (max-width: 600px) {
             .submenu-grid { grid-template-columns: repeat(4, 1fr); }
         }
+
+        /* Fake Waveform SVG Background style */
+        .waveform-bg {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q5,0 10,10 T20,10 T30,10 T40,10 T50,10 T60,10 T70,10 T80,10 T90,10 T100,10' fill='none' stroke='%2338bdf8' stroke-width='1'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-size: 60px 100%;
+        }
     </style>
 </head>
 <body>
@@ -159,25 +166,31 @@
                 <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
             </div>
 
-            <!-- Active Audio Track Monitor (Image 1 Green Track Layout Matches) -->
-            <div id="audio-track-monitor" class="hidden px-4 py-2 bg-[#09090d] border-b border-[#1a1a22]">
-                <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2.5 flex items-center justify-between cursor-pointer" onclick="showSubmenu('audio')">
-                    <div class="flex items-center gap-2 truncate">
-                        <i class="fas fa-waveform text-emerald-400 text-xs animate-pulse"></i>
-                        <span id="audioTrackLabel" class="text-xs font-mono text-emerald-400 font-bold truncate">Vlog HipHop Track</span>
-                    </div>
-                    <button onclick="event.stopPropagation(); removeBackgroundAudio()" class="text-red-400 hover:text-red-300 text-[10px] bg-red-500/10 px-2 py-0.5 rounded">Remove</button>
-                </div>
-            </div>
-
-            <!-- Video/Audio Timeline Track Track -->
-            <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
-                <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
+            <!-- TIMELINE TIMECODE TRACK & AUDIO TRACK (CapCut Pro Style matching Image 2) -->
+            <div class="bg-[#09090d] border-b border-[#1a1a22] px-4 py-3 space-y-2">
+                <!-- Video Track Line -->
+                <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2 flex items-center justify-between">
                     <div class="flex items-center gap-2 truncate">
                         <i class="fas fa-video text-blue-400 text-xs"></i>
                         <span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span>
                     </div>
                     <button onclick="document.getElementById('video-file-picker').click()" class="text-zinc-400 hover:text-white text-[11px] bg-zinc-800 px-2.5 py-1 rounded-md">Replace</button>
+                </div>
+
+                <!-- Pro Timeline Audio Track Row (Hidden till loaded) -->
+                <div id="audio-track-monitor" class="hidden">
+                    <div class="relative w-full bg-[#0284c7]/20 border border-[#0284c7]/40 rounded-xl p-3 flex flex-col justify-between overflow-hidden cursor-pointer" onclick="showSubmenu('audio')">
+                        <!-- Waveform representation line overlay -->
+                        <div class="absolute inset-x-0 bottom-0 h-5 waveform-bg opacity-40 pointer-events-none"></div>
+                        
+                        <div class="flex items-center justify-between z-10">
+                            <div class="flex items-center gap-2 truncate">
+                                <i class="fas fa-waveform text-sky-400 text-xs animate-pulse"></i>
+                                <span id="audioTrackLabel" class="text-xs font-mono text-sky-400 font-bold truncate">Voiceover 1</span>
+                            </div>
+                            <button onclick="event.stopPropagation(); removeBackgroundAudio()" class="text-red-400 hover:text-red-300 text-[10px] bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/30 z-20">Remove</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -240,7 +253,7 @@
                 <button onclick="triggerTool('Unlink')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-300"><i class="fas fa-link-slash"></i>Unlink</button>
             </div>
 
-            <!-- 2. WORKING AUDIO SUBMENU (100% Matches Image 1 UI) -->
+            <!-- 2. WORKING AUDIO SUBMENU -->
             <div id="submenu-audio" class="hidden submenu-grid">
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
                 <button onclick="document.getElementById('audio-extract-picker').click()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
@@ -359,7 +372,7 @@
         </div>
     </main>
 
-    <!-- PIXABAY SEARCH MODAL (Perfect 1:1 Matching Image 2 Design) -->
+    <!-- PIXABAY SEARCH MODAL -->
     <div id="pixabayModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-[#121216] border border-zinc-800 w-full max-w-md rounded-3xl p-6 text-center space-y-5 shadow-2xl">
             <div class="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
@@ -435,8 +448,10 @@
                 player.classList.remove('hidden');
                 player.src = URL.createObjectURL(file);
                 player.muted = false; 
-                player.play();
-                playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                player.load(); // Reload resource
+                player.play().then(() => {
+                    playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                }).catch(err => console.log("Auto-play error: ", err));
                 setTimeout(syncCanvasSize, 100);
             } else {
                 player.classList.add('hidden');
@@ -472,22 +487,26 @@
             }
         }
 
+        // Core Player Engine Time Monitor
         player.addEventListener('timeupdate', () => {
             const current = formatTime(player.currentTime);
             const total = formatTime(player.duration || 0);
             timeDisplay.innerText = `${current} / ${total}`;
+            
+            // Audio engine synchronization framework
             if(backgroundAudio && Math.abs(backgroundAudio.currentTime - player.currentTime) > 0.3) {
                 backgroundAudio.currentTime = player.currentTime;
             }
         });
 
         function formatTime(secs) {
+            if(isNaN(secs)) return "00:00";
             const m = Math.floor(secs / 60).toString().padStart(2, '0');
             const s = Math.floor(secs % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
 
-        // 1. EXTRACT AUDIO FROM DEVICE GALLERY (100% REAL)
+        // 1. EXTRACT AUDIO FROM DEVICE GALLERY
         function handleAudioExtracted(input) {
             const file = input.files[0];
             if(!file) return;
@@ -497,15 +516,14 @@
             player.muted = true; // Mute master video
             if(!player.paused) backgroundAudio.play();
 
-            // Setup Green Track Bar Layer
+            // Render Timeline Waveform Track Bar Row instantly
             document.getElementById('audio-track-monitor').classList.remove('hidden');
             document.getElementById('audioTrackLabel').innerText = file.name;
             
-            // Trigger Audio Submenu options like Image 1
             showSubmenu('audio');
         }
 
-        // 2 & 3. PIXABAY AUDIO ENGINE INTEGRATION (Image 2 Match)
+        // 2 & 3. PIXABAY AUDIO ENGINE INTEGRATION
         function openPixabayModal(mode) {
             document.getElementById('pixabayModal').classList.remove('hidden');
             document.getElementById('pixabayMode').value = mode;
@@ -556,7 +574,7 @@
                         backgroundAudio = new Audio(track.url);
                         backgroundAudio.play();
                         
-                        // Render Active Green Track Bar instantly
+                        // Show integrated Waveform panel strip 
                         document.getElementById('audio-track-monitor').classList.remove('hidden');
                         document.getElementById('audioTrackLabel').innerText = track.title;
                         
@@ -587,7 +605,7 @@
                         backgroundAudio.play();
                         
                         document.getElementById('audio-track-monitor').classList.remove('hidden');
-                        document.getElementById('audioTrackLabel').innerText = "Live Voiceover Recording.mp3";
+                        document.getElementById('audioTrackLabel').innerText = "Voiceover 1";
                         showSubmenu('audio');
                     };
 
@@ -638,7 +656,7 @@
 
             utterance.onstart = () => {
                 document.getElementById('audio-track-monitor').classList.remove('hidden');
-                document.getElementById('audioTrackLabel').innerText = `AI ${voiceType}: "${text.substring(0,15)}..."`;
+                document.getElementById('audioTrackLabel').innerText = `AI ${voiceType} Voice`;
                 showSubmenu('audio');
             };
             synth.speak(utterance);
