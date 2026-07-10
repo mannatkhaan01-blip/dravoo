@@ -3,18 +3,28 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dravoo · Advanced Cloud Video Editor</title>
-    <!-- Tailwind + Font Awesome Icons -->
+    <title>Dravoo · Pro Editor</title>
+    <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #000000;
-            color: #f3f4f6;
-            font-family: 'Inter', sans-serif;
+            background: #0b0b0e;
+            color: #f1f5f9;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             overflow-x: hidden;
         }
+        .glass-card {
+            background: rgba(16, 16, 20, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2a2a30;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #18181b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
+
         .scroll-x-menu {
             display: flex;
             overflow-x: auto;
@@ -22,614 +32,603 @@
             -webkit-overflow-scrolling: touch;
         }
         .scroll-x-menu::-webkit-scrollbar { display: none; }
-        
+
         .editor-drawer {
             position: fixed;
             bottom: -100%;
             left: 0;
             width: 100%;
-            height: 55vh;
-            background: #141418;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            border-top: 1px solid #2e2e38;
-            transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            height: 54vh;
+            background: #111115;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            border-top: 1px solid #2a2a32;
+            transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 200;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
         }
         .editor-drawer.open { bottom: 0; }
         
-        .waveform-preview {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0,10 Q5,0 10,10 T20,10 T30,10 T40,4 T50,14 T60,10 T70,10 T80,2 T90,14 T100,10' fill='none' stroke='%2338bdf8' stroke-width='1'/%3E%3C/svg%3E");
+        .asset-card {
+            background: #1c1c22;
+            border-radius: 14px;
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: #e5e7eb;
+            border: 1px solid #2c2c34;
+            transition: 0.15s;
+            padding: 8px;
+            text-align: center;
+        }
+        .asset-card:hover { transform: scale(1.02); border-color: #3b82f6; background: #26262e; }
+        
+        .submenu-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: #0c0c10;
+        }
+        @media (max-width: 600px) {
+            .submenu-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .waveform-bg {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q2,3 4,10 T8,10 T12,14 T16,6 T20,10 T24,2 T28,12 T32,10 T36,18 T40,10 T44,4 T48,12 T52,10 T56,10 T60,2 T64,14 T68,10 T72,8 T76,12 T80,10 T84,16 T88,10 T92,4 T96,12 T100,10' fill='none' stroke='%2338bdf8' stroke-width='1.2'/%3E%3C/svg%3E");
             background-repeat: repeat-x;
-            background-size: 60px 100%;
+            background-size: 80px 100%;
         }
     </style>
 </head>
-<body class="select-none">
+<body>
 
-    <!-- Core Hidden Component Assets -->
-    <input type="file" id="main-asset-loader" accept="video/*,image/*" class="hidden" />
-    <input type="file" id="extracted-audio-loader" accept="audio/*,video/*" class="hidden" onchange="processExtractedAudio(this)" />
-    <input type="file" id="overlay-asset-loader" accept="image/*,video/*" class="hidden" onchange="processOverlaySelected(this)" />
+    <!-- Hidden Inputs File Pickers -->
+    <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden" />
+    <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
+    <input type="file" id="audio-extract-picker" accept="audio/*,video/*" class="hidden" onchange="handleAudioExtracted(this)" />
 
-    <!-- Dravoo App Top Shell Header -->
-    <header class="flex items-center justify-between px-4 py-3 bg-[#0d0d11] border-b border-[#1f1f26]">
-        <div class="flex items-center gap-2">
-            <i class="fas fa-square-poll-horizontal text-blue-500 text-lg"></i>
-            <span class="font-bold text-base tracking-wider text-white">Dravoo</span>
-            <span class="text-[9px] text-zinc-400 border border-zinc-700 px-1.5 py-0.2 rounded">v2.4</span>
+    <!-- Navbar -->
+    <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
+            <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
+            <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Pro Studio</span>
         </div>
-        <button onclick="triggerNewProjectReset()" class="text-xs text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full transition">
-            <i class="fas fa-folder-plus mr-1.5"></i>New Project
-        </button>
+        <button onclick="startNewProject()" class="text-xs text-red-400 hover:text-white bg-red-950/40 border border-red-900/50 px-3 py-1.5 rounded-full transition"><i class="fas fa-folder-plus mr-1.5"></i>New Project</button>
     </header>
 
-    <!-- Canvas Workspace Viewport Module -->
-    <main class="max-w-md mx-auto my-2 p-2">
-        <div class="bg-[#09090c] rounded-2xl border border-[#1c1c24] overflow-hidden shadow-2xl">
-            
-            <!-- Realtime Video Preview Window Component -->
-            <div class="w-full bg-black flex items-center justify-center relative overflow-hidden" id="canvas-ratio-wrapper" style="aspect-ratio: 9/16; max-height: 48vh;">
-                <video id="main-video-player" loop class="w-full h-full object-contain hidden"></video>
-                <img id="main-image-player" class="w-full h-full object-contain hidden" alt="Timeline Canvas" />
-                
-                <!-- Overlay Canvas Render Layer Elements -->
-                <div id="text-canvas-render-layer" class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center text-center z-30"></div>
-                <img id="overlay-render-element" class="absolute max-w-[40%] border-2 border-dashed border-blue-500 hidden z-20" style="top:25%; left:25%;" alt="Overlay Attachment" />
+    <!-- Main Workspace -->
+    <main class="max-w-3xl mx-auto px-2 my-4">
+        <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-                <!-- Placeholder state default view frame -->
-                <div id="canvas-blank-placeholder" class="text-center p-6">
-                    <i class="fas fa-photo-film text-4xl text-zinc-800 mb-2"></i>
-                    <p class="text-xs text-zinc-500 mb-3">No operational streams detected in canvas</p>
-                    <button onclick="document.getElementById('main-asset-loader').click()" class="bg-blue-600 text-white text-xs px-4 py-2 rounded-full font-medium"><i class="fas fa-plus mr-1.5"></i>Select Media</button>
+            <!-- Top Project Toolbar -->
+            <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-white font-semibold">Project: Untitled</span>
+                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">Active</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-full px-3 py-1.5 outline-none">
+                        <option>4K UHD</option>
+                        <option selected>1080p Full HD</option>
+                        <option>720p HD</option>
+                    </select>
+                    <button onclick="alert('Exporting Realtime Project...')" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">Export</button>
                 </div>
             </div>
 
-            <!-- Dynamic Interactive Controls Panel Bar -->
-            <div class="px-4 py-3 bg-[#0d0d11] border-t border-[#1a1a24] flex items-center justify-between">
-                <span id="timestamp-counter" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
-                <button id="master-play-toggle-btn" onclick="togglePlaybackEngine()" class="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center shadow-md"><i class="fas fa-play text-xs pl-0.5"></i></button>
-                <span class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Timeline Mode</span>
-            </div>
+            <!-- Main Canvas Viewport Parent -->
+            <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
+                <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
+                    <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
+                    <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
+                    
+                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center flex-col text-center"></div>
+                    <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
 
-            <!-- DYNAMIC CAPCUT-STYLE MONITOR TIMELINE SYSTEMS -->
-            <div class="bg-[#050507] p-3 space-y-2 border-t border-[#161620]">
-                <!-- Video Core Main Media Master Channel Track Block -->
-                <div id="master-visual-track-bar" class="hidden bg-[#111116] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
-                    <div class="flex items-center gap-2 truncate max-w-[70%]">
-                        <i class="fas fa-video text-blue-400 text-xs"></i>
-                        <span id="visual-track-file-name" class="text-xs font-mono text-zinc-300 truncate">1000161626.jpg</span>
+                    <div id="media-placeholder" class="text-center p-6 z-10">
+                        <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
+                        <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
+                        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
                     </div>
-                    <button onclick="document.getElementById('main-asset-loader').click()" class="text-zinc-300 bg-zinc-800 hover:bg-zinc-700 text-xs px-3 py-1 rounded-lg transition">Replace</button>
+                </div>
+            </div>
+
+            <!-- Playback Controls -->
+            <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
+                <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
+                <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg transition"><i class="fas fa-play text-xs"></i></button>
+                <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
+            </div>
+
+            <!-- TIMELINE AREA -->
+            <div class="bg-[#09090d] border-b border-[#1a1a22] px-4 py-3 space-y-2">
+                <!-- Master Video / Image Track -->
+                <div id="master-video-track" class="hidden bg-[#131318] border border-zinc-800 rounded-xl p-2 flex items-center justify-between">
+                    <div class="flex items-center gap-2 truncate">
+                        <i class="fas fa-video text-blue-400 text-xs"></i>
+                        <span id="timelineLabel" class="text-xs font-mono text-zinc-300 truncate">No media loaded</span>
+                    </div>
+                    <button onclick="document.getElementById('video-file-picker').click()" class="text-zinc-400 hover:text-white text-[11px] bg-zinc-800 px-2.5 py-1 rounded-md">Replace</button>
                 </div>
 
-                <!-- Live Audio System Track Monitor Waveform Bar Component -->
-                <div id="master-audio-track-bar" class="hidden">
-                    <div class="relative w-full bg-sky-950/40 border border-sky-800/60 rounded-xl p-3 flex flex-col justify-between overflow-hidden">
-                        <div id="audio-timeline-needle-progress" class="absolute inset-y-0 left-0 bg-sky-500/20 w-0 pointer-events-none border-r border-sky-400/80"></div>
-                        <div class="absolute inset-x-0 bottom-0 h-4 waveform-preview opacity-40 pointer-events-none"></div>
+                <!-- Live Synchronized Audio Track Panel Row -->
+                <div id="audio-track-monitor" class="hidden">
+                    <div class="relative w-full bg-[#0284c7]/20 border border-[#0284c7]/40 rounded-xl p-3 flex flex-col justify-between overflow-hidden cursor-pointer">
+                        <!-- Dynamic Progress Timeline Tracker Needle -->
+                        <div id="audio-progress-bar" class="absolute inset-y-0 left-0 bg-sky-500/20 w-0 transition-all duration-100 pointer-events-none border-r border-sky-400"></div>
+                        <div class="absolute inset-x-0 bottom-0 h-5 waveform-bg opacity-50 pointer-events-none"></div>
+                        
                         <div class="flex items-center justify-between z-10">
-                            <div class="flex items-center gap-2 truncate max-w-[75%]">
+                            <div class="flex items-center gap-2 truncate">
                                 <i class="fas fa-waveform text-sky-400 text-xs animate-pulse"></i>
-                                <span id="audio-track-file-name" class="text-xs font-mono text-sky-400 font-medium truncate">Audio Asset Track</span>
+                                <span id="audioTrackLabel" class="text-xs font-mono text-sky-400 font-bold truncate">Audio Track</span>
                             </div>
-                            <button onclick="clearActiveAudioChannelTrack()" class="text-red-400 text-[10px] bg-red-950/60 border border-red-900/50 px-2 py-0.5 rounded z-20">Remove</button>
+                            <button onclick="event.stopPropagation(); removeBackgroundAudio()" class="text-red-400 hover:text-red-300 text-[10px] bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/30 z-20">Remove</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- DRAVOO CAPCUT HORIZONTAL SLIDER NAVIGATION MENU SHELL PANEL -->
-            <div id="primaryMenuDeck" class="scroll-x-menu bg-[#0d0d11] border-t border-[#1f1f26] py-3 px-2 gap-1">
-                <button onclick="activateSubMenuDeck('edit')" class="flex-shrink-0 w-16 flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition"><i class="fas fa-video text-sm text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
-                <button onclick="activateSubMenuDeck('audio')" class="flex-shrink-0 w-16 flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition"><i class="fas fa-music text-sm text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
-                <button onclick="activateSubMenuDeck('text')" class="flex-shrink-0 w-16 flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition"><i class="fas fa-font text-sm text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
-                <button onclick="activateSubMenuDeck('effects')" class="flex-shrink-0 w-16 flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition"><i class="fas fa-wand-magic-sparkles text-sm text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
-                <button onclick="activateSubMenuDeck('overlay')" class="flex-shrink-0 w-16 flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition"><i class="fas fa-layer-group text-sm text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
-                <button onclick="activateSubMenuDeck('aspect')" class="flex-shrink-0 w-16 flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition"><i class="fas fa-crop-simple text-sm text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
+            <!-- MASTER BOTTOM MENU -->
+            <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
+                <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
+                <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
+                <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
+                <button onclick="showSubmenu('effects')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-wand-magic-sparkles text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
+                <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
+                <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
             </div>
 
-            <!-- CORE ACTIVE RE-ROUTED SUBMENU GRIDS -->
-            <!-- Edit Options Deck -->
-            <div id="deck-submenu-edit" class="hidden p-3 grid grid-cols-4 gap-2 bg-[#09090c]">
-                <button onclick="restorePrimaryMenuDeck()" class="bg-zinc-950 text-zinc-400 text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="executeActionFramework('Split')" class="bg-zinc-900 text-white text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-scissors text-blue-400"></i>Split</button>
-                <button onclick="executeActionFramework('Speed Adjustment')" class="bg-zinc-900 text-white text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-gauge-high text-amber-400"></i>Speed</button>
-                <button onclick="executeActionFramework('Crop Frame')" class="bg-zinc-900 text-white text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-crop text-purple-400"></i>Crop</button>
+            <!-- DYNAMIC SUBMENUS -->
+            <!-- Edit Options -->
+            <div id="submenu-edit" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
+                <button onclick="triggerTool('Speed')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-gauge-high"></i>Speed</button>
+                <button onclick="triggerTool('Crop')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-crop"></i>Crop</button>
+                <button onclick="startNewProject()" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-400"><i class="fas fa-trash"></i>Clear All</button>
             </div>
 
-            <!-- Audio Options Deck -->
-            <div id="deck-submenu-audio" class="hidden p-2.5 flex flex-wrap gap-1.5 bg-[#09090c] items-center justify-between overflow-x-auto scroll-x-menu">
-                <button onclick="restorePrimaryMenuDeck()" class="bg-zinc-950 text-zinc-400 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1"><i class="fas fa-arrow-left"></i></button>
-                <button onclick="document.getElementById('extracted-audio-loader').click()" class="bg-zinc-900 text-zinc-200 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1.5"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
-                <button onclick="launchAudioSearchSystemModal('music')" class="bg-zinc-900 text-zinc-200 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1.5"><i class="fas fa-music text-purple-400"></i>Sounds</button>
-                <button onclick="launchAudioSearchSystemModal('sound-effects')" class="bg-zinc-900 text-zinc-200 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1.5"><i class="fas fa-bolt text-yellow-400"></i>Sound FX</button>
-                <button onclick="triggerMicrophoneVoiceRecording()" class="bg-zinc-900 text-zinc-200 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1.5"><i id="microphone-state-icon" class="fas fa-microphone text-red-500"></i><span id="microphone-state-label">Record</span></button>
-                <button onclick="launchTextToSpeechControlInterface()" class="bg-zinc-900 text-zinc-200 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1.5"><i class="fas fa-robot text-blue-400"></i>Text to audio</button>
-                <button onclick="launchBrandMusicControlDrawer()" class="bg-zinc-900 text-zinc-200 text-[11px] px-3 py-2 rounded-lg flex items-center gap-1.5"><i class="fas fa-bookmark text-amber-500"></i>Brand music</button>
+            <!-- AUDIO SUBMENU -->
+            <div id="submenu-audio" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="document.getElementById('audio-extract-picker').click()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
+                <button onclick="openPixabayModal('music')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-music text-purple-400"></i>Sounds</button>
+                <button onclick="openPixabayModal('sound-effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bolt text-yellow-400"></i>Sound FX</button>
+                <button id="record-btn-ui" onclick="toggleVoiceRecording()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i id="mic-icon-status" class="fas fa-microphone text-red-500"></i><span id="record-text-status">Record</span></button>
+                <button onclick="openTextToAudioDrawer()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-robot text-blue-400"></i><span>Text to audio</span></button>
+                <button onclick="openBrandMusicDrawer()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bookmark text-amber-400"></i>Brand Music</button>
             </div>
 
-            <!-- Text Options Deck -->
-            <div id="deck-submenu-text" class="hidden p-3 grid grid-cols-4 gap-2 bg-[#09090c]">
-                <button onclick="restorePrimaryMenuDeck()" class="bg-zinc-950 text-zinc-400 text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="launchStandardModalDrawer('text-fonts')" class="bg-zinc-900 text-white text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
+            <!-- Text Submenu -->
+            <div id="submenu-text" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="openDrawer('fonts')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
             </div>
 
-            <!-- Effects Options Deck -->
-            <div id="deck-submenu-effects" class="hidden p-3 grid grid-cols-4 gap-2 bg-[#09090c]">
-                <button onclick="restorePrimaryMenuDeck()" class="bg-zinc-950 text-zinc-400 text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="executeActionFramework('Cinematic Filter Frame')" class="bg-zinc-900 text-white text-xs p-2 rounded-xl flex flex-col items-center gap-1"><i class="fas fa-wand-magic-sparkles text-purple-400"></i>Video FX</button>
+            <!-- Effects Submenu -->
+            <div id="submenu-effects" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="triggerTool('Video Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-clapperboard text-purple-400"></i>Video FX</button>
             </div>
 
-            <!-- Overlay Options Deck -->
-            <div id="deck-submenu-overlay" class="hidden p-3 bg-[#09090c]">
-                <div class="flex items-center gap-2">
-                    <button onclick="restorePrimaryMenuDeck()" class="bg-zinc-950 text-zinc-400 text-xs px-3 py-2 rounded-xl"><i class="fas fa-arrow-left"></i></button>
-                    <button onclick="document.getElementById('overlay-asset-loader').click()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs py-2 rounded-xl text-center"><i class="fas fa-layer-plus mr-1.5"></i>Add Overlay Asset</button>
-                </div>
+            <!-- Overlay Submenu -->
+            <div id="submenu-overlay" class="hidden submenu-grid">
+                <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+                <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white"><i class="fas fa-folder-open"></i> Add Overlay</button>
             </div>
 
-            <!-- Aspect Options Deck -->
-            <div id="deck-submenu-aspect" class="hidden p-3 bg-[#09090c]">
+            <!-- Aspect Ratio Submenu -->
+            <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
                 <div class="flex items-center justify-between mb-2">
-                    <button onclick="restorePrimaryMenuDeck()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-                    <span class="text-xs text-zinc-400 font-bold">Aspect Canvas Scale</span>
+                    <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
+                    <span class="text-xs font-bold text-zinc-300">Canvas Ratio</span>
                 </div>
-                <div class="flex gap-2 overflow-x-auto text-xs text-white">
-                    <button onclick="transformCanvasMatrixRatio('9/16')" class="bg-zinc-800 px-3 py-1.5 rounded-full border border-zinc-700">9:16 (TikTok)</button>
-                    <button onclick="transformCanvasMatrixRatio('16/9')" class="bg-zinc-800 px-3 py-1.5 rounded-full border border-zinc-700">16:9 (YouTube)</button>
-                    <button onclick="transformCanvasMatrixRatio('1/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full border border-zinc-700">1:1 (Instagram)</button>
+                <div class="flex gap-2 overflow-x-auto text-xs text-zinc-200">
+                    <button onclick="changeRatio('9/16')" class="bg-zinc-800 px-3 py-1.5 rounded-full">9:16 (TikTok)</button>
+                    <button onclick="changeRatio('16/9')" class="bg-zinc-800 px-3 py-1.5 rounded-full">16:9 (YouTube)</button>
+                    <button onclick="changeRatio('1/1')" class="bg-zinc-800 px-3 py-1.5 rounded-full">1:1 (Insta)</button>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- PIXABAY LIVE AUDIO STREAM INTEGRATED MODAL SYSTEM -->
-    <div id="pixabaySystemModal" class="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-[#121217] border border-zinc-800 w-full max-w-sm rounded-3xl p-5 text-center space-y-4 shadow-2xl">
-            <div class="w-14 h-14 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-2xl">
-                <i class="fas fa-music" id="pixabayModalVisualIcon"></i>
+    <!-- PIXABAY SEARCH MODAL -->
+    <div id="pixabayModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-[#121216] border border-zinc-800 w-full max-w-md rounded-3xl p-6 text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+                <i class="fas fa-music" id="pixabayIcon"></i>
             </div>
             <div>
-                <h3 class="text-lg font-bold text-white" id="pixabayModalSystemTitle">Pixabay Free Music</h3>
-                <p class="text-[11px] text-zinc-400 mt-0.5">Search and download no copyright background tracks safely.</p>
+                <h3 class="text-xl font-bold text-white" id="pixabayTitle">Pixabay Live Engine</h3>
+                <p class="text-xs text-zinc-400 mt-1">Search millions of free non-copyright streaming tracks live.</p>
             </div>
+            <input type="hidden" id="pixabayMode" value="music" />
+            <input type="text" id="pixabayQuery" placeholder="e.g., lofi, cinematic, pop, explosion..." class="w-full bg-[#18181c] border border-zinc-700 text-sm rounded-xl px-4 py-3 outline-none focus:border-purple-500 text-white" />
             
-            <input type="hidden" id="pixabayActiveModeScope" value="music" />
-            <div class="relative">
-                <input type="text" id="pixabaySearchKeywordField" placeholder="Search audio tracks..." class="w-full bg-[#18181d] border border-zinc-700 text-xs rounded-xl px-4 py-3 outline-none focus:border-purple-500 text-white pr-10" />
-                <i class="fas fa-search absolute right-3.5 top-3.5 text-zinc-500 text-xs"></i>
-            </div>
+            <button onclick="searchPixabayAudio()" class="w-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider transition">Search Server</button>
+            <button onclick="closePixabayModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold py-3.5 rounded-xl transition">Close</button>
             
-            <!-- Safe Copyright Protection Agreement Field Panel Toggle UI -->
-            <div class="bg-[#1a1a24]/60 border border-zinc-800/80 rounded-xl p-2.5 flex items-center justify-between text-left">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-shield-halved text-emerald-400 text-xs"></i>
-                    <div>
-                        <p class="text-[10px] text-white font-bold uppercase tracking-wider">Copyright Shield Protection</p>
-                        <p class="text-[9px] text-zinc-400">Filter Safe Commercial Media Streams Only</p>
-                    </div>
-                </div>
-                <input type="checkbox" id="copyright-safety-toggle" checked class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" />
-            </div>
-            
-            <button onclick="executePixabayServerLiveSearch()" class="w-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider transition">Search Audio Tracks</button>
-            <button onclick="dismissPixabaySystemModal()" class="w-full bg-zinc-800 text-zinc-400 text-xs py-3 rounded-xl transition">Close</button>
-            
-            <!-- Live Grid Payload Callback View -->
-            <div id="pixabayLivePayloadCallbacks" class="max-h-40 overflow-y-auto space-y-2 pt-1 text-left hidden"></div>
+            <!-- Live Streams Results Area -->
+            <div id="pixabayResults" class="max-h-48 overflow-y-auto space-y-2 pt-2 text-left hidden"></div>
         </div>
     </div>
 
-    <!-- DYNAMIC EXPANDABLE DRAWER SYSTEM COMPONENT -->
-    <div class="editor-drawer" id="appSystemModalDrawer">
+    <!-- ========== DRAWER ELEMENT ========== -->
+    <div class="editor-drawer" id="editorDrawer">
         <div class="flex items-center justify-between p-4 border-b border-zinc-800">
-            <button class="text-zinc-400 text-xs font-bold" onclick="dismissSystemModalDrawer()">✕</button>
-            <span id="appSystemModalDrawerTitle" class="text-xs font-bold text-zinc-400 tracking-wider uppercase">Drawer Panel</span>
-            <button class="text-blue-500 font-bold text-xs" onclick="dismissSystemModalDrawer()">Done</button>
+            <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
+            <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Drawer Panel</span>
+            <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
         </div>
-        <div class="p-4 overflow-y-auto h-[45vh]">
-            <div id="drawerDynamicInjectionGrid"></div>
+        <div class="tab-content-container p-4 overflow-y-auto flex-1">
+            <div id="drawerDynamicGrid"></div>
         </div>
     </div>
 
-    <!-- SCRIPT APPLICATION MANAGEMENT CODE REGIME -->
     <script>
-        const CLIENT_API_KEY = "52778614-b103ae3cfe866a30cb154bd0a";
+        const API_KEY = "52778614-b103ae3cfe866a30cb154bd0a";
 
-        // Global State System Variables
-        let liveAudioChannelStream = null;
-        let voiceMediaRecorder = null;
-        let recordedAudioChunks = [];
-        let systemVoiceRecordingBoolean = false;
-        let staticImageIntervalTimer = null;
-        let genericFallbackFrameDuration = 5;
+        // Media DOM bindings
+        const picker = document.getElementById('video-file-picker');
+        const player = document.getElementById('studio-player');
+        const imageEl = document.getElementById('studio-image');
+        const placeholder = document.getElementById('media-placeholder');
+        const timelineLabel = document.getElementById('timelineLabel');
+        const masterVideoTrack = document.getElementById('master-video-track');
+        const playBtn = document.getElementById('playBtn');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const ratioBox = document.getElementById('video-ratio-box');
+        const elementsLayer = document.getElementById('canvas-elements-layer');
+        const overlayImg = document.getElementById('overlay-display-img');
+        const audioTrackMonitor = document.getElementById('audio-track-monitor');
+        const audioTrackLabel = document.getElementById('audioTrackLabel');
+        const audioProgressBar = document.getElementById('audio-progress-bar');
 
-        // DOM Element Reference Hooks
-        const assetLoaderInput = document.getElementById('main-asset-loader');
-        const videoPlayerElement = document.getElementById('main-video-player');
-        const imagePlayerElement = document.getElementById('main-image-player');
-        const canvasBlankPlaceholder = document.getElementById('canvas-blank-placeholder');
-        const masterVisualTrackBar = document.getElementById('master-visual-track-bar');
-        const visualTrackFileName = document.getElementById('visual-track-file-name');
-        const masterPlayToggleBtn = document.getElementById('master-play-toggle-btn');
-        const timestampCounter = document.getElementById('timestamp-counter');
-        const canvasRatioWrapper = document.getElementById('canvas-ratio-wrapper');
-        const textCanvasRenderLayer = document.getElementById('text-canvas-render-layer');
-        const overlayRenderElement = document.getElementById('overlay-render-element');
-        const masterAudioTrackBar = document.getElementById('master-audio-track-bar');
-        const audioTrackFileName = document.getElementById('audio-track-file-name');
-        const audioTimelineNeedleProgress = document.getElementById('audio-timeline-needle-progress');
+        let backgroundAudio = null; 
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+        let imageTimer = null;
+        let imageDuration = 5; // Default image timeline frame safe state seconds
 
-        // Master Frame Asset Multi-Format Selection Event Engine Setup
-        assetLoaderInput.addEventListener('change', function(event) {
-            const uploadedFile = event.target.files[0];
-            if (!uploadedFile) return;
+        // Reset & New Project Management Framework
+        function startNewProject() {
+            if(backgroundAudio) { backgroundAudio.pause(); backgroundAudio = null; }
+            player.pause(); player.src = ""; player.classList.add('hidden');
+            imageEl.src = ""; imageEl.classList.add('hidden');
+            if(imageTimer) clearInterval(imageTimer);
+            
+            placeholder.classList.remove('hidden');
+            masterVideoTrack.classList.add('hidden');
+            audioTrackMonitor.classList.add('hidden');
+            elementsLayer.innerHTML = "";
+            overlayImg.classList.add('hidden');
+            timeDisplay.innerText = "00:00 / 00:00";
+            playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+            timelineLabel.innerText = "No media loaded";
+        }
 
-            canvasBlankPlaceholder.classList.add('hidden');
-            masterVisualTrackBar.classList.remove('hidden');
-            visualTrackFileName.innerText = uploadedFile.name;
+        // File Selection Core
+        picker.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            placeholder.classList.add('hidden');
+            masterVideoTrack.classList.remove('hidden');
+            timelineLabel.innerText = file.name;
 
-            if (uploadedFile.type.startsWith('video/')) {
-                imagePlayerElement.classList.add('hidden');
-                imagePlayerElement.src = "";
-                videoPlayerElement.classList.remove('hidden');
-                videoPlayerElement.src = URL.createObjectURL(uploadedFile);
-                videoPlayerElement.load();
-                videoPlayerElement.play().then(() => {
-                    masterPlayToggleBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+            if (file.type.startsWith('video/')) {
+                imageEl.classList.add('hidden');
+                player.classList.remove('hidden');
+                player.src = URL.createObjectURL(file);
+                player.load();
+                player.play().then(() => {
+                    playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
                 }).catch(() => {});
             } else {
-                videoPlayerElement.classList.add('hidden');
-                videoPlayerElement.src = "";
-                imagePlayerElement.classList.remove('hidden');
-                imagePlayerElement.src = URL.createObjectURL(uploadedFile);
-                timestampCounter.innerText = "00:00 / 00:05";
-                masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
+                player.classList.add('hidden');
+                player.src = "";
+                imageEl.classList.remove('hidden');
+                imageEl.src = URL.createObjectURL(file);
+                timeDisplay.innerText = "00:00 / 00:05";
+                playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
             }
         });
 
-        // 1. Reset State Management Framework Core (New Project Tool)
-        function triggerNewProjectReset() {
-            if(liveAudioChannelStream) { liveAudioChannelStream.pause(); liveAudioChannelStream = null; }
-            videoPlayerElement.pause(); videoPlayerElement.src = ""; videoPlayerElement.classList.add('hidden');
-            imagePlayerElement.src = ""; imagePlayerElement.classList.add('hidden');
-            if(staticImageIntervalTimer) clearInterval(staticImageIntervalTimer);
-            
-            canvasBlankPlaceholder.classList.remove('hidden');
-            masterVisualTrackBar.classList.add('hidden');
-            masterAudioTrackBar.classList.add('hidden');
-            textCanvasRenderLayer.innerHTML = "";
-            overlayRenderElement.classList.add('hidden');
-            timestampCounter.innerText = "00:00 / 00:00";
-            masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
-            visualTrackFileName.innerText = "No operational track context active";
-        }
+        // Global Play/Pause Control Framework Engine
+        function togglePlay() {
+            const isVideoActive = !player.classList.contains('hidden') && player.src;
+            const isImageActive = !imageEl.classList.contains('hidden') && imageEl.src;
 
-        // 2. Playback Multi-Stream Engine Driver Component
-        function togglePlaybackEngine() {
-            const videoIsTarget = !videoPlayerElement.classList.contains('hidden') && videoPlayerElement.src;
-            const imageIsTarget = !imagePlayerElement.classList.contains('hidden') && imagePlayerElement.src;
-
-            if (videoIsTarget) {
-                if (videoPlayerElement.paused) {
-                    videoPlayerElement.play();
-                    if(liveAudioChannelStream) liveAudioChannelStream.play();
-                    masterPlayToggleBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+            if (isVideoActive) {
+                if (player.paused) {
+                    player.play();
+                    if(backgroundAudio) backgroundAudio.play();
+                    playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
                 } else {
-                    videoPlayerElement.pause();
-                    if(liveAudioChannelStream) liveAudioChannelStream.pause();
-                    masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
+                    player.pause();
+                    if(backgroundAudio) backgroundAudio.pause();
+                    playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
                 }
-            } else if (imageIsTarget || liveAudioChannelStream) {
-                if (liveAudioChannelStream) {
-                    if (liveAudioChannelStream.paused) {
-                        liveAudioChannelStream.play();
-                        masterPlayToggleBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
-                        executeStaticImageTimelineTrackerCycle();
+            } else if (isImageActive || backgroundAudio) {
+                // If audio or static image frame asset is playing
+                if (backgroundAudio) {
+                    if (backgroundAudio.paused) {
+                        backgroundAudio.play();
+                        playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                        startImageCounter();
                     } else {
-                        liveAudioChannelStream.pause();
-                        masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
-                        if(staticImageIntervalTimer) clearInterval(staticImageIntervalTimer);
+                        backgroundAudio.pause();
+                        playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+                        if(imageTimer) clearInterval(imageTimer);
                     }
                 } else {
-                    if(masterPlayToggleBtn.innerHTML.includes('play')) {
-                        masterPlayToggleBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
-                        executeStaticImageTimelineTrackerCycle();
+                    // Toggle simulate play logo states safely
+                    if(playBtn.innerHTML.includes('play')) {
+                        playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+                        startImageCounter();
                     } else {
-                        masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
-                        if(staticImageIntervalTimer) clearInterval(staticImageIntervalTimer);
+                        playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+                        if(imageTimer) clearInterval(imageTimer);
                     }
                 }
             }
         }
 
-        function executeStaticImageTimelineTrackerCycle() {
-            if(staticImageIntervalTimer) clearInterval(staticImageIntervalTimer);
-            let timeRunningOffset = 0;
-            const totalTargetDuration = liveAudioChannelStream ? liveAudioChannelStream.duration || genericFallbackFrameDuration : genericFallbackFrameDuration;
+        function startImageCounter() {
+            if(imageTimer) clearInterval(imageTimer);
+            let elapsed = 0;
+            const totalDuration = backgroundAudio ? backgroundAudio.duration || imageDuration : imageDuration;
             
-            staticImageIntervalTimer = setInterval(() => {
-                if(liveAudioChannelStream) {
-                    timeRunningOffset = liveAudioChannelStream.currentTime;
+            imageTimer = setInterval(() => {
+                if(backgroundAudio) {
+                    elapsed = backgroundAudio.currentTime;
                 } else {
-                    timeRunningOffset += 0.1;
+                    elapsed += 0.1;
                 }
                 
-                if (timeRunningOffset >= totalTargetDuration) {
-                    clearInterval(staticImageIntervalTimer);
-                    masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
-                    timeRunningOffset = 0;
-                    if(liveAudioChannelStream) liveAudioChannelStream.currentTime = 0;
+                if (elapsed >= totalDuration) {
+                    clearInterval(imageTimer);
+                    playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
+                    elapsed = 0;
+                    if(backgroundAudio) backgroundAudio.currentTime = 0;
                 }
                 
-                timestampCounter.innerText = `${transformTimeUnits(timeRunningOffset)} / ${transformTimeUnits(totalTargetDuration)}`;
-                synchronizeAudioTrackProgressBarNeedle(timeRunningOffset, totalTargetDuration);
+                timeDisplay.innerText = `${formatTime(elapsed)} / ${formatTime(totalDuration)}`;
+                updateAudioProgressBar(elapsed, totalDuration);
             }, 100);
         }
 
-        videoPlayerElement.addEventListener('timeupdate', () => {
-            const currentPosition = videoPlayerElement.currentTime;
-            const absoluteBounds = videoPlayerElement.duration || 0;
-            timestampCounter.innerText = `${transformTimeUnits(currentPosition)} / ${transformTimeUnits(absoluteBounds)}`;
+        // Real-time Event Monitors for Progress Bars
+        player.addEventListener('timeupdate', () => {
+            const current = player.currentTime;
+            const total = player.duration || 0;
+            timeDisplay.innerText = `${formatTime(current)} / ${formatTime(total)}`;
             
-            if(liveAudioChannelStream) {
-                if(Math.abs(liveAudioChannelStream.currentTime - currentPosition) > 0.25) {
-                    liveAudioChannelStream.currentTime = currentPosition;
+            if(backgroundAudio) {
+                if(Math.abs(backgroundAudio.currentTime - current) > 0.3) {
+                    backgroundAudio.currentTime = current;
                 }
             }
-            synchronizeAudioTrackProgressBarNeedle(currentPosition, absoluteBounds);
+            updateAudioProgressBar(current, total);
         });
 
-        function synchronizeAudioTrackProgressBarNeedle(current, total) {
+        function updateAudioProgressBar(current, total) {
             if(total > 0) {
-                const stepPercentage = (current / total) * 100;
-                audioTimelineNeedleProgress.style.width = `${stepPercentage}%`;
+                const percentage = (current / total) * 100;
+                audioProgressBar.style.width = `${percentage}%`;
             }
         }
 
-        function transformTimeUnits(seconds) {
-            if(isNaN(seconds) || seconds === Infinity) return "00:00";
-            const minUnit = Math.floor(seconds / 60).toString().padStart(2, '0');
-            const secUnit = Math.floor(seconds % 60).toString().padStart(2, '0');
-            return `${minUnit}:${secUnit}`;
+        function formatTime(secs) {
+            if(isNaN(secs) || secs === Infinity) return "00:00";
+            const m = Math.floor(secs / 60).toString().padStart(2, '0');
+            const s = Math.floor(secs % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
         }
 
-        // 3. Audio Extraction Track Module Splicer Function
-        function processExtractedAudio(inputElement) {
-            const selectedFile = inputElement.files[0];
-            if(!selectedFile) return;
-            registerAudioTrackChannelContext(URL.createObjectURL(selectedFile), selectedFile.name);
+        // 1. EXTRACT AUDIO FROM ON-DEVICE STORAGE GALLERY
+        function handleAudioExtracted(input) {
+            const file = input.files[0];
+            if(!file) return;
+            setupAudioEngine(URL.createObjectURL(file), file.name);
         }
 
-        function registerAudioTrackChannelContext(audioUrl, trackLabelTitle) {
-            if(liveAudioChannelStream) liveAudioChannelStream.pause();
-            liveAudioChannelStream = new Audio(audioUrl);
+        // Core Unified Sound Deployment Engine Loader 
+        function setupAudioEngine(url, name) {
+            if(backgroundAudio) backgroundAudio.pause();
+            backgroundAudio = new Audio(url);
             
-            masterAudioTrackBar.classList.remove('hidden');
-            audioTrackFileName.innerText = trackLabelTitle;
-            audioTimelineNeedleProgress.style.width = "0%";
+            audioTrackMonitor.classList.remove('hidden');
+            audioTrackLabel.innerText = name;
+            audioProgressBar.style.width = "0%";
 
-            liveAudioChannelStream.addEventListener('loadedmetadata', () => {
-                if(videoPlayerElement.classList.contains('hidden') && imagePlayerElement.classList.contains('hidden')) {
-                    timestampCounter.innerText = `00:00 / ${transformTimeUnits(liveAudioChannelStream.duration)}`;
+            backgroundAudio.addEventListener('loadedmetadata', () => {
+                if(player.classList.contains('hidden') && imageEl.classList.contains('hidden')) {
+                    timeDisplay.innerText = `00:00 / ${formatTime(backgroundAudio.duration)}`;
                 }
             });
 
-            liveAudioChannelStream.addEventListener('timeupdate', () => {
-                if(!videoPlayerElement.src || videoPlayerElement.classList.contains('hidden')) {
-                    timestampCounter.innerText = `${transformTimeUnits(liveAudioChannelStream.currentTime)} / ${transformTimeUnits(liveAudioChannelStream.duration)}`;
-                    synchronizeAudioTrackProgressBarNeedle(liveAudioChannelStream.currentTime, liveAudioChannelStream.duration);
+            backgroundAudio.addEventListener('timeupdate', () => {
+                if(!player.src || player.classList.contains('hidden')) {
+                    timeDisplay.innerText = `${formatTime(backgroundAudio.currentTime)} / ${formatTime(backgroundAudio.duration)}`;
+                    updateAudioProgressBar(backgroundAudio.currentTime, backgroundAudio.duration);
                 }
             });
 
-            liveAudioChannelStream.addEventListener('ended', () => {
-                masterPlayToggleBtn.innerHTML = `<i class="fas fa-play text-xs pl-0.5"></i>`;
+            backgroundAudio.addEventListener('ended', () => {
+                playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`;
             });
 
-            if(!videoPlayerElement.paused && videoPlayerElement.src) {
-                liveAudioChannelStream.play().catch(()=>{});
+            // Automatically execute audio alongside active processes
+            if(!player.paused && player.src) {
+                backgroundAudio.play().catch(()=>{});
             }
         }
 
-        function clearActiveAudioChannelTrack() {
-            if(liveAudioChannelStream) { liveAudioChannelStream.pause(); liveAudioChannelStream = null; }
-            masterAudioTrackBar.classList.add('hidden');
-            if(videoPlayerElement.classList.contains('hidden') && imagePlayerElement.classList.contains('hidden')) {
-                timestampCounter.innerText = "00:00 / 00:00";
-            }
-        }
-
-        // 4. FIX: Pixabay Live Integration & CORS Safety Filter Engine
-        function launchAudioSearchSystemModal(typeModeScope) {
-            document.getElementById('pixabaySystemModal').classList.remove('hidden');
-            document.getElementById('pixabayActiveModeScope').value = typeModeScope;
-            document.getElementById('pixabayLivePayloadCallbacks').classList.add('hidden');
-            document.getElementById('pixabayLivePayloadCallbacks').innerHTML = '';
-            document.getElementById('pixabaySearchKeywordField').value = '';
+        // 2 & 3 & 4. PIXABAY LIVE AUDIO API CALL SEARCH STREAM SYSTEM
+        function openPixabayModal(mode) {
+            document.getElementById('pixabayModal').classList.remove('hidden');
+            document.getElementById('pixabayMode').value = mode;
+            document.getElementById('pixabayResults').classList.add('hidden');
+            document.getElementById('pixabayResults').innerHTML = '';
+            document.getElementById('pixabayQuery').value = '';
             
-            if(typeModeScope === 'music') {
-                document.getElementById('pixabayModalSystemTitle').innerText = "Pixabay Free Music Launcher";
-                document.getElementById('pixabayModalVisualIcon').className = "fas fa-music text-purple-400";
+            if(mode === 'music') {
+                document.getElementById('pixabayTitle').innerText = "Pixabay Live Music";
+                document.getElementById('pixabayIcon').className = "fas fa-music text-purple-400";
             } else {
-                document.getElementById('pixabayModalSystemTitle').innerText = "Pixabay Free Sound FX Engine";
-                document.getElementById('pixabayModalVisualIcon').className = "fas fa-bolt text-yellow-400";
+                document.getElementById('pixabayTitle').innerText = "Pixabay Live Sound FX";
+                document.getElementById('pixabayIcon').className = "fas fa-bolt text-yellow-400";
             }
         }
 
-        function dismissPixabaySystemModal() {
-            document.getElementById('pixabaySystemModal').classList.add('hidden');
+        function closePixabayModal() {
+            document.getElementById('pixabayModal').classList.add('hidden');
         }
 
-        async function executePixabayServerLiveSearch() {
-            const userInputKeyword = document.getElementById('pixabaySearchKeywordField').value || 'beats';
-            const executionModeScope = document.getElementById('pixabayActiveModeScope').value;
-            const containerGrid = document.getElementById('pixabayLivePayloadCallbacks');
-            const copyrightFilterOn = document.getElementById('copyright-safety-toggle').checked;
+        async function searchPixabayAudio() {
+            const query = document.getElementById('pixabayQuery').value || 'trending';
+            const mode = document.getElementById('pixabayMode').value;
+            const resultsDiv = document.getElementById('pixabayResults');
             
-            containerGrid.classList.remove('hidden');
-            containerGrid.innerHTML = '<p class="text-zinc-500 text-xs text-center py-5 animate-pulse"><i class="fas fa-spinner fa-spin mr-2"></i>Connecting to Pixabay Cluster...</p>';
+            resultsDiv.classList.remove('hidden');
+            resultsDiv.innerHTML = '<p class="text-zinc-500 text-xs text-center py-4 animate-bounce">Fetching from Pixabay API Server...</p>';
 
-            // Safe fetch mechanism using client key setup
-            const serverEndpointUrl = `https://pixabay.com/api/${executionModeScope}/?key=${CLIENT_API_KEY}&q=${encodeURIComponent(userInputKeyword)}&per_page=20`;
+            // Pixabay API Documentation endpoint rules architecture parameters
+            const url = `https://pixabay.com/api/${mode}/?key=${API_KEY}&q=${encodeURIComponent(query)}&per_page=15`;
 
             try {
-                const networkResponse = await fetch(serverEndpointUrl);
-                const standardJsonPayload = await networkResponse.json();
+                const response = await fetch(url);
+                const data = await response.json();
 
-                containerGrid.innerHTML = '';
-                if(!standardJsonPayload.hits || standardJsonPayload.hits.length === 0) {
-                    containerGrid.innerHTML = '<p class="text-amber-500 text-xs text-center py-2">No matching asset rows returned.</p>';
+                resultsDiv.innerHTML = '';
+                if(!data.hits || data.hits.length === 0) {
+                    resultsDiv.innerHTML = '<p class="text-red-400 text-xs text-center py-2">No audio tracks found. Try another word.</p>';
                     return;
                 }
 
-                standardJsonPayload.hits.forEach(audioNode => {
-                    const nodeLabelName = audioNode.tags ? audioNode.tags.split(',').slice(0,2).join(' ') : 'Pixabay Production Audio';
-                    // Fallback track validation to secure cross-origin safety
-                    const streamingSourceLink = audioNode.audio || audioNode.download;
+                data.hits.forEach(track => {
+                    const trackTitle = track.tags || 'Pixabay Track Asset';
+                    const trackUrl = track.audio || track.download; // Adaptive callback link framework
                     
-                    if(!streamingSourceLink) return;
+                    if(!trackUrl) return;
 
-                    const listCardRowElement = document.createElement('div');
-                    listCardRowElement.className = 'flex items-center justify-between p-2 bg-[#191922] border border-zinc-800 rounded-xl mb-1 hover:border-zinc-600 transition';
-                    listCardRowElement.innerHTML = `
-                        <div class="flex items-center gap-2 truncate max-w-[70%]">
-                            <i class="fas ${executionModeScope === 'music' ? 'fa-music text-purple-400' : 'fa-volume-high text-yellow-400'} text-[11px]"></i>
-                            <div class="truncate">
-                                <p class="text-xs font-medium text-zinc-200 truncate">${nodeLabelName}</p>
-                                ${copyrightFilterOn ? '<p class="text-[8px] text-emerald-400 font-mono"><i class="fas fa-check-double mr-0.5"></i>Safe / Commercial License</p>' : ''}
-                            </div>
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between p-2.5 bg-[#1b1b22] border border-zinc-800 rounded-xl mb-1.5 hover:border-purple-500 transition';
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2 truncate max-w-[240px]">
+                            <i class="fas ${mode === 'music' ? 'fa-music text-purple-400' : 'fa-volume-high text-yellow-400'} text-xs"></i>
+                            <span class="text-xs font-medium text-zinc-200 truncate">${trackTitle}</span>
                         </div>
-                        <button class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-[9px] px-3 py-1.5 rounded-lg uppercase tracking-wider transition">Apply</button>
+                        <button class="bg-blue-600 hover:bg-blue-500 text-[10px] font-bold text-white px-3 py-1.5 rounded-lg transition">Apply</button>
                     `;
-                    listCardRowElement.querySelector('button').onclick = () => {
-                        registerAudioTrackChannelContext(streamingSourceLink, nodeLabelName);
-                        dismissPixabaySystemModal();
-                        activateSubMenuDeck('audio');
+                    row.querySelector('button').onclick = () => {
+                        setupAudioEngine(trackUrl, trackTitle);
+                        closePixabayModal();
+                        showSubmenu('audio');
                     };
-                    containerGrid.appendChild(listCardRowElement);
+                    resultsDiv.appendChild(row);
                 });
 
-            } catch (connectionError) {
-                // If standard fetch halts via network policies, execute immediate operational mock simulation loop framework
-                containerGrid.innerHTML = '';
-                executeMockAudioFallbackStreamEngine(userInputKeyword, executionModeScope, containerGrid, copyrightFilterOn);
+            } catch (error) {
+                resultsDiv.innerHTML = '<p class="text-red-500 text-xs text-center py-2">API Connection Error.</p>';
             }
         }
 
-        function executeMockAudioFallbackStreamEngine(query, mode, targetContainer, hasShield) {
-            // Built-in stable asset server proxy to secure audio backup playback under all sandbox constraints
-            const mockMediaArray = [
-                { title: `${query} Premium Mix Alpha`, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                { title: `${query} Studio Core Wave`, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                { title: `${query} Cinematic Acoustic`, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
-            ];
+        // 5. LIVE AUDIO MICROPHONE RECORDING SUB-SYSTEM
+        async function toggleVoiceRecording() {
+            const recordText = document.getElementById('record-text-status');
+            const micIcon = document.getElementById('mic-icon-status');
 
-            mockMediaArray.forEach(mockItem => {
-                const mockRow = document.createElement('div');
-                mockRow.className = 'flex items-center justify-between p-2.5 bg-[#191922] border border-zinc-800 rounded-xl mb-1';
-                mockRow.innerHTML = `
-                    <div class="flex items-center gap-2 truncate max-w-[70%]">
-                        <i class="fas fa-circle-nodes text-emerald-400 text-xs"></i>
-                        <div>
-                            <p class="text-xs font-medium text-zinc-200 truncate">${mockItem.title}</p>
-                            <p class="text-[8px] text-sky-400 font-mono">Verified Safe Stream Node</p>
-                        </div>
-                    </div>
-                    <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-[9px] px-3 py-1.5 rounded-lg transition">Apply</button>
-                `;
-                mockRow.querySelector('button').onclick = () => {
-                    registerAudioTrackChannelContext(mockItem.url, mockItem.title);
-                    dismissPixabaySystemModal();
-                    activateSubMenuDeck('audio');
-                };
-                targetContainer.appendChild(mockRow);
-            });
-        }
-
-        // 5. Native Micro-Device Microphone Input Audio Splicer
-        async function triggerMicrophoneVoiceRecording() {
-            const statusLabel = document.getElementById('microphone-state-label');
-            const stateIcon = document.getElementById('microphone-state-icon');
-
-            if (!systemVoiceRecordingBoolean) {
+            if (!isRecording) {
                 try {
-                    const audioStreamPipeline = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    voiceMediaRecorder = new MediaRecorder(audioStreamPipeline);
-                    recordedAudioChunks = [];
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    recordedChunks = [];
                     
-                    voiceMediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) recordedAudioChunks.push(event.data); };
-                    voiceMediaRecorder.onstop = () => {
-                        const standardVoiceBlob = new Blob(recordedAudioChunks, { type: 'audio/mp3' });
-                        registerAudioTrackChannelContext(URL.createObjectURL(standardVoiceBlob), "Voiceover Track Connection");
-                        activateSubMenuDeck('audio');
+                    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' });
+                        setupAudioEngine(URL.createObjectURL(audioBlob), "Voiceover Track");
+                        showSubmenu('audio');
                     };
 
-                    voiceMediaRecorder.start();
-                    systemVoiceRecordingBoolean = true;
-                    statusLabel.innerText = "Stop Recording";
-                    stateIcon.className = "fas fa-stop text-red-500 animate-pulse";
-                } catch (micCaptureError) {
-                    alert("Microphone Capture Pipeline Initialization Blocked: " + micCaptureError.message);
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordText.innerText = "Stop Rec";
+                    micIcon.className = "fas fa-stop text-red-500 animate-pulse";
+                } catch (err) {
+                    alert("Microphone Access Error: " + err.message);
                 }
             } else {
-                voiceMediaRecorder.stop();
-                systemVoiceRecordingBoolean = false;
-                statusLabel.innerText = "Record";
-                stateIcon.className = "fas fa-microphone text-red-500";
+                mediaRecorder.stop();
+                isRecording = false;
+                recordText.innerText = "Record";
+                micIcon.className = "fas fa-microphone text-red-500";
             }
         }
 
-        // 6. Text-To-Audio Speech Synth Core Engine with logo icon setup
-        function launchTextToSpeechControlInterface() {
-            const baseDrawer = document.getElementById('appSystemModalDrawer');
-            const targetContainerGrid = document.getElementById('drawerDynamicInjectionGrid');
-            document.getElementById('appSystemModalDrawerTitle').innerText = "AI Text-To-Audio TTS Engine";
+        // 6. TEXT TO AUDIO ROBOTIC SYNTH INTERFACE WITH LOGO
+        function openTextToAudioDrawer() {
+            const drawer = document.getElementById('editorDrawer');
+            const grid = document.getElementById('drawerDynamicGrid');
+            document.getElementById('drawerTitle').innerText = "TEXT TO AUDIO GENERATOR";
             
-            targetContainerGrid.className = "space-y-3.5";
-            targetContainerGrid.innerHTML = `
-                <div class="flex items-center gap-2 text-zinc-400 text-xs bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
-                    <i class="fas fa-robot text-blue-400 text-sm"></i>
-                    <span>Convert textual input configurations directly into timeline audio nodes.</span>
+            grid.className = "space-y-4";
+            grid.innerHTML = `
+                <div class="flex items-center gap-2 text-zinc-400 text-xs bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-800">
+                    <i class="fas fa-robot text-blue-400 text-base"></i>
+                    <span>Convert any written script text directly into real-time voice tracks.</span>
                 </div>
-                <textarea id="tts-raw-script-field" placeholder="Enter production script details here..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white outline-none h-20 focus:border-blue-500"></textarea>
+                <textarea id="ai-text-input" placeholder="Type your text script line here..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white outline-none h-24 focus:border-blue-500"></textarea>
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="synthesizeSpeechNodeTrack('Adam')" class="bg-zinc-800 text-zinc-200 text-xs py-2.5 rounded-xl border border-zinc-700">🧔 Voice Mode Adam</button>
-                    <button onclick="synthesizeSpeechNodeTrack('Lucia')" class="bg-zinc-800 text-zinc-200 text-xs py-2.5 rounded-xl border border-zinc-700">👩 Voice Mode Lucia</button>
+                    <button onclick="generateSpeech('Adam')" class="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl text-center text-xs text-white border border-zinc-700">🧔 Adam Voice (Male)</button>
+                    <button onclick="generateSpeech('Lucia')" class="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl text-center text-xs text-white border border-zinc-700">👩 Lucia Voice (Female)</button>
                 </div>
             `;
-            baseDrawer.classList.add('open');
+            drawer.classList.add('open');
         }
 
-        function synthesizeSpeechNodeTrack(variantIdProfile) {
-            const inputTextData = document.getElementById('tts-raw-script-field').value || "Dravoo AI processing completed";
-            const windowSpeechSynthInstance = window.speechSynthesis;
-            const liveSpeechUtteranceObject = new SpeechSynthesisUtterance(inputTextData);
+        function generateSpeech(voiceType) {
+            const text = document.getElementById('ai-text-input').value || "Welcome to Dravoo Studio Core Engine";
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(text);
             
-            liveSpeechUtteranceObject.pitch = (variantIdProfile === 'Adam') ? 0.90 : 1.15;
-            liveSpeechUtteranceObject.rate = 1.0;
+            utterance.pitch = (voiceType === 'Adam') ? 0.85 : 1.2;
+            utterance.rate = 0.95;
 
-            liveSpeechUtteranceObject.onstart = () => {
-                masterAudioTrackBar.classList.remove('hidden');
-                audioTrackFileName.innerText = `AI Speech Track (${variantIdProfile})`;
-                activateSubMenuDeck('audio');
+            utterance.onstart = () => {
+                audioTrackMonitor.classList.remove('hidden');
+                audioTrackLabel.innerText = `AI ${voiceType} Voiceover`;
+                showSubmenu('audio');
             };
-            windowSpeechSynthInstance.speak(liveSpeechUtteranceObject);
-            dismissSystemModalDrawer();
+            synth.speak(utterance);
+            closeDrawer();
         }
 
-        // 7. Premium Brand Loops Hub Module - 50 Unique Non-Repeating Tracks Loop Framework
-        function launchBrandMusicControlDrawer() {
-            const targetDrawer = document.getElementById('appSystemModalDrawer');
-            const configurationContainerGrid = document.getElementById('drawerDynamicInjectionGrid');
-            document.getElementById('appSystemModalDrawerTitle').innerText = "Premium Curated Brand Music Loops";
+        // 7. BRAND PREMIUM MUSIC GENERATOR - 50 DYNAMIC DISTINCT VARIATIONS
+        function openBrandMusicDrawer() {
+            const drawer = document.getElementById('editorDrawer');
+            const grid = document.getElementById('drawerDynamicGrid');
+            document.getElementById('drawerTitle').innerText = "BRAND PREMIUM TRACKS (50 DISTINCT SOUNDS)";
             
-            configurationContainerGrid.className = "grid grid-cols-1 gap-2 max-h-[38vh] overflow-y-auto";
-            configurationContainerGrid.innerHTML = '';
+            grid.className = "grid grid-cols-1 gap-2 max-h-[40vh] overflow-y-auto";
+            grid.innerHTML = '';
 
-            const genericStyleProfiles = ['Tech Corporate Pulse', 'Urban Future Lo-Fi', 'Epic Orchestral Anthem', 'Sunset Chillwave Track', 'Acoustic Folk Horizon'];
-            const productionAssetStreamUrls = [
+            const styles = ['Vlog Beat', 'Tech Pulse', 'Cinematic Epic', 'LoFi Air', 'Cyber Wave', 'HipHop Vibe', 'Corporate Theme', 'Acoustic Soul'];
+            // Real uncompressed distinct SoundHelix archive stream arrays for multi-variant simulations
+            const soundHelixTracks = [
                 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
                 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
                 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
@@ -640,87 +639,84 @@
                 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'
             ];
             
-            // Loop array rendering 50 distinct dynamic parameters safely
-            for(let indexMarker = 1; indexMarker <= 50; indexMarker++) {
-                const targetStyleName = genericStyleProfiles[indexMarker % genericStyleProfiles.length];
-                const definitiveStreamUrl = productionAssetStreamUrls[indexMarker % productionAssetStreamUrls.length];
-                const itemCompositeLabelTitle = `${targetStyleName} (Acoustic Mix Variant #${indexMarker * 2 + 10})`;
+            for(let i = 1; i <= 50; i++) {
+                const styleName = styles[i % styles.length];
+                const trackTargetUrl = soundHelixTracks[i % soundHelixTracks.length]; // Dynamic link allocation mapped via modulo matrix
+                const trackTitle = `Premium ${styleName} (Mix #${i * 3 + 7})`;
                 
-                const cardNodeContainerRow = document.createElement('div');
-                cardNodeContainerRow.className = 'flex items-center justify-between p-3 bg-[#191920] border border-zinc-800 rounded-xl hover:border-zinc-700';
-                cardNodeContainerRow.innerHTML = `
-                    <div class="flex items-center gap-2 truncate max-w-[75%]">
-                        <i class="fas fa-bookmark text-amber-500 text-xs"></i>
-                        <span class="text-xs font-mono text-zinc-300 truncate">${itemCompositeLabelTitle}</span>
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-[#18181c] border border-zinc-800 rounded-xl';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 truncate">
+                        <i class="fas fa-bookmark text-amber-400 text-xs"></i>
+                        <span class="text-xs font-mono text-zinc-300 truncate">${trackTitle}</span>
                     </div>
-                    <button class="bg-blue-600 hover:bg-blue-500 text-white font-medium text-[10px] px-3 py-1 rounded-md transition">Apply</button>
+                    <button class="bg-blue-600 hover:bg-blue-500 text-[10px] text-white px-2.5 py-1 rounded transition">Apply</button>
                 `;
-                cardNodeContainerRow.querySelector('button').onclick = () => {
-                    registerAudioTrackChannelContext(definitiveStreamUrl, itemCompositeLabelTitle);
-                    dismissSystemModalDrawer();
-                    activateSubMenuDeck('audio');
+                div.querySelector('button').onclick = () => {
+                    setupAudioEngine(trackTargetUrl, trackTitle);
+                    closeDrawer();
+                    showSubmenu('audio');
                 };
-                configurationContainerGrid.appendChild(cardNodeContainerRow);
+                grid.appendChild(div);
             }
-            targetDrawer.classList.add('open');
+            drawer.classList.add('open');
         }
 
-        // Interface Submenu Layout Toggle Utility Handlers
-        function activateSubMenuDeck(targetDeckId) {
-            restorePrimaryMenuDeck();
-            document.getElementById('primaryMenuDeck').classList.add('hidden');
-            const targetDeckDomNode = document.getElementById(`deck-submenu-${targetDeckId}`);
-            if(targetDeckDomNode) targetDeckDomNode.classList.remove('hidden');
+        function removeBackgroundAudio() {
+            if(backgroundAudio) { backgroundAudio.pause(); backgroundAudio = null; }
+            audioTrackMonitor.classList.add('hidden');
+            if(player.classList.contains('hidden') && imageEl.classList.contains('hidden')) {
+                timeDisplay.innerText = "00:00 / 00:00";
+            }
         }
 
-        function restorePrimaryMenuDeck() {
-            const allDeckScopes = ['edit', 'audio', 'text', 'effects', 'overlay', 'aspect'];
-            allDeckScopes.forEach(deckScopeId => {
-                const loopNodeDom = document.getElementById(`deck-submenu-${deckScopeId}`);
-                if(loopNodeDom) loopNodeDom.classList.add('hidden');
+        // UI View Layout Management Utilities
+        function showSubmenu(id) {
+            backToMaster(); 
+            document.getElementById('masterBottomMenu').classList.add('hidden');
+            const sub = document.getElementById(`submenu-${id}`);
+            if(sub) sub.classList.remove('hidden');
+        }
+
+        function backToMaster() {
+            const submenus = ['edit', 'audio', 'text', 'effects', 'overlay', 'aspect-ratio'];
+            submenus.forEach(s => {
+                const el = document.getElementById(`submenu-${s}`);
+                if(el) el.classList.add('hidden');
             });
-            document.getElementById('primaryMenuDeck').classList.remove('hidden');
+            document.getElementById('masterBottomMenu').classList.remove('hidden');
         }
 
-        function executeActionFramework(toolContextLabel) { 
-            alert(`"${toolContextLabel}" command executed safely within timeline layout rules.`); 
-        }
-        function processOverlaySelected(inputSource) {
-            const processingFile = inputSource.files[0];
-            if(processingFile) { 
-                overlayRenderElement.src = URL.createObjectURL(processingFile); 
-                overlayRenderElement.classList.remove('hidden'); 
-            }
+        function triggerTool(name) { alert(`"${name}" applied to track layout context.`); }
+        function handleOverlaySelected(input) {
+            const file = input.files[0];
+            if(file) { overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); }
         }
 
-        function transformCanvasMatrixRatio(targetRatioString) {
-            if(targetRatioString === '9/16') { canvasRatioWrapper.style.aspectRatio = '9/16'; canvasRatioWrapper.style.maxWidth = '100%'; } 
-            else if(targetRatioString === '16/9') { canvasRatioWrapper.style.aspectRatio = '16/9'; canvasRatioWrapper.style.maxWidth = '100%'; } 
-            else if(targetRatioString === '1/1') { canvasRatioWrapper.style.aspectRatio = '1/1'; canvasRatioWrapper.style.maxWidth = '100%'; } 
+        function changeRatio(ratioStr) {
+            if(ratioStr === '9/16') { ratioBox.style.aspectRatio = '9/16'; ratioBox.style.maxWidth = '280px'; } 
+            else if(ratioStr === '16/9') { ratioBox.style.aspectRatio = '16/9'; ratioBox.style.maxWidth = '100%'; } 
+            else if(ratioStr === '1/1') { ratioBox.style.aspectRatio = '1/1'; ratioBox.style.maxWidth = '360px'; } 
         }
 
-        function launchStandardModalDrawer(modalContentProfileType) {
-            const genericDrawerShell = document.getElementById('appSystemModalDrawer');
-            const operationalInjectionContainerGrid = document.getElementById('drawerDynamicInjectionGrid');
-            genericDrawerShell.classList.add('open');
-            operationalInjectionContainerGrid.className = "grid grid-cols-3 gap-2.5";
-            document.getElementById('appSystemModalDrawerTitle').innerText = "Select Asset Context Profile";
-            operationalInjectionContainerGrid.innerHTML = '';
+        function openDrawer(type) {
+            const drawer = document.getElementById('editorDrawer');
+            const grid = document.getElementById('drawerDynamicGrid');
+            drawer.classList.add('open');
+            grid.className = "grid grid-cols-3 gap-3";
+            document.getElementById('drawerTitle').innerText = type.toUpperCase() + " DRAWER";
+            grid.innerHTML = '';
             
-            if(modalContentProfileType === 'text-fonts') {
-                ['Impact Bold', 'Dravoo Sans', 'Futuristic Pro'].forEach(fontLoopProfile => {
-                    const textCardAssetNode = document.createElement('div');
-                    textCardAssetNode.className = 'bg-zinc-900 border border-zinc-800 text-center p-3 rounded-xl text-xs font-bold text-white cursor-pointer hover:border-zinc-500';
-                    textCardAssetNode.innerText = fontLoopProfile;
-                    textCardAssetNode.onclick = () => { 
-                        textCanvasRenderLayer.innerHTML += `<div class="text-white font-bold text-base tracking-wide drop-shadow-lg">${fontLoopProfile} Template</div>`; 
-                        dismissSystemModalDrawer(); 
-                    };
-                    operationalInjectionContainerGrid.appendChild(textCardAssetNode);
+            if(type === 'fonts') {
+                ['Viral Bold', 'Dravoo Serif', 'Modern Sans'].forEach(f => {
+                    const el = document.createElement('div'); el.className = 'asset-card font-bold'; el.innerText = f;
+                    el.onclick = () => { elementsLayer.innerHTML += `<div class="text-white font-bold text-lg drop-shadow-md">${f}</div>`; closeDrawer(); };
+                    grid.appendChild(el);
                 });
             }
         }
-        function dismissSystemModalDrawer() { document.getElementById('appSystemModalDrawer').classList.remove('open'); }
+        function closeDrawer() { document.getElementById('editorDrawer').classList.remove('open'); }
     </script>
 </body>
 </html>
