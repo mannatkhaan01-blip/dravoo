@@ -211,6 +211,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            width: 100%;
         }
         .export-dialog .export-options button:hover {
             background: #26262e;
@@ -673,7 +674,7 @@
             track.playing = true;
             
             const player = document.getElementById('studio-player');
-            if (!player.paused && player.currentTime > 0) {
+            if (player && !player.paused && player.currentTime > 0) {
                 track.audio.currentTime = player.currentTime;
             }
             
@@ -782,7 +783,7 @@
             if (player.src && !player.classList.contains('hidden')) {
                 if (player.paused) {
                     player.play();
-                    audioTracks.forEach(t => { if (t.playing) t.audio.play(); });
+                    audioTracks.forEach(t => { if (t.playing) t.audio.play().catch(e => {}); });
                     playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
                 } else {
                     player.pause();
@@ -1035,7 +1036,9 @@
                     alert("Microphone Error: " + err.message);
                 }
             } else {
-                mediaRecorder.stop();
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
                 isRecording = false;
                 recordText.innerText = "Record";
                 micIcon.className = "fas fa-microphone text-red-500";
@@ -1098,9 +1101,13 @@
             document.querySelectorAll('.voice-option').forEach(el => {
                 el.classList.remove('selected');
             });
-            document.querySelectorAll('.voice-option').forEach(el => {
-                if (el.textContent.includes(voice)) {
-                    el.classList.add('selected');
+            
+            // Search dynamically by finding element text contents
+            const options = document.querySelectorAll('.voice-option');
+            options.forEach(opt => {
+                const nameNode = opt.querySelector('.voice-name');
+                if (nameNode && nameNode.textContent.trim() === voice) {
+                    opt.classList.add('selected');
                 }
             });
         }
@@ -1389,41 +1396,120 @@
             const container = document.getElementById('filtersContainer');
             if (container.children.length > 0) return;
             const filters = [
-                { name: 'Warm', value: 'sepia(0.4) saturate(1.2) contrast(1.1)' },
-                { name: 'Cool', value: 'hue-rotate(30deg) saturate(0.9) brightness(1.05)' },
-                { name: 'Cyberpunk', value: 'hue-rotate(120deg) saturate(2) contrast(1.3)' },
-                { name: 'Mono', value: 'grayscale(1)' },
-                { name: 'Vintage', value: 'sepia(0.6) contrast(0.9) brightness(0.95)' }
+                { name: 'Normal', css: 'none' },
+                { name: 'Vintage', css: 'sepia(0.5) contrast(1.2)' },
+                { name: 'Cyberpunk', css: 'hue-rotate(90deg) saturate(1.5)' },
+                { name: 'B&W', css: 'grayscale(1)' },
+                { name: 'Warm', css: 'sepia(0.2) saturate(1.2) brightness(1.1)' }
             ];
+            
             filters.forEach(f => {
                 const btn = document.createElement('button');
                 btn.className = "flex-shrink-0 bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-3 py-1.5 rounded-full whitespace-nowrap";
-                btn.textContent = f.name;
-                btn.onclick = () => applyCSSFilter(f.value);
+                btn.innerText = f.name;
+                btn.onclick = () => applyCSSFilter(f.css);
                 container.appendChild(btn);
             });
         }
 
-        function openDrawer(type) {
+        // ===== CANVAS DRAWING & RESIZING =====
+        let isDrawing = false;
+        let ctx = null;
+        const canvas = document.getElementById('drawCanvas');
+
+        function syncCanvasSize() {
+            if (!canvas) return;
+            canvas.width = ratioBox.clientWidth;
+            canvas.height = ratioBox.clientHeight;
+            initDrawContext();
+        }
+
+        function initDrawContext() {
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+        }
+
+        function toggleDraw() {
+            const panel = document.getElementById('drawToolsPanel');
+            canvas.classList.toggle('active');
+            panel.classList.toggle('hidden');
+            if (canvas.classList.contains('active')) {
+                syncCanvasSize();
+                canvas.addEventListener('mousedown', startDrawing);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopDrawing);
+                canvas.addEventListener('touchstart', startDrawing);
+                canvas.addEventListener('touchmove', draw);
+                canvas.addEventListener('touchend', stopDrawing);
+            } else {
+                canvas.removeEventListener('mousedown', startDrawing);
+                canvas.removeEventListener('mousemove', draw);
+                canvas.removeEventListener('mouseup', stopDrawing);
+                canvas.removeEventListener('touchstart', startDrawing);
+                canvas.removeEventListener('touchmove', draw);
+                canvas.removeEventListener('touchend', stopDrawing);
+            }
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getMousePos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getMousePos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            e.preventDefault();
+        }
+
+        function stopDrawing() { isDrawing = false; }
+        
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function setBrush(width) { if (ctx) ctx.lineWidth = width; }
+        function clearDraw() { if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        // ===== DRAWER CONTROL =====
+        function openDrawer(mode) {
             const drawer = document.getElementById('editorDrawer');
             const grid = document.getElementById('drawerDynamicGrid');
-            document.getElementById('drawerTitle').innerText = type.toUpperCase() + " DRAWER";
+            const title = document.getElementById('drawerTitle');
             
-            grid.className = "submenu-grid";
-            grid.innerHTML = '';
+            title.innerText = mode.toUpperCase() + " ASSETS";
+            grid.className = "grid grid-cols-4 gap-3";
             
-            if (type === 'stickers') {
-                const stickers = ['🔥', '✨', '😂', '🔥', '💯', '💀', '🤡', '👏', '🎨', '🚀'];
-                stickers.forEach(s => {
-                    const card = document.createElement('div');
-                    card.className = "asset-card text-2xl";
-                    card.innerHTML = s;
-                    card.onclick = () => { alert(`Sticker ${s} selected`); closeDrawer(); };
-                    grid.appendChild(card);
-                });
+            if (mode === 'stickers') {
+                const stickers = ['🔥', '😂', '👑', '✨', '💯', '🚀', '🎉', '💡'];
+                grid.innerHTML = stickers.map(s => `
+                    <div class="asset-card" onclick="addSticker('${s}')">
+                        <span class="text-2xl">${s}</span>
+                    </div>
+                `).join('');
+            } else if (mode === 'fonts') {
+                const fonts = ['Inter', 'Impact', 'Courier Prime', 'Comic Sans'];
+                grid.innerHTML = fonts.map(f => `
+                    <div class="asset-card" style="font-family: ${f}" onclick="addText('${f}')">
+                        <span>Abc</span>
+                        <span class="text-[9px] text-zinc-500">${f}</span>
+                    </div>
+                `).join('');
             } else {
-                grid.className = "p-4 text-center text-zinc-500 text-xs";
-                grid.innerHTML = "Drawer content template loaded.";
+                grid.innerHTML = `<p class="col-span-4 text-center text-zinc-500 text-xs">No assets loaded</p>`;
             }
             drawer.classList.add('open');
         }
@@ -1432,13 +1518,69 @@
             document.getElementById('editorDrawer').classList.remove('open');
         }
 
-        function syncCanvasSize() {
-            const canvas = document.getElementById('drawCanvas');
-            if (canvas) {
-                canvas.width = ratioBox.clientWidth;
-                canvas.height = ratioBox.clientHeight;
+        function addSticker(emoji) {
+            const el = document.createElement('div');
+            el.className = 'absolute text-3xl pointer-events-auto cursor-move select-none z-40';
+            el.style.top = '40%';
+            el.style.left = '40%';
+            el.innerText = emoji;
+            makeElementDraggable(el);
+            elementsLayer.appendChild(el);
+            closeDrawer();
+        }
+
+        function addText(font) {
+            const el = document.createElement('div');
+            el.className = 'absolute text-white font-bold p-2 pointer-events-auto cursor-move select-none z-40 text-sm';
+            el.style.top = '50%';
+            el.style.left = '25%';
+            el.style.fontFamily = font;
+            el.innerText = 'Tap to Edit Text';
+            el.contentEditable = true;
+            makeElementDraggable(el);
+            elementsLayer.appendChild(el);
+            closeDrawer();
+        }
+
+        function makeElementDraggable(el) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            el.onmousedown = dragMouseDown;
+            el.ontouchstart = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+                document.ontouchend = closeDragElement;
+                document.ontouchmove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                pos1 = pos3 - clientX;
+                pos2 = pos4 - clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
             }
         }
+
+        // Resize Canvas on Window Resize
+        window.addEventListener('resize', syncCanvasSize);
     </script>
 </body>
 </html>
