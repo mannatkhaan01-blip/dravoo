@@ -6,14 +6,15 @@
     <title>Dravoo · Pro Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Montserrat:wght@400;800&family=Playfair+Display:ital,wght@0,700;1,400&family=Pacifico&family=Bebas+Neue&family=Lobster&family=Cinzel:wght@700&family=Comfortaa:wght@700&family=Permanent+Marker&family=Fascinate&family=Great+Vibes&family=Righteous&family=Rubik+Mono+One&family=Kaushan+Script&family=Shadows+Into+Light&family=Courgette&family=Abril+Fatface&family=Alkatra:wght@700&family=Creepster&family=Monoton&family=Orbitron:wght@900&family=Press+Start+2P&family=Sacramento&family=Special+Elite&display=swap" rel="stylesheet" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-box-sizing: border-box; }
         body {
             background: #0b0b0e;
             color: #f1f5f9;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             overflow-x: hidden;
+            user-select: none;
         }
         .glass-card {
             background: rgba(16, 16, 20, 0.9);
@@ -37,7 +38,7 @@
             bottom: -100%;
             left: 0;
             width: 100%;
-            height: 54vh;
+            height: 55vh;
             background: #111115;
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
@@ -250,6 +251,76 @@
             font-size: 9px;
             color: #6b7280;
         }
+
+        /* ===== TEXT WORKSPACE CUSTOM CSS ===== */
+        .movable-text-layer {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            padding: 8px;
+            border: 1px dashed transparent;
+            transition: border-color 0.2s;
+            display: inline-block;
+            white-space: pre-wrap;
+            z-index: 100;
+            transform-origin: center;
+        }
+        .movable-text-layer.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .movable-text-layer .delete-node {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ef4444;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+            display: none;
+        }
+        .movable-text-layer.selected .delete-node {
+            display: flex;
+        }
+
+        /* Text Animations (Keyframes) */
+        @keyframes custom-fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes custom-zoom { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes custom-slide-up { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes custom-slide-left { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes custom-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes custom-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes custom-typewriter { from { width: 0; } to { width: 100%; } }
+        @keyframes custom-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes custom-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes custom-flip { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
+
+        .anim-fade { animation: custom-fade 1s ease-in-out infinite alternate; }
+        .anim-zoom { animation: custom-zoom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate; }
+        .anim-slide-up { animation: custom-slide-up 0.8s ease-out infinite alternate; }
+        .anim-slide-left { animation: custom-slide-left 0.8s ease-out infinite alternate; }
+        .anim-bounce { animation: custom-bounce 1s infinite; }
+        .anim-spin { animation: custom-spin 3s linear infinite; }
+        .anim-pulse { animation: custom-pulse 1s ease-in-out infinite; }
+        .anim-shake { animation: custom-shake 0.5s infinite; }
+        .anim-flip { animation: custom-flip 2s linear infinite; }
+
+        /* Beautiful styles and effects grid */
+        .text-option-item {
+            border: 1px solid #222;
+            background: #141419;
+            transition: all 0.2s;
+        }
+        .text-option-item:hover {
+            border-color: #3b82f6;
+            background: #1d1d26;
+        }
     </style>
 </head>
 <body>
@@ -258,7 +329,6 @@
     <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
     <input type="file" id="audio-extract-picker" accept="audio/*,video/*" class="hidden" onchange="handleAudioExtracted(this)" />
 
-    <!-- Navbar -->
     <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
         <div class="flex items-center gap-3">
             <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
@@ -270,11 +340,9 @@
         </button>
     </header>
 
-    <!-- Main Workspace -->
     <main class="max-w-3xl mx-auto px-2 my-4">
         <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-            <!-- Top Project Toolbar -->
             <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
                 <div class="flex items-center gap-2 text-sm">
                     <span class="text-white font-semibold">Project: Untitled</span>
@@ -292,13 +360,13 @@
                 </div>
             </div>
 
-            <!-- Main Canvas Viewport -->
             <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
                 <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
                     <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
                     <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
                     
-                    <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center flex-col text-center"></div>
+                    <div id="canvas-elements-layer" class="absolute inset-0 z-40"></div>
+                    
                     <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
 
                     <div id="media-placeholder" class="text-center p-6 z-10">
@@ -318,14 +386,12 @@
                 </div>
             </div>
 
-            <!-- Playback Controls -->
             <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
                 <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
                 <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white"><i class="fas fa-play text-xs"></i></button>
                 <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
             </div>
 
-            <!-- AUDIO TRACK CONTAINER -->
             <div id="audioTrackContainer" class="audio-track-container">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
@@ -340,7 +406,6 @@
                 </div>
             </div>
 
-            <!-- Video Timeline Track -->
             <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
                 <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
                     <div class="flex items-center gap-2 truncate">
@@ -351,7 +416,6 @@
                 </div>
             </div>
 
-            <!-- MASTER BOTTOM MENU -->
             <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
                 <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
                 <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
@@ -368,7 +432,6 @@
                 <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
             </div>
 
-            <!-- SUBMENUS -->
             <div id="submenu-edit" class="hidden submenu-grid">
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
                 <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
@@ -409,7 +472,6 @@
                 <button onclick="triggerTool('Unlink')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-300"><i class="fas fa-link-slash"></i>Unlink</button>
             </div>
 
-            <!-- AUDIO SUBMENU -->
             <div id="submenu-audio" class="hidden submenu-grid">
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
                 <button onclick="document.getElementById('audio-extract-picker').click()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
@@ -423,7 +485,7 @@
 
             <div id="submenu-text" class="hidden submenu-grid">
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-                <button onclick="openDrawer('fonts')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
+                <button onclick="openInteractiveTextPanel()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
                 <button onclick="openDrawer('captions')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-closed-captioning text-blue-400"></i>Auto Caption</button>
                 <button onclick="openDrawer('stickers')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-face-smile"></i>Stickers</button>
                 <button onclick="toggleDraw()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-pen"></i>Drawer</button>
@@ -518,7 +580,6 @@
         </div>
     </main>
 
-    <!-- PIXABAY MODAL -->
     <div id="pixabayModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-[#121216] border border-zinc-800 w-full max-w-md rounded-3xl p-6 text-center space-y-5 shadow-2xl">
             <div class="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
@@ -538,7 +599,6 @@
         </div>
     </div>
 
-    <!-- EXPORT DIALOG -->
     <div id="exportDialog" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[300] hidden">
         <div class="export-dialog">
             <div class="export-header">
@@ -568,7 +628,6 @@
         </div>
     </div>
 
-    <!-- DRAWER -->
     <div class="editor-drawer" id="editorDrawer">
         <div class="flex items-center justify-between p-4 border-b border-zinc-800">
             <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
@@ -577,6 +636,29 @@
         </div>
         <div class="tab-content-container p-4 overflow-y-auto flex-1">
             <div id="drawerDynamicGrid"></div>
+        </div>
+    </div>
+
+    <div class="editor-drawer" id="textProDrawer">
+        <div class="p-3 bg-[#111115] border-b border-zinc-800 flex items-center gap-2">
+            <input type="text" id="proTextInput" placeholder="Enter text" class="flex-1 bg-zinc-900 border border-zinc-800 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 text-white" oninput="updateActiveText()" />
+            <button onclick="confirmTextCreation()" class="bg-blue-600 hover:bg-blue-500 text-white rounded-xl p-2.5 flex items-center justify-center transition">
+                <i class="fas fa-check text-sm"></i>
+            </button>
+        </div>
+        
+        <div class="flex border-b border-zinc-900 scroll-x-menu bg-[#0e0e12] px-2 py-1.5 gap-2 text-xs font-semibold text-zinc-400">
+            <button onclick="switchTextTab('fonts')" id="tabBtn-fonts" class="px-4 py-1.5 rounded-full bg-zinc-800 text-white">Fonts</button>
+            <button onclick="switchTextTab('styles')" id="tabBtn-styles" class="px-4 py-1.5 rounded-full">Styles</button>
+            <button onclick="switchTextTab('effects')" id="tabBtn-effects" class="px-4 py-1.5 rounded-full">Effects</button>
+            <button onclick="switchTextTab('animations')" id="tabBtn-animations" class="px-4 py-1.5 rounded-full">Animations</button>
+        </div>
+
+        <div class="p-3 overflow-y-auto flex-1 bg-[#0c0c10]">
+            <div id="textTab-fonts" class="grid grid-cols-3 gap-2"></div>
+            <div id="textTab-styles" class="grid grid-cols-3 gap-2 hidden"></div>
+            <div id="textTab-effects" class="grid grid-cols-3 gap-2 hidden"></div>
+            <div id="textTab-animations" class="grid grid-cols-3 gap-2 hidden"></div>
         </div>
     </div>
 
@@ -891,6 +973,7 @@
 
                 resultsDiv.innerHTML = '';
 
+                // Always show some results
                 let tracks = [];
 
                 if (data.hits && data.hits.length > 0) {
@@ -900,6 +983,7 @@
                         hasAudio: !!hit.audio
                     }));
                 } else {
+                    // Generate fallback tracks based on search
                     const fallbackNames = [
                         'Cinematic Lofi', 'Tech Beat', 'Ambient Chill', 'Vlog Music', 
                         'HipHop Groove', 'Electronic Pulse', 'Acoustic Guitar', 'Piano Melody',
@@ -938,6 +1022,7 @@
                         <button class="bg-purple-600 text-[10px] font-bold text-white px-3 py-1.5 rounded-lg hover:bg-purple-500 transition">Apply</button>
                     `;
                     row.querySelector('button').onclick = () => {
+                        // Check if it's a sound effect or music
                         const trackType = mode === 'sound-fx' ? 'fx' : 'track';
                         const audioUrl = track.url || getFallbackAudio(mode);
                         const trackName = track.title || (mode === 'sound-fx' ? 'Sound FX' : 'Music Track');
@@ -956,6 +1041,7 @@
                         Showing fallback tracks...
                     </p>
                 `;
+                // Fallback tracks
                 const fallbackTracks = mode === 'sounds' ? [
                     { title: 'Vlog HipHop Track', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
                     { title: 'Lo-Fi Chill Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
@@ -1083,6 +1169,7 @@
             `;
             drawer.classList.add('open');
             
+            // Load voices
             if (window.speechSynthesis) {
                 speechSynthesis.getVoices();
             }
@@ -1112,6 +1199,7 @@
             
             const utterance = new SpeechSynthesisUtterance(text);
             
+            // Voice settings for different voices - more realistic
             const voiceConfig = {
                 'Adam': { pitch: 0.7, rate: 0.85, lang: 'en-US', name: 'Male Deep' },
                 'Lucia': { pitch: 1.25, rate: 0.9, lang: 'en-US', name: 'Female Warm' },
@@ -1124,11 +1212,14 @@
             utterance.rate = config.rate;
             utterance.lang = config.lang;
             
+            // Try to find matching voice
             const voices = synth.getVoices();
             let matchedVoice = null;
             
+            // First try to match by language
             for (const v of voices) {
                 if (v.lang.startsWith(config.lang)) {
+                    // Prefer male/female based on voice
                     if (selectedVoice === 'Adam' || selectedVoice === 'James') {
                         if (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('daniel')) {
                             matchedVoice = v;
@@ -1143,6 +1234,7 @@
                 }
             }
             
+            // If no match, use any voice with the right language
             if (!matchedVoice) {
                 for (const v of voices) {
                     if (v.lang.startsWith(config.lang)) {
@@ -1152,6 +1244,7 @@
                 }
             }
             
+            // Fallback to any voice
             if (!matchedVoice && voices.length > 0) {
                 matchedVoice = voices[0];
             }
@@ -1160,9 +1253,11 @@
                 utterance.voice = matchedVoice;
             }
 
-            const trackName = `${selectedVoice}: "${text.substring(0, 25)}${text.length > 25 ? '...' : ''}"`;
+            // Track name for the audio
+            const trackName = `${selectedVoice: "${text.substring(0, 25)}${text.length > 25 ? '...' : ''}"}`;
             
             utterance.onstart = () => {
+                // Create a visual track
                 addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track');
                 showSubmenu('audio');
                 closeDrawer();
@@ -1174,6 +1269,7 @@
             
             utterance.onerror = (e) => {
                 console.error('Speech error:', e);
+                // Fallback - just show the track
                 addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track');
                 showSubmenu('audio');
                 closeDrawer();
@@ -1222,6 +1318,7 @@
                 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'
             ];
             
+            // Generate 50 unique tracks
             for (let i = 1; i <= 50; i++) {
                 const styleIndex = (i - 1) % styles.length;
                 const urlIndex = (i - 1) % urls.length;
@@ -1282,6 +1379,7 @@
                         container.appendChild(div);
                     });
                 } else {
+                    // Show some fallback tracks
                     container.innerHTML = '<p class="text-zinc-400 text-xs text-center py-4">No results. Showing brand tracks.</p>';
                     loadBrandTracks();
                 }
@@ -1369,33 +1467,431 @@
             setTimeout(syncCanvasSize, 200);
         }
 
-        function closeDrawer() {
-            document.getElementById('editorDrawer').classList.remove('open');
-        }
-        function openDrawer(type) {
-            document.getElementById('editorDrawer').classList.add('open');
-            document.getElementById('drawerTitle').innerText = type.toUpperCase();
-            document.getElementById('drawerDynamicGrid').innerHTML = '<p class="text-zinc-500 text-xs">Asset list for ' + type + '...</p>';
-        }
-        function syncCanvasSize() { console.log("Canvas resized"); }
-
         function generateFilters() {
             const container = document.getElementById('filtersContainer');
             if (container.children.length > 0) return;
             const filterClasses = [
-                {name: 'Warm', css: 'sepia(0.4) brightness(1.1)'},
-                {name: 'Cool', css: 'contrast(1.1) hue-rotate(30deg)'},
-                {name: 'Vintage', css: 'grayscale(0.2) sepia(0.2)'},
-                {name: 'B&W', css: 'grayscale(1)'}
+                {name: 'Warm', css: 'sepia(0.4) saturate(1.4)'},
+                {name: 'Cyber', css: 'hue-rotate(90deg) saturate(1.8)'},
+                {name: 'Vintage', css: 'grayscale(0.5) contrast(1.2)'}
             ];
-            filterClasses.forEach(f => {
-                const btn = document.createElement('button');
-                btn.className = "flex-shrink-0 bg-zinc-800 px-3 py-1.5 rounded-lg text-xs text-zinc-200";
-                btn.innerText = f.name;
-                btn.onclick = () => applyCSSFilter(f.css);
-                container.appendChild(btn);
+            for (let i = 1; i <= 50; i++) {
+                const currentFilter = filterClasses[i % filterClasses.length];
+                const div = document.createElement('div');
+                div.className = "flex-shrink-0 w-16 h-16 bg-zinc-800 rounded-lg flex flex-col justify-end p-1 text-[9px] text-zinc-300 font-bold cursor-pointer border border-zinc-700";
+                div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i}')`;
+                div.innerText = currentFilter.name + ` #${i}`;
+                div.onclick = () => applyCSSFilter(currentFilter.css);
+                container.appendChild(div);
+            }
+        }
+
+        function openDrawer(type) {
+            const drawer = document.getElementById('editorDrawer');
+            const grid = document.getElementById('drawerDynamicGrid');
+            drawer.classList.add('open');
+            grid.className = "grid grid-cols-3 gap-3";
+            document.getElementById('drawerTitle').innerText = type.toUpperCase() + " SELECTION";
+            
+            if (type === 'stickers') {
+                ['🔥', '✨', '🎯', '❤️', '👑', '🚀'].forEach(e => {
+                    const el = document.createElement('div'); el.className = 'asset-card text-2xl'; el.innerText = e;
+                    el.onclick = () => { elementsLayer.innerHTML += `<span class="text-4xl m-2 select-none">${e}</span>`; closeDrawer(); };
+                    grid.appendChild(el);
+                });
+            } else if (type === 'fonts') {
+                ['Viral Text', 'Dravoo Pro', 'Trending'].forEach(f => {
+                    const el = document.createElement('div'); el.className = 'asset-card font-bold'; el.innerText = f;
+                    el.onclick = () => { elementsLayer.innerHTML += `<div class="text-white font-bold text-lg">${f}</div>`; closeDrawer(); };
+                    grid.appendChild(el);
+                });
+            } else if (type === 'captions') {
+                ['Auto Caption', 'Lyrics Sync', 'Subtitles'].forEach(f => {
+                    const el = document.createElement('div'); el.className = 'asset-card'; el.innerText = f;
+                    el.onclick = () => { alert(`Captions: ${f} added`); closeDrawer(); };
+                    grid.appendChild(el);
+                });
+            } else if (type === 'templates') {
+                ['Intro', 'Outro', 'Transition'].forEach(f => {
+                    const el = document.createElement('div'); el.className = 'asset-card'; el.innerText = f;
+                    el.onclick = () => { alert(`Template: ${f} applied`); closeDrawer(); };
+                    grid.appendChild(el);
+                });
+            }
+        }
+
+        function closeDrawer() { document.getElementById('editorDrawer').classList.remove('open'); }
+
+        // ===== CANVAS DRAWING =====
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let brushSize = 5;
+        let drawActive = false;
+
+        function syncCanvasSize() {
+            canvas.width = ratioBox.clientWidth;
+            canvas.height = ratioBox.clientHeight;
+        }
+        window.addEventListener('resize', syncCanvasSize);
+
+        function toggleDraw() {
+            drawActive = !drawActive;
+            const panel = document.getElementById('drawToolsPanel');
+            if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); } 
+            else { canvas.classList.remove('active'); panel.classList.add('hidden'); }
+        }
+
+        function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        function setBrush(size) { brushSize = size; }
+
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; draw(e); });
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+
+        function draw(e) {
+            if (!isDrawing || !drawActive) return;
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#3b82f6';
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        // Initialize
+        setTimeout(syncCanvasSize, 300);
+        updateTrackCount();
+
+        // Load voices for text-to-speech
+        if (window.speechSynthesis) {
+            speechSynthesis.getVoices();
+            speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
+        }
+
+
+        // ==========================================
+        // ===== NEW 100% PRO TEXT EDITOR LOGIC =====
+        // ==========================================
+        let activeTextNode = null;
+        let selectedFont = "Inter";
+        let selectedStyle = {};
+        let selectedEffect = "";
+        let selectedAnimation = "";
+
+        // Interactive panels datasets
+        const PRO_FONTS = [
+            "Inter", "Montserrat", "Playfair Display", "Pacifico", "Bebas Neue", 
+            "Lobster", "Cinzel", "Comfortaa", "Permanent Marker", "Fascinate", 
+            "Great Vibes", "Righteous", "Rubik Mono One", "Kaushan Script", 
+            "Shadows Into Light", "Courgette", "Abril Fatface", "Alkatra", 
+            "Creepster", "Monoton", "Orbitron", "Press Start 2P", "Sacramento", "Special Elite", "Arial"
+        ];
+
+        const PRO_STYLES = [
+            { name: "Default White", style: { color: "#ffffff", textShadow: "none", background: "transparent", webkitTextStroke: "0px" } },
+            { name: "Neon Yellow", style: { color: "#facc15", textShadow: "0 0 10px #facc15, 0 0 20px #eab308", background: "transparent" } },
+            { name: "Ruby Stroke", style: { color: "transparent", webkitTextStroke: "1.5px #ef4444", textShadow: "none" } },
+            { name: "Dark Shadow", style: { color: "#ffffff", textShadow: "3px 3px 0px #000000" } },
+            { name: "Emerald Glow", style: { color: "#10b981", textShadow: "0 0 8px rgba(16,185,129,0.8)" } },
+            { name: "Cyberpunk Red", style: { color: "#ff0055", textShadow: "2px 2px #00ffcc" } },
+            { name: "Vlog Tag", style: { color: "#ffffff", background: "#ef4444", padding: "4px 10px", borderRadius: "6px" } },
+            { name: "Sub White Box", style: { color: "#ffffff", background: "rgba(0,0,0,0.75)", padding: "4px 12px", borderRadius: "4px" } },
+            { name: "Sub Yellow Box", style: { color: "#facc15", background: "rgba(0,0,0,0.85)", padding: "4px 12px", borderRadius: "4px" } },
+            { name: "Royal Gold", style: { color: "#fbbf24", textShadow: "1px 1px 2px #78350f" } },
+            { name: "Midnight Purple", style: { color: "#a855f7", textShadow: "0 0 12px #6b21a8" } },
+            { name: "Ice Blue", style: { color: "#38bdf8", textShadow: "0 0 10px #0284c7" } },
+            { name: "Retro Orange", style: { color: "#f97316", textShadow: "2px 2px 0px #431407" } },
+            { name: "Chalkboard", style: { color: "#f8fafc", fontFamily: "Shadows Into Light" } },
+            { name: "Kawaii Pink", style: { color: "#f472b6", textShadow: "0 0 5px #db2777" } },
+            { name: "Smooth Gray", style: { color: "#cbd5e1", textShadow: "1px 1px 0px #475569" } },
+            { name: "Halloween", style: { color: "#f97316", textShadow: "0 0 8px #000000, 0 0 15px #ea580c" } },
+            { name: "Toxic Green", style: { color: "#22c55e", textShadow: "0 0 10px #15803d, 0 0 20px #166534" } },
+            { name: "Classic Navy", style: { color: "#1e3a8a", textShadow: "1px 1px 0px #ffffff" } },
+            { name: "Neon Cyber", style: { color: "#06b6d4", textShadow: "0 0 5px #0891b2, 0 0 15px #0e7490" } },
+            { name: "Gothic Metallic", style: { color: "#94a3b8", textShadow: "2px 2px 2px #0f172a" } },
+            { name: "Sunset Horizon", style: { color: "#f43f5e", textShadow: "0 2px 4px #be123c" } },
+            { name: "Soft Cream", style: { color: "#fef08a", textShadow: "1px 1px #ca8a04" } },
+            { name: "Minimal Dark", style: { color: "#0f172a", background: "#f1f5f9", padding: "3px 8px" } },
+            { name: "Laser Orange", style: { color: "#ff5500", textShadow: "0 0 12px #ff2200" } }
+        ];
+
+        const PRO_EFFECTS = [
+            { name: "Glassmorphism", class: "backdrop-blur-sm bg-white/10 px-4 py-2 rounded-xl border border-white/20" },
+            { name: "Double Stroke", style: { webkitTextStroke: "2px #3b82f6", color: "#ffffff", paintOrder: "stroke fill" } },
+            { name: "Drop Offset", style: { textShadow: "5px 5px 0px rgba(0,0,0,0.5)" } },
+            { name: "Cyber Glitch", style: { textShadow: "-2px -2px 0 #00fffa, 2px 2px 0 #ff00c1" } },
+            { name: "Golden Glow", style: { textShadow: "0 0 15px #fbbf24, 0 0 30px #d97706" } },
+            { name: "Deep Emboss", style: { textShadow: "-1px -1px 1px #fff, 1px 1px 1px #000" } },
+            { name: "Neon Plasma", style: { textShadow: "0 0 10px #ec4899, 0 0 20px #be185d, 0 0 30px #9d174d" } },
+            { name: "3D Extrusion", style: { textShadow: "0 1px 0 #ccc, 0 2px 0 #c5c5c5, 0 3px 0 #bbb, 0 4px 0 #b0b0b0, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1)" } },
+            { name: "Rainbow Edge", style: { textShadow: "2px 0 #ff0000, 4px 0 #ff7f00, 6px 0 #ffff00, 8px 0 #00ff00, 10px 0 #0000ff" } },
+            { name: "Electric Blue", style: { textShadow: "0 0 8px #60a5fa, 0 0 15px #3b82f6, 0 0 25px #1d4ed8" } },
+            { name: "Vaporwave", style: { textShadow: "3px 3px 0px #ff71ce, -3px -3px 0px #01cdfe" } },
+            { name: "Sunset Red", style: { textShadow: "0 0 6px #ef4444, 0 0 12px #b91c1c" } },
+            { name: "Retro Arc", style: { textTransform: "uppercase", letterSpacing: "3px" } },
+            { name: "Mystic Aura", style: { textShadow: "0 0 15px #8b5cf6, 0 0 25px #7c3aed" } },
+            { name: "Heavy Slate", style: { textShadow: "4px 4px 0px #1e293b" } },
+            { name: "Super Neon", style: { textShadow: "0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de, 0 0 20px #ff00de" } },
+            { name: "Clean Cut", style: { letterSpacing: "5px", textTransform: "uppercase", fontWeight: "900" } },
+            { name: "Burning Ember", style: { textShadow: "0 -1px 4px #FFF, 0 -2px 10px #ff0, 0 -10px 20px #ff8000, 0 -18px 40px #F00" } },
+            { name: "Soft Highlight", style: { background: "linear-gradient(120deg, #85ffbd 0%, #fffb7d 100%)", color: "#000", padding: "2px 6px" } },
+            { name: "Matrix Grid", style: { color: "#00ff00", textShadow: "0 0 5px #00ff00, 0 0 10px #003300" } },
+            { name: "Pop Comic", style: { color: "#ffff00", webkitTextStroke: "2px #000", textShadow: "3px 3px 0 #000" } },
+            { name: "Dark Shadow Glow", style: { textShadow: "2px 2px 5px rgba(0,0,0,0.9)" } },
+            { name: "Frosty White", style: { textShadow: "0 0 8px #e2e8f0, 0 0 20px #94a3b8" } },
+            { name: "Retro Stripe", style: { textShadow: "1px 1px 0px #f43f5e, 2px 2px 0px #ec4899, 3px 3px 0px #8b5cf6" } },
+            { name: "Alien Acid", style: { color: "#adff2f", textShadow: "0 0 10px #00ff00" } }
+        ];
+
+        const PRO_ANIMATIONS = [
+            { name: "Fade In Out", class: "anim-fade" },
+            { name: "Elastic Zoom", class: "anim-zoom" },
+            { name: "Slide Up", class: "anim-slide-up" },
+            { name: "Slide Left", class: "anim-slide-left" },
+            { name: "Bounce", class: "anim-bounce" },
+            { name: "Infinite Spin", class: "anim-spin" },
+            { name: "Pulse Beat", class: "anim-pulse" },
+            { name: "Shake", class: "anim-shake" },
+            { name: "3D Flip", class: "anim-flip" }
+        ];
+
+        // Launch the editor drawer
+        function openInteractiveTextPanel() {
+            backToMaster();
+            document.getElementById('textProDrawer').classList.add('open');
+            
+            // Build fonts UI
+            const fontsGrid = document.getElementById('textTab-fonts');
+            fontsGrid.innerHTML = PRO_FONTS.map(font => `
+                <div onclick="applyFontToActive('${font}')" class="text-option-item p-3 rounded-xl text-center cursor-pointer font-bold border border-zinc-800" style="font-family: '${font}';">
+                    ${font}
+                </div>
+            `).join('');
+
+            // Build Styles UI
+            const stylesGrid = document.getElementById('textTab-styles');
+            stylesGrid.innerHTML = PRO_STYLES.map((styleObj, index) => {
+                let inlineStyle = "";
+                for (const [key, val] of Object.entries(styleObj.style)) {
+                    const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+                    inlineStyle += `${cssKey}:${val};`;
+                }
+                return `
+                    <div onclick="applyStyleToActive(${index})" class="text-option-item p-3 rounded-xl text-center cursor-pointer text-xs font-semibold border border-zinc-800" style="${inlineStyle}">
+                        ${styleObj.name}
+                    </div>
+                `;
+            }).join('');
+
+            // Build Effects UI
+            const effectsGrid = document.getElementById('textTab-effects');
+            effectsGrid.innerHTML = PRO_EFFECTS.map((eff, index) => {
+                let inlineStyle = "";
+                if (eff.style) {
+                    for (const [key, val] of Object.entries(eff.style)) {
+                        const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+                        inlineStyle += `${cssKey}:${val};`;
+                    }
+                }
+                return `
+                    <div onclick="applyEffectToActive(${index})" class="text-option-item p-3 rounded-xl text-center cursor-pointer text-xs font-semibold border border-zinc-800 ${eff.class || ''}" style="${inlineStyle}">
+                        ${eff.name}
+                    </div>
+                `;
+            }).join('');
+
+            // Build Animations UI
+            const animsGrid = document.getElementById('textTab-animations');
+            animsGrid.innerHTML = PRO_ANIMATIONS.map((anim, index) => `
+                <div onclick="applyAnimationToActive('${anim.class}')" class="text-option-item p-3 rounded-xl text-center cursor-pointer text-xs font-semibold border border-zinc-800 ${anim.class}">
+                    ${anim.name}
+                </div>
+            `).join('');
+
+            // Create an initial active text layer if none exists
+            if (!activeTextNode) {
+                createNewTextNode("Double click to edit text");
+            }
+        }
+
+        function switchTextTab(tabId) {
+            ['fonts', 'styles', 'effects', 'animations'].forEach(tab => {
+                document.getElementById(`textTab-${tab}`).classList.add('hidden');
+                document.getElementById(`tabBtn-${tab}`).classList.remove('bg-zinc-800', 'text-white');
+            });
+            document.getElementById(`textTab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tabBtn-${tabId}`).classList.add('bg-zinc-800', 'text-white');
+        }
+
+        // TEXT LAYER ENGINE
+        function createNewTextNode(initialText) {
+            const id = "text-node-" + Date.now();
+            const node = document.createElement('div');
+            node.id = id;
+            node.className = "movable-text-layer selected";
+            node.style.top = "40%";
+            node.style.left = "10%";
+            node.style.fontSize = "20px";
+            node.style.fontFamily = "Inter";
+            node.style.color = "#ffffff";
+            
+            node.innerHTML = `
+                <span class="text-content-span">${initialText}</span>
+                <div class="delete-node" onclick="deleteTextNode('${id}')">✕</div>
+            `;
+            
+            // Unselect others
+            deselectAllNodes();
+            
+            elementsLayer.appendChild(node);
+            activeTextNode = node;
+            document.getElementById('proTextInput').value = initialText;
+            
+            makeNodeMovable(node);
+            
+            // Selection events
+            node.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                deselectAllNodes();
+                node.classList.add('selected');
+                activeTextNode = node;
+                document.getElementById('proTextInput').value = node.querySelector('.text-content-span').innerText;
+            });
+
+            node.addEventListener('dblclick', function(e) {
+                const newTxt = prompt("Edit your text:", node.querySelector('.text-content-span').innerText);
+                if (newTxt !== null) {
+                    node.querySelector('.text-content-span').innerText = newTxt;
+                    document.getElementById('proTextInput').value = newTxt;
+                }
             });
         }
+
+        function deleteTextNode(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.remove();
+                activeTextNode = null;
+                document.getElementById('proTextInput').value = "";
+            }
+        }
+
+        function deselectAllNodes() {
+            document.querySelectorAll('.movable-text-layer').forEach(el => {
+                el.classList.remove('selected');
+            });
+        }
+
+        function updateActiveText() {
+            if (activeTextNode) {
+                const val = document.getElementById('proTextInput').value;
+                activeTextNode.querySelector('.text-content-span').innerText = val;
+            }
+        }
+
+        function confirmTextCreation() {
+            deselectAllNodes();
+            activeTextNode = null;
+            document.getElementById('proTextInput').value = "";
+            document.getElementById('textProDrawer').classList.remove('open');
+        }
+
+        // Apply Styles Live
+        function applyFontToActive(fontName) {
+            if (activeTextNode) {
+                activeTextNode.style.fontFamily = fontName;
+            }
+        }
+
+        function applyStyleToActive(index) {
+            if (activeTextNode) {
+                const chosen = PRO_STYLES[index].style;
+                // Reset style attributes
+                activeTextNode.style.color = chosen.color || "#fff";
+                activeTextNode.style.textShadow = chosen.textShadow || "none";
+                activeTextNode.style.background = chosen.background || "transparent";
+                activeTextNode.style.padding = chosen.padding || "0px";
+                activeTextNode.style.borderRadius = chosen.borderRadius || "0px";
+                if (chosen.webkitTextStroke) activeTextNode.style.webkitTextStroke = chosen.webkitTextStroke;
+            }
+        }
+
+        function applyEffectToActive(index) {
+            if (activeTextNode) {
+                const chosen = PRO_EFFECTS[index];
+                // Reset existing classes that are effects
+                activeTextNode.className = "movable-text-layer selected";
+                if (chosen.class) {
+                    chosen.class.split(" ").forEach(c => activeTextNode.classList.add(c));
+                }
+                if (chosen.style) {
+                    for (const [key, val] of Object.entries(chosen.style)) {
+                        activeTextNode.style[key] = val;
+                    }
+                }
+            }
+        }
+
+        function applyAnimationToActive(className) {
+            if (activeTextNode) {
+                // Remove existing animation classes
+                PRO_ANIMATIONS.forEach(anim => {
+                    activeTextNode.classList.remove(anim.class);
+                });
+                activeTextNode.classList.add(className);
+            }
+        }
+
+        // Dragging Logic
+        function makeNodeMovable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            elmnt.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                
+                // Get bounds limits
+                const parent = ratioBox;
+                const topVal = elmnt.offsetTop - pos2;
+                const leftVal = elmnt.offsetLeft - pos1;
+                
+                elmnt.style.top = topVal + "px";
+                elmnt.style.left = leftVal + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        // Deselect when clicking empty space in canvas
+        ratioBox.addEventListener('mousedown', function(e) {
+            if (e.target === ratioBox || e.target === player || e.target === imageEl || e.target === elementsLayer) {
+                deselectAllNodes();
+                activeTextNode = null;
+                document.getElementById('proTextInput').value = "";
+            }
+        });
     </script>
 </body>
 </html>
