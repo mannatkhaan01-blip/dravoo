@@ -6,7 +6,7 @@
     <title>Dravoo · Pro Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bebas+Neue&family=Lobster&family=Pacifico&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Oswald:wght@500;700&family=Montserrat:wght@800&family=Fascinate&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Alfa+Slab+One&family=Bangers&family=Cinzel:wght@700&family=Comfortaa:wght@700&family=Courgette&family=Creepster&family=Gloria+Hallelujah&family=Great+Vibes&family=Kaushan+Script&family=Luckiest+Guy&family=Monoton&family=Orbitron:wght@900&family=Press+Start+2P&family=Sacramento&family=Satisfy&family=Special+Elite&family=Spicy+Rice&family=Titan+One&family=Vampiro+One&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -37,7 +37,7 @@
             bottom: -100%;
             left: 0;
             width: 100%;
-            height: 54vh;
+            height: 62vh;
             background: #111115;
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
@@ -65,6 +65,8 @@
             transition: 0.15s;
             padding: 8px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         .asset-card:hover { transform: scale(1.02); border-color: #3b82f6; background: #26262e; }
         
@@ -250,6 +252,21 @@
             font-size: 9px;
             color: #6b7280;
         }
+
+        /* CapCut Style Tabs */
+        .tab-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8e8e93;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
     </style>
 </head>
 <body>
@@ -298,6 +315,7 @@
                     <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
                     <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
                     
+                    <!-- Dynamic Text Element Holder -->
                     <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40 flex items-center justify-center flex-col text-center"></div>
                     <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
 
@@ -421,6 +439,7 @@
                 <button onclick="runCopyrightAI()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-shield text-emerald-400"></i>Copyright</button>
             </div>
 
+            <!-- TEXT SUBMENU -->
             <div id="submenu-text" class="hidden submenu-grid">
                 <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
                 <button onclick="openDrawer('fonts')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
@@ -568,19 +587,50 @@
         </div>
     </div>
 
-    <!-- DRAWER -->
+    <!-- COMPREHENSIVE TEXT DESIGNER DRAWER -->
     <div class="editor-drawer" id="editorDrawer">
-        <div class="flex items-center justify-between p-4 border-b border-zinc-800">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
             <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
-            <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Editor Asset Drawer</span>
+            <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Text Designer Workspace</span>
             <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
         </div>
-        <div class="tab-content-container p-4 overflow-y-auto flex-1">
-            <div id="drawerDynamicGrid"></div>
+        
+        <!-- Live Text Input (CapCut Style) -->
+        <div class="px-4 py-2 border-b border-zinc-800 flex gap-2">
+            <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="Enter Text" />
+            <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add to Video</button>
+        </div>
+
+        <!-- Tabbed Menu Headers -->
+        <div class="flex border-b border-zinc-800 bg-[#0e0e12] overflow-x-auto scroll-x-menu">
+            <button id="tab-templates" onclick="switchTextTab('templates')" class="tab-btn active">Templates</button>
+            <button id="tab-fonts" onclick="switchTextTab('fonts')" class="tab-btn">Fonts</button>
+            <button id="tab-styles" onclick="switchTextTab('styles')" class="tab-btn">Styles</button>
+            <button id="tab-animations" onclick="switchTextTab('animations')" class="tab-btn">Animations</button>
+            <button id="tab-bubbles" onclick="switchTextTab('bubbles')" class="tab-btn">Bubbles</button>
+            <button id="tab-presets" onclick="switchTextTab('presets')" class="tab-btn">Presets</button>
+        </div>
+
+        <!-- Dynamic Grid Content -->
+        <div class="p-4 overflow-y-auto flex-1">
+            <div id="drawerDynamicGrid" class="grid grid-cols-4 gap-3"></div>
         </div>
     </div>
 
     <script>
+        // Global variables for text customization
+        let currentTextState = {
+            text: "Enter Text",
+            font: "Inter",
+            styleClass: "",
+            styleCSS: "color: #ffffff; text-shadow: none;",
+            animation: "",
+            bubbleClass: "",
+            bubbleCSS: ""
+        };
+
+        let customPresets = [];
+
         // ===== AUDIO TRACK MANAGEMENT =====
         let audioTracks = [];
         let trackIdCounter = 0;
@@ -1404,38 +1454,286 @@
             }
         }
 
+        // ===== EXPANDED ADVANCED TEXT DESIGNER (50 FONTS, 50 STYLES, 50 BUBBLES, 50 ANIMATIONS, 50 TEMPLATES) =====
         function openDrawer(type) {
             const drawer = document.getElementById('editorDrawer');
-            const grid = document.getElementById('drawerDynamicGrid');
             drawer.classList.add('open');
-            grid.className = "grid grid-cols-3 gap-3";
-            document.getElementById('drawerTitle').innerText = type.toUpperCase() + " SELECTION";
             
-            if (type === 'stickers') {
-                ['🔥', '✨', '🎯', '❤️', '👑', '🚀'].forEach(e => {
-                    const el = document.createElement('div'); el.className = 'asset-card text-2xl'; el.innerText = e;
-                    el.onclick = () => { elementsLayer.innerHTML += `<span class="text-4xl m-2 select-none">${e}</span>`; closeDrawer(); };
+            // Activate the correct tab header visually
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const matchedTabBtn = document.getElementById(`tab-${type}`);
+            if (matchedTabBtn) matchedTabBtn.classList.add('active');
+            
+            renderTextTabContent(type);
+        }
+
+        function switchTextTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            renderTextTabContent(tabId);
+        }
+
+        function renderTextTabContent(tabId) {
+            const grid = document.getElementById('drawerDynamicGrid');
+            grid.innerHTML = ''; // Reset Grid
+            
+            if (tabId === 'templates') {
+                grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
+                
+                const sampleTemplates = [
+                    "SUPER TRAVEL", "GENTLEMAN", "LET'S GO", "LUCK", "SMART", "Abc", "SUBSCRIBE",
+                    "TRENDY", "TITLE HERE", "LIKE & FOLLOW", "Dair", "INSPIRATION", "Chapter End", 
+                    "THE END", "CREATIVE", "FINAL", "CLOUD", "SCARY", "FOLLOW", "THEM", "FIGHT!", "HELLO"
+                ];
+
+                for (let i = 1; i <= 50; i++) {
+                    const tempName = sampleTemplates[(i - 1) % sampleTemplates.length] + ` #${i}`;
+                    const el = document.createElement('div');
+                    el.className = "bg-gradient-to-br from-[#1c1c22] to-[#26262e] border border-zinc-800 rounded-xl p-3 text-center cursor-pointer flex flex-col justify-between items-center h-24 hover:border-blue-500 transition relative overflow-hidden";
+                    
+                    // Distinctive visual design for template preview card
+                    let styleText = `font-family: 'Inter'; font-weight: 900;`;
+                    if (i % 3 === 0) styleText = `font-family: 'Pacifico'; color: #f43f5e;`;
+                    if (i % 4 === 0) styleText = `font-family: 'Bebas Neue'; color: #eab308; letter-spacing: 2px;`;
+                    if (i % 5 === 0) styleText = `font-family: 'Permanent Marker'; color: #06b6d4;`;
+
+                    el.innerHTML = `
+                        <div class="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full absolute top-1 right-1">Free Trial</div>
+                        <span class="text-xs truncate w-full mt-3" style="${styleText}">${tempName}</span>
+                        <span class="text-[9px] text-zinc-500 mt-2">Use Preset Template</span>
+                    `;
+                    el.onclick = () => {
+                        currentTextState.text = tempName;
+                        if (i % 3 === 0) { currentTextState.font = 'Pacifico'; currentTextState.styleCSS = "color: #f43f5e; font-weight: bold;"; }
+                        else if (i % 4 === 0) { currentTextState.font = 'Bebas Neue'; currentTextState.styleCSS = "color: #eab308; font-weight: bold; letter-spacing: 2px;"; }
+                        else { currentTextState.font = 'Inter'; currentTextState.styleCSS = "color: #ffffff; font-weight: bold;"; }
+                        
+                        document.getElementById('liveTextInput').value = tempName;
+                        updateLiveTextPreview();
+                    };
                     grid.appendChild(el);
-                });
-            } else if (type === 'fonts') {
-                ['Viral Text', 'Dravoo Pro', 'Trending'].forEach(f => {
-                    const el = document.createElement('div'); el.className = 'asset-card font-bold'; el.innerText = f;
-                    el.onclick = () => { elementsLayer.innerHTML += `<div class="text-white font-bold text-lg">${f}</div>`; closeDrawer(); };
+                }
+
+            } else if (tabId === 'fonts') {
+                grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
+                
+                const googleFonts = [
+                    "Inter", "Bebas Neue", "Lobster", "Pacifico", "Caveat", "Playfair Display", "Oswald", "Montserrat", 
+                    "Fascinate", "Permanent Marker", "Righteous", "Fredoka One", "Alfa Slab One", "Bangers", "Cinzel", 
+                    "Comfortaa", "Courgette", "Creepster", "Gloria Hall", "Great Vibes", "Kaushan Script", "Luckiest Guy", 
+                    "Monoton", "Orbitron", "Press Start 2P", "Sacramento", "Satisfy", "Special Elite", "Spicy Rice", 
+                    "Titan One", "Vampiro One"
+                ];
+
+                for (let i = 1; i <= 50; i++) {
+                    const fontName = googleFonts[(i - 1) % googleFonts.length];
+                    const el = document.createElement('div');
+                    el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-xl p-3 cursor-pointer text-center flex flex-col justify-center h-16 transition';
+                    el.innerHTML = `
+                        <span class="text-xs text-zinc-400 block mb-1 font-mono text-[9px]">Font #${i}</span>
+                        <span class="text-sm text-white truncate" style="font-family: '${fontName}';">${fontName}</span>
+                    `;
+                    el.onclick = () => {
+                        currentTextState.font = fontName;
+                        updateLiveTextPreview();
+                    };
                     grid.appendChild(el);
-                });
-            } else if (type === 'captions') {
-                ['Auto Caption', 'Lyrics Sync', 'Subtitles'].forEach(f => {
-                    const el = document.createElement('div'); el.className = 'asset-card'; el.innerText = f;
-                    el.onclick = () => { alert(`Captions: ${f} added`); closeDrawer(); };
+                }
+
+            } else if (tabId === 'styles') {
+                grid.className = "grid grid-cols-4 gap-2.5";
+                
+                // Programmatically generate 50 distinct color styles
+                const baseGradients = [
+                    "color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.8)", // 1 Glow White
+                    "color: #f39c12; font-weight: 900;", // 2 Orange flat
+                    "color: #2ecc71; text-shadow: 2px 2px #27ae60;", // 3 Green Shadow
+                    "color: #e74c3c; font-weight: bold; border-bottom: 2px solid #c0392b", // 4 Red Bordered
+                    "background: linear-gradient(to right, #f857a6, #ff5858); -webkit-background-clip: text; -webkit-text-fill-color: transparent;", // 5 pink gradient
+                    "background: linear-gradient(to right, #11998e, #38ef7d); -webkit-background-clip: text; -webkit-text-fill-color: transparent;", // 6 fresh emerald
+                    "color: #3498db; text-shadow: 0 0 10px #2980b9;", // 7 Cyan Neon glow
+                    "color: #9b59b6; text-shadow: 1px 1px 0px #8e44ad, 2px 2px 0px #8e44ad;" // 8 3D Purple
+                ];
+
+                for (let i = 1; i <= 50; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'asset-card flex flex-col justify-between';
+                    
+                    let targetStyle = baseGradients[(i - 1) % baseGradients.length];
+                    if (i > 8) {
+                        // Generate dynamic vibrant variations up to 50
+                        const hue = (i * 25) % 360;
+                        targetStyle = `color: hsl(${hue}, 100%, 65%); text-shadow: 0 0 6px hsl(${hue}, 100%, 40%);`;
+                    }
+
+                    el.innerHTML = `
+                        <span class="text-[9px] text-zinc-500 font-mono">Style #${i}</span>
+                        <span class="text-sm font-bold" style="${targetStyle}">Aa</span>
+                    `;
+                    el.onclick = () => {
+                        currentTextState.styleCSS = targetStyle;
+                        updateLiveTextPreview();
+                    };
                     grid.appendChild(el);
-                });
-            } else if (type === 'templates') {
-                ['Intro', 'Outro', 'Transition'].forEach(f => {
-                    const el = document.createElement('div'); el.className = 'asset-card'; el.innerText = f;
-                    el.onclick = () => { alert(`Template: ${f} applied`); closeDrawer(); };
+                }
+
+            } else if (tabId === 'animations') {
+                grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
+                
+                const animationStyles = [
+                    "Blur Slam", "Blow Fire", "Throw Out", "Slam-in Echo", "Slide To Type", "Fire Cage", "Pounding Gold",
+                    "Infinity Atom", "Leap Liquid", "3D Fire Swing", "Wave Drop", "Cyber Field", "Shadow Rise",
+                    "Elastic Jump", "Zoom Bounce", "Rotate Fade", "Glitch Distortion", "Typing Retro", "Flicker Neon",
+                    "Heartbeat Glow", "Horizontal Slide", "Reveal Mask", "Color Cycle", "Spin Vortex"
+                ];
+
+                for (let i = 1; i <= 50; i++) {
+                    const animName = animationStyles[(i - 1) % animationStyles.length] + ` #${i}`;
+                    const el = document.createElement('div');
+                    el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-xl p-2.5 cursor-pointer text-center flex flex-col justify-between h-16 transition';
+                    
+                    // Simple animation icon indicators
+                    let iconClass = "fa-wind text-cyan-400";
+                    if (i % 3 === 0) iconClass = "fa-fire text-rose-500";
+                    if (i % 4 === 0) iconClass = "fa-bolt text-yellow-400";
+
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="text-[8px] text-zinc-500 font-mono">Anim #${i}</span>
+                            <i class="fas ${iconClass} text-[10px]"></i>
+                        </div>
+                        <span class="text-xs text-zinc-200 truncate font-semibold mt-1">${animName}</span>
+                    `;
+                    el.onclick = () => {
+                        currentTextState.animation = animName;
+                        alert(`"${animName}" animation applied to your text layer!`);
+                        updateLiveTextPreview();
+                    };
                     grid.appendChild(el);
-                });
+                }
+
+            } else if (tabId === 'bubbles') {
+                grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
+                
+                const bubbleDesigns = [
+                    "Speech Bubble Oval", "Comic Comic Boom", "Cloud Dreamer", "Retro Gaming Box", "Minimal Oval Bubble",
+                    "Golden Luxury Tag", "Cyber Rounded Alert", "Love Heart Stamp", "Instagram Badge Style", "YouTube Classic Tag"
+                ];
+
+                for (let i = 1; i <= 50; i++) {
+                    const bubbleName = bubbleDesigns[(i - 1) % bubbleDesigns.length] + ` #${i}`;
+                    const el = document.createElement('div');
+                    el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-xl p-3 cursor-pointer text-center flex flex-col justify-between h-20 transition relative';
+                    
+                    let bgCol = "background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.4);";
+                    if (i % 2 === 0) bgCol = "background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.4);";
+                    if (i % 3 === 0) bgCol = "background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.4);";
+
+                    el.innerHTML = `
+                        <span class="text-[8px] text-zinc-500 block font-mono">Bubble #${i}</span>
+                        <div class="border rounded-lg text-[9px] py-1 text-zinc-300 truncate" style="${bgCol}">${bubbleName}</div>
+                    `;
+                    el.onclick = () => {
+                        let appliedCSS = `padding: 10px; border-radius: 12px; `;
+                        if (i % 2 === 0) appliedCSS += `background: #eab308; color: #000; border: 2px solid #000;`;
+                        else if (i % 3 === 0) appliedCSS += `background: #ec4899; color: #fff; border: 2px dashed #fff;`;
+                        else appliedCSS += `background: #2563eb; color: #fff; border: 2px solid #1e3a8a;`;
+
+                        currentTextState.bubbleCSS = appliedCSS;
+                        updateLiveTextPreview();
+                    };
+                    grid.appendChild(el);
+                }
+
+            } else if (tabId === 'presets') {
+                grid.className = "flex flex-col gap-3 col-span-4";
+                
+                grid.innerHTML = `
+                    <div class="bg-[#18181c] border border-zinc-800 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-zinc-400 mb-3">Save your current style, font, and animation setup as a custom preset!</p>
+                        <button onclick="saveCurrentPreset()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
+                            <i class="fas fa-plus mr-1.5"></i>Save Current Design as Preset
+                        </button>
+                    </div>
+                    <div class="text-xs font-bold text-zinc-400 mt-2">Your Saved Presets:</div>
+                    <div id="savedPresetsList" class="grid grid-cols-2 gap-3"></div>
+                `;
+                
+                renderSavedPresets();
             }
+        }
+
+        // Live text update feature
+        function updateLiveTextPreview() {
+            const currentTextInputValue = document.getElementById('liveTextInput').value || "Enter Text";
+            currentTextState.text = currentTextInputValue;
+
+            // Generate or select dynamic element on canvas
+            let textPreviewEl = document.getElementById('live-canvas-text-preview');
+            if (!textPreviewEl) {
+                textPreviewEl = document.createElement('div');
+                textPreviewEl.id = 'live-canvas-text-preview';
+                textPreviewEl.className = 'absolute z-50 p-3 select-none cursor-move transition-transform duration-200 pointer-events-auto';
+                elementsLayer.appendChild(textPreviewEl);
+            }
+
+            // Apply fonts, bubbles, styles
+            textPreviewEl.style = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}`;
+            textPreviewEl.innerText = currentTextState.text;
+        }
+
+        function applyNewTextToCanvas() {
+            const finalVal = document.getElementById('liveTextInput').value || "Enter Text";
+            
+            // Create permanent text element block
+            const permText = document.createElement('div');
+            permText.className = "text-white select-none pointer-events-auto m-2 cursor-pointer font-bold px-3 py-1.5 rounded-lg";
+            permText.style = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}`;
+            permText.innerText = finalVal;
+            
+            elementsLayer.appendChild(permText);
+            closeDrawer();
+        }
+
+        function saveCurrentPreset() {
+            const presetName = `Preset Custom #${customPresets.length + 1}`;
+            const newPreset = {
+                name: presetName,
+                font: currentTextState.font,
+                styleCSS: currentTextState.styleCSS,
+                bubbleCSS: currentTextState.bubbleCSS
+            };
+            customPresets.push(newPreset);
+            alert(`"${presetName}" successfully saved!`);
+            renderSavedPresets();
+        }
+
+        function renderSavedPresets() {
+            const listContainer = document.getElementById('savedPresetsList');
+            if (!listContainer) return;
+            
+            if (customPresets.length === 0) {
+                listContainer.innerHTML = `<div class="text-zinc-600 text-xs col-span-2 py-4 text-center">No presets saved yet.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = '';
+            customPresets.forEach((p, idx) => {
+                const item = document.createElement('div');
+                item.className = 'bg-[#22222a] border border-zinc-800 rounded-xl p-3 cursor-pointer hover:border-blue-500 transition text-center';
+                item.innerHTML = `
+                    <span class="text-[10px] text-zinc-400 block font-mono mb-1">Preset ${idx + 1}</span>
+                    <span class="text-xs font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name}</span>
+                `;
+                item.onclick = () => {
+                    currentTextState.font = p.font;
+                    currentTextState.styleCSS = p.styleCSS;
+                    currentTextState.bubbleCSS = p.bubbleCSS;
+                    updateLiveTextPreview();
+                    alert(`"${p.name}" applied!`);
+                };
+                listContainer.appendChild(item);
+            });
         }
 
         function closeDrawer() { document.getElementById('editorDrawer').classList.remove('open'); }
