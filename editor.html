@@ -6,9 +6,8 @@
     <title>Dravoo · Pro Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bebas+Neue&family=Lobster&family=Pacifico&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Oswald:wght@500;700&family=Montserrat:wght@800&family=Fascinate&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Alfa+Slab+One&family=Bangers&family=Cinzel:wght@700&family=Comfortaa:wght@700&family=Courgette&family=Creepster&family=Gloria+Hallelujah&family=Great+Vibes&family=Kaushan+Script&family=Luckiest+Guy&family=Monoton&family=Orbitron:wght@900&family=Press+Start+2P&family=Sacramento&family=Satisfy&family=Special+Elite&family=Spicy+Rice&family=Titan+One&family=Vampiro+One&family=Abril+Fatface&family=Anton&family=Archivo+Black&family=Black+Ops+One&family=Bungee&family=Coiny&family=Exo+2:wght@800&family=Francois+One&family=Gravitas+One&family=Josefin+Sans:wght@700&family=Kanit:wght@800&family=Lilita+One&family=Limelight&family=Megrim&family=New+Rocker&family=Nosifer&family=Paytone+One&family=Plaster&family=Poiret+One&family=Rajdhani:wght@700&family=Rampart+One&family=Rancho&family=Russo+One&family=Sigmar+One&family=Staatliches&family=Syncopate:wght@700&family=Uncial+Antiqua&family=Wallpoet&family=Big+Shoulders+Display:wght@900&family=Black+Han+Sans&family=Chango&family=Comic+Neue&family=Delius+Swash+Caps&family=Emblema+One&family=Fugaz+One&family=Gaegu&family=Girassol&family=Hanalei&family=Henny+Penny&family=Iceberg&family=Jacques+Francois+Shadow&family=Kavoon&family=Leckerli+One&family=Ma+Shan+Zheng&family=Monofett&family=New+Rocker&family=Overlock&family=Patua+One&family=Qwigley&family=Redressed&family=Shrikhand&family=Sirin+Stencil&family=Sofia&family=Sriracha&family=Stalinist+One&family=Warnes&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bebas+Neue&family=Lobster&family=Pacifico&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Oswald:wght@500;700&family=Montserrat:wght@800&family=Fascinate&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Alfa+Slab+One&family=Bangers&family=Cinzel:wght@700&family=Comfortaa:wght@700&family=Courgette&family=Creepster&family=Gloria+Hallelujah&family=Great+Vibes&family=Kaushan+Script&family=Luckiest+Guy&family=Monoton&family=Orbitron:wght@900&family=Press+Start+2P&family=Sacramento&family=Satisfy&family=Special+Elite&family=Spicy+Rice&family=Titan+One&family=Vampiro+One&family=Abril+Fatface&family=Anton&family=Archivo+Black&family=Black+Ops+One&family=Bungee&family=Coiny&family=Exo+2:wght@800&family=Francois+One&family=Gravitas+One&family=Josefin+Sans:wght@700&family=Kanit:wght@800&family=Lilita+One&family=Limelight&family=Megrim&family=New+Rocker&family=Nosifer&family=Paytone+One&family=Plaster&family=Poiret+One&family=Rajdhani:wght@700&family=Rampart+One&family=Rancho&family=Russo+One&family=Sigmar+One&family=Staatliches&family=Syncopate:wght@700&family=Uncial+Antiqua&family=Wallpoet&family=Big+Shoulders+Display:wght@900&family=Black+Han+Sans&family=Chango&family=Comic+Neue&family=Delius+Swash+Caps&family=Emblema+One&family=Fugaz+One&family=Gaegu&family=Girassol&family=Hanalei&family=Henny+Penny&family=Iceberg&family=Jacques+Francois+Shadow&family=Kavoon&family=Leckerli+One&family=Ma+Shan+Zheng&family=Monofett&family=New+Rocker&family=Overlock&family=Patua+One&family=Qwigley&family=Redressed&family=Shrikhand&family=Sirin+Stencil&family=Sofia&family=Sriracha&family=Stalinist+One&family=Warnes&family=ZCOOL+KuaiLe&family=Blacker+Pro&family=Dancing+Script&family=Epilogue&family=Fira+Code&family=Genos&family=Hind&family=Inconsolata&family=JetBrains+Mono&family=Karla&family=Lato&family=Merriweather&family=Nunito&family=Open+Sans&family=Poppins&family=Quicksand&family=Roboto&family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <style>
-        /* ... (all existing styles remain same) ... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0b0b0e;
@@ -38,7 +37,7 @@
             bottom: -100%;
             left: 0;
             width: 100%;
-            height: 65vh;
+            height: 70vh;
             background: #111115;
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
@@ -261,10 +260,43 @@
             border-bottom: 2px solid transparent;
             white-space: nowrap;
             transition: 0.2s;
+            cursor: pointer;
+            background: transparent;
+            border-top: none;
+            border-left: none;
+            border-right: none;
         }
         .tab-btn.active {
             color: #3b82f6;
             border-color: #3b82f6;
+        }
+
+        .font-preview-btn {
+            background: #18181c;
+            border: 1px solid #2a2a32;
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .font-preview-btn:hover {
+            border-color: #3b82f6;
+            background: #22222a;
+        }
+        .font-preview-btn .font-name {
+            font-size: 11px;
+            color: #9ca3af;
+            font-family: monospace;
+        }
+        .font-preview-btn .font-sample {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 700;
         }
 
         /* Animation Keyframes */
@@ -285,8 +317,8 @@
             50% { text-shadow: 0 0 30px rgba(59,130,246,0.8); }
         }
         @keyframes textRotate {
-            from { transform: rotate(-5deg); }
-            to { transform: rotate(5deg); }
+            0% { transform: rotate(-3deg); }
+            100% { transform: rotate(3deg); }
         }
         @keyframes textPulse {
             0%, 100% { opacity: 1; }
@@ -326,7 +358,6 @@
             100% { color: #ff0000; }
         }
 
-        /* Canvas Text Element Styles */
         .canvas-text-item {
             position: absolute;
             cursor: grab;
@@ -374,6 +405,30 @@
             cursor: grabbing;
             opacity: 0.8;
             box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 16, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2a2a32;
+            border-radius: 16px;
+            padding: 12px 24px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            animation: slideUp 0.3s ease-out;
+            pointer-events: none;
+        }
+        .toast-notification.hidden { display: none; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
     </style>
 </head>
@@ -423,7 +478,6 @@
                     <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
                     <img id="studio-image" class="w-full h-full object-contain hidden" alt="preview" />
                     
-                    <!-- Dynamic Text Elements Layer -->
                     <div id="canvas-elements-layer" class="absolute inset-0 pointer-events-none z-40"></div>
                     <img id="overlay-display-img" class="absolute max-w-[40%] max-h-[40%] border-2 border-dashed border-blue-500 hidden z-20 pointer-events-auto cursor-move" style="top:20px; left:20px;" alt="Overlay" />
 
@@ -645,6 +699,12 @@
         </div>
     </main>
 
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification" class="toast-notification hidden">
+        <i class="fas fa-check-circle text-blue-400 text-lg"></i>
+        <span id="toastMessage" class="text-sm text-white font-medium">Animation applied!</span>
+    </div>
+
     <!-- PIXABAY MODAL -->
     <div id="pixabayModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-[#121216] border border-zinc-800 w-full max-w-md rounded-3xl p-6 text-center space-y-5 shadow-2xl">
@@ -705,7 +765,7 @@
         
         <!-- Live Text Input (CapCut Style) -->
         <div class="px-4 py-2 border-b border-zinc-800 flex gap-2">
-            <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="Enter Text" />
+            <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="hi DeepSeek" />
             <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add to Video</button>
         </div>
 
@@ -732,7 +792,7 @@
 
         // Global variables
         let currentTextState = {
-            text: "Enter Text",
+            text: "hi DeepSeek",
             font: "Inter",
             styleCSS: "color: #ffffff; text-shadow: none;",
             animation: "",
@@ -742,6 +802,25 @@
         let customPresets = [];
         let textElementCounter = 0;
         let dragData = null;
+
+        // ===== TOAST NOTIFICATION =====
+        let toastTimeout = null;
+
+        function showToast(message, icon = 'fa-check-circle') {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('i');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            
+            toastIcon.className = `fas ${icon} text-blue-400 text-lg`;
+            toastMsg.textContent = message;
+            toast.classList.remove('hidden');
+            
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
 
         // ===== AUDIO TRACK MANAGEMENT =====
         let audioTracks = [];
@@ -758,6 +837,7 @@
             renderAudioTracks();
             updateTrackCount();
             playTrack(id);
+            showToast(`🎵 "${name}" added to track`, 'fa-music');
             return track;
         }
 
@@ -832,6 +912,7 @@
             if (audioTracks.length === 0) {
                 document.getElementById('multiTrackList').innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No audio tracks added yet</span></div>`;
             }
+            showToast('Track removed', 'fa-trash');
         }
 
         function playAllTracks() {
@@ -1089,12 +1170,14 @@
                         const url = URL.createObjectURL(audioBlob);
                         addAudioTrack('Live Voiceover Recording', url, 'track');
                         showSubmenu('audio');
+                        showToast('🎙️ Voiceover recorded!', 'fa-microphone');
                     };
 
                     mediaRecorder.start();
                     isRecording = true;
                     recordText.innerText = "Stop Rec";
                     micIcon.className = "fas fa-stop text-red-500 animate-pulse";
+                    showToast('🔴 Recording...', 'fa-circle');
                 } catch (err) {
                     alert("Microphone Error: " + err.message);
                 }
@@ -1103,6 +1186,7 @@
                 isRecording = false;
                 recordText.innerText = "Record";
                 micIcon.className = "fas fa-microphone text-red-500";
+                showToast('⏹️ Recording stopped', 'fa-stop');
             }
         }
 
@@ -1116,7 +1200,7 @@
             
             grid.className = "space-y-4";
             grid.innerHTML = `
-                <textarea id="ai-text-input" placeholder="Type your script here..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white outline-none h-24 focus:border-blue-500"></textarea>
+                <textarea id="ai-text-input" placeholder="Type your script here..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white outline-none h-24 focus:border-blue-500">Hello, this is a voice demo from Dravoo Pro Studio.</textarea>
                 <div class="grid grid-cols-4 gap-2">
                     <div class="voice-option ${selectedVoice === 'Adam' ? 'selected' : ''}" onclick="selectVoice('Adam')"><span class="voice-icon">🧔</span><div class="voice-name">Adam</div><div class="voice-desc">Deep Male</div></div>
                     <div class="voice-option ${selectedVoice === 'Lucia' ? 'selected' : ''}" onclick="selectVoice('Lucia')"><span class="voice-icon">👩</span><div class="voice-name">Lucia</div><div class="voice-desc">Warm Female</div></div>
@@ -1179,12 +1263,14 @@
                 addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track');
                 showSubmenu('audio');
                 closeDrawer();
+                showToast('🔊 Voice generated!', 'fa-volume-high');
             };
             utterance.onerror = (e) => {
                 console.error('Speech error:', e);
                 addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track');
                 showSubmenu('audio');
                 closeDrawer();
+                showToast('⚠️ Voice generated (simulated)', 'fa-volume-high');
             };
             
             synth.speak(utterance);
@@ -1308,14 +1394,16 @@
             closeExportDialog();
             const timestamp = new Date().toISOString().slice(0, 10);
             console.log(`Exporting: Dravoo_${type}_${timestamp}.${type === 'video' ? 'mp4' : type === 'audio' ? 'mp3' : 'dravoo'}`);
+            showToast(`📤 Exporting ${type}...`, 'fa-download');
         }
 
         // ===== COPYRIGHT AI =====
         function runCopyrightAI() {
-            alert("🔍 Dravoo Deep-Core AI scanning audio tracks...");
+            showToast('🔍 AI scanning audio tracks...', 'fa-shield');
             setTimeout(() => {
                 const trackNames = audioTracks.map(t => t.name).join(', ') || 'No tracks';
                 alert(`✅ Copyright Report:\n• Tracks Analyzed: ${audioTracks.length}\n• ${trackNames}\n• Status: 100% Unique\n• Distribution: Authorized`);
+                showToast('✅ Copyright check complete!', 'fa-check-circle');
             }, 800);
         }
 
@@ -1339,10 +1427,13 @@
             document.getElementById('masterBottomMenu').classList.remove('hidden');
         }
 
-        function triggerTool(name) { alert(`"${name}" layer triggered.`); }
+        function triggerTool(name) { 
+            alert(`"${name}" layer triggered.`); 
+            showToast(`⚡ ${name} triggered`, 'fa-bolt');
+        }
         function handleOverlaySelected(input) {
             const file = input.files[0];
-            if (file) { overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); }
+            if (file) { overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); showToast('📁 Overlay added!', 'fa-layer-group'); }
         }
         function applyCSSFilter(filterValue) { player.style.filter = filterValue; imageEl.style.filter = filterValue; }
         function adjustBrightness(val) { applyCSSFilter(`brightness(${val}%)`); }
@@ -1353,6 +1444,7 @@
             else if (ratioStr === '1/1') { ratioBox.style.aspectRatio = '1/1'; ratioBox.style.maxWidth = '360px'; } 
             else if (ratioStr === '4/3') { ratioBox.style.aspectRatio = '4/3'; ratioBox.style.maxWidth = '400px'; }
             setTimeout(syncCanvasSize, 200);
+            showToast(`📐 Ratio: ${ratioStr}`, 'fa-crop-simple');
         }
 
         function generateFilters() {
@@ -1388,7 +1480,7 @@
                 div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i+100}')`;
                 div.style.backgroundSize = 'cover';
                 div.innerText = filter.name + ` #${i+1}`;
-                div.onclick = () => applyCSSFilter(filter.css);
+                div.onclick = () => { applyCSSFilter(filter.css); showToast(`🎨 ${filter.name} filter applied`, 'fa-filter'); };
                 container.appendChild(div);
             }
         }
@@ -1401,26 +1493,22 @@
             const container = document.getElementById('video-ratio-box');
             const elementsLayer = document.getElementById('canvas-elements-layer');
             
-            // Create wrapper div
             const wrapper = document.createElement('div');
             wrapper.className = 'canvas-text-item';
             wrapper.id = `text-${++textElementCounter}`;
             
-            // Random position (center-ish area)
             const boxRect = container.getBoundingClientRect();
-            const randomX = 20 + Math.random() * 60; // percentage
+            const randomX = 20 + Math.random() * 60;
             const randomY = 20 + Math.random() * 60;
             wrapper.style.left = randomX + '%';
             wrapper.style.top = randomY + '%';
             wrapper.style.transform = 'translate(-50%, -50%)';
             
-            // Text content
             const textSpan = document.createElement('span');
             textSpan.className = 'text-content';
             textSpan.innerText = text || 'Enter Text';
             textSpan.style.cssText = `${styleCSS}; font-family: '${font}'; ${bubbleCSS}`;
             
-            // Delete button
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
             deleteBtn.innerHTML = '×';
@@ -1434,10 +1522,7 @@
             wrapper.appendChild(deleteBtn);
             elementsLayer.appendChild(wrapper);
             
-            // Make it pointer-events-auto so it can be interacted with
             wrapper.style.pointerEvents = 'auto';
-            
-            // Setup drag
             setupDrag(wrapper);
             
             return wrapper;
@@ -1451,6 +1536,7 @@
                 el.style.opacity = '0';
                 setTimeout(() => {
                     if (el.parentNode) el.parentNode.removeChild(el);
+                    showToast('🗑️ Text deleted', 'fa-trash');
                 }, 200);
             }
         }
@@ -1464,10 +1550,8 @@
         function setupDrag(element) {
             let isDragging = false;
             let startX, startY, startLeft, startTop;
-            let offsetX, offsetY;
             
             element.addEventListener('mousedown', (e) => {
-                // Don't start drag if clicking delete button
                 if (e.target.classList.contains('delete-btn')) return;
                 
                 isDragging = true;
@@ -1476,18 +1560,10 @@
                 const rect = element.getBoundingClientRect();
                 const containerRect = element.parentElement.getBoundingClientRect();
                 
-                // Calculate offset from mouse to element center
-                offsetX = e.clientX - rect.left - rect.width / 2;
-                offsetY = e.clientY - rect.top - rect.height / 2;
-                
-                // Store current position in percentage
-                const leftPercent = parseFloat(element.style.left) || 50;
-                const topPercent = parseFloat(element.style.top) || 50;
-                
                 startX = e.clientX;
                 startY = e.clientY;
-                startLeft = leftPercent;
-                startTop = topPercent;
+                startLeft = parseFloat(element.style.left) || 50;
+                startTop = parseFloat(element.style.top) || 50;
                 
                 e.preventDefault();
             });
@@ -1497,14 +1573,12 @@
                 
                 const containerRect = element.parentElement.getBoundingClientRect();
                 
-                // Calculate new position in percentage
                 const deltaX = (e.clientX - startX) / containerRect.width * 100;
                 const deltaY = (e.clientY - startY) / containerRect.height * 100;
                 
                 let newLeft = startLeft + deltaX;
                 let newTop = startTop + deltaY;
                 
-                // Clamp to container bounds
                 newLeft = Math.max(0, Math.min(100, newLeft));
                 newTop = Math.max(0, Math.min(100, newTop));
                 
@@ -1527,16 +1601,14 @@
             const text = document.getElementById('liveTextInput').value || 'Enter Text';
             createTextElementOnCanvas(text, currentTextState.styleCSS, currentTextState.font, currentTextState.bubbleCSS);
             closeDrawer();
+            showToast('✏️ Text added to canvas!', 'fa-font');
         }
 
         // ===== LIVE TEXT PREVIEW =====
         function updateLiveTextPreview() {
             const text = document.getElementById('liveTextInput').value || 'Enter Text';
-            
-            // Update current state
             currentTextState.text = text;
             
-            // Show preview in canvas if exists, or create one
             let previewEl = document.getElementById('live-canvas-text-preview');
             if (!previewEl) {
                 previewEl = document.createElement('div');
@@ -1634,7 +1706,9 @@
                 'Redressed', 'Shrikhand', 'Sirin Stencil', 'Sofia', 'Sriracha', 'Stalinist One', 'Warnes',
                 'ZCOOL KuaiLe', 'Audiowide', 'Blacker Pro', 'Dancing Script', 'Epilogue', 'Fira Code',
                 'Genos', 'Hind', 'Inconsolata', 'JetBrains Mono', 'Karla', 'Lato', 'Merriweather',
-                'Nunito', 'Open Sans', 'Poppins', 'Quicksand', 'Roboto', 'Source Sans Pro'
+                'Nunito', 'Open Sans', 'Poppins', 'Quicksand', 'Roboto', 'Source Sans Pro',
+                'Blacker Pro', 'Dancing Script', 'Epilogue', 'Fira Code', 'Genos', 'Hind',
+                'Inconsolata', 'JetBrains Mono'
             ];
         }
 
@@ -1710,7 +1784,6 @@
             grid.innerHTML = '';
             
             if (tabId === 'templates') {
-                // 100+ Templates
                 grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
                 const templates = generate100Templates();
                 
@@ -1730,31 +1803,31 @@
                         currentTextState.styleCSS = template.styleCSS;
                         document.getElementById('liveTextInput').value = template.name;
                         updateLiveTextPreview();
+                        showToast(`🎨 Template: ${template.name}`, 'fa-palette');
                     };
                     grid.appendChild(el);
                 });
                 
             } else if (tabId === 'fonts') {
-                // 100+ Fonts
                 grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
                 const fonts = get100Fonts();
                 
                 fonts.forEach((font, index) => {
                     const el = document.createElement('div');
-                    el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-xl p-3 cursor-pointer text-center flex flex-col justify-center h-16 transition';
+                    el.className = 'font-preview-btn';
                     el.innerHTML = `
-                        <span class="text-[8px] text-zinc-500 block font-mono">#${index+1}</span>
-                        <span class="text-sm text-white truncate" style="font-family: '${font}';">${font}</span>
+                        <span class="text-[8px] text-zinc-500 font-mono">#${index+1}</span>
+                        <span class="font-sample" style="font-family: '${font}';">${font}</span>
                     `;
                     el.onclick = () => {
                         currentTextState.font = font;
                         updateLiveTextPreview();
+                        showToast(`🔤 Font: ${font}`, 'fa-font');
                     };
                     grid.appendChild(el);
                 });
                 
             } else if (tabId === 'styles') {
-                // 100+ Styles
                 grid.className = "grid grid-cols-4 gap-2.5";
                 const styles = generate100Styles();
                 
@@ -1768,12 +1841,12 @@
                     el.onclick = () => {
                         currentTextState.styleCSS = style.css;
                         updateLiveTextPreview();
+                        showToast(`🎨 Style ${index+1} applied`, 'fa-paint-brush');
                     };
                     grid.appendChild(el);
                 });
                 
             } else if (tabId === 'animations') {
-                // 100+ Animations
                 grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
                 const animations = get100Animations();
                 
@@ -1817,13 +1890,12 @@
                             }
                             previewEl.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; ${animCSS}`;
                         }
-                        alert(`"${anim}" animation applied!`);
+                        showToast(`✨ "${anim}" animation applied!`, 'fa-wand-magic-sparkles');
                     };
                     grid.appendChild(el);
                 });
                 
             } else if (tabId === 'bubbles') {
-                // 100+ Bubbles
                 grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
                 const bubbles = generate100Bubbles();
                 
@@ -1839,6 +1911,7 @@
                     el.onclick = () => {
                         currentTextState.bubbleCSS = bubble.css;
                         updateLiveTextPreview();
+                        showToast(`🫧 ${bubble.name} applied`, 'fa-circle');
                     };
                     grid.appendChild(el);
                 });
@@ -1866,10 +1939,11 @@
                 name: presetName,
                 font: currentTextState.font,
                 styleCSS: currentTextState.styleCSS,
-                bubbleCSS: currentTextState.bubbleCSS
+                bubbleCSS: currentTextState.bubbleCSS,
+                animation: currentTextState.animation
             };
             customPresets.push(newPreset);
-            alert(`"${presetName}" saved successfully!`);
+            showToast(`💾 "${presetName}" saved!`, 'fa-save');
             renderSavedPresets();
         }
 
@@ -1895,7 +1969,7 @@
                     currentTextState.styleCSS = p.styleCSS;
                     currentTextState.bubbleCSS = p.bubbleCSS;
                     updateLiveTextPreview();
-                    alert(`"${p.name}" applied!`);
+                    showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open');
                 };
                 listContainer.appendChild(item);
             });
@@ -1919,12 +1993,12 @@
         function toggleDraw() {
             drawActive = !drawActive;
             const panel = document.getElementById('drawToolsPanel');
-            if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); } 
-            else { canvas.classList.remove('active'); panel.classList.add('hidden'); }
+            if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); showToast('✏️ Drawing mode ON', 'fa-pen'); } 
+            else { canvas.classList.remove('active'); panel.classList.add('hidden'); showToast('✏️ Drawing mode OFF', 'fa-pen'); }
         }
 
-        function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-        function setBrush(size) { brushSize = size; }
+        function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); showToast('🧹 Canvas cleared', 'fa-eraser'); }
+        function setBrush(size) { brushSize = size; showToast(`🖌️ Brush: ${size}px`, 'fa-paintbrush'); }
 
         canvas.addEventListener('mousedown', (e) => { isDrawing = true; draw(e); });
         canvas.addEventListener('mousemove', draw);
@@ -1948,16 +2022,15 @@
         setTimeout(syncCanvasSize, 300);
         updateTrackCount();
 
-        // Load voices for text-to-speech
         if (window.speechSynthesis) {
             speechSynthesis.getVoices();
             speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
         }
 
-        // Initialize with a demo text
         setTimeout(() => {
-            createTextElementOnCanvas('hi DeepSeek', 'color: #fff; font-weight: 900; text-shadow: 0 0 20px #3b82f6;', 'Inter', '');
+            createTextElementOnCanvas('hi DeepSeek', 'color: #ffffff; font-weight: 900; text-shadow: 0 0 20px #3b82f6;', 'Inter', '');
             document.getElementById('liveTextInput').value = 'hi DeepSeek';
+            showToast('🚀 Welcome to Dravoo Pro Studio!', 'fa-rocket');
         }, 500);
         
         console.log('🚀 Dravoo Pro Editor Loaded!');
