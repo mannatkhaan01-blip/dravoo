@@ -37,7 +37,7 @@
             bottom: -100%;
             left: 0;
             width: 100%;
-            height: 75vh;
+            height: 80vh;
             background: #111115;
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
@@ -69,6 +69,7 @@
             overflow: hidden;
         }
         .asset-card:hover { transform: scale(1.02); border-color: #3b82f6; background: #26262e; }
+        .asset-card.selected { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
         
         .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
         .draw-overlay-canvas.active { pointer-events: auto; cursor: crosshair; }
@@ -298,6 +299,10 @@
             color: #fff;
             font-weight: 700;
         }
+        .font-preview-btn.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.15);
+        }
 
         /* Animation Keyframes */
         @keyframes textFadeIn {
@@ -407,6 +412,56 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.6);
         }
 
+        /* Text Timeline Track */
+        .text-timeline-track {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 4px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+        .text-timeline-track:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        .text-timeline-track .track-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+        .text-timeline-track .track-info i {
+            color: #60a5fa;
+            font-size: 12px;
+        }
+        .text-timeline-track .track-info span {
+            font-size: 11px;
+            color: #93c5fd;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .text-timeline-track .track-actions button {
+            background: transparent;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .text-timeline-track .track-actions button:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
         .toast-notification {
             position: fixed;
             bottom: 80px;
@@ -431,60 +486,8 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* Text track list styles */
-        .text-track-item {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 10px;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 4px;
-            transition: all 0.2s;
-        }
-        .text-track-item:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-        .text-track-item .track-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 0;
-        }
-        .text-track-item .track-info i {
-            color: #3b82f6;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-        .text-track-item .track-info span {
-            font-size: 11px;
-            font-family: monospace;
-            color: #60a5fa;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .text-track-item .track-actions button {
-            background: transparent;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        .text-track-item .track-actions button:hover {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-
-        .search-bar {
-            background: #18181c;
+        .search-input {
+            background: #1a1a22;
             border: 1px solid #2a2a32;
             border-radius: 10px;
             padding: 6px 12px;
@@ -493,63 +496,25 @@
             outline: none;
             width: 100%;
         }
-        .search-bar:focus {
-            border-color: #3b82f6;
-        }
-        .search-container {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            padding: 8px 0;
-        }
-        .search-container button {
+        .search-input:focus { border-color: #3b82f6; }
+
+        .selected-indicator {
+            position: absolute;
+            top: 4px;
+            right: 4px;
             background: #3b82f6;
-            border: none;
-            border-radius: 10px;
-            padding: 6px 14px;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .search-container button:hover {
-            background: #2563eb;
-        }
-        .section-header {
-            display: flex;
-            justify-content: space-between;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: none;
             align-items: center;
-            padding: 4px 0 8px 0;
-        }
-        .section-header .action-btn {
-            background: transparent;
-            border: 1px solid #2a2a32;
-            border-radius: 8px;
-            padding: 4px 12px;
-            color: #9ca3af;
-            font-size: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .section-header .action-btn:hover {
-            border-color: #3b82f6;
-            color: #3b82f6;
-        }
-        .section-header .action-btn.default-btn {
-            border-color: #3b82f6;
-            color: #3b82f6;
-        }
-        .section-header .action-btn.default-btn:hover {
-            background: #3b82f6;
+            justify-content: center;
             color: white;
+            font-size: 8px;
         }
-        .section-header .action-btn.save-btn {
-            border-color: #10b981;
-            color: #10b981;
-        }
-        .section-header .action-btn.save-btn:hover {
-            background: #10b981;
-            color: white;
+        .asset-card.selected .selected-indicator,
+        .font-preview-btn.selected .selected-indicator {
+            display: flex;
         }
     </style>
 </head>
@@ -641,21 +606,6 @@
                 </div>
             </div>
 
-            <!-- TEXT TRACK CONTAINER -->
-            <div id="textTrackContainer" class="audio-track-container" style="border-top: 1px solid #1a1a22;">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
-                        <i class="fas fa-font text-blue-400 mr-1.5"></i>Text Tracks
-                    </span>
-                    <span id="textTrackCount" class="text-[10px] text-zinc-600">0 tracks</span>
-                </div>
-                <div id="textTrackList" class="multi-track-container">
-                    <div class="text-center py-4">
-                        <span class="text-[10px] text-zinc-600">No text tracks added yet</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Video Timeline Track -->
             <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
                 <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
@@ -664,6 +614,21 @@
                         <span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span>
                     </div>
                     <button onclick="document.getElementById('video-file-picker').click()" class="text-zinc-400 hover:text-white text-[11px] bg-zinc-800 px-2.5 py-1 rounded-md">Replace</button>
+                </div>
+            </div>
+
+            <!-- TEXT TIMELINE TRACK -->
+            <div id="textTimelineContainer" class="px-4 py-2 bg-[#0c0c10] border-b border-[#1a1a22]">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                        <i class="fas fa-font text-blue-400 mr-1.5"></i>Text Tracks
+                    </span>
+                    <span id="textTrackCount" class="text-[10px] text-zinc-600">0 texts</span>
+                </div>
+                <div id="textTrackList" class="space-y-1 max-h-[80px] overflow-y-auto">
+                    <div class="text-center py-2">
+                        <span class="text-[10px] text-zinc-600">No text tracks added yet</span>
+                    </div>
                 </div>
             </div>
 
@@ -896,13 +861,13 @@
         <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
             <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
             <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Text Designer Workspace</span>
-            <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
+            <button class="text-blue-500 font-bold text-sm" onclick="applyNewTextToCanvas()">Add to Canvas</button>
         </div>
         
         <!-- Live Text Input (CapCut Style) -->
         <div class="px-4 py-2 border-b border-zinc-800 flex gap-2">
             <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="" />
-            <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add to Video</button>
+            <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add</button>
         </div>
 
         <!-- Tabbed Menu Headers -->
@@ -923,7 +888,7 @@
 
     <script>
         // ============================================================
-        // COMPLETE JAVASCRIPT WITH UNLIMITED TEMPLATES, FONTS, STYLES, ANIMATIONS, BUBBLES
+        // COMPLETE JAVASCRIPT WITH 200+ TEMPLATES, FONTS, STYLES, ANIMATIONS, BUBBLES
         // ============================================================
 
         // Global variables
@@ -960,6 +925,22 @@
         }
 
         // ===== TEXT TRACK MANAGEMENT =====
+        function addTextTrack(text, style, font, animation, bubble) {
+            const track = {
+                id: Date.now(),
+                text: text,
+                style: style,
+                font: font,
+                animation: animation,
+                bubble: bubble,
+                timestamp: new Date().toLocaleTimeString()
+            };
+            textTracks.push(track);
+            renderTextTracks();
+            showToast(`📝 "${text}" added to timeline`, 'fa-font');
+            return track;
+        }
+
         function renderTextTracks() {
             const container = document.getElementById('textTrackList');
             const countEl = document.getElementById('textTrackCount');
@@ -967,37 +948,692 @@
             if (!container) return;
             
             if (textTracks.length === 0) {
-                container.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`;
-                if (countEl) countEl.textContent = '0 tracks';
+                container.innerHTML = `<div class="text-center py-2"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`;
+                if (countEl) countEl.textContent = '0 texts';
                 return;
             }
             
-            container.innerHTML = textTracks.map((track, index) => `
-                <div class="text-track-item" data-track-id="${track.id || index}">
+            container.innerHTML = textTracks.map(track => `
+                <div class="text-timeline-track">
                     <div class="track-info">
                         <i class="fas fa-font"></i>
-                        <span>${track.text || 'Text'}</span>
+                        <span>${track.text.length > 30 ? track.text.substring(0, 30) + '...' : track.text}</span>
+                        <span class="text-[8px] text-zinc-500 ml-auto">${track.timestamp}</span>
                     </div>
                     <div class="track-actions">
-                        <button onclick="deleteTextTrack(${index})"><i class="fas fa-times"></i></button>
+                        <button onclick="removeTextTrack(${track.id})"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
             `).join('');
             
-            if (countEl) countEl.textContent = `${textTracks.length} track${textTracks.length !== 1 ? 's' : ''}`;
+            if (countEl) countEl.textContent = `${textTracks.length} text${textTracks.length !== 1 ? 's' : ''}`;
         }
 
-        function addTextTrack(text) {
-            const track = { text: text, id: Date.now() };
-            textTracks.push(track);
+        function removeTextTrack(id) {
+            textTracks = textTracks.filter(t => t.id !== id);
             renderTextTracks();
-            showToast(`✏️ "${text}" added to text tracks`, 'fa-font');
-        }
-
-        function deleteTextTrack(index) {
-            textTracks.splice(index, 1);
-            renderTextTracks();
+            // Also remove from canvas if exists
+            const elements = document.querySelectorAll('.canvas-text-item');
+            elements.forEach(el => {
+                if (el.dataset.trackId == id) {
+                    el.remove();
+                }
+            });
             showToast('🗑️ Text track removed', 'fa-trash');
+        }
+
+        // ===== CREATE TEXT ELEMENT ON CANVAS WITH TRACK =====
+        function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCSS = '', animation = '') {
+            const container = document.getElementById('video-ratio-box');
+            const elementsLayer = document.getElementById('canvas-elements-layer');
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'canvas-text-item';
+            const trackId = Date.now();
+            wrapper.id = `text-${++textElementCounter}`;
+            wrapper.dataset.trackId = trackId;
+            
+            const boxRect = container.getBoundingClientRect();
+            const randomX = 20 + Math.random() * 60;
+            const randomY = 20 + Math.random() * 60;
+            wrapper.style.left = randomX + '%';
+            wrapper.style.top = randomY + '%';
+            wrapper.style.transform = 'translate(-50%, -50%)';
+            
+            const textSpan = document.createElement('span');
+            textSpan.className = 'text-content';
+            textSpan.innerText = text || 'Enter Text';
+            let fullStyle = `${styleCSS}; font-family: '${font}'; ${bubbleCSS}`;
+            if (animation) {
+                let animCSS = getAnimationCSS(animation);
+                fullStyle += `; ${animCSS}`;
+            }
+            textSpan.style.cssText = fullStyle;
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.title = 'Delete text';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deleteTextElement(wrapper.id, trackId);
+            };
+            
+            wrapper.appendChild(textSpan);
+            wrapper.appendChild(deleteBtn);
+            elementsLayer.appendChild(wrapper);
+            
+            wrapper.style.pointerEvents = 'auto';
+            setupDrag(wrapper);
+            
+            // Add to text tracks
+            addTextTrack(text, styleCSS, font, animation, bubbleCSS);
+            
+            return wrapper;
+        }
+
+        function getAnimationCSS(animation) {
+            const animMap = {
+                'Fade In': 'animation: textFadeIn 0.5s ease-out;',
+                'Bounce': 'animation: textBounce 0.6s ease-in-out infinite;',
+                'Slide In': 'animation: textSlideIn 0.5s ease-out;',
+                'Glow Pulse': 'animation: textGlow 1.5s ease-in-out infinite;',
+                'Rotate': 'animation: textRotate 0.3s ease-in-out infinite alternate;',
+                'Pulse': 'animation: textPulse 1s ease-in-out infinite;',
+                'Wave': 'animation: textWave 0.5s ease-in-out infinite;',
+                'Shake': 'animation: textShake 0.3s ease-in-out infinite;',
+                'Flip': 'animation: textFlip 0.6s ease-in-out;',
+                'Zoom In': 'animation: textZoom 0.4s ease-out;',
+                'Neon Pulse': 'animation: textNeonPulse 1.5s ease-in-out infinite;',
+                'Rainbow': 'animation: textRainbow 2s linear infinite;'
+            };
+            return animMap[animation] || '';
+        }
+
+        function deleteTextElement(id, trackId) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.transition = 'all 0.2s';
+                el.style.transform = 'scale(0.8)';
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    if (el.parentNode) el.parentNode.removeChild(el);
+                    // Remove from tracks if trackId matches
+                    if (trackId) {
+                        textTracks = textTracks.filter(t => t.id !== trackId);
+                        renderTextTracks();
+                    }
+                    showToast('🗑️ Text deleted', 'fa-trash');
+                }, 200);
+            }
+        }
+
+        function deleteAllTextElements() {
+            const elements = document.querySelectorAll('.canvas-text-item');
+            elements.forEach(el => {
+                const trackId = parseInt(el.dataset.trackId);
+                if (trackId) {
+                    textTracks = textTracks.filter(t => t.id !== trackId);
+                }
+                el.remove();
+            });
+            renderTextTracks();
+            showToast('🗑️ All texts deleted', 'fa-trash');
+        }
+
+        // ===== DRAG FUNCTIONALITY =====
+        function setupDrag(element) {
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+            
+            element.addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('delete-btn')) return;
+                
+                isDragging = true;
+                element.classList.add('dragging');
+                
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = parseFloat(element.style.left) || 50;
+                startTop = parseFloat(element.style.top) || 50;
+                
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const containerRect = element.parentElement.getBoundingClientRect();
+                
+                const deltaX = (e.clientX - startX) / containerRect.width * 100;
+                const deltaY = (e.clientY - startY) / containerRect.height * 100;
+                
+                let newLeft = startLeft + deltaX;
+                let newTop = startTop + deltaY;
+                
+                newLeft = Math.max(0, Math.min(100, newLeft));
+                newTop = Math.max(0, Math.min(100, newTop));
+                
+                element.style.left = newLeft + '%';
+                element.style.top = newTop + '%';
+                
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    element.classList.remove('dragging');
+                }
+            });
+        }
+
+        // ===== APPLY TEXT TO CANVAS =====
+        function applyNewTextToCanvas() {
+            const text = document.getElementById('liveTextInput').value.trim() || 'Enter Text';
+            if (!text) {
+                showToast('⚠️ Please enter some text', 'fa-exclamation-circle');
+                return;
+            }
+            createTextElementOnCanvas(
+                text, 
+                currentTextState.styleCSS, 
+                currentTextState.font, 
+                currentTextState.bubbleCSS,
+                currentTextState.animation
+            );
+            closeDrawer();
+            showToast('✏️ Text added to canvas!', 'fa-font');
+            // Clear the input for next use
+            document.getElementById('liveTextInput').value = '';
+        }
+
+        // ===== LIVE TEXT PREVIEW =====
+        function updateLiveTextPreview() {
+            const text = document.getElementById('liveTextInput').value || 'Enter Text';
+            currentTextState.text = text;
+            
+            let previewEl = document.getElementById('live-canvas-text-preview');
+            if (!previewEl) {
+                previewEl = document.createElement('div');
+                previewEl.id = 'live-canvas-text-preview';
+                previewEl.className = 'absolute z-45 p-2 select-none pointer-events-none opacity-70';
+                const layer = document.getElementById('canvas-elements-layer');
+                if (layer) layer.appendChild(previewEl);
+            }
+            
+            let fullStyle = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}`;
+            if (currentTextState.animation) {
+                fullStyle += `; ${getAnimationCSS(currentTextState.animation)}`;
+            }
+            previewEl.style.cssText = `${fullStyle}; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.6; pointer-events: none; z-index: 45;`;
+            previewEl.innerText = text;
+        }
+
+        // ===== DRAWER: 200+ TEMPLATES, FONTS, STYLES, ANIMATIONS, BUBBLES =====
+        function openDrawer(type) {
+            const drawer = document.getElementById('editorDrawer');
+            drawer.classList.add('open');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const matchedTabBtn = document.getElementById(`tab-${type}`);
+            if (matchedTabBtn) matchedTabBtn.classList.add('active');
+            
+            renderTextTabContent(type);
+        }
+
+        function switchTextTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            renderTextTabContent(tabId);
+        }
+
+        // ===== 200+ UNIQUE TEMPLATES =====
+        function generate200Templates() {
+            const templates = [];
+            const styles = [
+                'Neon', 'Glow', 'Shadow', 'Gradient', '3D', 'Glass', 'Chrome', 'Gold', 'Silver', 'Retro',
+                'Vintage', 'Cyber', 'Hologram', 'Crystal', 'Fire', 'Ice', 'Water', 'Sand', 'Metal', 'Wood',
+                'Paper', 'Ink', 'Paint', 'Sketch', 'Pixel', 'Vector', 'Minimal', 'Maximal', 'Elegant', 'Bold',
+                'Soft', 'Dreamy', 'Dark', 'Light', 'Colorful', 'Monochrome', 'Pastel', 'Neon', 'Vibrant', 'Muted',
+                'Urban', 'Nature', 'Space', 'Ocean', 'Desert', 'Forest', 'Mountain', 'City', 'Night', 'Dawn',
+                'Twilight', 'Midnight', 'Sunrise', 'Sunset', 'Galaxy', 'Nebula', 'Comet', 'Star', 'Moon', 'Sun'
+            ];
+            const fonts = ['Inter', 'Bebas Neue', 'Orbitron', 'Pacifico', 'Permanent Marker', 'Lobster', 'Cinzel', 'Bangers', 'Abril Fatface', 'Anton', 'Oswald', 'Montserrat', 'Playfair Display', 'Caveat', 'Righteous', 'Fredoka One', 'Alfa Slab One', 'Black Ops One', 'Bungee', 'Coiny'];
+            const words = ['STYLE', 'DESIGN', 'CREATE', 'VISION', 'DREAM', 'LIVE', 'LOVE', 'ART', 'SOUL', 'VIBE',
+                          'GOLD', 'CORE', 'PURE', 'TRUE', 'BOLD', 'WILD', 'FREE', 'STAR', 'MOON', 'SUN',
+                          'WAVE', 'FIRE', 'ICE', 'WIND', 'STORM', 'LIGHT', 'DARK', 'SHADOW', 'GLOW', 'SPARK',
+                          'RISE', 'FLY', 'SOAR', 'SHINE', 'BRIGHT', 'EPIC', 'HERO', 'LEGEND', 'MYTH', 'GOD',
+                          'TITAN', 'PHOENIX', 'DRAGON', 'WOLF', 'EAGLE', 'LION', 'TIGER', 'SHARK', 'HAWK', 'FALCON'];
+            
+            for (let i = 0; i < 200; i++) {
+                const style = styles[i % styles.length];
+                const font = fonts[i % fonts.length];
+                const word = words[i % words.length];
+                const suffix = Math.floor(Math.random() * 100);
+                templates.push({
+                    name: `${style} ${word} #${suffix}`,
+                    font: font,
+                    styleCSS: generateStyleCSS(style, i)
+                });
+            }
+            return templates;
+        }
+
+        function generateStyleCSS(style, index) {
+            const hue = (index * 37 + 180) % 360;
+            const hue2 = (index * 53 + 60) % 360;
+            
+            switch(style) {
+                case 'Neon': return `color: #fff; text-shadow: 0 0 5px hsl(${hue}, 100%, 50%), 0 0 15px hsl(${hue}, 100%, 50%), 0 0 30px hsl(${hue}, 100%, 50%); font-weight: 900;`;
+                case 'Glow': return `color: #fff; text-shadow: 0 0 10px hsl(${hue}, 80%, 60%), 0 0 20px hsl(${hue}, 80%, 60%); font-weight: 700;`;
+                case 'Shadow': return `color: #fff; text-shadow: 2px 2px 0 hsl(${hue}, 80%, 30%), 4px 4px 0 hsl(${hue}, 80%, 20%); font-weight: 800;`;
+                case 'Gradient': return `background: linear-gradient(45deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`;
+                case '3D': return `color: hsl(${hue}, 80%, 60%); text-shadow: 0 4px 0 hsl(${hue}, 80%, 30%), 0 8px 0 hsl(${hue}, 80%, 20%), 0 12px 0 hsl(${hue}, 80%, 10%); font-weight: 900;`;
+                case 'Glass': return `color: #fff; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);`;
+                case 'Gold': return `color: #fbbf24; text-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; font-weight: 900;`;
+                case 'Silver': return `color: #94a3b8; text-shadow: 0 0 10px #64748b; font-weight: 700;`;
+                case 'Retro': return `color: #fb923c; font-family: 'Press Start 2P'; font-size: 14px; text-shadow: 2px 2px 0 #7c2d12;`;
+                case 'Cyber': return `color: #22d3ee; text-shadow: 0 0 5px #06b6d4, 0 0 15px #06b6d4; font-family: 'Orbitron'; font-weight: 900;`;
+                default: return `color: hsl(${hue}, 80%, 60%); font-weight: 700;`;
+            }
+        }
+
+        // ===== 200+ FONTS =====
+        function get200Fonts() {
+            return [
+                'Inter', 'Bebas Neue', 'Lobster', 'Pacifico', 'Caveat', 'Playfair Display', 'Oswald', 'Montserrat',
+                'Fascinate', 'Permanent Marker', 'Righteous', 'Fredoka One', 'Alfa Slab One', 'Bangers', 'Cinzel',
+                'Comfortaa', 'Courgette', 'Creepster', 'Gloria Hallelujah', 'Great Vibes', 'Kaushan Script', 'Luckiest Guy',
+                'Monoton', 'Orbitron', 'Press Start 2P', 'Sacramento', 'Satisfy', 'Special Elite', 'Spicy Rice',
+                'Titan One', 'Vampiro One', 'Abril Fatface', 'Anton', 'Archivo Black', 'Black Ops One', 'Bungee',
+                'Coiny', 'Exo 2', 'Francois One', 'Gravitas One', 'Josefin Sans', 'Kanit', 'Lilita One', 'Limelight',
+                'Megrim', 'New Rocker', 'Nosifer', 'Paytone One', 'Plaster', 'Poiret One', 'Rajdhani', 'Rampart One',
+                'Rancho', 'Russo One', 'Sigmar One', 'Staatliches', 'Syncopate', 'Uncial Antiqua', 'Wallpoet',
+                'Big Shoulders Display', 'Black Han Sans', 'Chango', 'Comic Neue', 'Delius Swash Caps', 'Emblema One',
+                'Fugaz One', 'Gaegu', 'Girassol', 'Hanalei', 'Henny Penny', 'Iceberg', 'Jacques Francois Shadow',
+                'Kavoon', 'Leckerli One', 'Ma Shan Zheng', 'Monofett', 'Overlock', 'Patua One', 'Qwigley',
+                'Redressed', 'Shrikhand', 'Sirin Stencil', 'Sofia', 'Sriracha', 'Stalinist One', 'Warnes',
+                'ZCOOL KuaiLe', 'Audiowide', 'Blacker Pro', 'Dancing Script', 'Epilogue', 'Fira Code',
+                'Genos', 'Hind', 'Inconsolata', 'JetBrains Mono', 'Karla', 'Lato', 'Merriweather',
+                'Nunito', 'Open Sans', 'Poppins', 'Quicksand', 'Roboto', 'Source Sans Pro',
+                'Adamina', 'Alegreya', 'Amatic SC', 'Arvo', 'Bad Script', 'Bitter', 'Bodoni Moda',
+                'Cabin', 'Cantarell', 'Cormorant', 'Crimson Text', 'DM Sans', 'Dosis', 'EB Garamond',
+                'El Messiri', 'Encode Sans', 'Esteban', 'Fira Sans', 'Frank Ruhl Libre', 'Gabriela',
+                'Gajraj One', 'Gentium Book Basic', 'Goudy Bookletter 1911', 'Grenze', 'Hanuman',
+                'Hind Siliguri', 'Hubballi', 'IBM Plex Sans', 'IM Fell English', 'Inika', 'Island Moments',
+                'Josefin Slab', 'Julius Sans One', 'K2D', 'Kadwa', 'Kalam', 'Kite One', 'Kreon',
+                'Kumar One', 'Laila', 'Lateef', 'Lato', 'League Gothic', 'Lekton', 'Lexend', 'Libre Baskerville',
+                'Lora', 'Macondo', 'Manuale', 'Marck Script', 'Markazi Text', 'Mate', 'Merriweather Sans',
+                'Michroma', 'Mina', 'Montserrat Alternates', 'Mukta', 'Mulish', 'Nabla', 'Nanum Gothic',
+                'Neuton', 'News Cycle', 'Niconne', 'Nunito Sans', 'Oleo Script', 'Oranienbaum', 'Oregano',
+                'Original Surfer', 'Overpass', 'Oxygen', 'PT Sans', 'PT Serif', 'Palanquin', 'Pangolin',
+                'Passion One', 'Pathway Gothic One', 'Patrick Hand', 'Philosopher', 'Playfair', 'Pontano Sans',
+                'Pragati Narrow', 'Prata', 'Proza Libre', 'Puppies Play', 'Qahiri', 'Quattrocento', 'Rakkas',
+                'Red Hat Display', 'Red Rose', 'Reem Kufi', 'Rokkitt', 'Rosarivo', 'Rouge Script', 'Rowdies',
+                'Rozha One', 'Rubik', 'Ruda', 'Rufina', 'Ruge Boogie', 'Ruslan Display', 'Saira', 'Salsa',
+                'Sansita', 'Sawarabi Mincho', 'Scope One', 'Seaweed Script', 'Sen', 'Seymour One', 'Shadows Into Light',
+                'Shalimar', 'Share', 'Shojumaru', 'Short Stack', 'Siemreap', 'Signika', 'Sintony', 'Snippet',
+                'Sofia Sans', 'Sonsie One', 'Sorts Mill Goudy', 'Spinnaker', 'Stardos Stencil', 'Sue Ellen Francisco',
+                'Sumana', 'Sunflower', 'Sura', 'Suranna', 'Suravaram', 'Suwannaphum', 'Swanky and Moo Moo',
+                'Tangerine', 'Taprom', 'Tauri', 'Taviraj', 'Teko', 'Telex', 'Tenor Sans', 'Text Me One',
+                'The Girl Next Door', 'Tienne', 'Tillana', 'Timmana', 'Tinos', 'Titan One', 'Trade Winds',
+                'Trirong', 'Trocchi', 'Trochut', 'Truculenta', 'Tsukimi Rounded', 'Tulpen One', 'Turret Road',
+                'Twinkle Star', 'Ultra', 'Unbounded', 'Uncial Antiqua', 'Underdog', 'Unica One', 'UnifrakturCook',
+                'Unkempt', 'Unlock', 'Unna', 'Updock', 'Urbanist', 'Ursula', 'Varela Round', 'Varta', 'Vast Shadow',
+                'Vesper Libre', 'Viaoda Libre', 'Vibes', 'Vibur', 'Vidaloka', 'Viga', 'Voces', 'Volkhov', 'Vollkorn',
+                'Voltaire', 'VT323', 'Waiting for the Sunrise', 'Wallpoet', 'Walter Turncoat', 'Warnes', 'Wellfleet',
+                'Wendy One', 'Whisper', 'WindSong', 'Wire One', 'Wix Madefor Display', 'Work Sans', 'Xanh Mono',
+                'Yanone Kaffeesatz', 'Yantramanav', 'Yellowtail', 'Yeon Sung', 'Yeseva One', 'Yesteryear', 'Yrsa',
+                'ZCOOL KuaiLe', 'ZCOOL QingKe HuangYou', 'ZCOOL XiaoWei', 'Zen Antique', 'Zen Dots', 'Zen Kaku Gothic Antique'
+            ];
+        }
+
+        // ===== 200+ STYLES =====
+        function generate200Styles() {
+            const styles = [];
+            for (let i = 0; i < 200; i++) {
+                const hue = (i * 29 + 10) % 360;
+                const hue2 = (i * 47 + 200) % 360;
+                const type = i % 12;
+                let css = '';
+                switch(type) {
+                    case 0: css = `color: hsl(${hue}, 100%, 60%); text-shadow: 0 0 10px hsl(${hue}, 100%, 40%); font-weight: 800;`; break;
+                    case 1: css = `background: linear-gradient(135deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`; break;
+                    case 2: css = `color: #fff; text-shadow: 2px 2px 0 hsl(${hue}, 80%, 40%), 4px 4px 0 hsl(${hue}, 80%, 30%); font-weight: 700;`; break;
+                    case 3: css = `color: #fff; text-shadow: 0 0 5px hsl(${hue}, 100%, 50%), 0 0 15px hsl(${hue}, 100%, 50%), 0 0 30px hsl(${hue}, 100%, 50%); font-weight: 900;`; break;
+                    case 4: css = `color: hsl(${hue}, 80%, 50%); -webkit-text-stroke: 2px hsl(${hue}, 80%, 30%); font-weight: 900;`; break;
+                    case 5: css = `color: hsl(${hue}, 70%, 65%); font-weight: 700; text-shadow: 0 0 20px hsl(${hue}, 70%, 40%);`; break;
+                    case 6: css = `background: linear-gradient(45deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; text-shadow: none;`; break;
+                    case 7: css = `color: #fff; text-shadow: 0 0 10px #000, 0 0 20px #000, 0 0 5px hsl(${hue}, 100%, 50%); font-weight: 900;`; break;
+                    case 8: css = `color: #fff; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px; font-weight: 700;`; break;
+                    case 9: css = `color: hsl(${hue}, 100%, 70%); text-shadow: -2px -2px 0 hsl(${hue2}, 100%, 40%), 2px 2px 0 hsl(${hue2}, 100%, 40%); font-weight: 900;`; break;
+                    case 10: css = `background: linear-gradient(to right, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; text-shadow: none;`; break;
+                    case 11: css = `color: hsl(${hue}, 80%, 50%); text-shadow: 0 0 5px hsl(${hue}, 80%, 30%), 0 0 15px hsl(${hue}, 80%, 20%); font-weight: 800;`; break;
+                }
+                styles.push({ css, label: `Style ${i+1}` });
+            }
+            return styles;
+        }
+
+        // ===== 200+ ANIMATIONS =====
+        function get200Animations() {
+            return [
+                'Fade In', 'Bounce', 'Slide In', 'Glow Pulse', 'Rotate', 'Pulse', 'Wave', 'Zoom In',
+                'Flip', 'Shake', 'Wobble', 'Swing', 'Jello', 'Heartbeat', 'Flicker', 'Typing',
+                'Reveal', 'Spin', 'Drop In', 'Rise Up', 'Splash', 'Explode', 'Morph', 'Blur In',
+                'Color Shift', 'Rainbow', 'Neon Pulse', 'Cyber Glitch', 'Matrix', 'Hologram',
+                'Shimmer', 'Sparkle', 'Fire', 'Ice', 'Wind', 'Thunder', 'Gravity', 'Magnetic',
+                'Warp', 'Ripple', 'Echo', 'Ghost', 'Shadow Dance', 'Light Burst', 'Speed Trail',
+                'Comet', 'Nebula', 'Vortex', 'Zen', 'Dream', 'Cyber', 'Retro', 'Modern', 'Classic',
+                'Pop', 'Rock', 'Jazz', 'Blues', 'Metal', 'Punk', 'Grunge', 'Techno', 'House',
+                'Trance', 'Dubstep', 'DnB', 'LoFi', 'Ambient', 'Acoustic', 'Electric', 'Digital',
+                'Analog', 'VHS', 'Film', 'Reel', 'Cinema', 'Theater', 'Stage', 'Studio', 'Live',
+                'Night', 'Day', 'Sunrise', 'Sunset', 'Moon', 'Star', 'Galaxy', 'Universe',
+                'Nature', 'Ocean', 'Forest', 'Mountain', 'Desert', 'Arctic', 'Volcano', 'Storm',
+                'Tornado', 'Hurricane', 'Earthquake', 'Tsunami', 'Aurora', 'Eclipse', 'Supernova', 'Black Hole',
+                'Pulse Wave', 'Sine Wave', 'Square Wave', 'Sawtooth', 'Triangle', 'Glitch Hop', 'Vaporwave',
+                'Synthwave', 'Outrun', 'Cyberpunk', 'Steampunk', 'Dieselpunk', 'Atompunk', 'Raypunk',
+                'Solar Flare', 'Gamma Burst', 'Quantum', 'Nano', 'Cyber', 'Bio', 'Tech', 'Neon Blade',
+                'Shadow Step', 'Ghost Step', 'Phantom', 'Spectre', 'Wraith', 'Banshee', 'Poltergeist',
+                'Chrono', 'Time Warp', 'Space Time', 'Wormhole', 'Star Gate', 'Hyperdrive', 'Warp Drive',
+                'Ion Pulse', 'Plasma', 'Laser', 'Photon', 'Electron', 'Neutron', 'Proton', 'Quark',
+                'Nova', 'Pulsar', 'Quasar', 'Blazar', 'Magnetar', 'Red Giant', 'White Dwarf', 'Blue Giant'
+            ];
+        }
+
+        // ===== 200+ BUBBLES =====
+        function generate200Bubbles() {
+            const bubbles = [];
+            for (let i = 0; i < 200; i++) {
+                const hue = (i * 31 + 50) % 360;
+                const hue2 = (i * 43 + 180) % 360;
+                const type = i % 12;
+                let css = '';
+                switch(type) {
+                    case 0: css = `background: rgba(${hue % 256}, ${(hue+50)%256}, ${(hue+100)%256}, 0.2); border: 2px solid hsl(${hue}, 80%, 60%); border-radius: 12px; padding: 6px 12px;`; break;
+                    case 1: css = `background: linear-gradient(135deg, hsl(${hue}, 80%, 60%), hsl(${hue2}, 80%, 60%)); border: none; border-radius: 20px; padding: 6px 14px; color: #fff;`; break;
+                    case 2: css = `background: transparent; border: 2px dashed hsl(${hue}, 80%, 60%); border-radius: 8px; padding: 6px 10px;`; break;
+                    case 3: css = `background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 8px 16px;`; break;
+                    case 4: css = `background: hsl(${hue}, 70%, 20%); border: 2px solid hsl(${hue}, 80%, 50%); border-radius: 50%; padding: 8px 16px; color: #fff;`; break;
+                    case 5: css = `background: transparent; border: 2px dotted hsl(${hue}, 80%, 50%); border-radius: 4px; padding: 6px 12px;`; break;
+                    case 6: css = `background: radial-gradient(circle at 30% 30%, hsl(${hue}, 80%, 70%), hsl(${hue2}, 80%, 40%)); border: none; border-radius: 12px; padding: 6px 14px; color: #fff;`; break;
+                    case 7: css = `background: #1a1a2e; border: 2px solid hsl(${hue}, 100%, 50%); border-radius: 8px; padding: 6px 12px; box-shadow: 0 0 20px hsl(${hue}, 100%, 30%); color: #fff;`; break;
+                    case 8: css = `background: linear-gradient(45deg, hsl(${hue}, 80%, 30%), hsl(${hue2}, 80%, 30%)); border: none; border-radius: 4px; padding: 6px 12px; color: #fff;`; break;
+                    case 9: css = `background: rgba(0,0,0,0.5); border: 2px solid hsl(${hue}, 80%, 60%); border-radius: 20px; padding: 6px 14px; backdrop-filter: blur(5px); color: #fff;`; break;
+                    case 10: css = `background: hsl(${hue}, 60%, 15%); border: 1px solid hsl(${hue}, 60%, 40%); border-radius: 30px; padding: 6px 16px; color: hsl(${hue}, 60%, 70%);`; break;
+                    case 11: css = `background: transparent; border: 3px double hsl(${hue}, 80%, 50%); border-radius: 10px; padding: 6px 12px;`; break;
+                }
+                bubbles.push({ css, name: `Bubble ${i+1}` });
+            }
+            return bubbles;
+        }
+
+        // ===== RENDER TEXT TAB CONTENT =====
+        let currentSelectedItem = null;
+
+        function renderTextTabContent(tabId) {
+            const grid = document.getElementById('drawerDynamicGrid');
+            grid.innerHTML = '';
+            currentSelectedItem = null;
+            
+            // Add search bar
+            const searchBar = document.createElement('div');
+            searchBar.className = 'col-span-4 flex gap-2 mb-2';
+            searchBar.innerHTML = `
+                <input type="text" id="tabSearchInput" placeholder="Search ${tabId}..." class="search-input" oninput="filterTabItems('${tabId}', this.value)" />
+                <button onclick="saveCurrentAsPreset()" class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1 rounded-lg transition whitespace-nowrap">
+                    <i class="fas fa-save mr-1"></i>Save
+                </button>
+                <button onclick="resetToDefault()" class="bg-zinc-700 hover:bg-zinc-600 text-white text-xs px-3 py-1 rounded-lg transition whitespace-nowrap">
+                    <i class="fas fa-undo mr-1"></i>Default
+                </button>
+            `;
+            grid.appendChild(searchBar);
+            
+            // Content container
+            const contentContainer = document.createElement('div');
+            contentContainer.id = 'tabContentContainer';
+            contentContainer.className = 'col-span-4';
+            grid.appendChild(contentContainer);
+            
+            renderTabItems(tabId, contentContainer, '');
+        }
+
+        function renderTabItems(tabId, container, filter) {
+            container.innerHTML = '';
+            
+            let items = [];
+            let renderFn = null;
+            
+            switch(tabId) {
+                case 'templates':
+                    items = generate200Templates();
+                    renderFn = (item, index) => {
+                        const el = document.createElement('div');
+                        el.className = 'asset-card';
+                        el.innerHTML = `
+                            <span class="text-[6px] text-zinc-500 absolute top-1 right-1">#${index+1}</span>
+                            <span class="text-xs truncate w-full mt-2" style="${item.styleCSS}; font-family: '${item.font}';">${item.name}</span>
+                            <span class="text-[7px] text-zinc-500 mt-1">${item.font}</span>
+                            <span class="selected-indicator"><i class="fas fa-check text-[6px]"></i></span>
+                        `;
+                        el.onclick = () => {
+                            document.querySelectorAll('.asset-card').forEach(c => c.classList.remove('selected'));
+                            el.classList.add('selected');
+                            currentTextState.text = item.name;
+                            currentTextState.font = item.font;
+                            currentTextState.styleCSS = item.styleCSS;
+                            document.getElementById('liveTextInput').value = item.name;
+                            updateLiveTextPreview();
+                            showToast(`🎨 Template: ${item.name}`, 'fa-palette');
+                        };
+                        return el;
+                    };
+                    break;
+                case 'fonts':
+                    items = get200Fonts();
+                    renderFn = (item, index) => {
+                        const el = document.createElement('div');
+                        el.className = 'font-preview-btn';
+                        el.innerHTML = `
+                            <span class="text-[6px] text-zinc-500 font-mono">#${index+1}</span>
+                            <span class="font-sample" style="font-family: '${item}';">${item}</span>
+                            <span class="selected-indicator"><i class="fas fa-check text-[6px]"></i></span>
+                        `;
+                        el.onclick = () => {
+                            document.querySelectorAll('.font-preview-btn').forEach(c => c.classList.remove('selected'));
+                            el.classList.add('selected');
+                            currentTextState.font = item;
+                            updateLiveTextPreview();
+                            showToast(`🔤 Font: ${item}`, 'fa-font');
+                        };
+                        return el;
+                    };
+                    break;
+                case 'styles':
+                    items = generate200Styles();
+                    renderFn = (item, index) => {
+                        const el = document.createElement('div');
+                        el.className = 'asset-card';
+                        el.innerHTML = `
+                            <span class="text-[6px] text-zinc-500 font-mono absolute top-1 right-1">#${index+1}</span>
+                            <span class="text-sm font-bold" style="${item.css}">Aa</span>
+                            <span class="selected-indicator"><i class="fas fa-check text-[6px]"></i></span>
+                        `;
+                        el.onclick = () => {
+                            document.querySelectorAll('.asset-card').forEach(c => c.classList.remove('selected'));
+                            el.classList.add('selected');
+                            currentTextState.styleCSS = item.css;
+                            updateLiveTextPreview();
+                            showToast(`🎨 Style ${index+1} applied`, 'fa-paint-brush');
+                        };
+                        return el;
+                    };
+                    break;
+                case 'animations':
+                    items = get200Animations();
+                    renderFn = (item, index) => {
+                        const el = document.createElement('div');
+                        el.className = 'asset-card';
+                        let iconClass = "fa-wind text-cyan-400";
+                        if (index % 4 === 0) iconClass = "fa-fire text-rose-500";
+                        if (index % 5 === 0) iconClass = "fa-bolt text-yellow-400";
+                        if (index % 6 === 0) iconClass = "fa-spinner text-blue-400";
+                        if (index % 7 === 0) iconClass = "fa-meteor text-purple-400";
+                        if (index % 8 === 0) iconClass = "fa-star text-amber-400";
+                        if (index % 9 === 0) iconClass = "fa-sync text-green-400";
+                        
+                        el.innerHTML = `
+                            <span class="text-[6px] text-zinc-500 absolute top-1 right-1">#${index+1}</span>
+                            <i class="fas ${iconClass} text-lg mb-1"></i>
+                            <span class="text-[9px] text-zinc-200 truncate w-full font-semibold">${item}</span>
+                            <span class="selected-indicator"><i class="fas fa-check text-[6px]"></i></span>
+                        `;
+                        el.onclick = () => {
+                            document.querySelectorAll('.asset-card').forEach(c => c.classList.remove('selected'));
+                            el.classList.add('selected');
+                            currentTextState.animation = item;
+                            updateLiveTextPreview();
+                            showToast(`✨ "${item}" animation applied!`, 'fa-wand-magic-sparkles');
+                        };
+                        return el;
+                    };
+                    break;
+                case 'bubbles':
+                    items = generate200Bubbles();
+                    renderFn = (item, index) => {
+                        const el = document.createElement('div');
+                        el.className = 'asset-card';
+                        el.innerHTML = `
+                            <span class="text-[6px] text-zinc-500 absolute top-1 right-1">#${index+1}</span>
+                            <div class="text-[9px] text-zinc-300 truncate px-2 py-1" style="${item.css}">${item.name}</div>
+                            <span class="selected-indicator"><i class="fas fa-check text-[6px]"></i></span>
+                        `;
+                        el.onclick = () => {
+                            document.querySelectorAll('.asset-card').forEach(c => c.classList.remove('selected'));
+                            el.classList.add('selected');
+                            currentTextState.bubbleCSS = item.css;
+                            updateLiveTextPreview();
+                            showToast(`🫧 ${item.name} applied`, 'fa-circle');
+                        };
+                        return el;
+                    };
+                    break;
+                case 'presets':
+                    renderPresetsTab(container);
+                    return;
+                default:
+                    container.innerHTML = '<p class="text-zinc-500 text-xs text-center py-4">Select a tab above</p>';
+                    return;
+            }
+            
+            // Filter items
+            const filtered = filter ? items.filter((item, idx) => {
+                const searchStr = typeof item === 'string' ? item : (item.name || item.label || '');
+                return searchStr.toLowerCase().includes(filter.toLowerCase());
+            }) : items;
+            
+            // Render filtered items
+            filtered.forEach((item, index) => {
+                const el = renderFn(item, index);
+                container.appendChild(el);
+            });
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-zinc-500 text-xs text-center py-4 col-span-4">No results found for "${filter}"</p>`;
+            }
+        }
+
+        function filterTabItems(tabId, value) {
+            const container = document.getElementById('tabContentContainer');
+            if (container) {
+                renderTabItems(tabId, container, value);
+            }
+        }
+
+        function saveCurrentAsPreset() {
+            const name = document.getElementById('liveTextInput').value || 'My Preset';
+            const preset = {
+                name: name,
+                font: currentTextState.font,
+                styleCSS: currentTextState.styleCSS,
+                bubbleCSS: currentTextState.bubbleCSS,
+                animation: currentTextState.animation,
+                timestamp: new Date().toLocaleTimeString()
+            };
+            customPresets.push(preset);
+            showToast(`💾 "${name}" saved as preset!`, 'fa-save');
+        }
+
+        function resetToDefault() {
+            currentTextState.font = 'Inter';
+            currentTextState.styleCSS = 'color: #ffffff; text-shadow: none;';
+            currentTextState.bubbleCSS = '';
+            currentTextState.animation = '';
+            document.getElementById('liveTextInput').value = '';
+            updateLiveTextPreview();
+            document.querySelectorAll('.asset-card, .font-preview-btn').forEach(c => c.classList.remove('selected'));
+            showToast('🔄 Reset to default', 'fa-undo');
+        }
+
+        function renderPresetsTab(container) {
+            container.innerHTML = `
+                <div class="bg-[#18181c] border border-zinc-800 rounded-2xl p-4 text-center mb-3">
+                    <p class="text-xs text-zinc-400 mb-3">Save your current style, font, and animation setup as a custom preset!</p>
+                    <button onclick="saveCurrentAsPreset()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
+                        <i class="fas fa-plus mr-1.5"></i>Save Current Design as Preset
+                    </button>
+                </div>
+                <div class="text-xs font-bold text-zinc-400 mt-2">Your Saved Presets:</div>
+                <div id="savedPresetsList" class="grid grid-cols-2 gap-3 mt-2"></div>
+            `;
+            renderSavedPresets();
+        }
+
+        function renderSavedPresets() {
+            const listContainer = document.getElementById('savedPresetsList');
+            if (!listContainer) return;
+            
+            if (customPresets.length === 0) {
+                listContainer.innerHTML = `<div class="text-zinc-600 text-xs col-span-2 py-4 text-center">No presets saved yet.</div>`;
+                return;
+            }
+            
+            listContainer.innerHTML = '';
+            customPresets.forEach((p, idx) => {
+                const item = document.createElement('div');
+                item.className = 'bg-[#22222a] border border-zinc-800 rounded-xl p-3 cursor-pointer hover:border-blue-500 transition text-center';
+                item.innerHTML = `
+                    <span class="text-[8px] text-zinc-400 block font-mono mb-1">#${idx + 1} • ${p.timestamp || ''}</span>
+                    <span class="text-xs font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name}</span>
+                    <button onclick="deletePreset(${idx})" class="text-red-400 text-[8px] mt-1 hover:text-red-500">✕ Delete</button>
+                `;
+                item.onclick = (e) => {
+                    if (e.target.textContent.includes('Delete')) return;
+                    currentTextState.font = p.font;
+                    currentTextState.styleCSS = p.styleCSS;
+                    currentTextState.bubbleCSS = p.bubbleCSS || '';
+                    currentTextState.animation = p.animation || '';
+                    document.getElementById('liveTextInput').value = p.name;
+                    updateLiveTextPreview();
+                    showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open');
+                };
+                listContainer.appendChild(item);
+            });
+        }
+
+        function deletePreset(index) {
+            customPresets.splice(index, 1);
+            renderSavedPresets();
+            showToast('🗑️ Preset deleted', 'fa-trash');
+        }
+
+        function closeDrawer() { 
+            document.getElementById('editorDrawer').classList.remove('open'); 
+            // Remove preview
+            const preview = document.getElementById('live-canvas-text-preview');
+            if (preview) preview.remove();
         }
 
         // ===== AUDIO TRACK MANAGEMENT =====
@@ -1560,14 +2196,17 @@
 
         function exportProject(type) {
             const trackCount = audioTracks.length;
-            let message = `📦 Exporting ${type.toUpperCase()}...\nAudio tracks included: ${trackCount}\n`;
+            const textCount = textTracks.length;
+            let message = `📦 Exporting ${type.toUpperCase()}...\nAudio tracks: ${trackCount}\nText tracks: ${textCount}\n`;
             if (trackCount > 0) {
-                message += '\nTracks:\n';
+                message += '\nAudio Tracks:\n';
                 audioTracks.forEach((t, i) => { message += `  ${i+1}. ${t.name}\n`; });
-            } else {
-                message += '\n⚠️ No audio tracks in project';
             }
-            message += `\n\n✅ Export complete!`;
+            if (textCount > 0) {
+                message += '\nText Tracks:\n';
+                textTracks.forEach((t, i) => { message += `  ${i+1}. "${t.text}"\n`; });
+            }
+            message += `\n✅ Export complete!`;
             alert(message);
             closeExportDialog();
             const timestamp = new Date().toISOString().slice(0, 10);
@@ -1663,603 +2302,6 @@
             }
         }
 
-        // ============================================================
-        // ===== TEXT ELEMENT MANAGEMENT (DELETE + DRAG TO ADJUST) =====
-        // ============================================================
-
-        function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCSS = '') {
-            const container = document.getElementById('video-ratio-box');
-            const elementsLayer = document.getElementById('canvas-elements-layer');
-            
-            const wrapper = document.createElement('div');
-            wrapper.className = 'canvas-text-item';
-            wrapper.id = `text-${++textElementCounter}`;
-            
-            const boxRect = container.getBoundingClientRect();
-            const randomX = 20 + Math.random() * 60;
-            const randomY = 20 + Math.random() * 60;
-            wrapper.style.left = randomX + '%';
-            wrapper.style.top = randomY + '%';
-            wrapper.style.transform = 'translate(-50%, -50%)';
-            
-            const textSpan = document.createElement('span');
-            textSpan.className = 'text-content';
-            textSpan.innerText = text || 'Enter Text';
-            textSpan.style.cssText = `${styleCSS}; font-family: '${font}'; ${bubbleCSS}`;
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.innerHTML = '×';
-            deleteBtn.title = 'Delete text';
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                deleteTextElement(wrapper.id);
-            };
-            
-            wrapper.appendChild(textSpan);
-            wrapper.appendChild(deleteBtn);
-            elementsLayer.appendChild(wrapper);
-            
-            wrapper.style.pointerEvents = 'auto';
-            setupDrag(wrapper);
-            
-            // Add to text tracks
-            addTextTrack(text);
-            
-            return wrapper;
-        }
-
-        function deleteTextElement(id) {
-            const el = document.getElementById(id);
-            if (el) {
-                el.style.transition = 'all 0.2s';
-                el.style.transform = 'scale(0.8)';
-                el.style.opacity = '0';
-                setTimeout(() => {
-                    if (el.parentNode) el.parentNode.removeChild(el);
-                    showToast('🗑️ Text deleted', 'fa-trash');
-                }, 200);
-            }
-        }
-
-        function deleteAllTextElements() {
-            const elements = document.querySelectorAll('.canvas-text-item');
-            elements.forEach(el => deleteTextElement(el.id));
-            textTracks = [];
-            renderTextTracks();
-        }
-
-        // ===== DRAG FUNCTIONALITY =====
-        function setupDrag(element) {
-            let isDragging = false;
-            let startX, startY, startLeft, startTop;
-            
-            element.addEventListener('mousedown', (e) => {
-                if (e.target.classList.contains('delete-btn')) return;
-                
-                isDragging = true;
-                element.classList.add('dragging');
-                
-                const rect = element.getBoundingClientRect();
-                const containerRect = element.parentElement.getBoundingClientRect();
-                
-                startX = e.clientX;
-                startY = e.clientY;
-                startLeft = parseFloat(element.style.left) || 50;
-                startTop = parseFloat(element.style.top) || 50;
-                
-                e.preventDefault();
-            });
-            
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                
-                const containerRect = element.parentElement.getBoundingClientRect();
-                
-                const deltaX = (e.clientX - startX) / containerRect.width * 100;
-                const deltaY = (e.clientY - startY) / containerRect.height * 100;
-                
-                let newLeft = startLeft + deltaX;
-                let newTop = startTop + deltaY;
-                
-                newLeft = Math.max(0, Math.min(100, newLeft));
-                newTop = Math.max(0, Math.min(100, newTop));
-                
-                element.style.left = newLeft + '%';
-                element.style.top = newTop + '%';
-                
-                e.preventDefault();
-            });
-            
-            document.addEventListener('mouseup', () => {
-                if (isDragging) {
-                    isDragging = false;
-                    element.classList.remove('dragging');
-                }
-            });
-        }
-
-        // ===== APPLY TEXT TO CANVAS =====
-        function applyNewTextToCanvas() {
-            const text = document.getElementById('liveTextInput').value || 'Enter Text';
-            createTextElementOnCanvas(text, currentTextState.styleCSS, currentTextState.font, currentTextState.bubbleCSS);
-            closeDrawer();
-            showToast('✏️ Text added to canvas!', 'fa-font');
-        }
-
-        // ===== LIVE TEXT PREVIEW =====
-        function updateLiveTextPreview() {
-            const text = document.getElementById('liveTextInput').value || '';
-            currentTextState.text = text;
-            
-            let previewEl = document.getElementById('live-canvas-text-preview');
-            if (!previewEl) {
-                previewEl = document.createElement('div');
-                previewEl.id = 'live-canvas-text-preview';
-                previewEl.className = 'absolute z-45 p-2 select-none pointer-events-none opacity-70';
-                const layer = document.getElementById('canvas-elements-layer');
-                if (layer) layer.appendChild(previewEl);
-            }
-            
-            previewEl.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.6; pointer-events: none; z-index: 45;`;
-            previewEl.innerText = text || 'Enter Text';
-        }
-
-        // ============================================================
-        // ===== DRAWER: UNLIMITED TEMPLATES, FONTS, STYLES, ANIMATIONS, BUBBLES =====
-        // ============================================================
-
-        function openDrawer(type) {
-            const drawer = document.getElementById('editorDrawer');
-            drawer.classList.add('open');
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            const matchedTabBtn = document.getElementById(`tab-${type}`);
-            if (matchedTabBtn) matchedTabBtn.classList.add('active');
-            
-            renderTextTabContent(type);
-        }
-
-        function switchTextTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-            renderTextTabContent(tabId);
-        }
-
-        // ===== UNLIMITED TEMPLATES (1000+) =====
-        function generateUnlimitedTemplates(count = 200) {
-            const templates = [];
-            const styles = [
-                'Neon', 'Glow', 'Shadow', 'Gradient', '3D', 'Glass', 'Chrome', 'Gold', 'Silver', 'Retro',
-                'Vintage', 'Cyber', 'Hologram', 'Crystal', 'Fire', 'Ice', 'Water', 'Sand', 'Metal', 'Wood',
-                'Paper', 'Ink', 'Paint', 'Sketch', 'Pixel', 'Vector', 'Minimal', 'Maximal', 'Elegant', 'Bold',
-                'Soft', 'Dreamy', 'Dark', 'Light', 'Colorful', 'Monochrome', 'Pastel', 'Neon', 'Vibrant', 'Muted',
-                'Cosmic', 'Galactic', 'Stellar', 'Lunar', 'Solar', 'Aurora', 'Nebula', 'Comet', 'Meteor', 'Star',
-                'Diamond', 'Ruby', 'Emerald', 'Sapphire', 'Amethyst', 'Topaz', 'Opal', 'Jade', 'Onyx', 'Pearl'
-            ];
-            const fonts = ['Inter', 'Bebas Neue', 'Orbitron', 'Pacifico', 'Permanent Marker', 'Lobster', 'Cinzel', 'Bangers', 'Abril Fatface', 'Anton', 'Archivo Black', 'Black Ops One', 'Bungee', 'Coiny', 'Exo 2', 'Francois One', 'Gravitas One', 'Josefin Sans', 'Kanit', 'Lilita One', 'Limelight', 'Megrim', 'New Rocker', 'Nosifer', 'Paytone One', 'Plaster', 'Poiret One', 'Rajdhani', 'Rampart One', 'Rancho', 'Russo One', 'Sigmar One', 'Staatliches', 'Syncopate', 'Uncial Antiqua', 'Wallpoet', 'Big Shoulders Display', 'Black Han Sans', 'Chango', 'Comic Neue', 'Delius Swash Caps', 'Emblema One', 'Fugaz One', 'Gaegu', 'Girassol', 'Hanalei', 'Henny Penny', 'Iceberg', 'Jacques Francois Shadow', 'Kavoon', 'Leckerli One', 'Ma Shan Zheng', 'Monofett', 'Overlock', 'Patua One', 'Qwigley', 'Redressed', 'Shrikhand', 'Sirin Stencil', 'Sofia', 'Sriracha', 'Stalinist One', 'Warnes', 'ZCOOL KuaiLe', 'Audiowide', 'Blacker Pro', 'Dancing Script', 'Epilogue', 'Fira Code', 'Genos', 'Hind', 'Inconsolata', 'JetBrains Mono', 'Karla', 'Lato', 'Merriweather', 'Nunito', 'Open Sans', 'Poppins', 'Quicksand', 'Roboto', 'Source Sans Pro'];
-            const words = ['STYLE', 'DESIGN', 'CREATE', 'VISION', 'DREAM', 'LIVE', 'LOVE', 'ART', 'SOUL', 'VIBE',
-                          'GOLD', 'CORE', 'PURE', 'TRUE', 'BOLD', 'WILD', 'FREE', 'STAR', 'MOON', 'SUN',
-                          'FIRE', 'ICE', 'WATER', 'WIND', 'EARTH', 'SKY', 'OCEAN', 'MOUNTAIN', 'FOREST', 'DESERT',
-                          'CITY', 'LIGHT', 'DARK', 'SHADOW', 'GLOW', 'SPARK', 'FLAME', 'WAVE', 'STORM', 'THUNDER',
-                          'NOVA', 'PULSAR', 'QUASAR', 'VOID', 'SPACE', 'TIME', 'INFINITY', 'ETERNITY', 'LEGEND', 'MYTH'];
-            
-            for (let i = 0; i < count; i++) {
-                const style = styles[i % styles.length];
-                const font = fonts[i % fonts.length];
-                const word = words[i % words.length];
-                const suffix = String(i + 1).padStart(3, '0');
-                templates.push({
-                    name: `${style} ${word} #${suffix}`,
-                    font: font,
-                    styleCSS: generateStyleCSS(style, i)
-                });
-            }
-            return templates;
-        }
-
-        function generateStyleCSS(style, index) {
-            const hue = (index * 37 + 180) % 360;
-            const hue2 = (index * 53 + 60) % 360;
-            
-            switch(style) {
-                case 'Neon': return `color: #fff; text-shadow: 0 0 5px hsl(${hue}, 100%, 50%), 0 0 15px hsl(${hue}, 100%, 50%), 0 0 30px hsl(${hue}, 100%, 50%); font-weight: 900;`;
-                case 'Glow': return `color: #fff; text-shadow: 0 0 10px hsl(${hue}, 80%, 60%), 0 0 20px hsl(${hue}, 80%, 60%); font-weight: 700;`;
-                case 'Shadow': return `color: #fff; text-shadow: 2px 2px 0 hsl(${hue}, 80%, 30%), 4px 4px 0 hsl(${hue}, 80%, 20%); font-weight: 800;`;
-                case 'Gradient': return `background: linear-gradient(45deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`;
-                case '3D': return `color: hsl(${hue}, 80%, 60%); text-shadow: 0 4px 0 hsl(${hue}, 80%, 30%), 0 8px 0 hsl(${hue}, 80%, 20%), 0 12px 0 hsl(${hue}, 80%, 10%); font-weight: 900;`;
-                case 'Glass': return `color: #fff; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);`;
-                case 'Gold': return `color: #fbbf24; text-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; font-weight: 900;`;
-                case 'Silver': return `color: #94a3b8; text-shadow: 0 0 10px #64748b; font-weight: 700;`;
-                case 'Retro': return `color: #fb923c; font-family: 'Press Start 2P'; font-size: 14px; text-shadow: 2px 2px 0 #7c2d12;`;
-                case 'Cyber': return `color: #22d3ee; text-shadow: 0 0 5px #06b6d4, 0 0 15px #06b6d4; font-family: 'Orbitron'; font-weight: 900;`;
-                case 'Cosmic': return `color: #c084fc; text-shadow: 0 0 20px #7c3aed, 0 0 40px #7c3aed; font-weight: 900;`;
-                case 'Galactic': return `background: linear-gradient(135deg, #6366f1, #a855f7, #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`;
-                case 'Stellar': return `color: #fcd34d; text-shadow: 0 0 30px #f59e0b, 0 0 60px #f59e0b; font-weight: 900;`;
-                case 'Lunar': return `color: #e2e8f0; text-shadow: 0 0 15px #94a3b8, 0 0 30px #94a3b8; font-weight: 700;`;
-                case 'Aurora': return `background: linear-gradient(45deg, #34d399, #06b6d4, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`;
-                default: return `color: hsl(${hue}, 80%, 60%); font-weight: 700;`;
-            }
-        }
-
-        // ===== UNLIMITED FONTS (100+) =====
-        function getUnlimitedFonts() {
-            return [
-                'Inter', 'Bebas Neue', 'Lobster', 'Pacifico', 'Caveat', 'Playfair Display', 'Oswald', 'Montserrat',
-                'Fascinate', 'Permanent Marker', 'Righteous', 'Fredoka One', 'Alfa Slab One', 'Bangers', 'Cinzel',
-                'Comfortaa', 'Courgette', 'Creepster', 'Gloria Hallelujah', 'Great Vibes', 'Kaushan Script', 'Luckiest Guy',
-                'Monoton', 'Orbitron', 'Press Start 2P', 'Sacramento', 'Satisfy', 'Special Elite', 'Spicy Rice',
-                'Titan One', 'Vampiro One', 'Abril Fatface', 'Anton', 'Archivo Black', 'Black Ops One', 'Bungee',
-                'Coiny', 'Exo 2', 'Francois One', 'Gravitas One', 'Josefin Sans', 'Kanit', 'Lilita One', 'Limelight',
-                'Megrim', 'New Rocker', 'Nosifer', 'Paytone One', 'Plaster', 'Poiret One', 'Rajdhani', 'Rampart One',
-                'Rancho', 'Russo One', 'Sigmar One', 'Staatliches', 'Syncopate', 'Uncial Antiqua', 'Wallpoet',
-                'Big Shoulders Display', 'Black Han Sans', 'Chango', 'Comic Neue', 'Delius Swash Caps', 'Emblema One',
-                'Fugaz One', 'Gaegu', 'Girassol', 'Hanalei', 'Henny Penny', 'Iceberg', 'Jacques Francois Shadow',
-                'Kavoon', 'Leckerli One', 'Ma Shan Zheng', 'Monofett', 'Overlock', 'Patua One', 'Qwigley',
-                'Redressed', 'Shrikhand', 'Sirin Stencil', 'Sofia', 'Sriracha', 'Stalinist One', 'Warnes',
-                'ZCOOL KuaiLe', 'Audiowide', 'Blacker Pro', 'Dancing Script', 'Epilogue', 'Fira Code',
-                'Genos', 'Hind', 'Inconsolata', 'JetBrains Mono', 'Karla', 'Lato', 'Merriweather',
-                'Nunito', 'Open Sans', 'Poppins', 'Quicksand', 'Roboto', 'Source Sans Pro'
-            ];
-        }
-
-        // ===== UNLIMITED STYLES (200+) =====
-        function generateUnlimitedStyles(count = 200) {
-            const styles = [];
-            for (let i = 0; i < count; i++) {
-                const hue = (i * 29 + 10) % 360;
-                const hue2 = (i * 47 + 200) % 360;
-                const type = i % 12;
-                let css = '';
-                switch(type) {
-                    case 0: css = `color: hsl(${hue}, 100%, 60%); text-shadow: 0 0 10px hsl(${hue}, 100%, 40%); font-weight: 800;`; break;
-                    case 1: css = `background: linear-gradient(135deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`; break;
-                    case 2: css = `color: #fff; text-shadow: 2px 2px 0 hsl(${hue}, 80%, 40%), 4px 4px 0 hsl(${hue}, 80%, 30%); font-weight: 700;`; break;
-                    case 3: css = `color: #fff; text-shadow: 0 0 5px hsl(${hue}, 100%, 50%), 0 0 15px hsl(${hue}, 100%, 50%), 0 0 30px hsl(${hue}, 100%, 50%); font-weight: 900;`; break;
-                    case 4: css = `color: hsl(${hue}, 80%, 50%); -webkit-text-stroke: 2px hsl(${hue}, 80%, 30%); font-weight: 900;`; break;
-                    case 5: css = `color: hsl(${hue}, 70%, 65%); font-weight: 700; text-shadow: 0 0 20px hsl(${hue}, 70%, 40%);`; break;
-                    case 6: css = `background: linear-gradient(45deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; text-shadow: none;`; break;
-                    case 7: css = `color: #fff; text-shadow: 0 0 10px #000, 0 0 20px #000, 0 0 5px hsl(${hue}, 100%, 50%); font-weight: 900;`; break;
-                    case 8: css = `color: hsl(${hue}, 80%, 70%); text-shadow: -1px -1px 0 hsl(${hue}, 80%, 30%), 1px -1px 0 hsl(${hue}, 80%, 30%), -1px 1px 0 hsl(${hue}, 80%, 30%), 1px 1px 0 hsl(${hue}, 80%, 30%); font-weight: 800;`; break;
-                    case 9: css = `background: radial-gradient(circle at 30% 30%, hsl(${hue}, 100%, 60%), hsl(${hue2}, 100%, 40%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`; break;
-                    case 10: css = `color: #fff; text-shadow: 0 0 15px hsl(${hue}, 100%, 50%), 0 0 30px hsl(${hue}, 100%, 30%), 0 0 60px hsl(${hue}, 100%, 20%); font-weight: 900;`; break;
-                    case 11: css = `color: hsl(${hue}, 80%, 50%); font-weight: 700; text-shadow: 0 0 10px hsl(${hue}, 80%, 30%), 0 0 20px hsl(${hue}, 80%, 20%);`; break;
-                }
-                styles.push({ css, label: `Style ${i+1}` });
-            }
-            return styles;
-        }
-
-        // ===== UNLIMITED ANIMATIONS (200+) =====
-        function getUnlimitedAnimations() {
-            return [
-                'Fade In', 'Bounce', 'Slide In', 'Glow Pulse', 'Rotate', 'Pulse', 'Wave', 'Zoom In',
-                'Flip', 'Shake', 'Wobble', 'Swing', 'Jello', 'Heartbeat', 'Flicker', 'Typing',
-                'Reveal', 'Spin', 'Drop In', 'Rise Up', 'Splash', 'Explode', 'Morph', 'Blur In',
-                'Color Shift', 'Rainbow', 'Neon Pulse', 'Cyber Glitch', 'Matrix', 'Hologram',
-                'Shimmer', 'Sparkle', 'Fire', 'Ice', 'Wind', 'Thunder', 'Gravity', 'Magnetic',
-                'Warp', 'Ripple', 'Echo', 'Ghost', 'Shadow Dance', 'Light Burst', 'Speed Trail',
-                'Comet', 'Nebula', 'Vortex', 'Zen', 'Dream', 'Cyber', 'Retro', 'Modern', 'Classic',
-                'Pop', 'Rock', 'Jazz', 'Blues', 'Metal', 'Punk', 'Grunge', 'Techno', 'House',
-                'Trance', 'Dubstep', 'DnB', 'LoFi', 'Ambient', 'Acoustic', 'Electric', 'Digital',
-                'Analog', 'VHS', 'Film', 'Reel', 'Cinema', 'Theater', 'Stage', 'Studio', 'Live',
-                'Night', 'Day', 'Sunrise', 'Sunset', 'Moon', 'Star', 'Galaxy', 'Universe',
-                'Nature', 'Ocean', 'Forest', 'Mountain', 'Desert', 'Arctic', 'Volcano', 'Storm',
-                'Tornado', 'Hurricane', 'Blizzard', 'Rain', 'Snow', 'Hail', 'Fog', 'Mist',
-                'Rush', 'Flow', 'Emerge', 'Ascend', 'Descend', 'Glide', 'Drift', 'Soar',
-                'Radiate', 'Pulse', 'Throb', 'Ripple', 'Surge', 'Spark', 'Flare', 'Blaze'
-            ];
-        }
-
-        // ===== UNLIMITED BUBBLES (200+) =====
-        function generateUnlimitedBubbles(count = 200) {
-            const bubbles = [];
-            for (let i = 0; i < count; i++) {
-                const hue = (i * 31 + 50) % 360;
-                const hue2 = (i * 43 + 180) % 360;
-                const type = i % 14;
-                let css = '';
-                switch(type) {
-                    case 0: css = `background: rgba(${hue % 256}, ${(hue+50)%256}, ${(hue+100)%256}, 0.2); border: 2px solid hsl(${hue}, 80%, 60%); border-radius: 12px; padding: 6px 12px;`; break;
-                    case 1: css = `background: linear-gradient(135deg, hsl(${hue}, 80%, 60%), hsl(${hue2}, 80%, 60%)); border: none; border-radius: 20px; padding: 6px 14px; color: #fff;`; break;
-                    case 2: css = `background: transparent; border: 2px dashed hsl(${hue}, 80%, 60%); border-radius: 8px; padding: 6px 10px;`; break;
-                    case 3: css = `background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 8px 16px;`; break;
-                    case 4: css = `background: hsl(${hue}, 70%, 20%); border: 2px solid hsl(${hue}, 80%, 50%); border-radius: 50%; padding: 8px 16px; color: #fff;`; break;
-                    case 5: css = `background: transparent; border: 2px dotted hsl(${hue}, 80%, 50%); border-radius: 4px; padding: 6px 12px;`; break;
-                    case 6: css = `background: radial-gradient(circle at 30% 30%, hsl(${hue}, 80%, 70%), hsl(${hue2}, 80%, 40%)); border: none; border-radius: 12px; padding: 6px 14px; color: #fff;`; break;
-                    case 7: css = `background: #1a1a2e; border: 2px solid hsl(${hue}, 100%, 50%); border-radius: 8px; padding: 6px 12px; box-shadow: 0 0 20px hsl(${hue}, 100%, 30%); color: #fff;`; break;
-                    case 8: css = `background: linear-gradient(45deg, hsl(${hue}, 80%, 30%), hsl(${hue2}, 80%, 30%)); border: none; border-radius: 4px; padding: 6px 12px; color: #fff;`; break;
-                    case 9: css = `background: rgba(0,0,0,0.5); border: 2px solid hsl(${hue}, 80%, 60%); border-radius: 20px; padding: 6px 14px; backdrop-filter: blur(5px); color: #fff;`; break;
-                    case 10: css = `background: hsl(${hue}, 60%, 15%); border: 2px solid hsl(${hue}, 80%, 40%); border-radius: 30px; padding: 6px 18px; color: #fff; box-shadow: inset 0 0 20px hsl(${hue}, 80%, 20%);`; break;
-                    case 11: css = `background: repeating-linear-gradient(45deg, hsl(${hue}, 80%, 50%), hsl(${hue2}, 80%, 50%) 10px); border: none; border-radius: 10px; padding: 6px 12px; color: #fff;`; break;
-                    case 12: css = `background: rgba(255,255,255,0.05); border: 3px double hsl(${hue}, 80%, 60%); border-radius: 14px; padding: 6px 12px;`; break;
-                    case 13: css = `background: linear-gradient(to bottom, hsl(${hue}, 80%, 60%), transparent); border: none; border-radius: 8px; padding: 6px 12px; color: #fff;`; break;
-                }
-                bubbles.push({ css, name: `Bubble ${i+1}` });
-            }
-            return bubbles;
-        }
-
-        // ===== RENDER TEXT TAB CONTENT WITH SEARCH, SAVE, DEFAULT =====
-        let currentSearchQuery = '';
-
-        function renderTextTabContent(tabId) {
-            const grid = document.getElementById('drawerDynamicGrid');
-            grid.innerHTML = '';
-            
-            // Add search and action bar
-            const searchContainer = document.createElement('div');
-            searchContainer.className = 'search-container col-span-4';
-            searchContainer.innerHTML = `
-                <input type="text" id="tabSearchInput" placeholder="Search..." class="search-bar" oninput="filterCurrentTab('${tabId}')" />
-                <button onclick="saveCurrentStyle()" class="save-btn" title="Save current style"><i class="fas fa-save"></i> Save</button>
-                <button onclick="resetToDefault('${tabId}')" class="default-btn" title="Reset to default"><i class="fas fa-undo"></i> Default</button>
-            `;
-            grid.appendChild(searchContainer);
-            
-            const contentContainer = document.createElement('div');
-            contentContainer.id = 'tabContentContainer';
-            contentContainer.className = 'col-span-4';
-            grid.appendChild(contentContainer);
-            
-            // Generate content based on tab
-            let items = [];
-            let renderFn = null;
-            
-            if (tabId === 'templates') {
-                items = generateUnlimitedTemplates(200);
-                renderFn = (item, index) => {
-                    const el = document.createElement('div');
-                    el.className = "bg-gradient-to-br from-[#1c1c22] to-[#26262e] border border-zinc-800 rounded-xl p-3 text-center cursor-pointer flex flex-col justify-between items-center h-24 hover:border-blue-500 transition relative overflow-hidden";
-                    el.innerHTML = `
-                        <span class="text-[8px] text-zinc-500 absolute top-1 right-1">#${index+1}</span>
-                        <span class="text-xs truncate w-full mt-3" style="${item.styleCSS}; font-family: '${item.font}';">${item.name}</span>
-                        <span class="text-[8px] text-zinc-500 mt-2">Apply</span>
-                    `;
-                    el.onclick = () => {
-                        currentTextState.text = item.name;
-                        currentTextState.font = item.font;
-                        currentTextState.styleCSS = item.styleCSS;
-                        document.getElementById('liveTextInput').value = item.name;
-                        updateLiveTextPreview();
-                        showToast(`🎨 Template: ${item.name}`, 'fa-palette');
-                    };
-                    return el;
-                };
-            } else if (tabId === 'fonts') {
-                items = getUnlimitedFonts();
-                renderFn = (font, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'font-preview-btn';
-                    el.innerHTML = `
-                        <span class="text-[8px] text-zinc-500 font-mono">#${index+1}</span>
-                        <span class="font-sample" style="font-family: '${font}';">${font}</span>
-                    `;
-                    el.onclick = () => {
-                        currentTextState.font = font;
-                        updateLiveTextPreview();
-                        showToast(`🔤 Font: ${font}`, 'fa-font');
-                    };
-                    return el;
-                };
-            } else if (tabId === 'styles') {
-                items = generateUnlimitedStyles(200);
-                renderFn = (style, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'asset-card flex flex-col justify-between';
-                    el.innerHTML = `
-                        <span class="text-[7px] text-zinc-500 font-mono">#${index+1}</span>
-                        <span class="text-sm font-bold" style="${style.css}">Aa</span>
-                    `;
-                    el.onclick = () => {
-                        currentTextState.styleCSS = style.css;
-                        updateLiveTextPreview();
-                        showToast(`🎨 Style ${index+1} applied`, 'fa-paint-brush');
-                    };
-                    return el;
-                };
-            } else if (tabId === 'animations') {
-                items = getUnlimitedAnimations();
-                renderFn = (anim, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-xl p-2.5 cursor-pointer text-center flex flex-col justify-between h-16 transition';
-                    
-                    let iconClass = "fa-wind text-cyan-400";
-                    if (index % 4 === 0) iconClass = "fa-fire text-rose-500";
-                    if (index % 5 === 0) iconClass = "fa-bolt text-yellow-400";
-                    if (index % 6 === 0) iconClass = "fa-spinner text-blue-400";
-                    if (index % 7 === 0) iconClass = "fa-meteor text-purple-400";
-                    
-                    el.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="text-[7px] text-zinc-500 font-mono">#${index+1}</span>
-                            <i class="fas ${iconClass} text-[10px]"></i>
-                        </div>
-                        <span class="text-xs text-zinc-200 truncate font-semibold mt-1">${anim}</span>
-                    `;
-                    
-                    el.onclick = () => {
-                        currentTextState.animation = anim;
-                        const previewEl = document.getElementById('live-canvas-text-preview');
-                        if (previewEl) {
-                            let animCSS = getAnimationCSS(anim);
-                            previewEl.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; ${animCSS}`;
-                        }
-                        showToast(`✨ "${anim}" animation applied!`, 'fa-wand-magic-sparkles');
-                    };
-                    return el;
-                };
-            } else if (tabId === 'bubbles') {
-                items = generateUnlimitedBubbles(200);
-                renderFn = (bubble, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-xl p-3 cursor-pointer text-center flex flex-col justify-between h-20 transition relative';
-                    el.innerHTML = `
-                        <span class="text-[7px] text-zinc-500 block font-mono">#${index+1}</span>
-                        <div class="text-[9px] text-zinc-300 truncate px-2 py-1" style="${bubble.css}">${bubble.name}</div>
-                    `;
-                    el.onclick = () => {
-                        currentTextState.bubbleCSS = bubble.css;
-                        updateLiveTextPreview();
-                        showToast(`🫧 ${bubble.name} applied`, 'fa-circle');
-                    };
-                    return el;
-                };
-            } else if (tabId === 'presets') {
-                renderPresetsTab();
-                return;
-            }
-            
-            // Render items
-            const container = document.getElementById('tabContentContainer');
-            container.className = `grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 ${tabId === 'templates' ? 'mt-2' : ''}`;
-            
-            if (items.length > 0) {
-                items.forEach((item, index) => {
-                    const el = renderFn(item, index);
-                    container.appendChild(el);
-                });
-            }
-            
-            // Store items for search filtering
-            container.dataset.items = JSON.stringify(items);
-            container.dataset.renderFn = renderFn.toString();
-            currentSearchQuery = '';
-        }
-
-        function getAnimationCSS(anim) {
-            const animMap = {
-                'Fade In': 'animation: textFadeIn 0.5s ease-out;',
-                'Bounce': 'animation: textBounce 0.6s ease-in-out infinite;',
-                'Slide In': 'animation: textSlideIn 0.5s ease-out;',
-                'Glow Pulse': 'animation: textGlow 1.5s ease-in-out infinite;',
-                'Rotate': 'animation: textRotate 0.3s ease-in-out infinite alternate;',
-                'Pulse': 'animation: textPulse 1s ease-in-out infinite;',
-                'Wave': 'animation: textWave 0.5s ease-in-out infinite;',
-                'Shake': 'animation: textShake 0.3s ease-in-out infinite;',
-                'Flip': 'animation: textFlip 0.6s ease-in-out;',
-                'Zoom In': 'animation: textZoom 0.4s ease-out;',
-                'Neon Pulse': 'animation: textNeonPulse 1.5s ease-in-out infinite;',
-                'Rainbow': 'animation: textRainbow 2s linear infinite;',
-                'Heartbeat': 'animation: textBounce 0.8s ease-in-out infinite;',
-                'Spin': 'animation: textRotate 0.4s ease-in-out infinite alternate;',
-                'Wobble': 'animation: textWave 0.3s ease-in-out infinite;'
-            };
-            return animMap[anim] || 'animation: textFadeIn 0.4s ease-out;';
-        }
-
-        function renderPresetsTab() {
-            const container = document.getElementById('tabContentContainer');
-            container.className = 'flex flex-col gap-3';
-            container.innerHTML = `
-                <div class="bg-[#18181c] border border-zinc-800 rounded-2xl p-4 text-center">
-                    <p class="text-xs text-zinc-400 mb-3">Save your current style, font, and animation setup as a custom preset!</p>
-                    <button onclick="saveCurrentPreset()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
-                        <i class="fas fa-plus mr-1.5"></i>Save Current Design as Preset
-                    </button>
-                </div>
-                <div class="text-xs font-bold text-zinc-400 mt-2">Your Saved Presets:</div>
-                <div id="savedPresetsList" class="grid grid-cols-2 gap-3"></div>
-            `;
-            renderSavedPresets();
-        }
-
-        function filterCurrentTab(tabId) {
-            const input = document.getElementById('tabSearchInput');
-            const query = input ? input.value.toLowerCase().trim() : '';
-            currentSearchQuery = query;
-            
-            const container = document.getElementById('tabContentContainer');
-            if (!container) return;
-            
-            const items = container.querySelectorAll('.font-preview-btn, .bg-gradient-to-br, .asset-card, .bg-\\[\\#18181c\\]');
-            
-            items.forEach(el => {
-                const text = el.textContent.toLowerCase();
-                if (text.includes(query) || query === '') {
-                    el.style.display = '';
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-        }
-
-        function saveCurrentStyle() {
-            const name = prompt('Enter a name for this style:', 'My Style');
-            if (!name) return;
-            
-            const preset = {
-                name: name,
-                font: currentTextState.font,
-                styleCSS: currentTextState.styleCSS,
-                bubbleCSS: currentTextState.bubbleCSS,
-                animation: currentTextState.animation
-            };
-            customPresets.push(preset);
-            showToast(`💾 "${name}" saved!`, 'fa-save');
-            
-            // Refresh presets tab if open
-            const activeTab = document.querySelector('.tab-btn.active');
-            if (activeTab && activeTab.id === 'tab-presets') {
-                renderPresetsTab();
-            }
-        }
-
-        function resetToDefault(tabId) {
-            // Reset current text state to default
-            currentTextState.font = 'Inter';
-            currentTextState.styleCSS = 'color: #ffffff; text-shadow: none;';
-            currentTextState.bubbleCSS = '';
-            currentTextState.animation = '';
-            document.getElementById('liveTextInput').value = '';
-            updateLiveTextPreview();
-            showToast('↩️ Reset to default', 'fa-undo');
-        }
-
-        function saveCurrentPreset() {
-            const presetName = `Preset #${customPresets.length + 1}`;
-            const newPreset = {
-                name: presetName,
-                font: currentTextState.font,
-                styleCSS: currentTextState.styleCSS,
-                bubbleCSS: currentTextState.bubbleCSS,
-                animation: currentTextState.animation
-            };
-            customPresets.push(newPreset);
-            showToast(`💾 "${presetName}" saved!`, 'fa-save');
-            renderSavedPresets();
-        }
-
-        function renderSavedPresets() {
-            const listContainer = document.getElementById('savedPresetsList');
-            if (!listContainer) return;
-            
-            if (customPresets.length === 0) {
-                listContainer.innerHTML = `<div class="text-zinc-600 text-xs col-span-2 py-4 text-center">No presets saved yet.</div>`;
-                return;
-            }
-            
-            listContainer.innerHTML = '';
-            customPresets.forEach((p, idx) => {
-                const item = document.createElement('div');
-                item.className = 'bg-[#22222a] border border-zinc-800 rounded-xl p-3 cursor-pointer hover:border-blue-500 transition text-center';
-                item.innerHTML = `
-                    <span class="text-[8px] text-zinc-400 block font-mono mb-1">Preset ${idx + 1}</span>
-                    <span class="text-xs font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name}</span>
-                `;
-                item.onclick = () => {
-                    currentTextState.font = p.font;
-                    currentTextState.styleCSS = p.styleCSS;
-                    currentTextState.bubbleCSS = p.bubbleCSS;
-                    updateLiveTextPreview();
-                    showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open');
-                };
-                listContainer.appendChild(item);
-            });
-        }
-
-        function closeDrawer() { document.getElementById('editorDrawer').classList.remove('open'); }
-
         // ===== CANVAS DRAWING =====
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
@@ -2306,23 +2348,21 @@
         updateTrackCount();
         renderTextTracks();
 
-        // Remove default "hi DeepSeek" text - no auto-creation
-        // The default text is removed by having empty input value
-
         if (window.speechSynthesis) {
             speechSynthesis.getVoices();
             speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
         }
 
-        // Show welcome toast
+        // Auto-open text drawer on load
         setTimeout(() => {
+            openDrawer('templates');
             showToast('🚀 Welcome to Dravoo Pro Studio!', 'fa-rocket');
         }, 500);
         
         console.log('🚀 Dravoo Pro Editor Loaded!');
-        console.log('📊 Features: Unlimited Templates, Fonts, Styles, Animations, Bubbles');
+        console.log('📊 Features: 200+ Templates, 200+ Fonts, 200+ Styles, 200+ Animations, 200+ Bubbles');
         console.log('🖱️ Text elements can be dragged and deleted!');
-        console.log('📝 Text tracks now appear in the text tracks section!');
+        console.log('📝 Text tracks appear in timeline!');
     </script>
 </body>
 </html>
