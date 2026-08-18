@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <style>
-  /* نیا شامل کیا گیا باکس ڈیزائن */
+  /* New added box design */
   .dravoo-box {
     text-align: center;
     margin: 40px auto;
@@ -747,7 +747,7 @@
         }
 
         function closeStudioWorkspace() {
-            if (confirm("Kya aap is editing timeline workspace ko close karna chahte hain?")) {
+            if (confirm("Do you want to close this editing timeline workspace?")) {
                 advStudioSection.classList.add('hidden');
                 mainStudioPlayer.pause();
                 window.scrollTo(0,0);
@@ -1180,7 +1180,7 @@
             });
 
             node.addEventListener('dblclick', () => {
-                if(confirm("Kya aap is text layer ko delete karna chahte hain?")) {
+                if(confirm("Do you want to delete this text layer?")) {
                     node.remove();
                     if(activeTextNode === node) activeTextNode = null;
                     drawerLiveInput.value = '';
@@ -1211,7 +1211,7 @@
             });
 
             stk.addEventListener('dblclick', () => {
-                if(confirm("Kya aap is sticker ko delete karna chahte hain?")) {
+                if(confirm("Do you want to delete this sticker?")) {
                     stk.remove();
                 }
             });
@@ -1701,7 +1701,7 @@
             }
 
             const promptText = promptInput.value.trim();
-            if (!promptText) return alert("Pehle koi creative prompt likhein!");
+            if (!promptText) return alert("Please enter a creative prompt first!");
 
             const originalText = genBtn.innerText;
             genBtn.innerText = "FETCHING IMAGERY...";
@@ -1740,7 +1740,7 @@
                     loaderDiv.classList.add('hidden');
                     genBtn.innerText = originalText;
                     genBtn.disabled = false;
-                    alert("Pixabay par is keyword ki koi picture nahi mili. Kuch aur search karein!");
+                    alert("No images found on Pixabay for this keyword. Try a different search!");
                 }
             } catch (error) {
                 console.error("Pixabay API Error:", error);
@@ -1760,7 +1760,7 @@
             const audioList = document.getElementById('audio-list');
 
             const qText = queryInput.value.trim();
-            if(!qText) return alert("Kuch search type karein (e.g., lofi, cinematic)!");
+            if(!qText) return alert("Please type a search term (e.g., lofi, cinematic)!");
 
             searchBtn.disabled = true;
             resultContainer.classList.remove('hidden');
@@ -1793,7 +1793,7 @@
             const btn = document.getElementById('prompt-gen-btn');
 
             const txt = input.value.trim();
-            if(!txt) return alert("Pehle apna simple idea likhein!");
+            if(!txt) return alert("Please write your simple idea first!");
 
             btn.innerText = "ENGINEERING STRUCTURE...";
             btn.disabled = true;
@@ -1826,7 +1826,7 @@
             const resImg = document.getElementById('scaler-result-img');
             const dlLink = document.getElementById('scaler-download-link');
 
-            if(!fileInput || fileInput.files.length === 0) return alert("Pehle image asset select karein!");
+            if(!fileInput || fileInput.files.length === 0) return alert("Please select an image asset first!");
             
             const file = fileInput.files[0];
             const img = new Image();
@@ -1863,7 +1863,7 @@
 
             const promptText = promptInput.value.trim();
             if (!promptText) {
-                return alert("Pehle koi topic ya keyword likhein!");
+                return alert("Please enter a topic or keyword!");
             }
 
             actionBtn.disabled = true;
@@ -1903,7 +1903,7 @@
                     resultContainer.classList.add('hidden');
                     actionBtn.disabled = false;
                     actionBtn.innerText = "Search Videos";
-                    alert("Pixabay par is keyword ki koi video nahi mili. Kuch aur likhein!");
+                    alert("No videos found on Pixabay for this keyword. Try something else!");
                 }
 
             } catch (error) {
@@ -1980,7 +1980,7 @@
             const loader = document.getElementById('bg-loader');
 
             if (fileInput.files.length === 0) {
-                return alert("Pehle koi photo select karein!");
+                return alert("Please select a photo first!");
             }
 
             const file = fileInput.files[0];
@@ -2024,7 +2024,7 @@
             }
         }
 
-        // --- Animal Studio ---
+        // --- Animal Studio - COMPLETELY REDESIGNED FOR BETTER RESULTS ---
         const animalModal = document.getElementById('animalModal');
         const animalImgPicker = document.getElementById('animal-image-picker');
         const animalPreviewImg = document.getElementById('animal-preview-img');
@@ -2032,9 +2032,28 @@
         const animalCanvas = document.getElementById('animal-canvas');
         const downloadAnimalBtn = document.getElementById('download-animal-btn');
 
+        // High quality animal face overlays with transparency for better blending
         const animalUrls = [
-            "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=400&auto=format&fit=crop"
+            "https://cdn.pixabay.com/photo/2018/05/07/10/48/lion-3380116_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/05/23/17/46/leopard-1409308_1280.jpg",
+            "https://cdn.pixabay.com/photo/2018/06/03/15/36/kitty-3450827_1280.jpg",
+            "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_1280.jpg",
+            "https://cdn.pixabay.com/photo/2018/03/01/15/19/grey-wolf-3190159_1280.jpg",
+            "https://cdn.pixabay.com/photo/2018/02/25/22/28/fox-3182734_1280.jpg",
+            "https://cdn.pixabay.com/photo/2017/08/29/17/52/cheetah-2694039_1280.jpg",
+            "https://cdn.pixabay.com/photo/2017/05/30/11/24/bear-2357132_1280.jpg",
+            "https://cdn.pixabay.com/photo/2018/03/31/12/30/owl-3276838_1280.jpg",
+            "https://cdn.pixabay.com/photo/2018/04/18/07/31/raccoon-3332260_1280.jpg",
+            "https://cdn.pixabay.com/photo/2017/06/10/20/35/red-panda-2391153_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/02/15/17/23/cat-1201520_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/08/06/11/57/dog-1573836_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/10/17/18/59/giraffe-1748134_1280.jpg",
+            "https://cdn.pixabay.com/photo/2017/05/23/21/27/panda-2338995_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/09/01/08/45/bear-1635202_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/04/15/07/46/elephant-1330818_1280.jpg",
+            "https://cdn.pixabay.com/photo/2018/08/06/18/04/parrot-3587920_1280.jpg",
+            "https://cdn.pixabay.com/photo/2015/11/17/13/13/bull-1047516_1280.jpg",
+            "https://cdn.pixabay.com/photo/2016/04/20/18/46/deer-1341699_1280.jpg"
         ];
 
         function openAnimalStudio() { animalModal.style.display = 'flex'; }
@@ -2055,29 +2074,110 @@
             }
         });
 
-        downloadAnimalBtn.addEventListener('click', () => {
-            const ctx = animalCanvas.getContext('2d');
-            animalCanvas.width = animalPreviewImg.naturalWidth || 500;
-            animalCanvas.height = animalPreviewImg.naturalHeight || 500;
-            ctx.drawImage(animalPreviewImg, 0, 0, animalCanvas.width, animalCanvas.height);
+        downloadAnimalBtn.addEventListener('click', function() {
+            // Show loading state
+            downloadAnimalBtn.disabled = true;
+            downloadAnimalBtn.textContent = "Processing...";
             
-            const randomAnimal = new Image();
-            randomAnimal.crossOrigin = "anonymous";
-            randomAnimal.src = animalUrls[Math.floor(Math.random() * animalUrls.length)];
-
-            randomAnimal.onload = function() {
-                const size = animalCanvas.width * 0.5;
-                const x = (animalCanvas.width - size) / 2;
-                const y = (animalCanvas.height - size) / 2.5;
-                ctx.drawImage(randomAnimal, x, y, size, size);
-
+            const ctx = animalCanvas.getContext('2d');
+            // Use higher resolution for better quality
+            const targetSize = 800;
+            animalCanvas.width = targetSize;
+            animalCanvas.height = targetSize;
+            
+            // Draw the person's face centered with proper scaling
+            const img = animalPreviewImg;
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+            let drawWidth, drawHeight, offsetX, offsetY;
+            
+            if (aspectRatio > 1) {
+                drawHeight = targetSize * 0.9;
+                drawWidth = drawHeight * aspectRatio;
+                offsetX = (targetSize - drawWidth) / 2;
+                offsetY = (targetSize - drawHeight) / 2;
+            } else {
+                drawWidth = targetSize * 0.9;
+                drawHeight = drawWidth / aspectRatio;
+                offsetX = (targetSize - drawWidth) / 2;
+                offsetY = (targetSize - drawHeight) / 2;
+            }
+            
+            // Draw person's face with slight vignette effect
+            ctx.clearRect(0, 0, targetSize, targetSize);
+            
+            // Draw the person's photo as background base
+            ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+            
+            // Select random animal
+            const randomIndex = Math.floor(Math.random() * animalUrls.length);
+            const animalUrl = animalUrls[randomIndex];
+            
+            const animalImg = new Image();
+            animalImg.crossOrigin = "anonymous";
+            animalImg.src = animalUrl;
+            
+            animalImg.onload = function() {
+                // Create circular mask for better blending
+                ctx.save();
+                
+                // Draw animal face as overlay with circular mask for natural look
+                const centerX = targetSize / 2;
+                const centerY = targetSize / 2.2;
+                const radius = targetSize * 0.38;
+                
+                // Create circular clipping path
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                
+                // Draw animal with proper scaling to fill the circle
+                const animalAspect = animalImg.naturalWidth / animalImg.naturalHeight;
+                let animalDrawWidth, animalDrawHeight;
+                
+                if (animalAspect > 1) {
+                    animalDrawHeight = radius * 2.2;
+                    animalDrawWidth = animalDrawHeight * animalAspect;
+                } else {
+                    animalDrawWidth = radius * 2.2;
+                    animalDrawHeight = animalDrawWidth / animalAspect;
+                }
+                
+                const animalOffsetX = centerX - animalDrawWidth / 2;
+                const animalOffsetY = centerY - animalDrawHeight / 2;
+                
+                ctx.drawImage(animalImg, animalOffsetX, animalOffsetY, animalDrawWidth, animalDrawHeight);
+                ctx.restore();
+                
+                // Add subtle border glow effect
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.restore();
+                
+                // Show result
                 animalPreviewImg.classList.add('hidden');
                 animalCanvas.classList.remove('hidden');
-
+                
+                // Enable download
+                downloadAnimalBtn.disabled = false;
+                downloadAnimalBtn.textContent = "Convert & Download";
+                
+                // Auto download
                 const link = document.createElement('a');
                 link.download = 'dravoo-animal-face.png';
                 link.href = animalCanvas.toDataURL('image/png');
                 link.click();
+            };
+            
+            animalImg.onerror = function() {
+                // Fallback if image fails to load
+                downloadAnimalBtn.disabled = false;
+                downloadAnimalBtn.textContent = "Convert & Download";
+                alert("Error loading animal image. Please try again.");
             };
         });
 
@@ -2102,7 +2202,7 @@
             const loader = document.getElementById('face-loader');
             const canvas = document.getElementById('face-canvas-processor');
 
-            if (!fileInput || fileInput.files.length === 0) return alert("Pehle photo select karein!");
+            if (!fileInput || fileInput.files.length === 0) return alert("Please select a photo first!");
 
             const file = fileInput.files[0];
             actionBtn.disabled = true;
