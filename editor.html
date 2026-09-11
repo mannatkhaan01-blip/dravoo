@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dravoo · Pro Editor - Fixed</title>
+  <title>Dravoo · Pro Editor - Auto Caption</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bebas+Neue&family=Lobster&family=Pacifico&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Oswald:wght@500;700&family=Montserrat:wght@800&family=Fascinate&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Alfa+Slab+One&family=Bangers&family=Cinzel:wght@700&family=Comfortaa:wght@700&family=Courgette&family=Creepster&family=Gloria+Hallelujah&family=Great+Vibes&family=Kaushan+Script&family=Luckiest+Guy&family=Monoton&family=Orbitron:wght@900&family=Press+Start+2P&family=Sacramento&family=Satisfy&family=Special+Elite&family=Spicy+Rice&family=Titan+One&family=Vampiro+One&family=Abril+Fatface&family=Anton&family=Archivo+Black&family=Black+Ops+One&family=Bungee&family=Coiny&family=Exo+2:wght@800&family=Francois+One&family=Gravitas+One&family=Josefin+Sans:wght@700&family=Kanit:wght@800&family=Lilita+One&family=Limelight&family=Megrim&family=New+Rocker&family=Nosifer&family=Paytone+One&family=Plaster&family=Poiret+One&family=Rajdhani:wght@700&family=Rampart+One&family=Rancho&family=Russo+One&family=Sigmar+One&family=Staatliches&family=Syncopate:wght@700&family=Uncial+Antiqua&family=Wallpoet&family=Big+Shoulders+Display:wght@900&family=Black+Han+Sans&family=Chango&family=Comic+Neue&family=Delius+Swash+Caps&family=Emblema+One&family=Fugaz+One&family=Gaegu&family=Girassol&family=Hanalei&family=Henny+Penny&family=Iceberg&family=Jacques+Francois+Shadow&family=Kavoon&family=Leckerli+One&family=Ma+Shan+Zheng&family=Monofett&family=Overlock&family=Patua+One&family=Qwigley&family=Redressed&family=Shrikhand&family=Sirin+Stencil&family=Sofia&family=Sriracha&family=Stalinist+One&family=Warnes&family=ZCOOL+KuaiLe&family=Dancing+Script&family=Epilogue&family=Fira+Code&family=Genos&family=Hind&family=Inconsolata&family=JetBrains+Mono&family=Karla&family=Lato&family=Merriweather&family=Nunito&family=Open+Sans&family=Poppins&family=Quicksand&family=Roboto&family=Source+Sans+Pro&family=Audiowide&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bebas+Neue&family=Lobster&family=Pacifico&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Oswald:wght@500;700&family=Montserrat:wght@800&family=Poppins:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0b0b0e; color: #f1f5f9; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
@@ -98,40 +98,11 @@
     .font-preview-btn .font-name { font-size: 9px; color: #9ca3af; font-family: monospace; }
     .font-preview-btn .font-sample { font-size: 14px; color: #fff; font-weight: 700; }
 
-    /* animations */
     @keyframes textFadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 0.95; transform: translateY(0); } }
     @keyframes textBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     @keyframes textSlideIn { 0% { transform: translateX(-20px); opacity: 0; } 100% { transform: translateX(0); opacity: 0.95; } }
     @keyframes textGlow { 0%, 100% { text-shadow: 0 0 10px rgba(59,130,246,0.5); } 50% { text-shadow: 0 0 30px rgba(59,130,246,0.8); } }
-    @keyframes textRotate { 0% { transform: rotate(-3deg); } 100% { transform: rotate(3deg); } }
-    @keyframes textPulse { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.5; } }
-    @keyframes textWave { 0% { transform: translateY(0); } 25% { transform: translateY(-5px); } 50% { transform: translateY(0); } 75% { transform: translateY(5px); } 100% { transform: translateY(0); } }
-    @keyframes textShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-    @keyframes textFlip { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
     @keyframes textZoom { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 0.95; } }
-    @keyframes textNeonPulse { 0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #3b82f6, 0 0 40px #3b82f6; } 50% { text-shadow: 0 0 10px #fff, 0 0 20px #3b82f6, 0 0 40px #3b82f6, 0 0 80px #3b82f6; } }
-    @keyframes textRainbow { 0% { color: #ff0000; } 17% { color: #ff8800; } 33% { color: #ffff00; } 50% { color: #00ff00; } 67% { color: #0088ff; } 83% { color: #8800ff; } 100% { color: #ff0000; } }
-    @keyframes textWobble { 0%, 100% { transform: rotate(-2deg) scale(1); } 50% { transform: rotate(2deg) scale(1.05); } }
-    @keyframes textJello { 0%, 100% { transform: scale(1); } 25% { transform: scale(1.1) rotate(-5deg); } 50% { transform: scale(0.9) rotate(5deg); } 70% { transform: scale(1.05) rotate(-3deg); } }
-    @keyframes textHeartbeat { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.2); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
-    @keyframes textFlicker { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.3; } 75% { opacity: 0.7; } }
-    @keyframes textTyping { 0% { width: 0; } 100% { width: 100%; } }
-    @keyframes textReveal { 0% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 0 0 0); } }
-    @keyframes textSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes textDropIn { 0% { transform: translateY(-50px) scale(0.5); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 0.95; } }
-    @keyframes textRiseUp { 0% { transform: translateY(30px); opacity: 0; } 100% { transform: translateY(0); opacity: 0.95; } }
-    @keyframes textSplash { 0% { transform: scale(0) rotate(-30deg); opacity: 0; } 50% { transform: scale(1.3) rotate(5deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 0.95; } }
-    @keyframes textExplode { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(1.5) rotate(20deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 0.95; } }
-    @keyframes textMorph { 0% { transform: scale(0.5) skewX(10deg); opacity: 0; } 50% { transform: scale(1.2) skewX(-5deg); opacity: 1; } 100% { transform: scale(1) skewX(0deg); opacity: 0.95; } }
-    @keyframes textBlurIn { 0% { filter: blur(10px); opacity: 0; } 100% { filter: blur(0); opacity: 0.95; } }
-    @keyframes textColorShift { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-    @keyframes textShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-    @keyframes textSparkle { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.5; text-shadow: 0 0 20px #fbbf24; } }
-    @keyframes textCyberGlitch { 0% { transform: translate(0); opacity: 0.95; } 20% { transform: translate(-2px, 2px); opacity: 0.8; } 40% { transform: translate(2px, -2px); opacity: 0.95; } 60% { transform: translate(-1px, 1px); opacity: 0.9; } 80% { transform: translate(1px, -1px); opacity: 0.95; } 100% { transform: translate(0); opacity: 0.95; } }
-    @keyframes textMatrix { 0% { filter: brightness(0) contrast(2); opacity: 0; } 50% { filter: brightness(1) contrast(1.5); opacity: 1; } 100% { filter: brightness(1) contrast(1); opacity: 0.95; } }
-    @keyframes textHologram { 0% { filter: brightness(0.5) hue-rotate(0deg); } 50% { filter: brightness(1.5) hue-rotate(30deg); } 100% { filter: brightness(0.5) hue-rotate(0deg); } }
-    @keyframes textFire { 0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff6348; } 50% { text-shadow: 0 0 15px #ff6348, 0 0 25px #ff4500, 0 0 40px #ff8c00; } 100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff6348; } }
-    @keyframes textIce { 0% { text-shadow: 0 0 10px #00bfff, 0 0 20px #87ceeb; } 50% { text-shadow: 0 0 15px #87ceeb, 0 0 30px #00bfff; } 100% { text-shadow: 0 0 10px #00bfff, 0 0 20px #87ceeb; } }
 
     .canvas-text-item { position: absolute; cursor: grab; user-select: none; padding: 4px 8px; border-radius: 4px; transition: box-shadow 0.2s; z-index: 50; pointer-events: auto; display: flex; align-items: center; gap: 6px; opacity: 0.95 !important; }
     .canvas-text-item:hover { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); border-radius: 4px; }
@@ -163,7 +134,6 @@
     .spinner { border: 2px solid #2a2a32; border-top: 2px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Language & Font Selector Styles */
     .caption-controls {
       background: #0c0c10;
       padding: 10px 12px;
@@ -209,6 +179,49 @@
       margin-bottom: 2px;
     }
   </style>
+
+  <!-- ========================================================= -->
+  <!-- WHISPER AI (براؤزر میں، مکمل مفت) — Transformers.js       -->
+  <!-- ========================================================= -->
+  <script type="module">
+    window.__whisperReady = false;
+    window.__whisperPipeline = null;
+    window.__whisperLoading = false;
+
+    window.__loadWhisper = async function() {
+      if (window.__whisperReady || window.__whisperLoading) return;
+      window.__whisperLoading = true;
+      try {
+        const mod = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+        mod.env.allowLocalModels = false;
+        mod.env.useBrowserCache = true;
+        window.__whisperPipeline = await mod.pipeline(
+          'automatic-speech-recognition',
+          'Xenova/whisper-tiny',
+          {
+            quantized: true,
+            progress_callback: (p) => {
+              if (p.status === 'progress' && p.file && p.file.endsWith('.bin')) {
+                const pct = Math.round((p.loaded / p.total) * 100);
+                const bar = document.getElementById('whisperProgressBar');
+                const txt = document.getElementById('whisperProgressText');
+                if (bar) bar.style.width = pct + '%';
+                if (txt) txt.textContent = `ماڈل ڈاؤن لوڈ: ${pct}%`;
+              }
+            }
+          }
+        );
+        window.__whisperReady = true;
+        console.log('✅ Whisper ready');
+      } catch (e) {
+        console.error('Whisper load failed:', e);
+        window.__whisperLoading = false;
+      }
+    };
+
+    // صفحہ لوڈ ہونے کے 2 سیکنڈ بعد خود بخود لوڈ کریں
+    window.addEventListener('load', () => setTimeout(() => window.__loadWhisper(), 2000));
+  </script>
 </head>
 <body>
 
@@ -232,7 +245,6 @@
 <main class="max-w-3xl mx-auto px-2 my-4">
   <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-    <!-- Top Project Toolbar -->
     <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
       <div class="flex items-center gap-2 text-sm">
         <span class="text-white font-semibold">Project: Untitled</span>
@@ -250,7 +262,6 @@
       </div>
     </div>
 
-    <!-- Main Canvas Viewport -->
     <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
       <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
         <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
@@ -272,7 +283,6 @@
       </div>
     </div>
 
-    <!-- Playback Controls -->
     <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
       <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
       <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white">
@@ -281,7 +291,6 @@
       <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
     </div>
 
-    <!-- TEXT TRACKS CONTAINER -->
     <div id="textTrackContainer" class="audio-track-container" style="border-bottom: 1px solid #1a1a22; background: #0a0a0e;">
       <div class="flex items-center justify-between mb-2">
         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><i class="fas fa-font text-blue-400 mr-1.5"></i>Text Tracks</span>
@@ -292,7 +301,6 @@
       </div>
     </div>
 
-    <!-- AUDIO TRACK CONTAINER -->
     <div id="audioTrackContainer" class="audio-track-container">
       <div class="flex items-center justify-between mb-2">
         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><i class="fas fa-waveform text-emerald-400 mr-1.5"></i>Audio Tracks</span>
@@ -303,7 +311,6 @@
       </div>
     </div>
 
-    <!-- Video Timeline Track -->
     <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
       <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
         <div class="flex items-center gap-2 truncate"><i class="fas fa-video text-blue-400 text-xs"></i><span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span></div>
@@ -311,107 +318,25 @@
       </div>
     </div>
 
-    <!-- MASTER BOTTOM MENU -->
     <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
       <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
       <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
       <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
-      <button onclick="showSubmenu('effects')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-wand-magic-sparkles text-base text-purple-400"></i><span class="text-[10px] font-medium">Effects</span></button>
-      <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
       <button onclick="showSubmenu('caption')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-closed-captioning text-base text-pink-400"></i><span class="text-[10px] font-medium">Caption</span></button>
       <button onclick="showSubmenu('filters')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-filter text-base text-indigo-400"></i><span class="text-[10px] font-medium">Filters</span></button>
       <button onclick="showSubmenu('adjust')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-sliders text-base text-orange-400"></i><span class="text-[10px] font-medium">Adjust</span></button>
-      <button onclick="openDrawer('stickers')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-face-smile text-base text-yellow-400"></i><span class="text-[10px] font-medium">Stickers</span></button>
-      <button onclick="showSubmenu('generate-media')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-brain text-base text-teal-400"></i><span class="text-[10px] font-medium">Gen Media</span></button>
-      <button onclick="showSubmenu('ai-avatar')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-user-astronaut text-base text-violet-400"></i><span class="text-[10px] font-medium">AI Avatar</span></button>
+      <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
       <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
       <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
     </div>
 
-    <!-- SUBMENUS -->
-    <div id="submenu-edit" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
-      <button onclick="triggerTool('Volume')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-high"></i>Volume</button>
-      <button onclick="triggerTool('Animation')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-film"></i>Animation</button>
-      <button onclick="triggerTool('Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wand-magic-sparkles"></i>Effects</button>
-      <button onclick="triggerTool('Delete')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-400"><i class="fas fa-trash"></i>Delete</button>
-      <button onclick="triggerTool('Speed')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-gauge-high"></i>Speed</button>
-      <button onclick="triggerTool('Beats')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-heart-pulse"></i>Beats</button>
-      <button onclick="triggerTool('AI Extends')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-expand-arrows-alt"></i>AI Extend</button>
-      <button onclick="triggerTool('Crop')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-crop"></i>Crop</button>
-      <button onclick="triggerTool('Duplicate')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-clone"></i>Clone</button>
-      <button onclick="triggerTool('Replace')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-arrows-rotate"></i>Replace</button>
-      <button onclick="triggerTool('Overlay')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-layer-group"></i>Overlay</button>
-      <button onclick="triggerTool('Adjust')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-sliders"></i>Adjust</button>
-      <button onclick="triggerTool('Filter')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-filter"></i>Filter</button>
-      <button onclick="triggerTool('Retouch')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-face-smile"></i>Retouch</button>
-      <button onclick="triggerTool('Video Quality')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-yellow-400"><i class="fas fa-wand-magic-sparkles"></i>4K Quality</button>
-      <button onclick="triggerTool('Remove BG')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-user-minus"></i>Remove BG</button>
-      <button onclick="triggerTool('AI Remove')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eraser"></i>AI Eraser</button>
-      <button onclick="triggerTool('AI Expand')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-maximize"></i>AI Expand</button>
-      <button onclick="triggerTool('AI Remix')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-shuffle"></i>AI Remix</button>
-      <button onclick="triggerTool('Eye Contact')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-eye"></i>Eye Contact</button>
-      <button onclick="triggerTool('Relight')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-lightbulb"></i>Relight</button>
-      <button onclick="triggerTool('Opacity')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-circle-half-stroke"></i>Opacity</button>
-      <button onclick="triggerTool('Motion Blur')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-wind"></i>Motion Blur</button>
-      <button onclick="triggerTool('Lip Sync')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-comment-dots"></i>Lip Sync</button>
-      <button onclick="triggerTool('Transform Auto Reframe')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-expand"></i>Reframe</button>
-      <button onclick="triggerTool('Stabilize')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-mobile-screen"></i>Stabilize</button>
-      <button onclick="document.getElementById('audio-extract-picker').click()" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-file-audio"></i>Extract Aud</button>
-      <button onclick="triggerTool('Isolate Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-microphone-lines"></i>Isolate</button>
-      <button onclick="triggerTool('Audio Effects')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-waveform"></i>Aud FX</button>
-      <button onclick="triggerTool('Enhance Voice')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-volume-low"></i>Enhance</button>
-      <button onclick="triggerTool('Video Translator')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-language"></i>Translate</button>
-      <button onclick="triggerTool('Freeze')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-snowflake"></i>Freeze</button>
-      <button onclick="triggerTool('Reverse')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-backward"></i>Reverse</button>
-      <button onclick="triggerTool('Mask')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-masks-theater"></i>Mask</button>
-      <button onclick="triggerTool('Unlink')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-red-300"><i class="fas fa-link-slash"></i>Unlink</button>
-    </div>
-
-    <div id="submenu-audio" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="document.getElementById('audio-extract-picker').click()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-file-audio text-green-400"></i>Extract</button>
-      <button onclick="openPixabayModal('sounds')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-music"></i>Sounds</button>
-      <button onclick="openPixabayModal('sound-fx')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bolt text-yellow-400"></i>FX Effects</button>
-      <button id="record-btn-ui" onclick="toggleVoiceRecording()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i id="mic-icon-status" class="fas fa-microphone text-red-500"></i><span id="record-text-status">Record</span></button>
-      <button onclick="openTextToAudioDrawer()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio text-blue-400"></i>Text To Aud</button>
-      <button onclick="openBrandMusicDrawer()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-bookmark text-amber-400"></i>Brand Music</button>
-      <button onclick="runCopyrightAI()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-shield text-emerald-400"></i>Copyright</button>
-    </div>
-
-    <div id="submenu-text" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="openDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-plus text-amber-400"></i>Add Text</button>
-      <button onclick="openDrawer('captions')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-closed-captioning text-blue-400"></i>Auto Caption</button>
-      <button onclick="openDrawer('stickers')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-face-smile"></i>Stickers</button>
-      <button onclick="toggleDraw()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-pen"></i>Drawer</button>
-      <button onclick="openDrawer('templates')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-paste"></i>Templates</button>
-      <button onclick="openTextToAudioDrawer()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-comment-audio"></i>Text To Aud</button>
-      <button onclick="triggerTool('Auto Lyrics tracking')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-guitar"></i>Auto Lyrics</button>
-    </div>
-
-    <div id="submenu-effects" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="triggerTool('Body Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-child-accessibility text-purple-400"></i>Body FX</button>
-      <button onclick="triggerTool('Video Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-clapperboard"></i>Video FX</button>
-      <button onclick="triggerTool('Photo Effects')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-image"></i>Photo FX</button>
-      <button onclick="triggerTool('AI Effects Engine')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-brain text-purple-500"></i>AI FX</button>
-    </div>
-
-    <div id="submenu-overlay" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white"><i class="fas fa-folder-open"></i> Open Device Media Gallery</button>
-    </div>
-
-    <!-- CAPTION SUBMENU - UPDATED WITH LANGUAGE & FONT CONTROLS -->
+    <!-- CAPTION SUBMENU (with Auto Caption) -->
     <div id="submenu-caption" class="hidden p-3 bg-[#0c0c10]">
       <div class="flex items-center justify-between mb-3">
         <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
         <span class="text-xs font-bold text-pink-400"><i class="fas fa-closed-captioning mr-1"></i>Caption Studio</span>
       </div>
-      
-      <!-- Language & Font Controls -->
+
       <div class="caption-controls">
         <div class="control-row">
           <div>
@@ -441,22 +366,39 @@
           <input type="text" id="captionTextInput" value="Hello World! 🌍" oninput="updateCaptionPreview()" class="w-full bg-[#18181c] border border-[#2a2a32] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-pink-400" />
         </div>
         <button onclick="applyCaptionToCanvas()" class="w-full mt-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs font-bold py-2 rounded-lg transition">
-          <i class="fas fa-plus mr-1.5"></i>Apply Caption
+          <i class="fas fa-plus mr-1.5"></i>Apply Manual Caption
         </button>
         <div id="captionPreview" class="mt-2 text-center text-xs text-zinc-500">
           Preview: <span id="captionPreviewText" style="font-family: Inter; color: #fff;">Hello World! 🌍</span>
         </div>
       </div>
-      
-      <div class="text-[10px] text-zinc-600 text-center mt-1">
-        <i class="fas fa-info-circle mr-1"></i>Select language & font, then click "Apply Caption"
+
+      <!-- ========= AUTO CAPTION (NEW) ========= -->
+      <div class="mt-3 pt-3 border-t border-zinc-800">
+        <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
+          <i class="fas fa-microphone-lines mr-1 text-emerald-400"></i>Auto Caption (Whisper AI · 100% Free)
+        </label>
+        <button id="autoCaptionBtn" onclick="generateAutoCaptions()"
+          class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <span id="autoCaptionBtnText">Auto Caption Generate کریں</span>
+        </button>
+        <div id="whisperProgressWrap" class="mt-2 hidden">
+          <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+            <div id="whisperProgressBar" class="bg-emerald-500 h-full transition-all duration-300" style="width:0%"></div>
+          </div>
+          <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">لوڈ ہو رہا ہے...</p>
+        </div>
+        <p class="text-[9px] text-zinc-600 mt-2 text-center leading-tight">
+          <i class="fas fa-info-circle mr-1"></i>پہلی بار ماڈل ڈاؤن لوڈ ہوگا (~40MB)۔ پھر کیش ہو جائے گا۔
+        </p>
       </div>
     </div>
 
     <div id="submenu-filters" class="hidden p-3 bg-[#0c0c10]">
       <div class="flex items-center justify-between mb-2">
         <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-        <span class="text-xs font-bold text-zinc-300">Cinematic Filters (50+ Built-in HD)</span>
+        <span class="text-xs font-bold text-zinc-300">Cinematic Filters</span>
       </div>
       <div class="flex gap-2 overflow-x-auto pb-1" id="filtersContainer"></div>
     </div>
@@ -469,28 +411,14 @@
       <div class="grid grid-cols-2 gap-3 text-xs text-zinc-300">
         <div>Auto Adjust: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('brightness(1.2) contrast(1.1) saturate(1.2)')">Apply</button></div>
         <div>Reset: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('none')">Reset</button></div>
-        <div class="col-span-2"><span class="text-[11px] text-zinc-500">Live Custom Filter Slider:</span>
+        <div class="col-span-2"><span class="text-[11px] text-zinc-500">Brightness:</span>
         <input type="range" min="50" max="150" value="100" class="w-full mt-1 accent-orange-500" oninput="adjustBrightness(this.value)" /></div>
       </div>
     </div>
 
-    <div id="submenu-generate-media" class="hidden submenu-grid">
+    <div id="submenu-overlay" class="hidden submenu-grid">
       <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="generateAIImage()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-wand-magic-sparkles text-teal-400"></i>AI Image</button>
-      <button onclick="generateAIVideo()" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-video text-purple-400"></i>AI Video</button>
-      <button onclick="openPixabayModal('sounds')" class="bg-zinc-900 p-2 rounded text-zinc-200 text-xs flex flex-col items-center gap-1"><i class="fas fa-cloud-arrow-down"></i>Pixabay Stocks</button>
-    </div>
-
-    <div id="submenu-ai-avatar" class="hidden p-3 bg-[#0c0c10]">
-      <div class="flex items-center justify-between mb-2">
-        <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
-        <span class="text-xs font-bold text-violet-400">Speaking Interactive AI Avatars</span>
-      </div>
-      <div class="flex gap-2 overflow-x-auto">
-        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('Adam')">🧔 Adam (Speech)</div>
-        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('Elena')">👩 Elena (Speech)</div>
-        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('CyberBot')">🤖 CyberBot</div>
-      </div>
+      <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white"><i class="fas fa-folder-open"></i> Open Device Media Gallery</button>
     </div>
 
     <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
@@ -517,28 +445,11 @@
   </div>
 </main>
 
-<!-- TOAST -->
 <div id="toastNotification" class="toast-notification hidden">
   <i class="fas fa-check-circle text-blue-400 text-lg"></i>
   <span id="toastMessage" class="text-sm text-white font-medium">Animation applied!</span>
 </div>
 
-<!-- PIXABAY MODAL -->
-<div id="pixabayModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
-  <div class="bg-[#121216] border border-zinc-800 w-full max-w-md rounded-3xl p-6 text-center space-y-5 shadow-2xl">
-    <div class="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-3xl"><i class="fas fa-music" id="pixabayIcon"></i></div>
-    <div><h3 class="text-xl font-bold text-white" id="pixabayTitle">Pixabay Free Music & SFX</h3><p class="text-xs text-zinc-400 mt-1">Search and download no copyright background tracks or sound effects safely.</p></div>
-    <input type="hidden" id="pixabayMode" value="sounds" />
-    <div class="flex gap-2">
-      <input type="text" id="pixabayQuery" placeholder="e.g., cinematic, lofi, tech, explosion..." class="flex-1 bg-[#18181c] border border-zinc-700 text-sm rounded-xl px-4 py-3 outline-none focus:border-purple-500 text-white" />
-      <button onclick="searchPixabayAudio()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-xl transition"><i class="fas fa-search"></i></button>
-    </div>
-    <button onclick="closePixabayModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider transition">Close</button>
-    <div id="pixabayResults" class="max-h-48 overflow-y-auto space-y-2 pt-2 text-left hidden"></div>
-  </div>
-</div>
-
-<!-- EXPORT DIALOG -->
 <div id="exportDialog" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[300] hidden">
   <div class="export-dialog">
     <div class="export-header"><h3><i class="fas fa-download mr-2 text-blue-400"></i>Export Project</h3><span class="close-btn" onclick="closeExportDialog()">✕</span></div>
@@ -547,28 +458,24 @@
       <button onclick="exportProject('audio')"><i class="fas fa-music text-green-400"></i><span>Export as Audio (MP3)</span><span class="ml-auto text-[10px] text-zinc-500">320kbps</span></button>
       <button onclick="exportProject('project')"><i class="fas fa-file-archive text-amber-400"></i><span>Export as Project File</span><span class="ml-auto text-[10px] text-zinc-500">.dravoo</span></button>
     </div>
-    <div class="mt-4 text-center"><span class="text-[10px] text-zinc-500">All exports include all audio tracks</span></div>
   </div>
 </div>
 
-<!-- EDITOR DRAWER -->
 <div class="editor-drawer" id="editorDrawer">
   <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
     <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
-    <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Text Designer Workspace</span>
+    <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Text Designer</span>
     <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
   </div>
   <div class="px-4 py-2 border-b border-zinc-800 flex gap-2">
     <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="Enter your text" />
-    <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add to Video</button>
+    <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add</button>
   </div>
   <div class="flex border-b border-zinc-800 bg-[#0e0e12] overflow-x-auto scroll-x-menu">
     <button id="tab-templates" onclick="switchTextTab('templates')" class="tab-btn active">Templates</button>
     <button id="tab-fonts" onclick="switchTextTab('fonts')" class="tab-btn">Fonts</button>
     <button id="tab-styles" onclick="switchTextTab('styles')" class="tab-btn">Styles</button>
     <button id="tab-animations" onclick="switchTextTab('animations')" class="tab-btn">Animations</button>
-    <button id="tab-bubbles" onclick="switchTextTab('bubbles')" class="tab-btn">Bubbles</button>
-    <button id="tab-presets" onclick="switchTextTab('presets')" class="tab-btn">Presets</button>
   </div>
   <div class="p-4 overflow-y-auto flex-1">
     <div id="drawerDynamicGrid" class="grid grid-cols-4 gap-3"></div>
@@ -577,43 +484,23 @@
 
 <script>
 // ============================================================
-// DRAVOO PRO EDITOR - COMPLETE FIXED VERSION
+// DRAVOO — Slim + Auto Caption
 // ============================================================
 
-// GLOBALS
-let currentTextState = { text: "Enter your text", font: "Inter", styleCSS: "color: #ffffff; text-shadow: none;", animation: "", bubbleCSS: "" };
-let customPresets = [];
+let currentTextState = { text: "Enter your text", font: "Inter", styleCSS: "color: #ffffff;", animation: "", bubbleCSS: "" };
 let textElementCounter = 0;
 let textTracks = [];
 let textTrackIdCounter = 0;
 let audioTracks = [];
 let trackIdCounter = 0;
-let isRecording = false;
-let mediaRecorder = null;
-let recordedChunks = [];
-let selectedVoice = 'Adam';
-let isDrawing = false;
-let brushSize = 5;
-let drawActive = false;
 let toastTimeout = null;
-let isLoadingMore = false;
-let currentBatchIndex = 0;
-const BATCH_SIZE = 50;
-const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
+let selectedVoice = 'Adam';
 
-// Caption state
-let currentCaption = { text: "Hello World! 🌍", language: "en", font: "Inter" };
+// Auto caption state
+let autoCaptionSegments = [];
+let captionSyncRAF = null;
 
-// Language translations (demo mapping)
-const languageTranslations = {
-  'en': 'Hello World! 🌍',
-  'zh': '你好世界！ 🌍',
-  'es': '¡Hola Mundo! 🌍',
-  'ar': 'مرحبا بالعالم! 🌍',
-  'ur': 'ہیلو دنیا! 🌍',
-  'hi': 'नमस्ते दुनिया! 🌍'
-};
-
+// Toast
 function showToast(message, icon = 'fa-check-circle') {
   try {
     const toast = document.getElementById('toastNotification');
@@ -623,226 +510,289 @@ function showToast(message, icon = 'fa-check-circle') {
     toastIcon.className = `fas ${icon} text-blue-400 text-lg`;
     toastMsg.textContent = message;
     toast.classList.remove('hidden');
-    toastTimeout = setTimeout(() => { try { toast.classList.add('hidden'); } catch(e) {} }, 3000);
-  } catch (error) { console.warn('Toast error:', error); }
+    toastTimeout = setTimeout(() => toast.classList.add('hidden'), 3000);
+  } catch (e) {}
 }
 
-// CAPTION FUNCTIONS
+// ============================================================
+// AUTO CAPTION (Whisper)
+// ============================================================
+async function generateAutoCaptions() {
+  const btn = document.getElementById('autoCaptionBtn');
+  const btnTxt = document.getElementById('autoCaptionBtnText');
+  const progWrap = document.getElementById('whisperProgressWrap');
+  const progBar = document.getElementById('whisperProgressBar');
+  const progTxt = document.getElementById('whisperProgressText');
+
+  if (!player.src || player.classList.contains('hidden')) {
+    showToast('❌ پہلے کوئی ویڈیو اپ لوڈ کریں', 'fa-exclamation');
+    return;
+  }
+
+  progWrap.classList.remove('hidden');
+
+  // اگر ماڈل ابھی تیار نہیں
+  if (!window.__whisperReady) {
+    progBar.style.width = '3%';
+    progTxt.textContent = 'Whisper ماڈل لوڈ ہو رہا ہے...';
+    showToast('⏳ ماڈل لوڈ، انتظار کریں...', 'fa-hourglass');
+    window.__loadWhisper && window.__loadWhisper();
+    const wait = setInterval(() => {
+      if (window.__whisperReady) {
+        clearInterval(wait);
+        progTxt.textContent = 'ماڈل تیار! ٹرانسکرپشن شروع...';
+        setTimeout(() => generateAutoCaptions(), 300);
+      }
+    }, 800);
+    return;
+  }
+
+  btn.disabled = true;
+  btnTxt.textContent = 'آڈیو نکالا جا رہا ہے...';
+  progBar.style.width = '15%';
+
+  try {
+    // 1) آڈیو نکالیں
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+    const arrayBuf = await fetch(player.src).then(r => r.arrayBuffer());
+    const decoded = await audioCtx.decodeAudioData(arrayBuf);
+    const mono = decoded.numberOfChannels > 1 ? mixToMono(decoded) : decoded.getChannelData(0);
+    audioCtx.close();
+
+    progBar.style.width = '35%';
+    progTxt.textContent = 'Whisper ٹرانسکرپشن کر رہا ہے...';
+    btnTxt.textContent = 'ٹرانسکرپٹ ہو رہا ہے...';
+
+    // 2) Whisper
+    const langMap = { en: 'english', ur: 'urdu', hi: 'hindi', ar: 'arabic', zh: 'chinese', es: 'spanish' };
+    const lang = langMap[document.getElementById('captionLanguage').value] || 'english';
+
+    const result = await window.__whisperPipeline(mono, {
+      language: lang,
+      task: 'transcribe',
+      chunk_length_s: 30,
+      stride_length_s: 5,
+      return_timestamps: true,
+    });
+
+    progBar.style.width = '85%';
+    progTxt.textContent = 'کیپشن بنائے جا رہے ہیں...';
+
+    // 3) segments
+    autoCaptionSegments = [];
+    if (result.chunks && result.chunks.length > 0) {
+      result.chunks.forEach(chunk => {
+        if (chunk.text && chunk.timestamp) {
+          autoCaptionSegments.push({
+            start: chunk.timestamp[0] || 0,
+            end: chunk.timestamp[1] || (chunk.timestamp[0] + 3),
+            text: chunk.text.trim()
+          });
+        }
+      });
+    } else if (result.text) {
+      const words = result.text.trim().split(/\s+/);
+      const perChunk = 6;
+      const duration = player.duration || 10;
+      const chunkDur = duration / Math.ceil(words.length / perChunk);
+      for (let i = 0; i < words.length; i += perChunk) {
+        const idx = i / perChunk;
+        autoCaptionSegments.push({
+          start: idx * chunkDur,
+          end: (idx + 1) * chunkDur,
+          text: words.slice(i, i + perChunk).join(' ')
+        });
+      }
+    }
+
+    if (autoCaptionSegments.length === 0) throw new Error('کوئی ٹیکسٹ نہیں ملا');
+
+    // 4) لگائیں
+    setupCaptionOverlay();
+    startCaptionSync();
+
+    progBar.style.width = '100%';
+    progTxt.textContent = `✅ ${autoCaptionSegments.length} کیپشن بن گئے!`;
+    btnTxt.textContent = 'دوبارہ بنائیں';
+    btn.disabled = false;
+    showToast(`✅ ${autoCaptionSegments.length} آٹو کیپشن بن گئے!`, 'fa-closed-captioning');
+
+    setTimeout(() => { progWrap.classList.add('hidden'); progBar.style.width = '0%'; }, 3000);
+
+  } catch (err) {
+    console.error('Auto caption error:', err);
+    btn.disabled = false;
+    btnTxt.textContent = 'دوبارہ کوشش کریں';
+    progTxt.textContent = '❌ ناکام: ' + (err.message || 'نامعلوم');
+    showToast('❌ آٹو کیپشن ناکام', 'fa-exclamation');
+    setTimeout(() => progWrap.classList.add('hidden'), 4000);
+  }
+}
+
+function mixToMono(audioBuffer) {
+  const ch = audioBuffer.numberOfChannels;
+  const len = audioBuffer.length;
+  const out = new Float32Array(len);
+  for (let i = 0; i < len; i++) {
+    let sum = 0;
+    for (let c = 0; c < ch; c++) sum += audioBuffer.getChannelData(c)[i];
+    out[i] = sum / ch;
+  }
+  return out;
+}
+
+function setupCaptionOverlay() {
+  let overlay = document.getElementById('autoCaptionOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'autoCaptionOverlay';
+    overlay.style.cssText = `
+      position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%);
+      max-width: 90%; text-align: center; z-index: 60; pointer-events: none;
+      font-size: 15px; font-weight: 800; color: #fff; line-height: 1.3;
+      text-shadow: 0 0 8px rgba(0,0,0,0.95), 0 0 16px rgba(0,0,0,0.7), 2px 2px 4px rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.5); padding: 6px 14px; border-radius: 10px;
+      backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
+      opacity: 0; transition: opacity 0.15s;
+    `;
+    document.getElementById('video-ratio-box').appendChild(overlay);
+  }
+  const f = document.getElementById('captionFont').value;
+  overlay.style.fontFamily = `'${f}', sans-serif`;
+  return overlay;
+}
+
+function startCaptionSync() {
+  if (captionSyncRAF) cancelAnimationFrame(captionSyncRAF);
+  const overlay = setupCaptionOverlay();
+  const loop = () => {
+    const t = player.currentTime;
+    let found = null;
+    for (const seg of autoCaptionSegments) {
+      if (t >= seg.start && t < seg.end) { found = seg; break; }
+    }
+    if (found) {
+      if (overlay.textContent !== found.text) overlay.textContent = found.text;
+      overlay.style.opacity = '1';
+    } else {
+      overlay.style.opacity = '0';
+    }
+    captionSyncRAF = requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+// ============================================================
+// CAPTION (manual)
+// ============================================================
 function updateCaptionPreview() {
   try {
     const lang = document.getElementById('captionLanguage').value;
     const font = document.getElementById('captionFont').value;
     const textInput = document.getElementById('captionTextInput');
     const previewText = document.getElementById('captionPreviewText');
-    
-    // Update current caption state
-    currentCaption.language = lang;
-    currentCaption.font = font;
-    currentCaption.text = textInput.value || 'Hello World! 🌍';
-    
-    // Update preview with selected font
     previewText.style.fontFamily = font;
-    previewText.textContent = currentCaption.text;
-    
-    // Show language name in preview
-    const langNames = {
-      'en': 'English',
-      'zh': 'Chinese',
-      'es': 'Spanish',
-      'ar': 'Arabic',
-      'ur': 'Urdu',
-      'hi': 'Hindi'
-    };
-    document.querySelector('.caption-controls label:first-child').innerHTML = 
-      `<i class="fas fa-language mr-1"></i>Language: ${langNames[lang]}`;
-  } catch (error) {
-    console.error('Error updating caption preview:', error);
-  }
+    previewText.textContent = textInput.value || 'Hello World! 🌍';
+    // update overlay font live
+    const ov = document.getElementById('autoCaptionOverlay');
+    if (ov) ov.style.fontFamily = `'${font}', sans-serif`;
+  } catch (e) {}
 }
 
 function applyCaptionToCanvas() {
   try {
-    const lang = document.getElementById('captionLanguage').value;
-    const font = document.getElementById('captionFont').value;
     const text = document.getElementById('captionTextInput').value || 'Hello World! 🌍';
-    
-    // Get language name for display
-    const langNames = {
-      'en': 'English',
-      'zh': 'Chinese',
-      'es': 'Spanish',
-      'ar': 'Arabic',
-      'ur': 'Urdu',
-      'hi': 'Hindi'
-    };
-    
-    // Create style with selected font and a nice caption style
-    const styleCSS = `color: #ffffff; text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5); font-weight: 700; background: rgba(0,0,0,0.4); padding: 6px 14px; border-radius: 12px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);`;
-    
-    // Create text element on canvas
+    const font = document.getElementById('captionFont').value;
+    const styleCSS = `color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.9), 2px 2px 4px rgba(0,0,0,0.9); font-weight: 800; background: rgba(0,0,0,0.4); padding: 6px 14px; border-radius: 12px;`;
     const wrapper = createTextElementOnCanvas(text, styleCSS, font, '', 'Fade In');
-    
     if (wrapper) {
-      // Center the caption
       wrapper.style.left = '50%';
       wrapper.style.top = '50%';
-      wrapper.style.transform = 'translate(-50%, -50%)';
-      
-      // Make it bigger for caption
-      const textSpan = wrapper.querySelector('.text-content');
-      if (textSpan) {
-        textSpan.style.fontSize = '20px';
-        textSpan.style.textAlign = 'center';
-        textSpan.style.width = '100%';
-        textSpan.style.display = 'block';
-      }
-      
-      showToast(`📝 Caption added in ${langNames[lang]} with ${font} font!`, 'fa-closed-captioning');
-      
-      // Close caption submenu
+      showToast('📝 Manual caption added', 'fa-closed-captioning');
       backToMaster();
     }
-  } catch (error) {
-    console.error('Error applying caption:', error);
-    showToast('❌ Error applying caption', 'fa-exclamation');
-  }
+  } catch (e) { console.error(e); }
 }
 
+// ============================================================
 // TEXT TRACKS
+// ============================================================
 function addTextTrack(text, font, styleCSS, bubbleCSS, animation) {
-  try {
-    const id = ++textTrackIdCounter;
-    const track = { id, text, font, styleCSS, bubbleCSS, animation, timestamp: new Date().toISOString() };
-    textTracks.push(track);
-    renderTextTracks();
-    updateTextTrackCount();
-    showToast(`✏️ Text track added: "${text}"`, 'fa-font');
-    return track;
-  } catch (error) { console.error('Error adding text track:', error); showToast('❌ Error adding text track', 'fa-exclamation'); return null; }
+  const id = ++textTrackIdCounter;
+  const track = { id, text, font, styleCSS, bubbleCSS, animation };
+  textTracks.push(track);
+  renderTextTracks();
+  updateTextTrackCount();
+  return track;
 }
-
 function renderTextTracks() {
-  try {
-    const container = document.getElementById('textTrackList');
-    if (!container) return;
-    if (textTracks.length === 0) { container.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`; return; }
-    container.innerHTML = textTracks.map(track => `
-      <div class="text-track-item" data-track-id="${track.id}">
-        <div class="track-info"><i class="fas fa-font"></i><span>${track.text.substring(0, 30)}${track.text.length > 30 ? '...' : ''}</span></div>
-        <div class="track-actions">
-          <button class="edit-btn" onclick="editTextTrack(${track.id})"><i class="fas fa-edit"></i></button>
-          <button onclick="removeTextTrack(${track.id})"><i class="fas fa-times"></i></button>
-        </div>
+  const c = document.getElementById('textTrackList');
+  if (!c) return;
+  if (textTracks.length === 0) { c.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`; return; }
+  c.innerHTML = textTracks.map(t => `
+    <div class="text-track-item" data-track-id="${t.id}">
+      <div class="track-info"><i class="fas fa-font"></i><span>${(t.text || '').substring(0, 30)}</span></div>
+      <div class="track-actions">
+        <button onclick="removeTextTrack(${t.id})"><i class="fas fa-times"></i></button>
       </div>
-    `).join('');
-  } catch (error) { console.error('Error rendering text tracks:', error); }
+    </div>`).join('');
 }
-
 function updateTextTrackCount() {
-  try { const countEl = document.getElementById('textTrackCount'); if (countEl) countEl.textContent = `${textTracks.length} track${textTracks.length !== 1 ? 's' : ''}`; } catch (error) {}
+  const e = document.getElementById('textTrackCount');
+  if (e) e.textContent = `${textTracks.length} track${textTracks.length !== 1 ? 's' : ''}`;
 }
-
 function removeTextTrack(id) {
-  try {
-    const track = textTracks.find(t => t.id === id);
-    if (!track) return;
-    document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id) { if (el.parentNode) el.parentNode.removeChild(el); } });
-    textTracks = textTracks.filter(t => t.id !== id);
-    renderTextTracks();
-    updateTextTrackCount();
-    showToast('🗑️ Text track removed', 'fa-trash');
-  } catch (error) { console.error('Error removing text track:', error); showToast('❌ Error removing text track', 'fa-exclamation'); }
+  document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id && el.parentNode) el.parentNode.removeChild(el); });
+  textTracks = textTracks.filter(t => t.id !== id);
+  renderTextTracks(); updateTextTrackCount();
 }
 
-function editTextTrack(id) {
-  try {
-    const track = textTracks.find(t => t.id === id);
-    if (!track) return;
-    let targetEl = null;
-    document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id) targetEl = el; });
-    if (targetEl) {
-      openDrawer('templates');
-      document.getElementById('liveTextInput').value = track.text;
-      currentTextState.text = track.text;
-      currentTextState.font = track.font;
-      currentTextState.styleCSS = track.styleCSS;
-      currentTextState.bubbleCSS = track.bubbleCSS;
-      currentTextState.animation = track.animation;
-      updateLiveTextPreview();
-      if (targetEl.parentNode) targetEl.parentNode.removeChild(targetEl);
-      textTracks = textTracks.filter(t => t.id !== id);
-      renderTextTracks();
-      updateTextTrackCount();
-      showToast(`✏️ Editing: "${track.text}"`, 'fa-edit');
-    }
-  } catch (error) { console.error('Error editing text track:', error); showToast('❌ Error editing text track', 'fa-exclamation'); }
-}
-
-// AUDIO TRACKS
+// ============================================================
+// AUDIO TRACKS (basic)
+// ============================================================
 function addAudioTrack(name, url, type = 'track') {
-  try {
-    const id = ++trackIdCounter;
-    const audio = new Audio(url);
-    audio.loop = false;
-    audio.volume = 1.0;
-    const track = { id, name, audio, type, playing: false, url: url };
-    audioTracks.push(track);
-    renderAudioTracks();
-    updateTrackCount();
-    showToast(`🎵 "${name}" added`, 'fa-music');
-    return track;
-  } catch (error) { console.error('Error adding audio track:', error); showToast('❌ Error adding audio track', 'fa-exclamation'); return null; }
+  const id = ++trackIdCounter;
+  const audio = new Audio(url);
+  const track = { id, name, audio, type, playing: false, url };
+  audioTracks.push(track);
+  renderAudioTracks();
+  updateTrackCount();
+  showToast(`🎵 "${name}" added`, 'fa-music');
+  return track;
 }
-
 function renderAudioTracks() {
-  try {
-    const container = document.getElementById('multiTrackList');
-    if (!container) return;
-    if (audioTracks.length === 0) { container.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No audio tracks added yet</span></div>`; return; }
-    container.innerHTML = audioTracks.map(track => `
-      <div class="audio-track-item" data-track-id="${track.id}">
-        <div class="track-info"><i class="fas ${track.type === 'fx' ? 'fa-bolt' : 'fa-music'}"></i><span>${track.name}</span><div class="waveform-preview"></div></div>
-        <div class="track-actions">
-          <button class="play-btn" onclick="toggleTrackPlay(${track.id})"><i class="fas ${track.playing ? 'fa-pause' : 'fa-play'}"></i></button>
-          <button onclick="removeTrack(${track.id})"><i class="fas fa-times"></i></button>
-        </div>
+  const c = document.getElementById('multiTrackList');
+  if (!c) return;
+  if (audioTracks.length === 0) { c.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No audio tracks</span></div>`; return; }
+  c.innerHTML = audioTracks.map(t => `
+    <div class="audio-track-item" data-track-id="${t.id}">
+      <div class="track-info"><i class="fas fa-music"></i><span>${t.name}</span></div>
+      <div class="track-actions">
+        <button class="play-btn" onclick="toggleTrackPlay(${t.id})"><i class="fas ${t.playing ? 'fa-pause' : 'fa-play'}"></i></button>
+        <button onclick="removeTrack(${t.id})"><i class="fas fa-times"></i></button>
       </div>
-    `).join('');
-  } catch (error) { console.error('Error rendering audio tracks:', error); }
+    </div>`).join('');
 }
-
 function updateTrackCount() {
-  try { const countEl = document.getElementById('trackCount'); if (countEl) countEl.textContent = `${audioTracks.length} track${audioTracks.length !== 1 ? 's' : ''}`; } catch (error) {}
+  const e = document.getElementById('trackCount');
+  if (e) e.textContent = `${audioTracks.length} track${audioTracks.length !== 1 ? 's' : ''}`;
 }
-
 function toggleTrackPlay(id) {
-  try {
-    const track = audioTracks.find(t => t.id === id);
-    if (!track) return;
-    if (track.playing) { track.audio.pause(); track.playing = false; } else {
-      audioTracks.forEach(t => { if (t.id !== id && t.playing) { t.audio.pause(); t.playing = false; } });
-      track.audio.play().catch(e => console.log('Play error:', e));
-      track.playing = true;
-    }
-    renderAudioTracks();
-  } catch (error) { console.error('Error toggling track play:', error); showToast('❌ Error playing track', 'fa-exclamation'); }
+  const t = audioTracks.find(x => x.id === id); if (!t) return;
+  if (t.playing) { t.audio.pause(); t.playing = false; }
+  else { audioTracks.forEach(x => { if (x.id !== id && x.playing) { x.audio.pause(); x.playing = false; } }); t.audio.play().catch(()=>{}); t.playing = true; }
+  renderAudioTracks();
 }
-
 function removeTrack(id) {
-  try {
-    const track = audioTracks.find(t => t.id === id);
-    if (track) { track.audio.pause(); track.audio.src = ''; track.audio.load(); if (track.url && track.url.startsWith('blob:')) URL.revokeObjectURL(track.url); }
-    audioTracks = audioTracks.filter(t => t.id !== id);
-    renderAudioTracks();
-    updateTrackCount();
-    showToast('🗑️ Track removed', 'fa-trash');
-  } catch (error) { console.error('Error removing track:', error); showToast('❌ Error removing track', 'fa-exclamation'); }
+  const t = audioTracks.find(x => x.id === id);
+  if (t) { t.audio.pause(); t.audio.src = ''; if (t.url && t.url.startsWith('blob:')) URL.revokeObjectURL(t.url); }
+  audioTracks = audioTracks.filter(x => x.id !== id);
+  renderAudioTracks(); updateTrackCount();
 }
 
-function playAllTracks() { audioTracks.forEach(track => { track.audio.currentTime = 0; track.audio.play().catch(e => console.log('Play error:', e)); track.playing = true; }); renderAudioTracks(); }
-function pauseAllTracks() { audioTracks.forEach(track => { track.audio.pause(); track.playing = false; }); renderAudioTracks(); }
-
+// ============================================================
 // MEDIA PLAYER
+// ============================================================
 const picker = document.getElementById('video-file-picker');
 const player = document.getElementById('studio-player');
 const imageEl = document.getElementById('studio-image');
@@ -853,919 +803,315 @@ const timeDisplay = document.getElementById('timeDisplay');
 const ratioBox = document.getElementById('video-ratio-box');
 
 picker.addEventListener('change', function(e) {
-  try {
-    const file = e.target.files[0];
-    if (!file) return;
-    timelineLabel.innerText = file.name;
-    placeholder.classList.add('hidden');
-    if (file.type.startsWith('video/')) {
-      imageEl.classList.add('hidden');
-      player.classList.remove('hidden');
-      const url = URL.createObjectURL(file);
-      player.src = url;
-      player.muted = false;
-      player.play().catch(e => console.log('Auto-play error:', e));
-      playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
-      setTimeout(syncCanvasSize, 100);
-    } else {
-      player.classList.add('hidden');
-      imageEl.classList.remove('hidden');
-      imageEl.src = URL.createObjectURL(file);
-      timeDisplay.innerText = "00:00 / 00:05";
-      setTimeout(syncCanvasSize, 100);
-    }
-  } catch (error) { console.error('Error loading media:', error); showToast('❌ Error loading media', 'fa-exclamation'); }
+  const file = e.target.files[0]; if (!file) return;
+  timelineLabel.innerText = file.name;
+  placeholder.classList.add('hidden');
+  if (file.type.startsWith('video/')) {
+    imageEl.classList.add('hidden');
+    player.classList.remove('hidden');
+    player.src = URL.createObjectURL(file);
+    player.play().catch(()=>{});
+    playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+    // دوبارہ کیپشن بنانے پر پرانا ہٹا دیں
+    autoCaptionSegments = [];
+    const ov = document.getElementById('autoCaptionOverlay');
+    if (ov) ov.remove();
+  } else {
+    player.classList.add('hidden');
+    imageEl.classList.remove('hidden');
+    imageEl.src = URL.createObjectURL(file);
+    timeDisplay.innerText = "00:00 / 00:05";
+  }
 });
 
 function togglePlay() {
-  try {
-    if (player.src && !player.classList.contains('hidden')) {
-      if (player.paused) { player.play().catch(e => console.log('Play error:', e)); audioTracks.forEach(t => { if (t.playing) t.audio.play().catch(e => console.log('Audio play error:', e)); }); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; } 
-      else { player.pause(); audioTracks.forEach(t => { if (t.playing) t.audio.pause(); }); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
-    } else {
-      if (audioTracks.length > 0) {
-        const anyPlaying = audioTracks.some(t => t.playing);
-        if (anyPlaying) { pauseAllTracks(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; } 
-        else { playAllTracks(); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
-      }
-    }
-  } catch (error) { console.error('Error toggling play:', error); }
+  if (player.src && !player.classList.contains('hidden')) {
+    if (player.paused) { player.play().catch(()=>{}); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
+    else { player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
+  }
 }
-
-function formatTime(secs) { try { const m = Math.floor(secs / 60).toString().padStart(2, '0'); const s = Math.floor(secs % 60).toString().padStart(2, '0'); return `${m}:${s}`; } catch (error) { return '00:00'; } }
-player.addEventListener('timeupdate', () => { try { timeDisplay.innerText = `${formatTime(player.currentTime)} / ${formatTime(player.duration || 0)}`; } catch (error) {} });
+function formatTime(s) { const m = Math.floor(s/60).toString().padStart(2,'0'); const x = Math.floor(s%60).toString().padStart(2,'0'); return `${m}:${x}`; }
+player.addEventListener('timeupdate', () => { timeDisplay.innerText = `${formatTime(player.currentTime)} / ${formatTime(player.duration || 0)}`; });
 
 function handleAudioExtracted(input) {
-  try {
-    const file = input.files[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    const trackName = file.name.replace(/\.[^/.]+$/, '') || 'Extracted Audio';
-    addAudioTrack(trackName, url, 'track');
-    showSubmenu('audio');
-    input.value = '';
-  } catch (error) { console.error('Error extracting audio:', error); showToast('❌ Error extracting audio', 'fa-exclamation'); }
+  const file = input.files[0]; if (!file) return;
+  const url = URL.createObjectURL(file);
+  addAudioTrack(file.name.replace(/\.[^/.]+$/, '') || 'Audio', url, 'track');
+  showSubmenu('audio');
+  input.value = '';
 }
-
-// PIXABAY
-function openPixabayModal(mode) {
-  try {
-    document.getElementById('pixabayModal').classList.remove('hidden');
-    document.getElementById('pixabayMode').value = mode;
-    document.getElementById('pixabayResults').classList.add('hidden');
-    document.getElementById('pixabayResults').innerHTML = '';
-    if (mode === 'sounds') { document.getElementById('pixabayTitle').innerText = "Pixabay Free Music"; document.getElementById('pixabayIcon').className = "fas fa-music text-purple-400"; } 
-    else { document.getElementById('pixabayTitle').innerText = "Pixabay Sound Effects"; document.getElementById('pixabayIcon').className = "fas fa-bolt text-yellow-400"; }
-  } catch (error) { console.error('Error opening Pixabay modal:', error); }
-}
-function closePixabayModal() { try { document.getElementById('pixabayModal').classList.add('hidden'); } catch (error) {} }
-
-async function searchPixabayAudio() {
-  try {
-    const query = document.getElementById('pixabayQuery').value.trim() || 'music';
-    const mode = document.getElementById('pixabayMode').value;
-    const resultsDiv = document.getElementById('pixabayResults');
-    resultsDiv.classList.remove('hidden');
-    resultsDiv.innerHTML = '<p class="text-zinc-500 text-xs text-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</p>';
-    try {
-      let url = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&category=${mode === 'sounds' ? 'music' : 'sound-effects'}&per_page=20`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      resultsDiv.innerHTML = '';
-      let tracks = [];
-      if (data.hits && data.hits.length > 0) {
-        tracks = data.hits.map(hit => ({ title: hit.tags || hit.pageTitle || 'Untitled Track', url: hit.audio || hit.previewURL || hit.webformatURL, hasAudio: !!hit.audio }));
-      } else {
-        const fallbackNames = ['Cinematic Lofi', 'Tech Beat', 'Ambient Chill', 'Vlog Music', 'HipHop Groove', 'Electronic Pulse'];
-        const fallbackUrls = ['https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3'];
-        const shuffled = fallbackNames.sort(() => Math.random() - 0.5);
-        tracks = shuffled.slice(0, 6).map((name, i) => ({ title: `${name} ${query}`, url: fallbackUrls[i % fallbackUrls.length], hasAudio: true }));
-      }
-      if (tracks.length === 0) {
-        tracks = [{ title: 'Vlog HipHop Track', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', hasAudio: true },
-                  { title: 'Lo-Fi Chill Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', hasAudio: true },
-                  { title: 'Cinematic Ambient', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', hasAudio: true }];
-      }
-      tracks.forEach(track => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between p-2.5 bg-[#1b1b22] border border-zinc-800 rounded-xl mb-1.5';
-        row.innerHTML = `<span class="text-xs font-medium text-zinc-200 truncate max-w-[200px]">${track.title || 'Untitled'}</span><button class="bg-purple-600 text-[10px] font-bold text-white px-3 py-1.5 rounded-lg hover:bg-purple-500 transition">Apply</button>`;
-        row.querySelector('button').onclick = () => {
-          try { const trackType = mode === 'sound-fx' ? 'fx' : 'track'; const audioUrl = track.url || getFallbackAudio(mode); const trackName = track.title || (mode === 'sound-fx' ? 'Sound FX' : 'Music Track'); addAudioTrack(trackName, audioUrl, trackType); closePixabayModal(); showSubmenu('audio'); } 
-          catch (error) { console.error('Error applying track:', error); showToast('❌ Error applying track', 'fa-exclamation'); }
-        };
-        resultsDiv.appendChild(row);
-      });
-    } catch (error) {
-      console.error('Pixabay API error:', error);
-      resultsDiv.innerHTML = `<p class="text-zinc-400 text-xs text-center py-4"><i class="fas fa-wifi text-2xl block mb-2 text-zinc-600"></i>Showing fallback tracks...</p>`;
-      const fallbackTracks = mode === 'sounds' ? [{ title: 'Vlog HipHop Track', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },{ title: 'Lo-Fi Chill Beats', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },{ title: 'Cinematic Ambient', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }] : [{ title: 'Laser Whoosh FX', url: 'https://actions.google.com/sounds/v1/science_fiction/alien_creature_glitch.ogg' },{ title: 'Classic Pop Sound', url: 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_pop.ogg' },{ title: 'Retro Sparkle Zap', url: 'https://actions.google.com/sounds/v1/video_games/retro_video_game_boing.ogg' }];
-      fallbackTracks.forEach(track => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between p-2.5 bg-[#1b1b22] border border-zinc-800 rounded-xl mb-1.5';
-        row.innerHTML = `<span class="text-xs font-medium text-zinc-200 truncate max-w-[200px]">${track.title}</span><button class="bg-purple-600 text-[10px] font-bold text-white px-3 py-1.5 rounded-lg hover:bg-purple-500 transition">Apply</button>`;
-        row.querySelector('button').onclick = () => {
-          try { const trackType = mode === 'sound-fx' ? 'fx' : 'track'; addAudioTrack(track.title, track.url, trackType); closePixabayModal(); showSubmenu('audio'); } 
-          catch (error) { console.error('Error applying fallback track:', error); }
-        };
-        resultsDiv.appendChild(row);
-      });
-    }
-  } catch (error) { console.error('Search error:', error); showToast('❌ Search failed', 'fa-exclamation'); }
-}
-
-function getFallbackAudio(mode) {
-  const FX_URLS = { 'explosion': 'https://actions.google.com/sounds/v1/science_fiction/explosion.ogg', 'laser': 'https://actions.google.com/sounds/v1/science_fiction/laser_single.ogg', 'pop': 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg', 'zap': 'https://actions.google.com/sounds/v1/science_fiction/zap.ogg', 'click': 'https://actions.google.com/sounds/v1/interface/button_click.ogg', 'whoosh': 'https://actions.google.com/sounds/v1/science_fiction/whoosh.ogg', 'beep': 'https://actions.google.com/sounds/v1/interface/beep.ogg', 'glitch': 'https://actions.google.com/sounds/v1/science_fiction/glitch.ogg', 'victory': 'https://actions.google.com/sounds/v1/video_games/retro_video_game_win.ogg', 'coin': 'https://actions.google.com/sounds/v1/video_games/retro_video_game_coin.ogg' };
-  if (mode === 'sound-fx') { const keys = Object.keys(FX_URLS); return FX_URLS[keys[Math.floor(Math.random() * keys.length)]]; }
-  const urls = ['https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'];
-  return urls[Math.floor(Math.random() * urls.length)];
-}
-
-// MICROPHONE
-async function toggleVoiceRecording() {
-  try {
-    const recordText = document.getElementById('record-text-status');
-    const micIcon = document.getElementById('mic-icon-status');
-    if (!isRecording) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        recordedChunks = [];
-        mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-        mediaRecorder.onstop = () => {
-          try { const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' }); const url = URL.createObjectURL(audioBlob); addAudioTrack('Live Voiceover Recording', url, 'track'); showSubmenu('audio'); showToast('🎙️ Voiceover recorded!', 'fa-microphone'); } 
-          catch (error) { console.error('Error saving recording:', error); showToast('❌ Error saving recording', 'fa-exclamation'); }
-        };
-        mediaRecorder.start();
-        isRecording = true;
-        recordText.innerText = "Stop Rec";
-        micIcon.className = "fas fa-stop text-red-500 animate-pulse";
-        showToast('🔴 Recording...', 'fa-circle');
-      } catch (err) { alert("Microphone Error: " + err.message); showToast('❌ Microphone access denied', 'fa-exclamation'); }
-    } else {
-      if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); isRecording = false; recordText.innerText = "Record"; micIcon.className = "fas fa-microphone text-red-500"; showToast('⏹️ Recording stopped', 'fa-stop'); }
-    }
-  } catch (error) { console.error('Recording error:', error); showToast('❌ Recording error', 'fa-exclamation'); }
-}
-
-// TEXT TO AUDIO
-function openTextToAudioDrawer() {
-  try {
-    const drawer = document.getElementById('editorDrawer');
-    const grid = document.getElementById('drawerDynamicGrid');
-    document.getElementById('drawerTitle').innerText = "TEXT TO AUDIO (REALISTIC VOICES)";
-    grid.className = "space-y-4";
-    grid.innerHTML = `
-      <textarea id="ai-text-input" placeholder="Type your script here..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white outline-none h-24 focus:border-blue-500">Hello, this is a voice demo from Dravoo Pro Studio.</textarea>
-      <div class="grid grid-cols-4 gap-2">
-        <div class="voice-option ${selectedVoice === 'Adam' ? 'selected' : ''}" onclick="selectVoice('Adam')"><span class="voice-icon">🧔</span><div class="voice-name">Adam</div><div class="voice-desc">Deep Male</div></div>
-        <div class="voice-option ${selectedVoice === 'Lucia' ? 'selected' : ''}" onclick="selectVoice('Lucia')"><span class="voice-icon">👩</span><div class="voice-name">Lucia</div><div class="voice-desc">Warm Female</div></div>
-        <div class="voice-option ${selectedVoice === 'James' ? 'selected' : ''}" onclick="selectVoice('James')"><span class="voice-icon">👨</span><div class="voice-name">James</div><div class="voice-desc">British Male</div></div>
-        <div class="voice-option ${selectedVoice === 'Sofia' ? 'selected' : ''}" onclick="selectVoice('Sofia')"><span class="voice-icon">👩</span><div class="voice-name">Sofia</div><div class="voice-desc">Spanish Female</div></div>
-      </div>
-      <button onclick="generateSpeech()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90 text-white text-sm font-bold py-3 rounded-xl transition"><i class="fas fa-play mr-2"></i>Generate Voice Audio</button>
-      <div class="text-[10px] text-zinc-500 text-center"><i class="fas fa-info-circle mr-1"></i>Click generate to hear the selected voice</div>
-    `;
-    drawer.classList.add('open');
-    if (window.speechSynthesis) speechSynthesis.getVoices();
-  } catch (error) { console.error('Error opening TTS drawer:', error); showToast('❌ Error opening TTS', 'fa-exclamation'); }
-}
-
-function selectVoice(voice) {
-  try { selectedVoice = voice; document.querySelectorAll('.voice-option').forEach(el => el.classList.remove('selected')); document.querySelectorAll('.voice-option').forEach(el => { if (el.textContent.includes(voice)) el.classList.add('selected'); }); } 
-  catch (error) { console.error('Error selecting voice:', error); }
-}
-
-function generateSpeech() {
-  try {
-    const text = document.getElementById('ai-text-input').value.trim();
-    if (!text) { alert('Please enter some text to convert to speech.'); return; }
-    const synth = window.speechSynthesis;
-    if (!synth) { showToast('❌ Speech synthesis not supported', 'fa-exclamation'); return; }
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voiceConfig = { 'Adam': { pitch: 0.7, rate: 0.85, lang: 'en-US' }, 'Lucia': { pitch: 1.25, rate: 0.9, lang: 'en-US' }, 'James': { pitch: 0.85, rate: 0.8, lang: 'en-GB' }, 'Sofia': { pitch: 1.15, rate: 0.85, lang: 'es-ES' } };
-    const config = voiceConfig[selectedVoice] || voiceConfig['Adam'];
-    utterance.pitch = config.pitch;
-    utterance.rate = config.rate;
-    utterance.lang = config.lang;
-    const voices = synth.getVoices();
-    let matchedVoice = null;
-    for (const v of voices) {
-      if (v.lang.startsWith(config.lang)) {
-        if (selectedVoice === 'Adam' || selectedVoice === 'James') { if (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david')) { matchedVoice = v; break; } } 
-        else { if (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha')) { matchedVoice = v; break; } }
-      }
-    }
-    if (!matchedVoice) { for (const v of voices) { if (v.lang.startsWith(config.lang)) { matchedVoice = v; break; } } }
-    if (!matchedVoice && voices.length > 0) matchedVoice = voices[0];
-    if (matchedVoice) utterance.voice = matchedVoice;
-    const trackName = `${selectedVoice}: "${text.substring(0, 25)}${text.length > 25 ? '...' : ''}"`;
-    utterance.onstart = () => { try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('🔊 Voice generated!', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
-    utterance.onerror = (e) => { console.error('Speech error:', e); try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('⚠️ Voice generated (simulated)', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
-    synth.speak(utterance);
-  } catch (error) { console.error('Speech generation error:', error); showToast('❌ Speech generation failed', 'fa-exclamation'); }
-}
-
-// BRAND MUSIC
-function openBrandMusicDrawer() {
-  try {
-    const drawer = document.getElementById('editorDrawer');
-    const grid = document.getElementById('drawerDynamicGrid');
-    document.getElementById('drawerTitle').innerText = "BRAND MUSIC (50 Tracks + Search)";
-    grid.className = "space-y-3 max-h-[40vh] overflow-y-auto";
-    grid.innerHTML = `
-      <div class="flex gap-2"><input type="text" id="brandSearchInput" placeholder="Search Pixabay music..." class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-blue-500" /><button onclick="searchBrandMusic()" class="bg-blue-600 hover:bg-blue-500 px-4 rounded-xl text-sm text-white transition"><i class="fas fa-search"></i></button></div>
-      <div id="brandResults" class="space-y-1.5 max-h-[30vh] overflow-y-auto"></div>
-    `;
-    loadBrandTracks();
-    drawer.classList.add('open');
-  } catch (error) { console.error('Error opening brand music drawer:', error); showToast('❌ Error opening brand music', 'fa-exclamation'); }
-}
-
-function loadBrandTracks() {
-  try {
-    const container = document.getElementById('brandResults');
-    if (!container) return;
-    container.innerHTML = '';
-    const styles = ['Vlog Vibe', 'Tech Startup', 'Cinematic Epic', 'LoFi Dream', 'Cyber Synth', 'HipHop Core', 'Ambient', 'Trap', 'House', 'RnB'];
-    const urls = ['https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3','https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'];
-    for (let i = 1; i <= 50; i++) {
-      const styleIndex = (i - 1) % styles.length;
-      const urlIndex = (i - 1) % urls.length;
-      const trackName = `${styles[styleIndex]} #${i}`;
-      const div = document.createElement('div');
-      div.className = 'flex items-center justify-between p-2 bg-[#18181c] border border-zinc-800 rounded-xl hover:border-blue-500 transition';
-      div.innerHTML = `<div class="flex items-center gap-2 truncate"><i class="fas fa-bookmark text-amber-400 text-xs"></i><span class="text-xs font-mono text-zinc-300 truncate">${trackName}</span></div><button class="bg-blue-600 text-[10px] text-white px-2.5 py-1 rounded-lg hover:bg-blue-500 transition">Apply</button>`;
-      div.querySelector('button').onclick = () => { try { addAudioTrack(trackName, urls[urlIndex], 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying brand track:', error); showToast('❌ Error applying track', 'fa-exclamation'); } };
-      container.appendChild(div);
-    }
-  } catch (error) { console.error('Error loading brand tracks:', error); showToast('❌ Error loading brand tracks', 'fa-exclamation'); }
-}
-
-async function searchBrandMusic() {
-  try {
-    const query = document.getElementById('brandSearchInput').value.trim();
-    if (!query) { loadBrandTracks(); return; }
-    const container = document.getElementById('brandResults');
-    container.innerHTML = '<p class="text-zinc-500 text-xs text-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</p>';
-    try {
-      const response = await fetch(`https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&category=music&per_page=20`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      container.innerHTML = '';
-      if (data.hits && data.hits.length > 0) {
-        data.hits.forEach(hit => {
-          const div = document.createElement('div');
-          div.className = 'flex items-center justify-between p-2 bg-[#18181c] border border-zinc-800 rounded-xl hover:border-blue-500 transition';
-          div.innerHTML = `<div class="flex items-center gap-2 truncate"><i class="fas fa-search text-blue-400 text-xs"></i><span class="text-xs font-mono text-zinc-300 truncate">${hit.tags || 'Untitled'}</span></div><button class="bg-blue-600 text-[10px] text-white px-2.5 py-1 rounded-lg hover:bg-blue-500 transition">Apply</button>`;
-          div.querySelector('button').onclick = () => { try { addAudioTrack(hit.tags || 'Pixabay Track', hit.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying track:', error); showToast('❌ Error applying track', 'fa-exclamation'); } };
-          container.appendChild(div);
-        });
-      } else { container.innerHTML = '<p class="text-zinc-400 text-xs text-center py-4">No results. Showing brand tracks.</p>'; loadBrandTracks(); }
-    } catch (error) { console.error('Search error:', error); container.innerHTML = '<p class="text-red-400 text-xs text-center py-4">Search error. Showing default tracks.</p>'; setTimeout(loadBrandTracks, 500); }
-  } catch (error) { console.error('Search error:', error); showToast('❌ Search failed', 'fa-exclamation'); }
-}
-
-// EXPORT
-function showExportDialog() { try { document.getElementById('exportDialog').classList.remove('hidden'); } catch (error) {} }
-function closeExportDialog() { try { document.getElementById('exportDialog').classList.add('hidden'); } catch (error) {} }
-
-function exportProject(type) {
-  try {
-    const trackCount = audioTracks.length;
-    let message = `📦 Exporting ${type.toUpperCase()}...\nAudio tracks included: ${trackCount}\n`;
-    if (trackCount > 0) { message += '\nTracks:\n'; audioTracks.forEach((t, i) => { message += `  ${i+1}. ${t.name}\n`; }); } else { message += '\n⚠️ No audio tracks in project'; }
-    message += `\n\n✅ Export complete!`;
-    if (type === 'project') {
-      const projectData = { version: '1.0', exportedAt: new Date().toISOString(), audioTracks: audioTracks.map(t => ({ name: t.name, type: t.type })), textTracks: textTracks, settings: { aspectRatio: ratioBox.style.aspectRatio || '9/16' } };
-      const blob = new Blob([JSON.stringify(projectData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `dravoo-project-${new Date().toISOString().slice(0,10)}.dravoo`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } else { alert(message); }
-    closeExportDialog();
-    showToast(`📤 Exporting ${type}...`, 'fa-download');
-  } catch (error) { console.error('Export error:', error); showToast('❌ Export failed', 'fa-exclamation'); }
-}
-
-function runCopyrightAI() { try { showToast('🔍 AI scanning audio tracks...', 'fa-shield'); setTimeout(() => { const trackNames = audioTracks.map(t => t.name).join(', ') || 'No tracks'; alert(`✅ Copyright Report:\n• Tracks Analyzed: ${audioTracks.length}\n• ${trackNames}\n• Status: 100% Unique\n• Distribution: Authorized`); showToast('✅ Copyright check complete!', 'fa-check-circle'); }, 800); } catch (error) { console.error('Copyright check error:', error); showToast('❌ Copyright check failed', 'fa-exclamation'); } }
-
-function generateAIImage() { try { showToast('🎨 Generating AI image...', 'fa-wand-magic-sparkles'); setTimeout(() => { showToast('✅ AI Image generated! (Demo)', 'fa-check-circle'); alert('🎨 AI Image generated!\n\nThis is a demo. In production, this would connect to an AI image generation API.'); }, 1500); } catch (error) { console.error('AI image generation error:', error); showToast('❌ AI image generation failed', 'fa-exclamation'); } }
-
-function generateAIVideo() { try { showToast('🎬 Generating AI video...', 'fa-video'); setTimeout(() => { showToast('✅ AI Video generated! (Demo)', 'fa-check-circle'); alert('🎬 AI Video generated!\n\nThis is a demo. In production, this would connect to an AI video generation API.'); }, 2000); } catch (error) { console.error('AI video generation error:', error); showToast('❌ AI video generation failed', 'fa-exclamation'); } }
-
-function activateAvatar(name) { try { showToast(`👤 ${name} avatar activated!`, 'fa-user-astronaut'); alert(`🤖 ${name} Avatar Activated!\n\nThis is a demo. In production, this would connect to an AI avatar service.`); } catch (error) { console.error('Avatar activation error:', error); showToast('❌ Avatar activation failed', 'fa-exclamation'); } }
-
-// NAVIGATION
-function showSubmenu(id) {
-  try {
-    backToMaster();
-    document.getElementById('masterBottomMenu').classList.add('hidden');
-    const sub = document.getElementById(`submenu-${id}`);
-    if (sub) { sub.classList.remove('hidden'); if (id === 'filters') generateFilters(); if (id === 'caption') { updateCaptionPreview(); } }
-  } catch (error) { console.error('Error showing submenu:', error); }
-}
-function backToMaster() {
-  try {
-    const submenus = ['edit', 'audio', 'text', 'effects', 'overlay', 'caption', 'filters', 'adjust', 'generate-media', 'ai-avatar', 'aspect-ratio', 'background'];
-    submenus.forEach(s => { const el = document.getElementById(`submenu-${s}`); if (el) el.classList.add('hidden'); });
-    document.getElementById('masterBottomMenu').classList.remove('hidden');
-  } catch (error) { console.error('Error going back to master:', error); }
-}
-function triggerTool(name) { try { alert(`"${name}" layer triggered.`); showToast(`⚡ ${name} triggered`, 'fa-bolt'); } catch (error) { console.error('Error triggering tool:', error); showToast('❌ Tool trigger failed', 'fa-exclamation'); } }
 
 function handleOverlaySelected(input) {
-  try {
-    const file = input.files[0];
-    if (file) { const overlayImg = document.getElementById('overlay-display-img'); overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); showToast('📁 Overlay added!', 'fa-layer-group'); }
-    input.value = '';
-  } catch (error) { console.error('Error handling overlay:', error); showToast('❌ Error adding overlay', 'fa-exclamation'); }
+  const file = input.files[0]; if (!file) return;
+  const overlayImg = document.getElementById('overlay-display-img');
+  overlayImg.src = URL.createObjectURL(file);
+  overlayImg.classList.remove('hidden');
+  showToast('📁 Overlay added!', 'fa-layer-group');
+  input.value = '';
 }
 
-function applyCSSFilter(filterValue) { try { player.style.filter = filterValue; imageEl.style.filter = filterValue; } catch (error) { console.error('Error applying filter:', error); } }
-function adjustBrightness(val) { try { applyCSSFilter(`brightness(${val}%)`); } catch (error) { console.error('Error adjusting brightness:', error); } }
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSubmenu(id) {
+  backToMaster();
+  document.getElementById('masterBottomMenu').classList.add('hidden');
+  const sub = document.getElementById(`submenu-${id}`);
+  if (sub) sub.classList.remove('hidden');
+  if (id === 'filters') generateFilters();
+  if (id === 'caption') updateCaptionPreview();
+}
+function backToMaster() {
+  ['edit','audio','text','effects','overlay','caption','filters','adjust','generate-media','ai-avatar','aspect-ratio','background']
+    .forEach(s => { const el = document.getElementById(`submenu-${s}`); if (el) el.classList.add('hidden'); });
+  document.getElementById('masterBottomMenu').classList.remove('hidden');
+}
+function triggerTool(name) { showToast(`⚡ ${name}`, 'fa-bolt'); }
 
-function changeRatio(ratioStr) {
-  try {
-    if (ratioStr === '9/16') { ratioBox.style.aspectRatio = '9/16'; ratioBox.style.maxWidth = '280px'; } 
-    else if (ratioStr === '16/9') { ratioBox.style.aspectRatio = '16/9'; ratioBox.style.maxWidth = '100%'; } 
-    else if (ratioStr === '1/1') { ratioBox.style.aspectRatio = '1/1'; ratioBox.style.maxWidth = '360px'; } 
-    else if (ratioStr === '4/3') { ratioBox.style.aspectRatio = '4/3'; ratioBox.style.maxWidth = '400px'; }
-    setTimeout(syncCanvasSize, 200);
-    showToast(`📐 Ratio: ${ratioStr}`, 'fa-crop-simple');
-  } catch (error) { console.error('Error changing ratio:', error); showToast('❌ Error changing ratio', 'fa-exclamation'); }
+function applyCSSFilter(f) { player.style.filter = f; imageEl.style.filter = f; }
+function adjustBrightness(v) { applyCSSFilter(`brightness(${v}%)`); }
+function changeRatio(r) {
+  if (r === '9/16') { ratioBox.style.aspectRatio = '9/16'; ratioBox.style.maxWidth = '280px'; }
+  else if (r === '16/9') { ratioBox.style.aspectRatio = '16/9'; ratioBox.style.maxWidth = '100%'; }
+  else if (r === '1/1') { ratioBox.style.aspectRatio = '1/1'; ratioBox.style.maxWidth = '360px'; }
+  else if (r === '4/3') { ratioBox.style.aspectRatio = '4/3'; ratioBox.style.maxWidth = '400px'; }
+  showToast(`📐 ${r}`, 'fa-crop-simple');
 }
 
 function generateFilters() {
-  try {
-    const container = document.getElementById('filtersContainer');
-    if (container.children.length > 0) return;
-    const filterClasses = [{name:'Warm',css:'sepia(0.4) saturate(1.4)'},{name:'Cyber',css:'hue-rotate(90deg) saturate(1.8)'},{name:'Vintage',css:'grayscale(0.5) contrast(1.2)'},{name:'Neon',css:'brightness(1.2) saturate(2) hue-rotate(15deg)'},{name:'Cool',css:'brightness(0.9) saturate(1.3) hue-rotate(5deg)'},{name:'Dramatic',css:'contrast(1.4) saturate(1.2) brightness(0.8)'},{name:'Soft',css:'brightness(1.1) saturate(0.8)'},{name:'Noir',css:'grayscale(0.8) contrast(1.3) brightness(0.7)'},{name:'Retro',css:'sepia(0.6) saturate(1.2) contrast(1.1)'},{name:'Dream',css:'brightness(1.15) saturate(0.7) contrast(0.9)'},{name:'Vivid',css:'saturate(1.8) contrast(1.15) brightness(1.05)'},{name:'Muted',css:'saturate(0.5) brightness(0.95)'},{name:'Sunset',css:'sepia(0.3) saturate(1.5) hue-rotate(10deg)'},{name:'Forest',css:'hue-rotate(-10deg) saturate(1.4) brightness(0.9)'},{name:'Ocean',css:'hue-rotate(5deg) saturate(1.3) brightness(0.95)'},{name:'Golden',css:'sepia(0.5) saturate(1.6) brightness(1.1)'},{name:'Silver',css:'grayscale(0.3) saturate(0.7) brightness(1.05)'},{name:'Pastel',css:'saturate(0.6) brightness(1.1) contrast(0.95)'},{name:'Bold',css:'contrast(1.5) saturate(1.3) brightness(0.9)'},{name:'Tinted',css:'sepia(0.2) hue-rotate(20deg) saturate(1.2)'}];
-    for (let i = 0; i < 50; i++) {
-      const filter = filterClasses[i % filterClasses.length];
-      const div = document.createElement('div');
-      div.className = "flex-shrink-0 w-16 h-16 bg-zinc-800 rounded-lg flex flex-col justify-end p-1 text-[9px] text-zinc-300 font-bold cursor-pointer border border-zinc-700 transition hover:border-blue-500";
-      div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i+100}')`;
-      div.style.backgroundSize = 'cover';
-      div.innerText = filter.name + ` #${i+1}`;
-      div.onclick = () => { try { applyCSSFilter(filter.css); showToast(`🎨 ${filter.name} filter applied`, 'fa-filter'); } catch (error) { console.error('Error applying filter:', error); } };
-      container.appendChild(div);
-    }
-  } catch (error) { console.error('Error generating filters:', error); }
+  const c = document.getElementById('filtersContainer');
+  if (!c || c.children.length > 0) return;
+  const filters = [
+    {name:'Warm',css:'sepia(0.4) saturate(1.4)'},{name:'Cyber',css:'hue-rotate(90deg) saturate(1.8)'},
+    {name:'Vintage',css:'grayscale(0.5) contrast(1.2)'},{name:'Neon',css:'brightness(1.2) saturate(2)'},
+    {name:'Cool',css:'brightness(0.9) saturate(1.3)'},{name:'Dramatic',css:'contrast(1.4) brightness(0.8)'},
+    {name:'Noir',css:'grayscale(0.8) contrast(1.3)'},{name:'Vivid',css:'saturate(1.8) contrast(1.15)'}
+  ];
+  filters.forEach(f => {
+    const d = document.createElement('div');
+    d.className = "flex-shrink-0 w-20 h-20 bg-zinc-800 rounded-lg flex flex-col justify-end p-1 text-[9px] text-white font-bold cursor-pointer border border-zinc-700";
+    d.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/80?random=${Math.random()}')`;
+    d.style.backgroundSize = 'cover';
+    d.innerText = f.name;
+    d.onclick = () => { applyCSSFilter(f.css); showToast(`🎨 ${f.name}`, 'fa-filter'); };
+    c.appendChild(d);
+  });
 }
 
-// TEXT ELEMENT
+// ============================================================
+// TEXT ELEMENT (basic — only template style)
+// ============================================================
 function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCSS = '', animation = '') {
-  try {
-    const container = document.getElementById('video-ratio-box');
-    const elementsLayer = document.getElementById('canvas-elements-layer');
-    const wrapper = document.createElement('div');
-    wrapper.className = 'canvas-text-item';
-    const id = ++textElementCounter;
-    wrapper.id = `text-${id}`;
-    const randomX = 20 + Math.random() * 60;
-    const randomY = 20 + Math.random() * 60;
-    wrapper.style.left = randomX + '%';
-    wrapper.style.top = randomY + '%';
-    wrapper.style.transform = 'translate(-50%, -50%)';
-    const textSpan = document.createElement('span');
-    textSpan.className = 'text-content';
-    textSpan.innerText = text || 'Enter Text';
-    textSpan.style.cssText = `${styleCSS}; font-family: '${font}'; ${bubbleCSS}; opacity: 0.95;`;
-    if (animation) { let animCSS = getAnimationCSS(animation); textSpan.style.animation = animCSS; textSpan.style.opacity = '0.95'; }
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.innerHTML = '×';
-    deleteBtn.title = 'Delete text';
-    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteTextElement(wrapper.id); };
-    wrapper.appendChild(textSpan);
-    wrapper.appendChild(deleteBtn);
-    elementsLayer.appendChild(wrapper);
-    wrapper.style.pointerEvents = 'auto';
-    setupDrag(wrapper);
-    const track = addTextTrack(text, font, styleCSS, bubbleCSS, animation);
-    if (track) wrapper.setAttribute('data-track-id', track.id);
-    if (animation) textSpan.style.animationPlayState = 'running';
-    showToast(`✨ Text added with ${animation || 'no'} animation`, 'fa-font');
-    return wrapper;
-  } catch (error) { console.error('Error creating text element:', error); showToast('❌ Error adding text', 'fa-exclamation'); return null; }
+  const layer = document.getElementById('canvas-elements-layer');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'canvas-text-item';
+  wrapper.id = `text-${++textElementCounter}`;
+  wrapper.style.left = (20 + Math.random() * 60) + '%';
+  wrapper.style.top = (20 + Math.random() * 60) + '%';
+  wrapper.style.transform = 'translate(-50%, -50%)';
+
+  const span = document.createElement('span');
+  span.className = 'text-content';
+  span.innerText = text;
+  span.style.cssText = `${styleCSS}; font-family: '${font}'; ${bubbleCSS}; opacity: 0.95;`;
+
+  const del = document.createElement('button');
+  del.className = 'delete-btn';
+  del.innerHTML = '×';
+  del.onclick = (e) => { e.stopPropagation(); if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper); };
+
+  wrapper.appendChild(span);
+  wrapper.appendChild(del);
+  layer.appendChild(wrapper);
+  setupDrag(wrapper);
+  addTextTrack(text, font, styleCSS, bubbleCSS, animation);
+  return wrapper;
 }
 
-function getAnimationCSS(animation) {
-  const animMap = {
-    'Fade In': 'textFadeIn 0.6s ease-out forwards', 'Bounce': 'textBounce 0.6s ease-in-out infinite', 'Slide In': 'textSlideIn 0.5s ease-out forwards', 'Glow Pulse': 'textGlow 1.5s ease-in-out infinite', 'Rotate': 'textRotate 0.3s ease-in-out infinite alternate', 'Pulse': 'textPulse 1s ease-in-out infinite', 'Wave': 'textWave 0.5s ease-in-out infinite', 'Shake': 'textShake 0.3s ease-in-out infinite', 'Flip': 'textFlip 0.6s ease-in-out forwards', 'Zoom In': 'textZoom 0.4s ease-out forwards', 'Neon Pulse': 'textNeonPulse 1.5s ease-in-out infinite', 'Rainbow': 'textRainbow 2s linear infinite', 'Wobble': 'textWobble 0.5s ease-in-out infinite', 'Jello': 'textJello 0.8s ease-in-out infinite', 'Heartbeat': 'textHeartbeat 1s ease-in-out infinite', 'Flicker': 'textFlicker 0.5s ease-in-out infinite', 'Typing': 'textTyping 2s steps(40) forwards', 'Reveal': 'textReveal 0.8s ease-out forwards', 'Spin': 'textSpin 2s linear infinite', 'Drop In': 'textDropIn 0.6s ease-out forwards', 'Rise Up': 'textRiseUp 0.5s ease-out forwards', 'Splash': 'textSplash 0.6s ease-out forwards', 'Explode': 'textExplode 0.7s ease-out forwards', 'Morph': 'textMorph 0.6s ease-out forwards', 'Blur In': 'textBlurIn 0.5s ease-out forwards', 'Color Shift': 'textColorShift 3s linear infinite', 'Shimmer': 'textShimmer 2s linear infinite', 'Sparkle': 'textSparkle 1.5s ease-in-out infinite', 'Cyber Glitch': 'textCyberGlitch 0.5s ease-in-out infinite', 'Matrix': 'textMatrix 1s ease-out forwards', 'Hologram': 'textHologram 2s ease-in-out infinite', 'Fire': 'textFire 1.5s ease-in-out infinite', 'Ice': 'textIce 1.5s ease-in-out infinite'
+function setupDrag(el) {
+  let drag = false, sx, sy, sl, st;
+  const start = (x, y) => {
+    drag = true; el.classList.add('dragging');
+    sx = x; sy = y;
+    sl = parseFloat(el.style.left) || 50;
+    st = parseFloat(el.style.top) || 50;
   };
-  return animMap[animation] || 'textFadeIn 0.4s ease-out forwards';
-}
-
-function deleteTextElement(id) {
-  try {
-    const el = document.getElementById(id);
-    if (el) {
-      const trackId = el.getAttribute('data-track-id');
-      if (trackId) { textTracks = textTracks.filter(t => t.id != trackId); renderTextTracks(); updateTextTrackCount(); }
-      el.style.transition = 'all 0.2s';
-      el.style.transform = 'scale(0.8)';
-      el.style.opacity = '0';
-      setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); showToast('🗑️ Text deleted', 'fa-trash'); }, 200);
-    }
-  } catch (error) { console.error('Error deleting text element:', error); showToast('❌ Error deleting text', 'fa-exclamation'); }
-}
-
-function setupDrag(element) {
-  let isDragging = false, startX, startY, startLeft, startTop;
-  element.addEventListener('mousedown', (e) => {
-    if (e.target.classList.contains('delete-btn')) return;
-    isDragging = true;
-    element.classList.add('dragging');
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = parseFloat(element.style.left) || 50;
-    startTop = parseFloat(element.style.top) || 50;
-    e.preventDefault();
-  });
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    try {
-      const containerRect = element.parentElement.getBoundingClientRect();
-      const deltaX = (e.clientX - startX) / containerRect.width * 100;
-      const deltaY = (e.clientY - startY) / containerRect.height * 100;
-      let newLeft = startLeft + deltaX;
-      let newTop = startTop + deltaY;
-      newLeft = Math.max(0, Math.min(100, newLeft));
-      newTop = Math.max(0, Math.min(100, newTop));
-      element.style.left = newLeft + '%';
-      element.style.top = newTop + '%';
-      e.preventDefault();
-    } catch (error) {}
-  });
-  document.addEventListener('mouseup', () => { if (isDragging) { isDragging = false; element.classList.remove('dragging'); } });
-  element.addEventListener('touchstart', (e) => {
-    if (e.target.classList.contains('delete-btn')) return;
-    const touch = e.touches[0];
-    isDragging = true;
-    element.classList.add('dragging');
-    startX = touch.clientX;
-    startY = touch.clientY;
-    startLeft = parseFloat(element.style.left) || 50;
-    startTop = parseFloat(element.style.top) || 50;
-    e.preventDefault();
-  }, { passive: false });
-  document.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    try {
-      const touch = e.touches[0];
-      const containerRect = element.parentElement.getBoundingClientRect();
-      const deltaX = (touch.clientX - startX) / containerRect.width * 100;
-      const deltaY = (touch.clientY - startY) / containerRect.height * 100;
-      let newLeft = startLeft + deltaX;
-      let newTop = startTop + deltaY;
-      newLeft = Math.max(0, Math.min(100, newLeft));
-      newTop = Math.max(0, Math.min(100, newTop));
-      element.style.left = newLeft + '%';
-      element.style.top = newTop + '%';
-      e.preventDefault();
-    } catch (error) {}
-  }, { passive: false });
-  document.addEventListener('touchend', () => { if (isDragging) { isDragging = false; element.classList.remove('dragging'); } });
+  const move = (x, y) => {
+    if (!drag) return;
+    const r = el.parentElement.getBoundingClientRect();
+    let nl = sl + (x - sx) / r.width * 100;
+    let nt = st + (y - sy) / r.height * 100;
+    el.style.left = Math.max(0, Math.min(100, nl)) + '%';
+    el.style.top = Math.max(0, Math.min(100, nt)) + '%';
+  };
+  const end = () => { drag = false; el.classList.remove('dragging'); };
+  el.addEventListener('mousedown', e => { if (e.target.classList.contains('delete-btn')) return; start(e.clientX, e.clientY); e.preventDefault(); });
+  document.addEventListener('mousemove', e => move(e.clientX, e.clientY));
+  document.addEventListener('mouseup', end);
+  el.addEventListener('touchstart', e => { if (e.target.classList.contains('delete-btn')) return; const t = e.touches[0]; start(t.clientX, t.clientY); }, { passive: true });
+  document.addEventListener('touchmove', e => { if (!drag) return; const t = e.touches[0]; move(t.clientX, t.clientY); }, { passive: true });
+  document.addEventListener('touchend', end);
 }
 
 function applyNewTextToCanvas() {
-  try {
-    const text = document.getElementById('liveTextInput').value || 'Enter Text';
-    const styleCSS = currentTextState.styleCSS || 'color: #ffffff;';
-    const font = currentTextState.font || 'Inter';
-    const bubbleCSS = currentTextState.bubbleCSS || '';
-    const animation = currentTextState.animation || '';
-    createTextElementOnCanvas(text, styleCSS, font, bubbleCSS, animation);
-    closeDrawer();
-    showToast('✏️ Text added to canvas!', 'fa-font');
-  } catch (error) { console.error('Error applying text:', error); showToast('❌ Error applying text', 'fa-exclamation'); }
+  const text = document.getElementById('liveTextInput').value || 'Enter Text';
+  createTextElementOnCanvas(text, currentTextState.styleCSS || 'color:#fff;', currentTextState.font, currentTextState.bubbleCSS, currentTextState.animation);
+  closeDrawer();
+  showToast('✏️ Text added', 'fa-font');
 }
 
 function updateLiveTextPreview() {
-  try {
-    const text = document.getElementById('liveTextInput').value || 'Enter Text';
-    currentTextState.text = text;
-    let previewEl = document.getElementById('live-canvas-text-preview');
-    if (!previewEl) { previewEl = document.createElement('div'); previewEl.id = 'live-canvas-text-preview'; previewEl.className = 'absolute z-45 p-2 select-none pointer-events-none opacity-70'; const layer = document.getElementById('canvas-elements-layer'); if (layer) layer.appendChild(previewEl); }
-    let animCSS = '';
-    if (currentTextState.animation) animCSS = `animation: ${getAnimationCSS(currentTextState.animation)};`;
-    previewEl.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; ${animCSS}; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.6; pointer-events: none; z-index: 45;`;
-    previewEl.innerText = text;
-  } catch (error) { console.error('Error updating preview:', error); }
+  const text = document.getElementById('liveTextInput').value || 'Enter Text';
+  currentTextState.text = text;
+  let p = document.getElementById('live-canvas-text-preview');
+  if (!p) {
+    p = document.createElement('div');
+    p.id = 'live-canvas-text-preview';
+    p.className = 'absolute z-45 p-2 select-none pointer-events-none';
+    document.getElementById('canvas-elements-layer').appendChild(p);
+  }
+  p.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); opacity: 0.6; pointer-events: none;`;
+  p.innerText = text;
 }
 
-// DRAWER
+// ============================================================
+// DRAWER (simplified — templates + fonts only)
+// ============================================================
 function openDrawer(type) {
-  try {
-    const drawer = document.getElementById('editorDrawer');
-    drawer.classList.add('open');
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    let tabMap = { 'templates': 'tab-templates', 'fonts': 'tab-fonts', 'styles': 'tab-styles', 'animations': 'tab-animations', 'bubbles': 'tab-bubbles', 'stickers': 'tab-templates', 'captions': 'tab-templates', 'presets': 'tab-presets' };
-    const matchedTabBtn = document.getElementById(tabMap[type] || 'tab-templates');
-    if (matchedTabBtn) matchedTabBtn.classList.add('active');
-    const tabId = type === 'stickers' || type === 'captions' ? 'templates' : type;
-    renderTextTabContent(tabId);
-  } catch (error) { console.error('Error opening drawer:', error); showToast('❌ Error opening editor', 'fa-exclamation'); }
+  document.getElementById('editorDrawer').classList.add('open');
+  switchTextTab('templates');
 }
-function switchTextTab(tabId) {
-  try { document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(`tab-${tabId}`).classList.add('active'); renderTextTabContent(tabId); } 
-  catch (error) { console.error('Error switching tab:', error); }
-}
-
-// TEMPLATE GENERATION
-function generate1000Templates() {
-  const templates = [];
-  const styles = ['Neon','Glow','Shadow','Gradient','3D','Glass','Chrome','Gold','Silver','Retro','Vintage','Cyber','Hologram','Crystal','Fire','Ice','Water','Sand','Metal','Wood','Paper','Ink','Paint','Sketch','Pixel','Vector','Minimal','Maximal','Elegant','Bold','Soft','Dreamy','Dark','Light','Colorful','Monochrome','Pastel','Vibrant','Muted','Electric','Cosmic','Galactic','Aurora','Sunset','Sunrise','Twilight','Midnight','Dawn','Mystic','Enchanted','Magical','Fantasy','SciFi','Steampunk','Cyberpunk','Dystopian','Utopian','Minimalist','Maximalist','Geometric','Organic','Abstract','Surreal','Pop','Gothic','Industrial','Rustic','Vintage','Modern','Classic','Contemporary','ArtDeco','Bauhaus','Memphis','Swiss','Scandinavian','Japanese','African','Native','Tribal'];
-  const fonts = ['Inter','Bebas Neue','Orbitron','Pacifico','Permanent Marker','Lobster','Cinzel','Bangers','Abril Fatface','Anton'];
-  const words = ['STYLE','DESIGN','CREATE','VISION','DREAM','LIVE','LOVE','ART','SOUL','VIBE','GOLD','CORE','PURE','TRUE','BOLD','WILD','FREE','STAR','MOON','SUN','WAVE','RISE','SHINE','GLOW','FIRE','ICE','STORM','CLOUD','SKY','EARTH','WATER','WIND','TREE','ROSE','LION','EAGLE','WOLF','PHOENIX','DRAGON','UNICORN','VICTORY','HOPE','PEACE','TRUTH','FAITH','JUSTICE','FREEDOM','POWER','GLORY','HONOR'];
-  for (let i = 0; i < 1000; i++) {
-    const style = styles[i % styles.length];
-    const font = fonts[i % fonts.length];
-    const word = words[i % words.length];
-    templates.push({ name: `${style} ${word} #${i+1}`, font: font, styleCSS: generateStyleCSS(style, i) });
-  }
-  return templates;
-}
-
-function generateStyleCSS(style, index) {
-  const hue = (index * 37 + 180) % 360;
-  const hue2 = (index * 53 + 60) % 360;
-  switch(style) {
-    case 'Neon': return `color: #fff; text-shadow: 0 0 5px hsl(${hue}, 100%, 50%), 0 0 15px hsl(${hue}, 100%, 50%), 0 0 30px hsl(${hue}, 100%, 50%); font-weight: 900;`;
-    case 'Glow': return `color: #fff; text-shadow: 0 0 10px hsl(${hue}, 80%, 60%), 0 0 20px hsl(${hue}, 80%, 60%); font-weight: 700;`;
-    case 'Shadow': return `color: #fff; text-shadow: 2px 2px 0 hsl(${hue}, 80%, 30%), 4px 4px 0 hsl(${hue}, 80%, 20%); font-weight: 800;`;
-    case 'Gradient': return `background: linear-gradient(45deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`;
-    case '3D': return `color: hsl(${hue}, 80%, 60%); text-shadow: 0 4px 0 hsl(${hue}, 80%, 30%), 0 8px 0 hsl(${hue}, 80%, 20%), 0 12px 0 hsl(${hue}, 80%, 10%); font-weight: 900;`;
-    case 'Glass': return `color: #fff; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);`;
-    case 'Gold': return `color: #fbbf24; text-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; font-weight: 900;`;
-    case 'Silver': return `color: #94a3b8; text-shadow: 0 0 10px #64748b; font-weight: 700;`;
-    case 'Retro': return `color: #fb923c; font-family: 'Press Start 2P'; font-size: 14px; text-shadow: 2px 2px 0 #7c2d12;`;
-    case 'Cyber': return `color: #22d3ee; text-shadow: 0 0 5px #06b6d4, 0 0 15px #06b6d4; font-family: 'Orbitron'; font-weight: 900;`;
-    default: return `color: hsl(${hue}, 80%, 60%); font-weight: 700;`;
-  }
-}
-
-function get1000Fonts() {
-  const baseFonts = ['Inter','Bebas Neue','Lobster','Pacifico','Caveat','Playfair Display','Oswald','Montserrat','Fascinate','Permanent Marker','Righteous','Fredoka One','Alfa Slab One','Bangers','Cinzel','Comfortaa','Courgette','Creepster','Gloria Hallelujah','Great Vibes','Kaushan Script','Luckiest Guy','Monoton','Orbitron','Press Start 2P','Sacramento','Satisfy','Special Elite','Spicy Rice','Titan One','Vampiro One','Abril Fatface','Anton','Archivo Black','Black Ops One','Bungee','Coiny','Exo 2','Francois One','Gravitas One','Josefin Sans','Kanit','Lilita One','Limelight','Megrim','New Rocker','Nosifer','Paytone One','Plaster','Poiret One','Rajdhani','Rampart One','Rancho','Russo One','Sigmar One','Staatliches','Syncopate','Uncial Antiqua','Wallpoet','Big Shoulders Display','Black Han Sans','Chango','Comic Neue','Delius Swash Caps','Emblema One','Fugaz One','Gaegu','Girassol','Hanalei','Henny Penny','Iceberg','Jacques Francois Shadow','Kavoon','Leckerli One','Ma Shan Zheng','Monofett','Overlock','Patua One','Qwigley','Redressed','Shrikhand','Sirin Stencil','Sofia','Sriracha','Stalinist One','Warnes','ZCOOL KuaiLe','Audiowide','Blacker Pro','Dancing Script','Epilogue','Fira Code','Genos','Hind','Inconsolata','JetBrains Mono','Karla','Lato','Merriweather','Nunito','Open Sans','Poppins','Quicksand','Roboto','Source Sans Pro'];
-  const uniqueBase = [...new Set(baseFonts)];
-  const fonts = [];
-  for (let i = 0; i < 1000; i++) {
-    const base = uniqueBase[i % uniqueBase.length];
-    const variant = Math.floor(i / uniqueBase.length);
-    fonts.push(variant === 0 ? base : `${base} ${variant}`);
-  }
-  return fonts;
-}
-
-function generate1000Styles() {
-  const styles = [];
-  for (let i = 0; i < 1000; i++) {
-    const hue = (i * 29 + 10) % 360;
-    const hue2 = (i * 47 + 200) % 360;
-    const type = i % 12;
-    let css = '';
-    switch(type) {
-      case 0: css = `color: hsl(${hue}, 100%, 60%); text-shadow: 0 0 8px hsl(${hue}, 100%, 40%); font-weight: 800;`; break;
-      case 1: css = `background: linear-gradient(135deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;`; break;
-      case 2: css = `color: #fff; text-shadow: 1px 1px 0 hsl(${hue}, 80%, 40%), 2px 2px 0 hsl(${hue}, 80%, 30%); font-weight: 700;`; break;
-      case 3: css = `color: #fff; text-shadow: 0 0 4px hsl(${hue}, 100%, 50%), 0 0 12px hsl(${hue}, 100%, 50%); font-weight: 900;`; break;
-      case 4: css = `color: hsl(${hue}, 80%, 50%); -webkit-text-stroke: 1px hsl(${hue}, 80%, 30%); font-weight: 900;`; break;
-      case 5: css = `color: hsl(${hue}, 70%, 65%); font-weight: 700; text-shadow: 0 0 15px hsl(${hue}, 70%, 40%);`; break;
-      case 6: css = `background: linear-gradient(45deg, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;`; break;
-      case 7: css = `color: #fff; text-shadow: 0 0 8px #000, 0 0 16px #000, 0 0 4px hsl(${hue}, 100%, 50%); font-weight: 900;`; break;
-      case 8: css = `color: hsl(${hue}, 90%, 70%); font-weight: 900; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);`; break;
-      case 9: css = `background: linear-gradient(180deg, hsl(${hue}, 100%, 40%), hsl(${hue2}, 100%, 60%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;`; break;
-      case 10: css = `color: #fff; font-weight: 900; text-shadow: 0 0 8px hsl(${hue}, 100%, 30%), 0 0 20px hsl(${hue}, 100%, 20%);`; break;
-      case 11: css = `color: hsl(${hue}, 60%, 80%); font-weight: 700; text-shadow: 0 0 4px rgba(0,0,0,0.8);`; break;
-    }
-    styles.push({ css, label: `S${i+1}` });
-  }
-  return styles;
-}
-
-function get1000Animations() {
-  const baseAnimations = ['Fade In','Bounce','Slide In','Glow Pulse','Rotate','Pulse','Wave','Zoom In','Flip','Shake','Wobble','Swing','Jello','Heartbeat','Flicker','Typing','Reveal','Spin','Drop In','Rise Up','Splash','Explode','Morph','Blur In','Color Shift','Rainbow','Neon Pulse','Cyber Glitch','Matrix','Hologram','Shimmer','Sparkle','Fire','Ice','Wind','Thunder','Gravity','Magnetic','Warp','Ripple','Echo','Ghost','Shadow Dance','Light Burst','Speed Trail','Comet','Nebula','Vortex','Zen','Dream','Cyber','Retro','Modern','Classic','Pop','Rock','Jazz','Blues','Metal','Punk','Grunge','Techno','House','Trance','Dubstep','DnB','LoFi','Ambient','Acoustic','Electric','Digital','Analog','VHS','Film','Reel','Cinema','Theater','Stage','Studio','Live','Night','Day','Sunrise','Sunset','Moon','Star','Galaxy','Universe','Nature','Ocean','Forest','Mountain','Desert','Arctic','Volcano','Storm'];
-  const animations = [];
-  for (let i = 0; i < 1000; i++) { animations.push(`${baseAnimations[i % baseAnimations.length]} ${i+1}`); }
-  return animations;
-}
-
-function generate1000Bubbles() {
-  const bubbles = [];
-  for (let i = 0; i < 1000; i++) {
-    const hue = (i * 31 + 50) % 360;
-    const hue2 = (i * 43 + 180) % 360;
-    const type = i % 15;
-    let css = '';
-    switch(type) {
-      case 0: css = `background: rgba(${hue % 256}, ${(hue+50)%256}, ${(hue+100)%256}, 0.15); border: 1px solid hsl(${hue}, 80%, 60%); border-radius: 8px; padding: 4px 10px;`; break;
-      case 1: css = `background: linear-gradient(135deg, hsl(${hue}, 80%, 60%), hsl(${hue2}, 80%, 60%)); border: none; border-radius: 16px; padding: 4px 12px; color: #fff;`; break;
-      case 2: css = `background: transparent; border: 1px dashed hsl(${hue}, 80%, 60%); border-radius: 6px; padding: 4px 8px;`; break;
-      case 3: css = `background: rgba(255,255,255,0.08); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 6px 14px;`; break;
-      case 4: css = `background: hsl(${hue}, 70%, 20%); border: 1px solid hsl(${hue}, 80%, 50%); border-radius: 40%; padding: 6px 14px; color: #fff;`; break;
-      case 5: css = `background: transparent; border: 1px dotted hsl(${hue}, 80%, 50%); border-radius: 4px; padding: 4px 10px;`; break;
-      case 6: css = `background: radial-gradient(circle at 30% 30%, hsl(${hue}, 80%, 70%), hsl(${hue2}, 80%, 40%)); border: none; border-radius: 10px; padding: 4px 12px; color: #fff;`; break;
-      case 7: css = `background: #1a1a2e; border: 1px solid hsl(${hue}, 100%, 50%); border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 15px hsl(${hue}, 100%, 30%); color: #fff;`; break;
-      case 8: css = `background: linear-gradient(45deg, hsl(${hue}, 80%, 30%), hsl(${hue2}, 80%, 30%)); border: none; border-radius: 4px; padding: 4px 10px; color: #fff;`; break;
-      case 9: css = `background: rgba(0,0,0,0.4); border: 1px solid hsl(${hue}, 80%, 60%); border-radius: 16px; padding: 4px 12px; backdrop-filter: blur(4px); color: #fff;`; break;
-      case 10: css = `background: hsl(${hue}, 60%, 90%); border: 1px solid hsl(${hue}, 80%, 70%); border-radius: 12px; padding: 4px 12px; color: #000;`; break;
-      case 11: css = `background: linear-gradient(to right, hsl(${hue}, 100%, 50%), hsl(${hue2}, 100%, 50%)); border: none; border-radius: 6px; padding: 4px 10px; color: #fff;`; break;
-      case 12: css = `background: rgba(0,0,0,0.6); border: 1px solid #fff; border-radius: 10px; padding: 4px 12px; color: #fff;`; break;
-      case 13: css = `background: transparent; border: 1px solid hsl(${hue}, 80%, 50%); border-radius: 80px; padding: 2px 14px; color: hsl(${hue}, 80%, 50%);`; break;
-      case 14: css = `background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 4px 10px; backdrop-filter: blur(8px); color: #fff;`; break;
-    }
-    bubbles.push({ css, name: `B${i+1}` });
-  }
-  return bubbles;
-}
-
-// LAZY LOADING
-function renderTextTabContent(tabId) {
-  try {
-    const grid = document.getElementById('drawerDynamicGrid');
-    grid.innerHTML = '';
-    const headerWrapper = document.createElement('div');
-    headerWrapper.className = 'col-span-4 category-header';
-    headerWrapper.innerHTML = `<div style="flex:1; min-width:80px;"><input type="text" id="categorySearchInput" placeholder="🔍 Search..." class="search-bar" oninput="filterCategoryItems('${tabId}')" /></div><div class="action-btns"><button onclick="saveCategoryDefault('${tabId}')" class="primary"><i class="fas fa-check"></i>Def</button><button onclick="saveCategoryPreset('${tabId}')"><i class="fas fa-save"></i></button><button onclick="resetCategoryDefault('${tabId}')" class="danger"><i class="fas fa-undo"></i></button></div>`;
-    grid.appendChild(headerWrapper);
-    const itemsContainer = document.createElement('div');
-    itemsContainer.id = 'categoryItemsContainer';
-    itemsContainer.className = 'col-span-4 grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2';
-    grid.appendChild(itemsContainer);
-    currentBatchIndex = 0;
-    loadItemsBatch(tabId, itemsContainer);
-  } catch (error) { console.error('Error rendering text tab content:', error); showToast('❌ Error loading content', 'fa-exclamation'); }
-}
-
-function loadItemsBatch(tabId, container) {
-  try {
-    if (isLoadingMore) return;
-    isLoadingMore = true;
-    const start = currentBatchIndex;
-    const end = start + BATCH_SIZE;
-    let items = [];
-    let totalItems = 0;
-    if (tabId === 'templates') { const templates = generate1000Templates(); totalItems = templates.length; items = templates.slice(start, end); } 
-    else if (tabId === 'fonts') { const fonts = get1000Fonts(); totalItems = fonts.length; items = fonts.slice(start, end); } 
-    else if (tabId === 'styles') { const styles = generate1000Styles(); totalItems = styles.length; items = styles.slice(start, end); } 
-    else if (tabId === 'animations') { const animations = get1000Animations(); totalItems = animations.length; items = animations.slice(start, end); } 
-    else if (tabId === 'bubbles') { const bubbles = generate1000Bubbles(); totalItems = bubbles.length; items = bubbles.slice(start, end); } 
-    else if (tabId === 'presets') { renderPresetsTab(container); isLoadingMore = false; return; }
-    items.forEach((item, idx) => {
-      const globalIdx = start + idx;
-      let el = document.createElement('div');
-      if (tabId === 'templates') {
-        const template = item;
-        el.className = "bg-gradient-to-br from-[#1c1c22] to-[#26262e] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer flex flex-col justify-between items-center h-20 hover:border-blue-500 transition relative overflow-hidden";
-        el.setAttribute('data-search', template.name + ' ' + template.font);
-        el.innerHTML = `<span class="text-[7px] text-zinc-500 absolute top-0.5 right-1">#${globalIdx+1}</span><span class="text-[10px] truncate w-full mt-2" style="${template.styleCSS}; font-family: '${template.font}';">${template.name}</span><span class="text-[7px] text-zinc-500 mt-1">Click</span>`;
-        el.onclick = () => { try { currentTextState.text = template.name; currentTextState.font = template.font; currentTextState.styleCSS = template.styleCSS; document.getElementById('liveTextInput').value = template.name; updateLiveTextPreview(); showToast(`🎨 Template: ${template.name}`, 'fa-palette'); } catch (error) { console.error('Error applying template:', error); } };
-      } else if (tabId === 'fonts') {
-        const font = item;
-        el.className = 'font-preview-btn';
-        el.setAttribute('data-search', font);
-        el.innerHTML = `<span class="text-[7px] text-zinc-500 font-mono">#${globalIdx+1}</span><span class="font-sample text-sm" style="font-family: '${font}';">${font}</span>`;
-        el.onclick = () => { try { currentTextState.font = font; updateLiveTextPreview(); showToast(`🔤 Font: ${font}`, 'fa-font'); } catch (error) { console.error('Error applying font:', error); } };
-      } else if (tabId === 'styles') {
-        const style = item;
-        el.className = 'style-item';
-        el.setAttribute('data-search', style.label);
-        el.innerHTML = `<span class="text-[7px] text-zinc-500 font-mono mr-1">#${globalIdx+1}</span><span class="text-xs font-bold" style="${style.css}">Aa</span>`;
-        el.onclick = () => { try { currentTextState.styleCSS = style.css; updateLiveTextPreview(); showToast(`🎨 ${style.label} applied`, 'fa-paint-brush'); } catch (error) { console.error('Error applying style:', error); } };
-      } else if (tabId === 'animations') {
-        const anim = item;
-        el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-lg p-1.5 cursor-pointer text-center flex flex-col justify-between h-14 transition';
-        el.setAttribute('data-search', anim);
-        let iconClass = "fa-wind text-cyan-400 text-[10px]";
-        if (globalIdx % 4 === 0) iconClass = "fa-fire text-rose-500 text-[10px]";
-        if (globalIdx % 5 === 0) iconClass = "fa-bolt text-yellow-400 text-[10px]";
-        if (globalIdx % 6 === 0) iconClass = "fa-spinner text-blue-400 text-[10px]";
-        if (globalIdx % 7 === 0) iconClass = "fa-meteor text-purple-400 text-[10px]";
-        if (globalIdx % 8 === 0) iconClass = "fa-rainbow text-pink-400 text-[10px]";
-        if (globalIdx % 9 === 0) iconClass = "fa-snowflake text-cyan-300 text-[10px]";
-        el.innerHTML = `<div class="flex items-center justify-between"><span class="text-[7px] text-zinc-500 font-mono">#${globalIdx+1}</span><i class="fas ${iconClass}"></i></div><span class="text-[9px] text-zinc-200 truncate font-semibold">${anim}</span>`;
-        el.onclick = () => { try { currentTextState.animation = anim; updateLiveTextPreview(); showToast(`✨ "${anim}" applied!`, 'fa-wand-magic-sparkles'); } catch (error) { console.error('Error applying animation:', error); } };
-      } else if (tabId === 'bubbles') {
-        const bubble = item;
-        el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-lg p-1.5 cursor-pointer text-center flex flex-col justify-between h-16 transition relative';
-        el.setAttribute('data-search', bubble.name);
-        el.innerHTML = `<span class="text-[7px] text-zinc-500 block font-mono">#${globalIdx+1}</span><div class="text-[8px] text-zinc-300 truncate px-1 py-0.5" style="${bubble.css}">${bubble.name}</div>`;
-        el.onclick = () => { try { currentTextState.bubbleCSS = bubble.css; updateLiveTextPreview(); showToast(`🫧 ${bubble.name} applied`, 'fa-circle'); } catch (error) { console.error('Error applying bubble:', error); } };
-      }
-      container.appendChild(el);
-    });
-    currentBatchIndex = end;
-    isLoadingMore = false;
-    if (currentBatchIndex < totalItems) {
-      const loadMoreBtn = document.createElement('div');
-      loadMoreBtn.className = 'col-span-2 sm:col-span-3 text-center py-2';
-      loadMoreBtn.innerHTML = `<button onclick="loadMoreItems('${tabId}')" class="text-[10px] text-zinc-500 hover:text-white transition">Load More (${currentBatchIndex}/${totalItems})</button>`;
-      container.appendChild(loadMoreBtn);
-    }
-  } catch (error) { console.error('Error loading items batch:', error); isLoadingMore = false; showToast('❌ Error loading items', 'fa-exclamation'); }
-}
-
-function loadMoreItems(tabId) {
-  try { const container = document.getElementById('categoryItemsContainer'); if (!container) return; const existingBtn = container.querySelector('.col-span-2'); if (existingBtn) existingBtn.remove(); loadItemsBatch(tabId, container); } 
-  catch (error) { console.error('Error loading more items:', error); }
-}
-
-function renderPresetsTab(container) {
-  try {
-    container.className = 'col-span-4 flex flex-col gap-2';
-    container.innerHTML = `<div class="bg-[#18181c] border border-zinc-800 rounded-2xl p-3 text-center"><p class="text-[10px] text-zinc-400 mb-2">Save your current style as a custom preset!</p><button onclick="saveCurrentPreset()" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl transition"><i class="fas fa-plus mr-1"></i>Save Design</button></div><div class="text-[10px] font-bold text-zinc-400 mt-1">Your Presets:</div><div id="savedPresetsList" class="grid grid-cols-2 gap-2"></div>`;
-    renderSavedPresets();
-  } catch (error) { console.error('Error rendering presets tab:', error); }
-}
-
-function filterCategoryItems(tabId) {
-  try {
-    const searchInput = document.getElementById('categorySearchInput');
-    if (!searchInput) return;
-    const query = searchInput.value.toLowerCase().trim();
-    document.querySelectorAll('#categoryItemsContainer > div').forEach(item => {
-      const searchData = item.getAttribute('data-search') || '';
-      item.style.display = (query === '' || searchData.toLowerCase().includes(query)) ? '' : 'none';
-    });
-  } catch (error) { console.error('Error filtering items:', error); }
-}
-
-function saveCategoryDefault(tabId) {
-  try {
-    const defaultData = { text: document.getElementById('liveTextInput').value || 'Enter Text', font: currentTextState.font, styleCSS: currentTextState.styleCSS, bubbleCSS: currentTextState.bubbleCSS, animation: currentTextState.animation };
-    localStorage.setItem('dravoo_default_' + tabId, JSON.stringify(defaultData));
-    showToast(`✅ Default ${tabId} saved!`, 'fa-check');
-  } catch (error) { console.error('Error saving default:', error); showToast('⚠️ Could not save default', 'fa-exclamation'); }
-}
-
-function resetCategoryDefault(tabId) {
-  try {
-    localStorage.removeItem('dravoo_default_' + tabId);
-    showToast(`↩️ ${tabId} reset`, 'fa-undo');
-    currentTextState.font = 'Inter';
-    currentTextState.styleCSS = 'color: #ffffff;';
-    currentTextState.bubbleCSS = '';
-    currentTextState.animation = '';
-    updateLiveTextPreview();
-  } catch (error) { console.error('Error resetting default:', error); showToast('⚠️ Could not reset default', 'fa-exclamation'); }
-}
-
-function saveCategoryPreset(tabId) {
-  try {
-    const presetName = prompt('Enter preset name:');
-    if (!presetName) return;
-    const presetData = { name: presetName, font: currentTextState.font, styleCSS: currentTextState.styleCSS, bubbleCSS: currentTextState.bubbleCSS, animation: currentTextState.animation, tabId: tabId };
-    let presets = JSON.parse(localStorage.getItem('dravoo_presets') || '[]');
-    presets.push(presetData);
-    localStorage.setItem('dravoo_presets', JSON.stringify(presets));
-    showToast(`💾 "${presetName}" saved!`, 'fa-save');
-    renderSavedPresets();
-  } catch (error) { console.error('Error saving preset:', error); showToast('⚠️ Could not save preset', 'fa-exclamation'); }
-}
-
-function saveCurrentPreset() {
-  try {
-    const presetName = prompt('Enter preset name:');
-    if (!presetName) return;
-    const newPreset = { name: presetName, font: currentTextState.font, styleCSS: currentTextState.styleCSS, bubbleCSS: currentTextState.bubbleCSS, animation: currentTextState.animation };
-    customPresets.push(newPreset);
-    localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets));
-    showToast(`💾 "${presetName}" saved!`, 'fa-save');
-    renderSavedPresets();
-  } catch (error) { console.error('Error saving current preset:', error); showToast('⚠️ Could not save preset', 'fa-exclamation'); }
-}
-
-function renderSavedPresets() {
-  try {
-    const listContainer = document.getElementById('savedPresetsList');
-    if (!listContainer) return;
-    try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) { console.warn('Error parsing presets:', e); }
-    if (customPresets.length === 0) { listContainer.innerHTML = `<div class="text-zinc-600 text-[10px] col-span-2 py-2 text-center">No presets saved.</div>`; return; }
-    listContainer.innerHTML = '';
-    customPresets.forEach((p, idx) => {
-      const item = document.createElement('div');
-      item.className = 'bg-[#22222a] border border-zinc-800 rounded-lg p-2 cursor-pointer hover:border-blue-500 transition text-center';
-      item.innerHTML = `<span class="text-[7px] text-zinc-400 block font-mono mb-0.5">${p.name || `P${idx + 1}`}</span><span class="text-[10px] font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name || 'Preset'}</span><button class="text-[7px] text-red-400 mt-0.5 hover:text-red-300" onclick="event.stopPropagation(); deletePreset(${idx})">✕</button>`;
-      item.onclick = () => { try { currentTextState.font = p.font; currentTextState.styleCSS = p.styleCSS; currentTextState.bubbleCSS = p.bubbleCSS || ''; currentTextState.animation = p.animation || ''; updateLiveTextPreview(); showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open'); } catch (error) { console.error('Error loading preset:', error); } };
-      listContainer.appendChild(item);
-    });
-  } catch (error) { console.error('Error rendering saved presets:', error); }
-}
-
-function deletePreset(index) {
-  try { customPresets.splice(index, 1); localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets)); renderSavedPresets(); showToast('🗑️ Preset deleted', 'fa-trash'); } 
-  catch (error) { console.error('Error deleting preset:', error); showToast('⚠️ Could not delete preset', 'fa-exclamation'); }
-}
-
 function closeDrawer() {
-  try { document.getElementById('editorDrawer').classList.remove('open'); const previewEl = document.getElementById('live-canvas-text-preview'); if (previewEl) previewEl.remove(); } 
-  catch (error) { console.error('Error closing drawer:', error); }
+  document.getElementById('editorDrawer').classList.remove('open');
+  const p = document.getElementById('live-canvas-text-preview');
+  if (p) p.remove();
+}
+function switchTextTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`tab-${tab}`);
+  if (btn) btn.classList.add('active');
+  const grid = document.getElementById('drawerDynamicGrid');
+  grid.innerHTML = '';
+  if (tab === 'templates') {
+    const templates = [
+      { name: 'Neon', css: 'color:#22d3ee;text-shadow:0 0 10px #06b6d4;font-weight:900;' },
+      { name: 'Gold', css: 'color:#fbbf24;text-shadow:0 0 10px #f59e0b;font-weight:900;' },
+      { name: 'Fire', css: 'color:#ff4500;text-shadow:0 0 15px #ff6348;font-weight:900;' },
+      { name: 'Ice', css: 'color:#00bfff;text-shadow:0 0 15px #87ceeb;font-weight:900;' },
+      { name: 'Shadow', css: 'color:#fff;text-shadow:2px 2px 0 #000,4px 4px 0 #222;font-weight:800;' },
+      { name: 'Gradient', css: 'background:linear-gradient(45deg,#f00,#00f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900;' }
+    ];
+    templates.forEach(t => {
+      const d = document.createElement('div');
+      d.className = "bg-[#1c1c22] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer h-16 flex items-center justify-center hover:border-blue-500";
+      d.innerHTML = `<span style="${t.css}">${t.name}</span>`;
+      d.onclick = () => { currentTextState.styleCSS = t.css; updateLiveTextPreview(); showToast(`🎨 ${t.name}`, 'fa-palette'); };
+      grid.appendChild(d);
+    });
+  } else if (tab === 'fonts') {
+    const fonts = ['Inter','Poppins','Roboto','Lato','Open Sans','Bebas Neue','Lobster','Pacifico'];
+    fonts.forEach(f => {
+      const d = document.createElement('div');
+      d.className = "bg-[#18181c] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer h-14 flex items-center justify-center hover:border-blue-500";
+      d.innerHTML = `<span style="font-family:'${f}';font-size:14px;color:#fff;">${f}</span>`;
+      d.onclick = () => { currentTextState.font = f; updateLiveTextPreview(); showToast(`🔤 ${f}`, 'fa-font'); };
+      grid.appendChild(d);
+    });
+  } else if (tab === 'styles') {
+    for (let i = 0; i < 20; i++) {
+      const hue = (i * 37) % 360;
+      const css = `color:hsl(${hue},100%,60%);text-shadow:0 0 8px hsl(${hue},100%,40%);font-weight:800;`;
+      const d = document.createElement('div');
+      d.className = "style-item";
+      d.innerHTML = `<span style="${css}">Aa</span>`;
+      d.onclick = () => { currentTextState.styleCSS = css; updateLiveTextPreview(); };
+      grid.appendChild(d);
+    }
+  } else if (tab === 'animations') {
+    const anims = ['Fade In','Bounce','Slide In','Zoom In'];
+    anims.forEach(a => {
+      const d = document.createElement('div');
+      d.className = "bg-[#18181c] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer h-14 flex items-center justify-center hover:border-blue-500 text-[10px] text-zinc-200";
+      d.innerText = a;
+      d.onclick = () => { currentTextState.animation = a; showToast(`✨ ${a}`, 'fa-wand-magic-sparkles'); };
+      grid.appendChild(d);
+    });
+  }
 }
 
-// CANVAS DRAWING
+// ============================================================
+// EXPORT
+// ============================================================
+function showExportDialog() { document.getElementById('exportDialog').classList.remove('hidden'); }
+function closeExportDialog() { document.getElementById('exportDialog').classList.add('hidden'); }
+function exportProject(type) {
+  if (type === 'project') {
+    const data = { version: '1.0', audioTracks: audioTracks.map(t => ({ name: t.name, type: t.type })), textTracks, captions: autoCaptionSegments };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `dravoo-project-${Date.now()}.dravoo`;
+    a.click();
+  } else { alert(`Exporting ${type}... (demo)`); }
+  closeExportDialog();
+  showToast(`📤 Exporting ${type}`, 'fa-download');
+}
+
+// ============================================================
+// DRAW
+// ============================================================
 const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
+let isDrawing = false, brushSize = 5, drawActive = false;
 
-function syncCanvasSize() {
-  try { canvas.width = ratioBox.clientWidth; canvas.height = ratioBox.clientHeight; } catch (error) { console.error('Error syncing canvas size:', error); }
-}
+function syncCanvasSize() { canvas.width = ratioBox.clientWidth; canvas.height = ratioBox.clientHeight; }
 window.addEventListener('resize', syncCanvasSize);
 
 function toggleDraw() {
-  try {
-    drawActive = !drawActive;
-    const panel = document.getElementById('drawToolsPanel');
-    if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); showToast('✏️ Draw ON', 'fa-pen'); } 
-    else { canvas.classList.remove('active'); panel.classList.add('hidden'); showToast('✏️ Draw OFF', 'fa-pen'); }
-  } catch (error) { console.error('Error toggling draw:', error); }
+  drawActive = !drawActive;
+  const panel = document.getElementById('drawToolsPanel');
+  if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); }
+  else { canvas.classList.remove('active'); panel.classList.add('hidden'); }
 }
-function clearDraw() { try { ctx.clearRect(0, 0, canvas.width, canvas.height); showToast('🧹 Cleared', 'fa-eraser'); } catch (error) { console.error('Error clearing draw:', error); } }
-function setBrush(size) { try { brushSize = size; showToast(`🖌️ ${size}px`, 'fa-paintbrush'); } catch (error) { console.error('Error setting brush:', error); } }
+function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+function setBrush(s) { brushSize = s; }
 
-canvas.addEventListener('mousedown', (e) => { try { if (!drawActive) return; isDrawing = true; draw(e); } catch (error) { console.error('Mouse down error:', error); } });
-canvas.addEventListener('mousemove', (e) => { try { if (!drawActive) return; if (!isDrawing) return; draw(e); } catch (error) { console.error('Mouse move error:', error); } });
-canvas.addEventListener('mouseup', () => { try { isDrawing = false; ctx.beginPath(); } catch (error) { console.error('Mouse up error:', error); } });
-canvas.addEventListener('touchstart', (e) => {
-  try {
-    if (!drawActive) return;
-    isDrawing = true;
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    e.preventDefault();
-  } catch (error) { console.error('Touch start error:', error); }
-}, { passive: false });
-canvas.addEventListener('touchmove', (e) => {
-  try {
-    if (!drawActive || !isDrawing) return;
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    e.preventDefault();
-  } catch (error) { console.error('Touch move error:', error); }
-}, { passive: false });
-canvas.addEventListener('touchend', () => { try { isDrawing = false; ctx.beginPath(); } catch (error) { console.error('Touch end error:', error); } });
+canvas.addEventListener('mousedown', e => { if (!drawActive) return; isDrawing = true; draw(e); });
+canvas.addEventListener('mousemove', e => { if (!drawActive || !isDrawing) return; draw(e); });
+canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
+canvas.addEventListener('touchstart', e => { if (!drawActive) return; isDrawing = true; const t = e.touches[0]; const r = canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault(); }, { passive: false });
+canvas.addEventListener('touchmove', e => { if (!drawActive || !isDrawing) return; const t = e.touches[0]; const r = canvas.getBoundingClientRect(); ctx.lineWidth = brushSize; ctx.lineCap = 'round'; ctx.strokeStyle = '#3b82f6'; ctx.lineTo(t.clientX - r.left, t.clientY - r.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault(); }, { passive: false });
+canvas.addEventListener('touchend', () => { isDrawing = false; ctx.beginPath(); });
 
 function draw(e) {
-  try {
-    if (!isDrawing || !drawActive) return;
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#3b82f6';
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-  } catch (error) { console.error('Draw error:', error); }
+  if (!isDrawing || !drawActive) return;
+  ctx.lineWidth = brushSize; ctx.lineCap = 'round'; ctx.strokeStyle = '#3b82f6';
+  const r = canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
 }
 
-// KEYBOARD SHORTCUTS
-document.addEventListener('keydown', (e) => {
-  try {
-    if (e.ctrlKey && e.key === 'z') { e.preventDefault(); showToast('↩️ Undo (placeholder)', 'fa-undo'); }
-    if (e.key === 'Delete' || e.key === 'Backspace') { const active = document.activeElement; if (active && active.classList.contains('canvas-text-item')) { deleteTextElement(active.id); } }
-    if (e.key === 'Escape') { closeDrawer(); closePixabayModal(); closeExportDialog(); if (drawActive) toggleDraw(); }
-    if (e.key === ' ' && e.target === document.body) { e.preventDefault(); togglePlay(); }
-  } catch (error) { console.error('Keyboard shortcut error:', error); }
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDrawer(); closeExportDialog(); if (drawActive) toggleDraw(); }
+  if (e.key === ' ' && e.target === document.body) { e.preventDefault(); togglePlay(); }
 });
 
+// ============================================================
 // INIT
+// ============================================================
 function init() {
-  try {
-    setTimeout(syncCanvasSize, 300);
-    updateTrackCount();
-    updateTextTrackCount();
-    if (window.speechSynthesis) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); }; }
-    try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) { console.warn('Error loading presets:', e); }
-    showToast('🚀 Welcome to Dravoo Pro Studio!', 'fa-rocket');
-    console.log('🚀 Dravoo Pro Editor Loaded with all fixes!');
-  } catch (error) { console.error('Error during initialization:', error); }
+  setTimeout(syncCanvasSize, 300);
+  updateTrackCount();
+  updateTextTrackCount();
+  showToast('🚀 Dravoo ready — Auto Caption enabled', 'fa-rocket');
+  console.log('✅ Dravoo loaded');
 }
-
-if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 </script>
 </body>
 </html>
