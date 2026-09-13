@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dravoo | Free Online Video Editor & AI Studio</title>
-<meta name="description" content="Free online video editor with AI tools, templates, captions, and effects. No signup required.">
+<meta name="description" content="Free online video editor with AI tools, templates, auto captions, and effects. No signup required.">
 <meta name="google-site-verification" content="MWkEHNH1ITHLD7NaBox0Ld-bFQkVtus_x6iaMAEhb3o">
 <meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
 
@@ -22,12 +22,52 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<!-- Fonts Matrix -->
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bungee&family=Italianno&family=Oswald&family=Rubik:wght@400;700&family=Anton&family=Permanent+Marker&family=Lobster&family=Pacifico&family=Fascinate&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Architects+Daughter&family=Barlow+Condensed&family=Bebas+Neue&family=Black+Ops+One&family=Boogaloo&family=Carter+One&family=Changa+One&family=Chewy&family=Comfortaa&family=Courgette&family=Creepster&family=Dancing+Script&family=Diplomata+SC&family=Dr+Sugiyama&family=Exo+2&family=Fredoka+One&family=Gabriela&family=Gloria+Hallelujah&family=Gochi+Hand&family=Great+Vibes&family=Hammersmith+One&family=Indie+Flower&family=Josefin+Sans&family=Julee&family=Kaushan+Script&family=Knewave&family=Lato&family=Lobster+Two&family=Mate+SC&family=Monoton&family=Montserrat&family=Mr+Dafoe&family=Neucha&family=Norican&family=Orbitron&family=Oregano&family=Oxygen&family=Patrick+Hand&family=Playfair+Display&family=Poiret+One&family=Quicksand&family=Raleway&family=Ranchers&family=Rock+Salt&family=Rubik+Bubbles&family=Satisfy&family=Shadows+Into+Light&family=Six+Caps&family=Special+Elite&family=Staatliches&family=Tangerine&family=Ultra&family=Uncial+Antiqua&family=Vampiro+One&family=Viga&family=Wallpoet&family=Yanone+Kaffeesatz&family=Zeyada&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bad+Script&family=Caveat+Brush&family=Cedarville+Cursive&family=Covered+By+Your+Grace&family=Crafty+Girls&family=Delius+Swash+Caps&family=Handlee&family=Just+Another+Hand&family=La+Belle+Aurore&family=League+Script&family=Loved+by+the+King&family=Merienda+One&family=Montez&family=Over+the+Rainbow&family=Rancho&family=Reenie+Beanie&family=Sacramento&family=Schoolbell&family=Sriracha&family=Sue+Ellen+Francisco&family=Waiting+for+the+Sunrise&family=Yellowtail&family=Dawning+of+a+New+Day&family=Petit+Formal+Script&family=Cutive+Mono&family=Arizonia&family=Berkshire+Swash&family=Bonbon&family=Calligraffitti&family=Coming+Soon&family=Condiment&family=Devonshire&family=Engagement&family=Felipa&family=Give+You+Glory&family=Grand+Hotel&family=Herr+Von+Muellerhoff&family=Jim+Nightshade&family=Kristi&family=Marck+Script&family=Meddon&family=Meie+Script&family=Molle&family=Monsieur+La+Doulaise&family=Mrs+Saint+Delafield&family=Niconne&family=Parisienne&family=Pinyon+Script&family=Rochester&family=Rouge+Script&family=Ruthie&family=Stint+Ultra+Condensed&family=Swanky+and+Moo+Moo&family=The+Girl+Next+Door&family=WindSong&family=Yesteryear&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700;900&family=Poppins:wght@400;700;900&family=Inter:wght@400;700;900&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- ========================================================= -->
+<!-- WHISPER AI (Browser-based, 100% Free) — Transformers.js  -->
+<!-- ========================================================= -->
+<script type="module">
+  window.__whisperReady = false;
+  window.__whisperPipeline = null;
+  window.__whisperLoading = false;
+
+  window.__loadWhisper = async function() {
+    if (window.__whisperReady || window.__whisperLoading) return;
+    window.__whisperLoading = true;
+    try {
+      const mod = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+      mod.env.allowLocalModels = false;
+      mod.env.useBrowserCache = true;
+      window.__whisperPipeline = await mod.pipeline(
+        'automatic-speech-recognition',
+        'Xenova/whisper-base',
+        {
+          quantized: true,
+          progress_callback: (p) => {
+            if (p.status === 'progress' && p.file && p.file.endsWith('.bin')) {
+              const pct = Math.round((p.loaded / p.total) * 100);
+              const bar = document.getElementById('whisperProgressBar');
+              const txt = document.getElementById('whisperProgressText');
+              if (bar) bar.style.width = pct + '%';
+              if (txt) txt.textContent = `Model download: ${pct}%`;
+            }
+          }
+        }
+      );
+      window.__whisperReady = true;
+      console.log('✅ Whisper-base ready');
+    } catch (e) {
+      console.error('Whisper load failed:', e);
+      window.__whisperLoading = false;
+    }
+  };
+
+  window.addEventListener('load', () => setTimeout(() => window.__loadWhisper(), 2000));
+</script>
 
 <style>
     html { scroll-behavior: smooth; }
@@ -120,26 +160,68 @@
     .toast.error { border-color: #ef4444; }
     @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* Loading spinner */
+    /* Caption Overlay */
+    #autoCaptionOverlay {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 92%;
+        text-align: center;
+        z-index: 60;
+        pointer-events: none;
+        line-height: 1.15;
+        letter-spacing: 0.5px;
+        padding: 8px 16px;
+        opacity: 0;
+        transition: opacity 0.12s;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+
+    /* Caption Controls */
+    .caption-controls { background: #0c0c10; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #1a1a22; }
+    .caption-controls select, .caption-controls input[type="text"], .caption-controls input[type="number"] { background: #18181c; border: 1px solid #2a2a32; border-radius: 8px; color: #e5e7eb; padding: 6px 10px; font-size: 11px; outline: none; width: 100%; }
+    .caption-controls select:focus, .caption-controls input:focus { border-color: #3b82f6; }
+    .caption-controls .control-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .caption-controls .control-row > * { flex: 1; min-width: 100px; }
+    .caption-controls label { font-size: 9px; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 2px; }
+
+    /* Caption Line Item */
+    .caption-line-item { display: flex; align-items: center; gap: 8px; background: #18181c; border: 1px solid #27272a; border-radius: 8px; padding: 6px; }
+    .caption-line-item input { flex: 1; background: transparent; border: none; border-bottom: 1px solid transparent; color: #e5e7eb; font-size: 11px; outline: none; }
+    .caption-line-item input:focus { border-bottom-color: #ec4899; }
+
     .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Scrollbar for whole page */
     ::-webkit-scrollbar { width: 10px; }
     ::-webkit-scrollbar-track { background: #0a0a0a; }
     ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 5px; }
     ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
-    /* Studio canvas */
     #studio-canvas-container { touch-action: none; }
+
+    /* Trending badge */
+    .trending-badge {
+        position: absolute; top: 12px; right: 12px; z-index: 70;
+        background: linear-gradient(135deg, #ec4899, #f43f5e);
+        color: white; font-size: 9px; font-weight: 900; letter-spacing: 1px;
+        padding: 4px 10px; border-radius: 999px;
+        box-shadow: 0 0 20px rgba(236,72,153,0.6);
+        animation: pulse-badge 1.8s infinite;
+    }
+    @keyframes pulse-badge {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(236,72,153,0.6); }
+        50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(236,72,153,0.9); }
+    }
 </style>
 </head>
 <body>
 
 <input type="file" id="video-file-picker" accept="video/*,image/*" style="display:none;">
 <input type="file" id="animal-image-picker" accept="image/*" style="display:none;">
+<input type="file" id="srtImporter" accept=".srt,.vtt" style="display:none;">
 
-<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- NAVBAR -->
@@ -176,7 +258,7 @@
     <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Pro templates and smart tools to make videos for TikTok, YouTube, and personal branding. No signup required.</p>
     
     <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <button onclick="window.open('editor.html', '_blank')" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2">
+        <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2">
             <i class="fas fa-plus"></i> New Project
         </button>
         <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2">
@@ -213,6 +295,10 @@
                 <i class="fas fa-clapperboard text-4xl text-zinc-700 mb-2 animate-pulse"></i>
                 <p class="text-xs text-zinc-500">Loading project layer parameters...</p>
             </div>
+
+            <div class="trending-badge hidden" id="trendingBadge">
+                <i class="fas fa-fire"></i> AI CAPTION LIVE
+            </div>
             
             <canvas id="drawOverlayCanvas" class="draw-overlay-canvas"></canvas>
             
@@ -227,10 +313,6 @@
                 </div>
                 <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:4px;" id="drawColorPaletteOverlay"></div>
                 <button onclick="clearDrawOverlay()" style="background:#ef4444; border:none; color:#fff; padding:4px 10px; border-radius:6px; font-size:10px; cursor:pointer; margin-top:4px;">Clear</button>
-            </div>
-
-            <div id="studio-caption-box" class="absolute bottom-12 left-4 right-4 text-center pointer-events-none hidden">
-                <span class="bg-black/80 px-3 py-1.5 rounded-lg border border-zinc-800 text-yellow-400 font-bold text-xs tracking-wide">Dravoo Smart Layer</span>
             </div>
         </div>
 
@@ -266,6 +348,9 @@
             </div>
             <div id="timeline-text-track" onclick="switchToTextSubMenu()" class="timeline-track rounded-lg h-8 flex items-center px-3 cursor-pointer hover:bg-zinc-900 transition">
                 <span class="text-[10px] font-bold text-amber-400 flex items-center gap-1.5"><i class="fas fa-font"></i> + Add text</span>
+            </div>
+            <div id="timeline-caption-track" onclick="openAutoCaptions()" class="timeline-track rounded-lg h-8 flex items-center px-3 cursor-pointer hover:bg-zinc-900 transition">
+                <span class="text-[10px] font-bold text-pink-400 flex items-center gap-1.5"><i class="fas fa-closed-captioning"></i> + Auto Captions (AI)</span>
             </div>
         </div>
 
@@ -315,7 +400,7 @@
     </div>
 </section>
 
-<!-- STUDIO DRAWER -->
+<!-- STUDIO DRAWER (Text/Fonts/Styles/Stickers) -->
 <div class="editor-drawer" id="dravooStudioDrawer">
     <div class="drawer-header">
         <button class="text-zinc-400 hover:text-white text-md" onclick="closeStudioDrawer()">✕</button>
@@ -359,44 +444,138 @@
     </div>
 </div>
 
-<!-- CAPTIONS DRAWER -->
+<!-- ============================================================ -->
+<!-- AUTO CAPTIONS DRAWER (NEW - Whisper AI Powered)             -->
+<!-- ============================================================ -->
 <div class="editor-drawer" id="captionsDrawer">
     <div class="drawer-header">
         <button class="text-zinc-400 hover:text-white text-md" onclick="closeCaptionsDrawer()">✕</button>
-        <div class="flex-grow"><span class="text-sm font-bold text-white">Auto Captions</span></div>
-        <button class="text-blue-500 hover:text-blue-400 text-md font-bold" onclick="processAutoCaptions()">Generate</button>
+        <div class="flex-grow">
+            <span class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fas fa-closed-captioning text-pink-400"></i>
+                AI Auto Captions
+                <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full border border-pink-500/30">TRENDING 🔥</span>
+            </span>
+        </div>
     </div>
+
     <div class="p-4 space-y-4 overflow-y-auto flex-1">
+
+        <!-- Language & Translation -->
+        <div class="caption-controls">
+            <div class="control-row">
+                <div>
+                    <label><i class="fas fa-language mr-1"></i>Language</label>
+                    <select id="captionLanguage">
+                        <option value="auto">🌐 Auto Detect</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="ur">🇵🇰 Urdu</option>
+                        <option value="hi">🇮🇳 Hindi</option>
+                        <option value="ar">🇸🇦 Arabic</option>
+                        <option value="zh">🇨🇳 Chinese</option>
+                        <option value="es">🇪🇸 Spanish</option>
+                    </select>
+                </div>
+                <div>
+                    <label><i class="fas fa-robot mr-1"></i>Task Mode</label>
+                    <select id="captionTask">
+                        <option value="transcribe">✍️ Transcribe (Same Language)</option>
+                        <option value="translate">🌍 Translate to English</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate Button -->
         <div>
-            <label class="text-xs text-zinc-400 font-medium">Select Template Style</label>
-            <select id="captionTemplateSelect" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white text-sm mt-1">
-                <option value="default">Default</option>
-                <option value="cinematic">Cinematic</option>
-                <option value="comic">Comic</option>
-                <option value="elegant">Elegant</option>
-                <option value="neon">Neon</option>
-                <option value="retro">Retro</option>
-                <option value="minimal">Minimal</option>
-                <option value="bold">Bold</option>
-                <option value="graffiti">Graffiti</option>
-                <option value="vintage">Vintage</option>
-                <option value="cyber">Cyberpunk</option>
-                <option value="dreamy">Dreamy</option>
-            </select>
+            <button id="autoCaptionBtn" onclick="generateAutoCaptions()"
+                class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white text-xs font-bold py-3 rounded-lg flex items-center justify-center gap-2 shadow-lg">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                <span id="autoCaptionBtnText">✨ Generate AI Captions (Whisper)</span>
+            </button>
+
+            <div id="whisperProgressWrap" class="mt-2 hidden">
+                <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                    <div id="whisperProgressBar" class="bg-emerald-500 h-full transition-all duration-300" style="width:0%"></div>
+                </div>
+                <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">Loading model...</p>
+            </div>
+
+            <p class="text-[9px] text-zinc-600 mt-2 text-center leading-tight">
+                <i class="fas fa-info-circle mr-1"></i>First time: ~75MB model download. Cached afterwards.
+            </p>
         </div>
-        <div>
-            <label class="text-xs text-zinc-400 font-medium">Upload Video for Auto-Caption</label>
-            <input type="file" id="captionVideoInput" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-500/10 file:text-blue-400 hover:file:bg-blue-500/20 mt-1">
+
+        <!-- Caption Style (Karaoke) -->
+        <div class="caption-controls">
+            <label class="mb-2"><i class="fas fa-palette mr-1 text-pink-400"></i>Caption Style (Karaoke Effect)</label>
+            <div class="control-row mb-2">
+                <select id="captionStyleMode" onchange="applyCaptionStyle()">
+                    <option value="karaoke">🎤 Karaoke (CapCut)</option>
+                    <option value="minimal">✨ Minimal</option>
+                    <option value="bold">💥 Bold Yellow</option>
+                    <option value="neon">🌟 Neon Glow</option>
+                </select>
+                <select id="captionWordsPerLine" onchange="applyCaptionStyle()">
+                    <option value="3">3 Words</option>
+                    <option value="4" selected>4 Words</option>
+                    <option value="5">5 Words</option>
+                    <option value="6">6 Words</option>
+                </select>
+            </div>
+
+            <!-- 🔥 TRENDING: Animation Speed -->
+            <label class="mt-2"><i class="fas fa-bolt mr-1 text-yellow-400"></i>Animation Speed <span id="speedValue" class="text-yellow-400">1.0x</span></label>
+            <input type="range" id="captionSpeed" min="0.5" max="2" step="0.1" value="1" 
+                oninput="document.getElementById('speedValue').textContent = this.value + 'x'; captionSettings.speed = parseFloat(this.value);" 
+                class="w-full accent-yellow-500 mb-2">
+
+            <div class="control-row">
+                <input type="color" id="captionHighlightColor" value="#FFD700" onchange="applyCaptionStyle()" class="w-full h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Highlight color" />
+                <input type="color" id="captionBaseColor" value="#FFFFFF" onchange="applyCaptionStyle()" class="w-full h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Base color" />
+                <select id="captionPos" onchange="applyCaptionStyle()">
+                    <option value="bottom">⬇️ Bottom</option>
+                    <option value="middle">⏺️ Middle</option>
+                    <option value="top">⬆️ Top</option>
+                </select>
+            </div>
+
+            <!-- 🔥 TRENDING: Word Fade Effect Toggle -->
+            <div class="flex items-center gap-2 mt-2">
+                <input type="checkbox" id="captionFade" checked class="accent-pink-500 w-4 h-4" onchange="captionSettings.fade = this.checked;">
+                <label for="captionFade" class="text-[10px] text-zinc-400 cursor-pointer">🔥 Word Fade Effect (Smooth Transitions)</label>
+            </div>
         </div>
-        <div id="captionStatus" class="text-xs text-zinc-400 hidden">Processing audio for captions...</div>
-        <div id="captionPreviewContainer" class="hidden border border-zinc-700 rounded-lg p-4 bg-black/50">
-            <p class="text-xs text-zinc-400 mb-2">Generated Captions</p>
-            <div id="captionPreviewText" class="text-center text-white font-bold text-lg"></div>
+
+        <!-- Import / Export -->
+        <div class="caption-controls">
+            <label class="mb-2"><i class="fas fa-file-import mr-1 text-blue-400"></i>Import / Export</label>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="exportSRT()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-bold py-2 rounded-lg">
+                    <i class="fas fa-download mr-1"></i>SRT
+                </button>
+                <button onclick="exportVTT()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-bold py-2 rounded-lg">
+                    <i class="fas fa-download mr-1"></i>VTT
+                </button>
+                <button onclick="document.getElementById('srtImporter').click()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-bold py-2 rounded-lg">
+                    <i class="fas fa-upload mr-1"></i>Import
+                </button>
+            </div>
         </div>
-        <div id="captionTextDisplay" class="hidden border border-zinc-700 rounded-lg p-3 bg-black/30 max-h-40 overflow-y-auto">
-            <p class="text-xs text-zinc-400 mb-1">Full Transcript</p>
-            <p id="fullTranscriptText" class="text-sm text-gray-300"></p>
+
+        <!-- Caption Lines Editor -->
+        <div class="caption-controls">
+            <div class="flex items-center justify-between mb-2">
+                <label class="text-[9px] text-zinc-500 uppercase tracking-wider">
+                    <i class="fas fa-list mr-1 text-amber-400"></i>Caption Lines
+                </label>
+                <span id="captionLinesCount" class="text-[9px] text-zinc-600">0 lines</span>
+            </div>
+            <div id="captionLinesList" class="max-h-40 overflow-y-auto space-y-1 pr-1">
+                <p class="text-[10px] text-zinc-600 text-center py-2">No captions yet. Click "Generate AI Captions" above.</p>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -404,10 +583,15 @@
 <section id="tools-catalog" class="max-w-5xl mx-auto px-6 mb-24">
     <h3 class="text-xl font-black mb-6 uppercase tracking-wider text-gray-300"><i class="fas fa-shapes text-blue-500 mr-2"></i> All One-Stop Professional Tools</h3>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        <div class="feature-box p-6 border-blue-500/30 bg-blue-950/5 text-center">
-            <i class="fas fa-scissors text-2xl text-blue-400 mb-3"></i>
-            <h4 class="text-xs font-bold uppercase tracking-wide">Video Trimmer</h4>
-            <p class="text-[10px] text-blue-400 mt-1 font-semibold">Active Studio</p>
+        <div onclick="document.getElementById('video-file-picker').click()" class="feature-box p-6 border-blue-500/30 bg-blue-950/5 text-center">
+            <i class="fas fa-plus text-2xl text-blue-400 mb-3"></i>
+            <h4 class="text-xs font-bold uppercase tracking-wide">New Project</h4>
+            <p class="text-[10px] text-blue-400 mt-1 font-semibold">Start Editing</p>
+        </div>
+        <div onclick="openAutoCaptions()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
+            <i class="fas fa-closed-captioning text-2xl text-pink-400 mb-3"></i>
+            <h4 class="text-xs font-bold uppercase tracking-wide">AI Auto Captions</h4>
+            <p class="text-[10px] text-pink-400 mt-1 font-semibold">🔥 Trending</p>
         </div>
         <div onclick="openAnimalStudio()" class="feature-box p-6 border-pink-500/30 bg-pink-950/5 text-center">
             <i class="fas fa-paw text-2xl text-pink-400 mb-3"></i>
@@ -587,6 +771,7 @@ const timeIndexLbl = document.getElementById('player-time-index');
 const mainEditorMenu = document.getElementById('main-editor-menu');
 const textFeaturesSubmenu = document.getElementById('text-features-submenu');
 const studioCanvasContainer = document.getElementById('studio-canvas-container');
+const trendingBadge = document.getElementById('trendingBadge');
 
 let activeTextNode = null;
 
@@ -633,7 +818,7 @@ function toggleStudioPlayback() {
 }
 
 document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && !advStudioSection.classList.contains('hidden') && e.target.tagName !== 'INPUT') {
+    if (e.code === 'Space' && !advStudioSection.classList.contains('hidden') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
         toggleStudioPlayback();
     }
@@ -656,6 +841,10 @@ function closeStudioWorkspace() {
     if (!confirm("Close this editing workspace? Unsaved changes will be lost.")) return;
     advStudioSection.classList.add('hidden');
     mainStudioPlayer.pause();
+    // Stop caption sync
+    if (captionSyncRAF) cancelAnimationFrame(captionSyncRAF);
+    const ov = document.getElementById('autoCaptionOverlay');
+    if (ov) ov.remove();
     window.scrollTo(0,0);
 }
 
@@ -677,6 +866,443 @@ function exitTextSubMenu() {
 }
 
 /* ============================================================
+   ⭐ AUTO CAPTION SYSTEM (Whisper AI) — CORE LOGIC
+============================================================ */
+
+// Global state
+let autoCaptionSegments = [];
+let wordGroups = [];
+let captionSyncRAF = null;
+let captionSettings = {
+    mode: 'karaoke',
+    wordsPerLine: 4,
+    highlight: '#FFD700',
+    base: '#FFFFFF',
+    pos: 'bottom',
+    speed: 1.0,
+    fade: true
+};
+
+// ---------- Split segments into individual words ----------
+function splitIntoWords(segments) {
+    const out = [];
+    segments.forEach(seg => {
+        const words = (seg.text || '').trim().split(/\s+/).filter(Boolean);
+        if (words.length === 0) return;
+        const dur = Math.max(0.3, (seg.end - seg.start)) / words.length;
+        words.forEach((w, i) => {
+            out.push({
+                word: w,
+                start: seg.start + i * dur,
+                end: seg.start + (i + 1) * dur
+            });
+        });
+    });
+    return out;
+}
+
+// ---------- Group words (4 per group for karaoke) ----------
+function groupWords(words, size) {
+    const groups = [];
+    for (let i = 0; i < words.length; i += size) {
+        const chunk = words.slice(i, i + size);
+        groups.push({
+            start: chunk[0].start,
+            end: chunk[chunk.length - 1].end,
+            words: chunk
+        });
+    }
+    return groups;
+}
+
+// ---------- Rebuild groups when settings change ----------
+function rebuildWordGroups() {
+    const words = splitIntoWords(autoCaptionSegments);
+    wordGroups = groupWords(words, captionSettings.wordsPerLine);
+    renderCaptionLinesList();
+}
+
+// ---------- Stereo → Mono ----------
+function mixToMono(audioBuffer) {
+    const ch = audioBuffer.numberOfChannels;
+    const len = audioBuffer.length;
+    const out = new Float32Array(len);
+    for (let i = 0; i < len; i++) {
+        let sum = 0;
+        for (let c = 0; c < ch; c++) sum += audioBuffer.getChannelData(c)[i];
+        out[i] = sum / ch;
+    }
+    return out;
+}
+
+// ---------- MAIN: Generate Auto Captions ----------
+async function generateAutoCaptions() {
+    const btn = document.getElementById('autoCaptionBtn');
+    const btnTxt = document.getElementById('autoCaptionBtnText');
+    const progWrap = document.getElementById('whisperProgressWrap');
+    const progBar = document.getElementById('whisperProgressBar');
+    const progTxt = document.getElementById('whisperProgressText');
+
+    if (!mainStudioPlayer.src || mainStudioPlayer.classList.contains('hidden')) {
+        showToast('❌ Please upload a video first', 'error');
+        return;
+    }
+    progWrap.classList.remove('hidden');
+
+    // Wait for Whisper model
+    if (!window.__whisperReady) {
+        progBar.style.width = '3%';
+        progTxt.textContent = 'Loading Whisper-base model (~75MB)...';
+        showToast('⏳ Loading AI model, please wait...', 'info');
+        window.__loadWhisper && window.__loadWhisper();
+        const wait = setInterval(() => {
+            if (window.__whisperReady) {
+                clearInterval(wait);
+                progTxt.textContent = 'Model ready!';
+                setTimeout(() => generateAutoCaptions(), 300);
+            }
+        }, 800);
+        return;
+    }
+
+    btn.disabled = true;
+    btnTxt.textContent = 'Extracting audio...';
+    progBar.style.width = '15%';
+
+    try {
+        // STEP 1: Decode audio at 16kHz (Whisper requirement)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        const arrayBuf = await fetch(mainStudioPlayer.src).then(r => r.arrayBuffer());
+        const decoded = await audioCtx.decodeAudioData(arrayBuf);
+        const mono = decoded.numberOfChannels > 1 ? mixToMono(decoded) : decoded.getChannelData(0);
+        audioCtx.close();
+
+        progBar.style.width = '35%';
+        progTxt.textContent = 'Transcribing with Whisper AI...';
+        btnTxt.textContent = 'Transcribing...';
+
+        // STEP 2: Language + Task settings
+        const selectedLang = document.getElementById('captionLanguage').value;
+        const selectedTask = document.getElementById('captionTask').value;
+        let langOpt = undefined;
+        if (selectedLang !== 'auto') {
+            const map = { en: 'english', ur: 'urdu', hi: 'hindi', ar: 'arabic', zh: 'chinese', es: 'spanish' };
+            langOpt = map[selectedLang] || 'english';
+        }
+
+        const opts = {
+            task: selectedTask,           // 'transcribe' or 'translate'
+            chunk_length_s: 30,
+            stride_length_s: 5,
+            return_timestamps: true,      // ⭐ Critical for karaoke timing
+        };
+        if (langOpt) opts.language = langOpt;
+
+        // STEP 3: Run Whisper inference
+        const result = await window.__whisperPipeline(mono, opts);
+
+        progBar.style.width = '85%';
+        progTxt.textContent = 'Building captions...';
+
+        // STEP 4: Parse chunks with timestamps
+        autoCaptionSegments = [];
+        if (result.chunks && result.chunks.length > 0) {
+            result.chunks.forEach(chunk => {
+                if (chunk.text && chunk.timestamp) {
+                    autoCaptionSegments.push({
+                        start: chunk.timestamp[0] || 0,
+                        end: chunk.timestamp[1] || (chunk.timestamp[0] + 3),
+                        text: chunk.text.trim()
+                    });
+                }
+            });
+        } else if (result.text) {
+            // Fallback: split evenly
+            const words = result.text.trim().split(/\s+/);
+            const perChunk = 6;
+            const duration = mainStudioPlayer.duration || 10;
+            const chunkDur = duration / Math.ceil(words.length / perChunk);
+            for (let i = 0; i < words.length; i += perChunk) {
+                const idx = i / perChunk;
+                autoCaptionSegments.push({
+                    start: idx * chunkDur,
+                    end: (idx + 1) * chunkDur,
+                    text: words.slice(i, i + perChunk).join(' ')
+                });
+            }
+        }
+
+        if (autoCaptionSegments.length === 0) throw new Error('No text detected');
+
+        // STEP 5: Build karaoke groups + start sync
+        rebuildWordGroups();
+        setupCaptionOverlay();
+        startCaptionSync();
+
+        progBar.style.width = '100%';
+        progTxt.textContent = `✅ ${autoCaptionSegments.length} captions generated!`;
+        btnTxt.textContent = 'Regenerate Captions';
+        btn.disabled = false;
+        trendingBadge.classList.remove('hidden');
+        showToast(`✅ ${wordGroups.length} karaoke groups ready!`, 'success');
+        setTimeout(() => { progWrap.classList.add('hidden'); progBar.style.width = '0%'; }, 3000);
+
+    } catch (err) {
+        console.error('Auto caption error:', err);
+        btn.disabled = false;
+        btnTxt.textContent = 'Retry Auto Caption';
+        progTxt.textContent = '❌ Failed: ' + (err.message || 'Unknown');
+        showToast('❌ Caption generation failed', 'error');
+        setTimeout(() => progWrap.classList.add('hidden'), 4000);
+    }
+}
+
+// ---------- Setup overlay element ----------
+function setupCaptionOverlay() {
+    let overlay = document.getElementById('autoCaptionOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'autoCaptionOverlay';
+        studioCanvasContainer.appendChild(overlay);
+    }
+
+    // Position
+    if (captionSettings.pos === 'bottom') {
+        overlay.style.bottom = '8%';
+        overlay.style.top = 'auto';
+        overlay.style.transform = 'translateX(-50%)';
+    } else if (captionSettings.pos === 'middle') {
+        overlay.style.top = '50%';
+        overlay.style.bottom = 'auto';
+        overlay.style.transform = 'translate(-50%, -50%)';
+    } else {
+        overlay.style.top = '8%';
+        overlay.style.bottom = 'auto';
+        overlay.style.transform = 'translateX(-50%)';
+    }
+
+    // Style per mode
+    const mode = captionSettings.mode;
+    if (mode === 'karaoke') {
+        overlay.style.fontSize = '22px';
+        overlay.style.background = 'rgba(0,0,0,0.65)';
+        overlay.style.borderRadius = '14px';
+        overlay.style.padding = '10px 18px';
+        overlay.style.textShadow = '0 0 10px rgba(0,0,0,1), 3px 3px 6px rgba(0,0,0,0.9)';
+        overlay.style.border = '2px solid rgba(255,255,255,0.15)';
+        overlay.style.backdropFilter = 'blur(6px)';
+        overlay.style.fontFamily = "'Bebas Neue', 'Inter', sans-serif";
+    } else if (mode === 'minimal') {
+        overlay.style.fontSize = '15px';
+        overlay.style.background = 'rgba(0,0,0,0.35)';
+        overlay.style.borderRadius = '8px';
+        overlay.style.padding = '4px 12px';
+        overlay.style.textShadow = '0 0 6px rgba(0,0,0,0.9)';
+        overlay.style.border = 'none';
+        overlay.style.backdropFilter = 'blur(2px)';
+        overlay.style.fontFamily = "'Inter', sans-serif";
+    } else if (mode === 'bold') {
+        overlay.style.fontSize = '26px';
+        overlay.style.background = 'transparent';
+        overlay.style.borderRadius = '0';
+        overlay.style.padding = '0 8px';
+        overlay.style.textShadow = '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 0 20px rgba(0,0,0,0.8)';
+        overlay.style.border = 'none';
+        overlay.style.backdropFilter = 'none';
+        overlay.style.fontFamily = "'Anton', sans-serif";
+    } else if (mode === 'neon') {
+        overlay.style.fontSize = '20px';
+        overlay.style.background = 'rgba(0,0,0,0.5)';
+        overlay.style.borderRadius = '12px';
+        overlay.style.padding = '8px 16px';
+        overlay.style.textShadow = `0 0 8px ${captionSettings.highlight}, 0 0 16px ${captionSettings.highlight}`;
+        overlay.style.border = `2px solid ${captionSettings.highlight}`;
+        overlay.style.backdropFilter = 'blur(4px)';
+        overlay.style.fontFamily = "'Orbitron', sans-serif";
+    }
+    return overlay;
+}
+
+// ---------- Apply style changes ----------
+function applyCaptionStyle() {
+    captionSettings.mode = document.getElementById('captionStyleMode').value;
+    captionSettings.wordsPerLine = parseInt(document.getElementById('captionWordsPerLine').value);
+    captionSettings.highlight = document.getElementById('captionHighlightColor').value;
+    captionSettings.base = document.getElementById('captionBaseColor').value;
+    captionSettings.pos = document.getElementById('captionPos').value;
+    setupCaptionOverlay();
+    rebuildWordGroups();
+    showToast('🎨 Caption style updated', 'success');
+}
+
+// ---------- ⭐ REAL-TIME KARAOKE SYNC LOOP ----------
+function startCaptionSync() {
+    if (captionSyncRAF) cancelAnimationFrame(captionSyncRAF);
+    const overlay = setupCaptionOverlay();
+
+    const loop = () => {
+        const t = mainStudioPlayer.currentTime;
+
+        // Find active group
+        let activeGroup = null;
+        for (const g of wordGroups) {
+            if (t >= g.start && t < g.end) {
+                activeGroup = g;
+                break;
+            }
+        }
+
+        if (activeGroup) {
+            let html = '';
+            activeGroup.words.forEach(w => {
+                const isActive = t >= w.start && t < w.end;
+                const color = isActive ? captionSettings.highlight : captionSettings.base;
+
+                // Speed affects transition duration
+                const transDur = (0.08 / captionSettings.speed).toFixed(3);
+
+                // Fade effect toggle
+                const fadeStyle = captionSettings.fade && isActive
+                    ? `opacity: 1; transform: scale(1.18);`
+                    : (captionSettings.fade ? `opacity: 0.7; transform: scale(1);` : '');
+
+                const scale = isActive ? 'display:inline-block;' : '';
+                const extra = isActive ? `text-shadow: 0 0 12px ${captionSettings.highlight};` : '';
+
+                html += `<span style="color:${color}; ${scale} ${fadeStyle} ${extra} transition: all ${transDur}s cubic-bezier(0.16, 1, 0.3, 1); margin: 0 4px;">${w.word}</span>`;
+            });
+
+            if (overlay.innerHTML !== html) overlay.innerHTML = html;
+            overlay.style.opacity = '1';
+        } else {
+            overlay.style.opacity = '0';
+        }
+
+        captionSyncRAF = requestAnimationFrame(loop);
+    };
+    loop();
+}
+
+// ---------- Caption Lines Editor ----------
+function renderCaptionLinesList() {
+    const list = document.getElementById('captionLinesList');
+    const count = document.getElementById('captionLinesCount');
+    if (!list) return;
+    if (autoCaptionSegments.length === 0) {
+        list.innerHTML = '<p class="text-[10px] text-zinc-600 text-center py-2">No captions yet</p>';
+        if (count) count.textContent = '0 lines';
+        return;
+    }
+    if (count) count.textContent = `${autoCaptionSegments.length} lines`;
+    list.innerHTML = autoCaptionSegments.map((s, i) => `
+        <div class="caption-line-item">
+            <span class="text-[9px] text-zinc-500 font-mono w-10 flex-shrink-0">${formatTime(s.start)}</span>
+            <input type="text" value="${(s.text || '').replace(/"/g, '&quot;')}"
+                oninput="editCaptionLine(${i}, this.value)" />
+            <button onclick="deleteCaptionLine(${i})" class="text-red-400 hover:text-red-300 text-[10px] px-1">✕</button>
+        </div>
+    `).join('');
+}
+function editCaptionLine(i, val) {
+    if (!autoCaptionSegments[i]) return;
+    autoCaptionSegments[i].text = val;
+    rebuildWordGroups();
+}
+function deleteCaptionLine(i) {
+    autoCaptionSegments.splice(i, 1);
+    rebuildWordGroups();
+    showToast('🗑️ Line deleted', 'info');
+}
+
+// ---------- SRT/VTT Export ----------
+function secToSRT(s) {
+    const h = Math.floor(s / 3600).toString().padStart(2, '0');
+    const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+    const sec = Math.floor(s % 60).toString().padStart(2, '0');
+    const ms = Math.floor((s % 1) * 1000).toString().padStart(3, '0');
+    return `${h}:${m}:${sec},${ms}`;
+}
+function secToVTT(s) { return secToSRT(s).replace(',', '.'); }
+
+function exportSRT() {
+    if (autoCaptionSegments.length === 0) { showToast('❌ No captions to export', 'error'); return; }
+    let out = '';
+    autoCaptionSegments.forEach((s, i) => {
+        out += `${i + 1}\n${secToSRT(s.start)} --> ${secToSRT(s.end)}\n${s.text}\n\n`;
+    });
+    downloadFile(out, 'dravoo-captions.srt', 'text/plain');
+    showToast('✅ SRT exported', 'success');
+}
+function exportVTT() {
+    if (autoCaptionSegments.length === 0) { showToast('❌ No captions to export', 'error'); return; }
+    let out = 'WEBVTT\n\n';
+    autoCaptionSegments.forEach((s, i) => {
+        out += `${i + 1}\n${secToVTT(s.start)} --> ${secToVTT(s.end)}\n${s.text}\n\n`;
+    });
+    downloadFile(out, 'dravoo-captions.vtt', 'text/vtt');
+    showToast('✅ VTT exported', 'success');
+}
+function downloadFile(content, name, type) {
+    const blob = new Blob([content], { type });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+// ---------- SRT Import ----------
+document.getElementById('srtImporter').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const text = ev.target.result;
+        const parsed = parseSRT(text);
+        if (parsed.length === 0) { showToast('❌ Empty or invalid file', 'error'); return; }
+        autoCaptionSegments = parsed;
+        rebuildWordGroups();
+        setupCaptionOverlay();
+        startCaptionSync();
+        trendingBadge.classList.remove('hidden');
+        showToast(`✅ ${parsed.length} captions imported!`, 'success');
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+});
+
+function parseSRT(text) {
+    const out = [];
+    const blocks = text.replace(/\r/g, '').split('\n\n');
+    blocks.forEach(block => {
+        const lines = block.split('\n').filter(Boolean);
+        if (lines.length < 2) return;
+        const timeLine = lines.find(l => l.includes('-->'));
+        if (!timeLine) return;
+        const idx = lines.indexOf(timeLine);
+        const textPart = lines.slice(idx + 1).join(' ').trim();
+        if (!textPart) return;
+        const m = timeLine.match(/(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)/);
+        if (!m) return;
+        const start = (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3]) + (+m[4]) / 1000;
+        const end = (+m[5]) * 3600 + (+m[6]) * 60 + (+m[7]) + (+m[8]) / 1000;
+        out.push({ start, end, text: textPart });
+    });
+    return out;
+}
+
+/* ============================================================
+   CAPTIONS DRAWER OPEN/CLOSE
+============================================================ */
+function openAutoCaptions() {
+    document.getElementById('captionsDrawer').classList.add('open');
+    renderCaptionLinesList();
+}
+function closeCaptionsDrawer() {
+    document.getElementById('captionsDrawer').classList.remove('open');
+}
+
+/* ============================================================
    STUDIO DRAWER SYSTEM
 ============================================================ */
 const studioDrawer = document.getElementById('dravooStudioDrawer');
@@ -687,178 +1313,23 @@ const fontsContainer = document.getElementById('drawer-fonts-panel');
 const effectsContainer = document.getElementById('drawer-effects-panel');
 const colorPaletteContainer = document.getElementById('color-palette-container');
 
-/* ---------- TEMPLATES (150 unique) ---------- */
 const templateStyles = [
-    {name:"ABC Smart", style:"font-family:'Bangers'; color:#ffcc00; text-shadow:2px 2px 0px #000; font-size:18px;"},
-    {name:"Let's Go", style:"font-family:'Bungee'; color:#ff3b30; text-shadow:0 0 10px #ff3b30; font-size:20px;"},
-    {name:"Vlog Day", style:"font-family:'Italianno'; color:#fff; font-size:34px; text-shadow:0 0 20px rgba(255,255,255,0.3);"},
-    {name:"Minimalist", style:"font-family:'Rubik'; letter-spacing:4px; font-weight:300; color:#e0e0e0; font-size:16px;"},
-    {name:"Cyber Neon", style:"font-family:'Oswald'; color:#00f3ff; text-shadow:0 0 8px #00f3ff; font-size:22px; text-transform:uppercase;"},
+    {name:"Bold Impact", style:"font-family:'Anton'; color:#fff; text-transform:uppercase; font-size:24px;"},
+    {name:"Neon Glow", style:"font-family:'Orbitron'; color:#00f3ff; text-shadow:0 0 10px #00f3ff; font-size:22px;"},
+    {name:"Cinematic", style:"font-family:'Bebas Neue'; color:#fff; letter-spacing:6px; font-size:26px;"},
     {name:"Retro Wave", style:"font-family:'Bangers'; color:#ff007f; text-shadow:2px 2px #3f007f; font-size:26px;"},
-    {name:"Golden Hour", style:"font-family:'Larken'; color:#d4af37; font-weight:bold; font-size:24px; text-shadow:0 0 15px #d4af37;"},
-    {name:"Bold Impact", style:"font-family:'Bungee'; background:#fff; color:#000; padding:2px 6px; font-size:18px; border-radius:4px;"},
-    {name:"Modern Clean", style:"font-family:'Rubik'; font-weight:700; color:#4cd964; font-size:20px; letter-spacing:1px;"},
-    {name:"Spooky Night", style:"font-family:'Creepster'; color:#a832a4; text-shadow:1px 1px 5px #000; font-size:22px;"},
-    {name:"Subscribe", style:"font-family:'Oswald'; color:#fff; background:#ff0000; padding:4px; font-size:18px; border-radius:4px;"},
-    {name:"Thanks Watching", style:"font-family:'Italianno'; color:#ffcc00; font-size:38px; text-shadow:0 0 20px #ffcc00;"},
-    {name:"Gaming Ultra", style:"font-family:'Bungee'; color:#00ffcc; text-shadow:3px 3px #000; font-size:24px;"},
-    {name:"Daily Drift", style:"font-family:'Larken'; font-style:italic; color:#e0e0e0; font-size:20px;"},
-    {name:"Stream Live", style:"font-family:'Oswald'; border:2px solid #fff; padding:2px; font-size:18px; border-radius:4px;"},
-    {name:"Vibe Wave", style:"font-family:'Rubik'; color:#ff00ff; text-shadow:0 0 5px #fff; font-size:22px;"},
-    {name:"TikTok Neon", style:"font-family:'Bungee'; color:#fff; text-shadow:2px 2px #ff0055, -2px -2px #00f3ff; font-size:20px;"},
-    {name:"Luxury Sign", style:"font-family:'Playfair Display'; color:#c5a059; letter-spacing:2px; font-size:22px;"},
-    {name:"Comic Blast", style:"font-family:'Bangers'; color:#fffb00; -webkit-text-stroke:1.5px #000; font-size:28px;"},
-    {name:"Dravoo Aura", style:"font-family:'Rubik'; background:linear-gradient(to right, #3b82f6, #ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:24px; font-weight:bold;"},
-    {name:"Gamer Pro", style:"font-family:'Anton'; color:#fff; text-shadow:3px 3px 0px #ff0055; font-size:26px;"},
-    {name:"Tech Review", style:"font-family:'Oswald'; color:#00ff66; background:#111; border-left:4px solid #00ff66; padding:2px 8px; font-size:18px;"},
-    {name:"Urban Vibe", style:"font-family:'Permanent Marker'; color:#ffea00; font-size:24px;"},
-    {name:"Sweet Love", style:"font-family:'Pacifico'; color:#ff758c; font-size:30px; text-shadow:0 0 15px #ff758c;"},
-    {name:"Cinematic", style:"font-family:'Oswald'; letter-spacing:6px; color:#ffffff; text-transform:uppercase; font-size:20px;"},
-    {name:"Anime Intro", style:"font-family:'Bangers'; color:#ff3366; text-shadow:2px 2px 0px #fff; font-size:26px;"},
-    {name:"Meme King", style:"font-family:'Anton'; color:#fff; -webkit-text-stroke:2px #000; font-size:28px;"},
-    {name:"Lo-Fi Beats", style:"font-family:'Rubik'; color:#b19ffb; font-style:italic; font-size:20px;"},
-    {name:"Breaking News", style:"font-family:'Oswald'; background:#e11d48; color:#fff; padding:2px 10px; font-weight:900; font-size:18px;"},
-    {name:"Luxury Hotel", style:"font-family:'Italianno'; color:#dfb76c; font-size:42px; text-shadow:0 0 20px #dfb76c;"},
-    {name:"Fitness Beast", style:"font-family:'Anton'; color:#ff5722; text-transform:uppercase; font-style:oblique; font-size:24px;"},
-    {name:"Crypto Moon", style:"font-family:'Bungee'; color:#eab308; font-size:22px; text-shadow:0 0 10px #eab308;"},
-    {name:"Neon Pink", style:"font-family:'Pacifico'; color:#f43f5e; text-shadow:0 0 10px #f43f5e; font-size:28px;"},
-    {name:"Glitch", style:"font-family:'Oswald'; color:#fff; text-shadow:2px 0 #00fffa, -2px 0 #ff00c6; font-size:22px;"},
-    {name:"Vintage Look", style:"font-family:'Playfair Display'; color:#d4c5b9; font-size:20px; font-style:italic;"},
-    {name:"Wild West", style:"font-family:'Bangers'; color:#b45309; font-size:26px; text-shadow:2px 2px 0 #000;"},
+    {name:"Golden Hour", style:"font-family:'Playfair Display'; color:#d4af37; font-weight:bold; font-size:24px; text-shadow:0 0 15px #d4af37;"},
+    {name:"Bubble Pop", style:"font-family:'Poppins'; font-weight:900; color:#ff6b6b; font-size:22px; text-shadow:2px 2px 0 #fff;"},
     {name:"Cyber Punk", style:"font-family:'Permanent Marker'; color:#06b6d4; text-shadow:2px 2px #000; font-size:24px;"},
-    {name:"Sleek Fashion", style:"font-family:'Rubik'; letter-spacing:3px; text-transform:uppercase; font-weight:bold; font-size:18px;"},
-    {name:"Ocean Wave", style:"font-family:'Lobster'; color:#0ea5e9; font-size:28px; text-shadow:0 0 15px #0ea5e9;"},
-    {name:"Cozy Winter", style:"font-family:'Pacifico'; color:#93c5fd; font-size:26px;"},
-    {name:"Epic Trailer", style:"font-family:'Anton'; letter-spacing:4px; color:#e2e8f0; font-size:24px;"},
-    {name:"Hyper Drive", style:"font-family:'Bungee'; color:#a855f7; font-size:22px; text-shadow:0 0 10px #a855f7;"},
-    {name:"Minimal Dark", style:"font-family:'Oswald'; color:#fff; font-size:18px; letter-spacing:2px;"},
-    {name:"Sunset Beach", style:"font-family:'Lobster'; color:#f97316; font-size:28px; text-shadow:0 0 15px #f97316;"},
-    {name:"Pixel Quest", style:"font-family:'Bungee'; color:#22c55e; font-size:22px; text-shadow:2px 2px 0 #000;"},
-    {name:"Graffiti Tag", style:"font-family:'Permanent Marker'; color:#ec4899; font-size:26px;"},
-    {name:"Golden Royalty", style:"font-family:'Italianno'; color:#facc15; font-size:40px; text-shadow:0 0 20px #facc15;"},
-    {name:"Fast Motion", style:"font-family:'Anton'; color:#10b981; font-style:italic; font-size:24px;"},
-    {name:"Mystic Magic", style:"font-family:'Rubik'; color:#6366f1; text-shadow:0 0 8px #6366f1; font-size:22px;"},
-    {name:"End Screen", style:"font-family:'Oswald'; background:#ffffff; color:#000000; padding:2px 6px; font-size:18px; border-radius:4px;"},
-    {name:"Alpha Force", style:"font-family:'Alfa Slab One'; color:#ff6b6b; text-shadow:3px 3px 0 #000; font-size:24px;"},
-    {name:"Beta Strike", style:"font-family:'Architects Daughter'; color:#feca57; font-size:28px;"},
-    {name:"Gamma Ray", style:"font-family:'Barlow Condensed'; color:#48dbfb; letter-spacing:5px; font-size:20px;"},
-    {name:"Delta Wave", style:"font-family:'Bebas Neue'; color:#ff9ff3; text-shadow:2px 2px 0 #000; font-size:26px;"},
-    {name:"Epsilon Pro", style:"font-family:'Black Ops One'; color:#ff6b6b; background:#000; padding:4px; font-size:20px;"},
-    {name:"Zeta Prime", style:"font-family:'Boogaloo'; color:#ffcc00; font-style:italic; font-size:24px;"},
-    {name:"Eta Vision", style:"font-family:'Carter One'; color:#fff; background:#1dd1a1; padding:2px 8px; font-size:18px;"},
-    {name:"Theta Edge", style:"font-family:'Changa One'; color:#f368e0; text-shadow:2px 2px 0 #000; font-size:22px;"},
-    {name:"Iota Pulse", style:"font-family:'Chewy'; color:#ff9f43; font-size:26px;"},
-    {name:"Kappa Core", style:"font-family:'Comfortaa'; color:#54a0ff; letter-spacing:3px; font-size:18px;"},
-    {name:"Lambda Shift", style:"font-family:'Courgette'; color:#ff6b6b; font-size:32px;"},
-    {name:"Mu Fusion", style:"font-family:'Creepster'; color:#ff0000; text-shadow:2px 2px #000; font-size:24px;"},
-    {name:"Nu Nexus", style:"font-family:'Dancing Script'; color:#feca57; font-size:30px;"},
-    {name:"Xi Vector", style:"font-family:'Diplomata SC'; color:#c8d6e5; text-transform:uppercase; font-size:18px;"},
-    {name:"Omicron X", style:"font-family:'Dr Sugiyama'; color:#ff9ff3; font-size:36px;"},
-    {name:"Pi Reactor", style:"font-family:'Exo 2'; color:#48dbfb; font-weight:700; font-size:20px;"},
-    {name:"Rho Nexus", style:"font-family:'Fredoka One'; color:#ff6b6b; text-shadow:3px 3px 0 #000; font-size:24px;"},
-    {name:"Sigma Grid", style:"font-family:'Gabriela'; color:#feca57; font-style:italic; font-size:22px;"},
-    {name:"Tau Matrix", style:"font-family:'Gloria Hallelujah'; color:#54a0ff; font-size:26px;"},
-    {name:"Upsilon", style:"font-family:'Gochi Hand'; color:#ff9f43; font-weight:bold; font-size:24px;"},
-    {name:"Phi Engine", style:"font-family:'Great Vibes'; color:#ff6b6b; font-size:34px;"},
-    {name:"Chi Blade", style:"font-family:'Hammersmith One'; color:#fff; background:#1dd1a1; padding:4px; font-size:18px;"},
-    {name:"Psi Drive", style:"font-family:'Indie Flower'; color:#f368e0; font-size:28px;"},
-    {name:"Omega Final", style:"font-family:'Josefin Sans'; color:#ffcc00; letter-spacing:4px; font-size:20px;"},
-    {name:"Quantum Leap", style:"font-family:'Julee'; color:#c8d6e5; font-style:italic; font-size:22px;"},
-    {name:"Neon Genesis", style:"font-family:'Kaushan Script'; color:#ff9ff3; font-size:32px;"},
-    {name:"Cyber Shield", style:"font-family:'Knewave'; color:#ff6b6b; text-shadow:2px 2px 0 #000; font-size:24px;"},
-    {name:"Laser Beam", style:"font-family:'Lato'; color:#48dbfb; font-weight:700; font-size:20px;"},
-    {name:"Star Burst", style:"font-family:'Lobster Two'; color:#feca57; font-size:30px;"},
-    {name:"Galaxy Twist", style:"font-family:'Mate SC'; color:#54a0ff; text-transform:uppercase; font-size:18px;"},
-    {name:"Void Walker", style:"font-family:'Monoton'; color:#ff6b6b; letter-spacing:6px; font-size:22px;"},
-    {name:"Shadow Step", style:"font-family:'Montserrat'; color:#fff; font-weight:900; font-size:20px;"},
-    {name:"Phantom Dash", style:"font-family:'Mr Dafoe'; color:#ff9f43; font-size:36px;"},
-    {name:"Mecha Core", style:"font-family:'Neucha'; color:#ffcc00; font-weight:bold; font-size:22px;"},
-    {name:"Stealth Mode", style:"font-family:'Norican'; color:#f368e0; font-size:34px;"},
-    {name:"Rapid Fire", style:"font-family:'Orbitron'; color:#48dbfb; letter-spacing:5px; font-size:20px;"},
-    {name:"Frost Bite", style:"font-family:'Oregano'; color:#ff6b6b; font-style:italic; font-size:24px;"},
-    {name:"Scorch Mark", style:"font-family:'Oxygen'; color:#54a0ff; font-weight:700; font-size:20px;"},
-    {name:"Tidal Wave", style:"font-family:'Patrick Hand'; color:#feca57; font-size:26px;"},
-    {name:"Solar Flare", style:"font-family:'Playfair Display'; color:#fff; font-style:italic; font-size:22px;"},
-    {name:"Lunar Eclipse", style:"font-family:'Poiret One'; color:#ff9ff3; letter-spacing:4px; font-size:20px;"},
-    {name:"Cosmic Dust", style:"font-family:'Quicksand'; color:#ff6b6b; font-weight:700; font-size:22px;"},
-    {name:"Nova Spark", style:"font-family:'Raleway'; color:#48dbfb; font-weight:800; font-size:20px;"},
-    {name:"Pulsar Ray", style:"font-family:'Ranchers'; color:#ffcc00; text-shadow:2px 2px 0 #000; font-size:24px;"},
-    {name:"Quasar Glow", style:"font-family:'Rock Salt'; color:#f368e0; font-size:26px;"},
-    {name:"Rift Walker", style:"font-family:'Rubik Bubbles'; color:#ff6b6b; font-size:28px;"},
-    {name:"Stellar Forge", style:"font-family:'Satisfy'; color:#feca57; font-size:32px;"},
-    {name:"Hyper Nova", style:"font-family:'Shadows Into Light'; color:#54a0ff; font-size:26px;"},
-    {name:"Omega Point", style:"font-family:'Six Caps'; color:#fff; letter-spacing:8px; font-size:22px;"},
-    {name:"Alpha Centauri", style:"font-family:'Special Elite'; color:#ff9f43; font-weight:bold; font-size:20px;"},
-    {name:"Beta Hydri", style:"font-family:'Staatliches'; color:#ff6b6b; letter-spacing:3px; font-size:22px;"},
-    {name:"Gamma Cephei", style:"font-family:'Tangerine'; color:#f368e0; font-size:36px;"},
-    {name:"Delta Pavonis", style:"font-family:'Ultra'; color:#ffcc00; text-shadow:3px 3px 0 #000; font-size:24px;"},
-    {name:"Epsilon Eridani", style:"font-family:'Uncial Antiqua'; color:#c8d6e5; font-weight:bold; font-size:18px;"},
-    {name:"Zeyada Script", style:"font-family:'Zeyada'; color:#e84393; font-size:34px; text-shadow:0 0 10px rgba(232,67,147,0.3);"},
-    {name:"Architect Note", style:"font-family:'Architects Daughter'; color:#2d3436; background:#dfe6e9; padding:4px 8px; border-radius:8px; font-size:22px;"},
-    {name:"Indie Vibes", style:"font-family:'Indie Flower'; color:#0984e3; font-size:28px;"},
-    {name:"Patrick Pen", style:"font-family:'Patrick Hand'; color:#00b894; font-size:26px; text-shadow:1px 1px 0 #55efc4;"},
-    {name:"Satisfy Cursive", style:"font-family:'Satisfy'; color:#6c5ce7; font-size:36px; text-shadow:0 0 12px rgba(108,92,231,0.4);"},
-    {name:"Dancing Word", style:"font-family:'Dancing Script'; color:#fd79a8; font-size:32px;"},
-    {name:"Great Vibes", style:"font-family:'Great Vibes'; color:#fdcb6e; font-size:38px; text-shadow:0 0 15px #fdcb6e;"},
-    {name:"Shadows Art", style:"font-family:'Shadows Into Light'; color:#00cec9; font-size:26px; letter-spacing:2px;"},
-    {name:"Kaushan Flow", style:"font-family:'Kaushan Script'; color:#e17055; font-size:30px; text-shadow:2px 2px 0 #ffeaa7;"},
-    {name:"Mr Debonair", style:"font-family:'Mr Dafoe'; color:#fab1a0; font-size:40px;"},
-    {name:"Gochi Hand", style:"font-family:'Gochi Hand'; color:#74b9ff; font-size:24px; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:12px;"},
-    {name:"Gloria Praise", style:"font-family:'Gloria Hallelujah'; color:#6c5ce7; font-size:26px;"},
-    {name:"Tangerine Dream", style:"font-family:'Tangerine'; color:#fdcb6e; font-size:34px; font-weight:bold;"},
-    {name:"Neucha Hand", style:"font-family:'Neucha'; color:#0984e3; font-size:22px; letter-spacing:0.8px;"},
-    {name:"Norican Script", style:"font-family:'Norican'; color:#fd79a8; font-size:34px; font-style:italic;"},
-    {name:"Pacifico Wave", style:"font-family:'Pacifico'; color:#00cec9; font-size:30px;"},
-    {name:"Marker Tag", style:"font-family:'Permanent Marker'; color:#000; font-size:26px; text-shadow:2px 2px #ffea00;"},
-    {name:"Rock Salt", style:"font-family:'Rock Salt'; color:#2d3436; font-size:22px; letter-spacing:1px; text-shadow:1px 1px #dfe6e9;"},
-    {name:"Alex Brush", style:"font-family:'Alex Brush'; color:#a29bfe; font-size:34px; text-shadow:0 0 10px #6c5ce7;"},
-    {name:"Allura Elegance", style:"font-family:'Allura'; color:#f8a5c2; font-size:36px; font-style:italic;"},
-    {name:"Bad Script", style:"font-family:'Bad Script'; color:#636e72; background:#ffeaa7; padding:4px; border-radius:6px; font-size:22px;"},
-    {name:"Caveat Brush", style:"font-family:'Caveat Brush'; color:#ff7675; font-size:28px;"},
-    {name:"Cedarville", style:"font-family:'Cedarville Cursive'; color:#00b894; font-size:28px; text-shadow:1px 1px #55efc4;"},
-    {name:"Covered Grace", style:"font-family:'Covered By Your Grace'; color:#6c5ce7; font-size:30px;"},
-    {name:"Crafty Girls", style:"font-family:'Crafty Girls'; color:#e84393; font-size:24px;"},
-    {name:"Cutive Mono", style:"font-family:'Cutive Mono'; color:#2d3436; background:#dfe6e9; font-size:20px; letter-spacing:1px; padding:2px 6px;"},
-    {name:"Delius Swash", style:"font-family:'Delius Swash Caps'; color:#fd79a8; font-size:28px;"},
-    {name:"Handlee Pen", style:"font-family:'Handlee'; color:#00cec9; font-size:24px; letter-spacing:0.5px;"},
-    {name:"Just Another", style:"font-family:'Just Another Hand'; color:#e17055; font-size:30px; text-transform:uppercase;"},
-    {name:"La Belle", style:"font-family:'La Belle Aurore'; color:#fdcb6e; font-size:34px; font-style:italic;"},
-    {name:"League Script", style:"font-family:'League Script'; color:#6c5ce7; font-size:36px;"},
-    {name:"Loved King", style:"font-family:'Loved by the King'; color:#e84393; font-size:32px;"},
-    {name:"Merienda One", style:"font-family:'Merienda One'; color:#00b894; font-size:28px;"},
-    {name:"Montez Royal", style:"font-family:'Montez'; color:#d63031; font-size:38px;"},
-    {name:"Over Rainbow", style:"font-family:'Over the Rainbow'; color:#a29bfe; font-size:26px;"},
-    {name:"Rancho Style", style:"font-family:'Rancho'; color:#e17055; font-size:28px;"},
-    {name:"Reenie Beanie", style:"font-family:'Reenie Beanie'; color:#00b894; font-size:24px;"},
-    {name:"Sacramento", style:"font-family:'Sacramento'; color:#6c5ce7; font-size:36px; text-shadow:0 0 12px rgba(108,92,231,0.5);"},
-    {name:"Schoolbell", style:"font-family:'Schoolbell'; color:#fd79a8; font-size:26px;"},
-    {name:"Sriracha Hot", style:"font-family:'Sriracha'; color:#e84393; font-size:24px;"},
-    {name:"Sue Ellen", style:"font-family:'Sue Ellen Francisco'; color:#00cec9; font-size:30px; letter-spacing:0.8px;"},
-    {name:"Waiting Sun", style:"font-family:'Waiting for the Sunrise'; color:#e17055; font-size:26px;"},
-    {name:"Yellowtail", style:"font-family:'Yellowtail'; color:#00b894; font-size:32px; font-style:italic;"},
-    {name:"Dawning Day", style:"font-family:'Dawning of a New Day'; color:#e84393; font-size:28px;"},
-    {name:"Petit Formal", style:"font-family:'Petit Formal Script'; color:#fdcb6e; font-size:30px; text-shadow:0 0 12px #fdcb6e;"},
-    {name:"Arizonia", style:"font-family:'Arizonia'; color:#ff6b6b; font-size:36px;"},
-    {name:"Berkshire", style:"font-family:'Berkshire Swash'; color:#c8d6e5; font-size:28px;"},
-    {name:"Calligraffitti", style:"font-family:'Calligraffitti'; color:#ff9f43; font-size:26px;"},
-    {name:"Coming Soon", style:"font-family:'Coming Soon'; color:#54a0ff; font-size:22px; letter-spacing:1px;"},
-    {name:"Grand Hotel", style:"font-family:'Grand Hotel'; color:#f368e0; font-size:34px;"},
-    {name:"Parisienne", style:"font-family:'Parisienne'; color:#ff758c; font-size:32px; font-style:italic;"},
-    {name:"Rochester", style:"font-family:'Rochester'; color:#d4af37; font-size:30px;"},
-    {name:"WindSong", style:"font-family:'WindSong'; color:#48dbfb; font-size:28px; font-style:italic; letter-spacing:1px;"},
-    {name:"Yesteryear", style:"font-family:'Yesteryear'; color:#ffcc00; font-size:34px; text-shadow:2px 2px 0 rgba(0,0,0,0.3);"},
-    {name:"Marck Script", style:"font-family:'Marck Script'; color:#00f3ff; font-size:28px;"},
-    {name:"Meddon", style:"font-family:'Meddon'; color:#f8a5c2; font-size:26px; font-style:italic;"},
-    {name:"Devonshire", style:"font-family:'Devonshire'; color:#c5a059; font-size:38px;"},
-    {name:"Condiment", style:"font-family:'Condiment'; color:#ff6b6b; font-size:32px; font-style:italic;"},
-    {name:"Felipa", style:"font-family:'Felipa'; color:#e17055; font-size:30px; letter-spacing:0.5px;"},
-    {name:"Give Glory", style:"font-family:'Give You Glory'; color:#6366f1; font-size:24px;"}
+    {name:"Vaporwave", style:"font-family:'Poppins'; color:#ff69b4; text-shadow:0 0 15px #ff69b4; font-size:22px;"},
+    {name:"Minimalist", style:"font-family:'Inter'; letter-spacing:4px; font-weight:300; color:#e0e0e0; font-size:18px;"},
+    {name:"Comic Blast", style:"font-family:'Bangers'; color:#fffb00; -webkit-text-stroke:1.5px #000; font-size:28px;"},
+    {name:"Spooky", style:"font-family:'Creepster'; color:#a832a4; text-shadow:1px 1px 5px #000; font-size:24px;"},
+    {name:"Subscribe", style:"font-family:'Montserrat'; color:#fff; background:#ff0000; padding:4px 10px; font-size:18px; border-radius:6px;"},
 ];
 
-/* ---------- FONTS LIST ---------- */
-const fontFamilies = ['Rubik','Bangers','Bungee','Italianno','Oswald','Anton','Permanent Marker','Lobster','Pacifico','Fascinate','Alfa Slab One','Architects Daughter','Barlow Condensed','Bebas Neue','Black Ops One','Boogaloo','Carter One','Changa One','Chewy','Comfortaa','Courgette','Creepster','Dancing Script','Diplomata SC','Dr Sugiyama','Exo 2','Fredoka One','Gabriela','Gloria Hallelujah','Gochi Hand','Great Vibes','Hammersmith One','Indie Flower','Josefin Sans','Julee','Kaushan Script','Knewave','Lato','Lobster Two','Mate SC','Monoton','Montserrat','Mr Dafoe','Neucha','Norican','Orbitron','Oregano','Oxygen','Patrick Hand','Playfair Display','Poiret One','Quicksand','Raleway','Ranchers','Rock Salt','Rubik Bubbles','Satisfy','Shadows Into Light','Six Caps','Special Elite','Staatliches','Tangerine','Ultra','Uncial Antiqua','Vampiro One','Viga','Wallpoet','Yanone Kaffeesatz','Zeyada','Alex Brush','Allura','Bad Script','Caveat Brush','Cedarville Cursive','Covered By Your Grace','Crafty Girls','Delius Swash Caps','Handlee','Just Another Hand','La Belle Aurore','League Script','Loved by the King','Merienda One','Montez','Over the Rainbow','Rancho','Reenie Beanie','Sacramento','Schoolbell','Sriracha','Sue Ellen Francisco','Waiting for the Sunrise','Yellowtail','Dawning of a New Day','Petit Formal Script','Cutive Mono','Arizonia','Berkshire Swash','Bonbon','Calligraffitti','Coming Soon','Condiment','Devonshire','Engagement','Felipa','Give You Glory','Grand Hotel','Herr Von Muellerhoff','Jim Nightshade','Kristi','Marck Script','Meddon','Meie Script','Molle','Monsieur La Doulaise','Mrs Saint Delafield','Niconne','Parisienne','Pinyon Script','Rochester','Rouge Script','Ruthie','Stint Ultra Condensed','Swanky and Moo Moo','The Girl Next Door','WindSong','Yesteryear'];
+const fontFamilies = ['Inter','Poppins','Montserrat','Bebas Neue','Anton','Bangers','Orbitron','Playfair Display','Oswald','Rubik','Pacifico','Lobster','Permanent Marker','Bungee'];
 
-/* ---------- EFFECTS ---------- */
 const effectList = [
     {name:'Glow Shadow', apply: n => n.style.textShadow = '3px 3px 12px #000, 0 0 20px #3b82f6'},
     {name:'Neon Glow', apply: n => n.style.textShadow = '0 0 10px #00f3ff, 0 0 20px #00f3ff'},
@@ -867,20 +1338,17 @@ const effectList = [
     {name:'Stroke Line', apply: n => n.style.webkitTextStroke = '1px #fff'},
     {name:'3D Depth', apply: n => n.style.textShadow = '1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000'},
     {name:'Blur Effect', apply: n => n.style.filter = 'blur(2px)'},
-    {name:'Invert UI', apply: n => { n.style.filter='invert(1)'; n.style.backgroundColor='#fff'; n.style.color='#000'; }},
     {name:'Gradient', apply: n => { n.style.background='linear-gradient(45deg, #ff6b6b, #4ecdc4)'; n.style.webkitBackgroundClip='text'; n.style.webkitTextFillColor='transparent'; }},
     {name:'Hologram', apply: n => n.style.textShadow = '0 0 15px #ff00ff, 0 0 30px #00ffff'},
     {name:'Vaporwave', apply: n => n.style.textShadow = '0 0 15px #ff69b4, 0 0 30px #00bfff'},
-    {name:'Chrome', apply: n => n.style.textShadow = '0 0 10px rgba(255,255,255,0.8)'}
+    {name:'Chrome', apply: n => n.style.textShadow = '0 0 10px rgba(255,255,255,0.8)'},
+    {name:'Wavy', apply: n => n.style.transform = 'skew(-5deg)'}
 ];
 
-/* ---------- STICKERS ---------- */
-const stickerList = ['🔥','✨','🎯','❤️','👑','🚀','💥','✌️','😂','💯','🎉','🌟','👍','🙌','💀','💩','👾','🤖','🎃','🥶','🥵','😈','👀','👁️','📢','🔔','🎮','🍿','🎨','🎬','⚡','💡','🔮','💎','💰','📈','🌍','🍀','🍕','🍔','🥤','🍟','🎵','🎤','🎸','🎧','🐾','🐱','🦁','🐉','🦄','🐲','🐼','🐨','🦊','🐰','🐭','🐹','🐻','🐺','🐗','🐴','🐝','🐞','🦋','🐙','🦑','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🐘','🦏','🐪','🐫','🦒','🐃','🐂','🐄','🐖','🐏','🐑','🐐','🦌','🐕','🐩','🐈','🐓','🦃','🦚','🦜','🦢','🦩','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','💖','💗','💓','💕','💜','💙','💚','💛','🧡','❤️‍🔥','💔','❣️','💝','💘','💌','🌸','🌺','🌻','🌹','🌷','🌿','☘️','🌵','🌴','🌲','🌳','🌾','🍁','🍂','🍃','🌊','🌅','🌄','🌇','🌆','🌃','🌌','🌉','🌋','🌍','🌎','🌏','🌕','🌖','🌗','🌘','🌑','🌒','🌓','🌔','🌙','🌞','⭐','🌟','✨'];
+const stickerList = ['🔥','✨','🎯','❤️','👑','🚀','💥','✌️','😂','💯','🎉','🌟','👍','🙌','💀','👾','🤖','🎃','🥶','😈','👀','📢','🔔','🎮','🍿','🎨','🎬','⚡','💡','🔮','💎','💰','📈','🌍','🍀','🍕','🎵','🎤','🎧','🐾','🐱','🦁','🐉','🦄','🐼','🐨','🦊','🐰','🐻','🐺','🐝','🦋','🐙','🐬','🐳','🦈','🐊','🦓','🦍','🐘','🦒','🐄','🐖','🐏','🐐','🦌','🐕','🐈','🦚','🦜','🦢','🦩','🐧','🐦','🐤','🦆','🦅','🦉','🦇','💖','💗','💓','💕','💜','💙','💚','💛','🧡','💔','❣️','💝','💘','💌','🌸','🌺','🌻','🌹','🌷','🌿','☘️','🌵','🌴','🌲','🌳','🌾','🍁','🍂','🍃','🌊','🌅','🌄','🌇','🌆','🌃','🌌','🌉','🌋','🌍','🌕','🌙','🌞','⭐','🌟','✨'];
 
-/* ---------- COLORS ---------- */
-const colorList = ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1','#f43f5e','#f97316','#84cc16','#14b8a6','#d946ef','#a3e635','#22d3ee','#818cf8','#c084fc','#fda4af','#fdba74','#86efac','#67e8f9','#c4b5fd','#f0abfc','#fca5a5','#fcd34d','#6ee7b7','#93c5fd','#f9a8d4','#d9f99d','#a5b4fc','#e879f9','#fde047','#000000','#1a1a2e','#16213e','#0f3460','#533483','#e94560','#ff6b6b','#4ecdc4','#45b7d1','#f9ca24','#6ab04c','#eb4d4b','#22a6b3','#be2edd','#4834d4','#6c5ce7','#fd79a8','#00b894','#e17055','#0984e3','#fdcb6e','#e84393','#00cec9','#ffeaa7','#dfe6e9','#b2bec3','#636e72','#2d3436','#ff7675','#74b9ff','#55efc4','#81ecec'];
+const colorList = ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1','#f43f5e','#f97316','#84cc16','#14b8a6','#d946ef','#a3e635','#22d3ee','#818cf8','#c084fc','#000000','#1a1a2e','#16213e','#0f3460','#533483','#e94560'];
 
-/* ---------- RENDER PANELS ---------- */
 function renderTemplates() {
     templatesContainer.innerHTML = '';
     templateStyles.forEach(tpl => {
@@ -893,7 +1361,6 @@ function renderTemplates() {
         templatesContainer.appendChild(card);
     });
 }
-
 function renderFonts() {
     fontsContainer.innerHTML = '';
     fontFamilies.forEach(f => {
@@ -905,7 +1372,6 @@ function renderFonts() {
         fontsContainer.appendChild(card);
     });
 }
-
 function renderEffects() {
     effectsContainer.innerHTML = '';
     effectList.forEach(ef => {
@@ -916,7 +1382,6 @@ function renderEffects() {
         effectsContainer.appendChild(card);
     });
 }
-
 function renderStickers() {
     stickersContainer.innerHTML = '';
     stickerList.forEach(emoji => {
@@ -927,7 +1392,6 @@ function renderStickers() {
         stickersContainer.appendChild(card);
     });
 }
-
 function renderColors() {
     colorPaletteContainer.innerHTML = '';
     colorList.forEach(c => {
@@ -946,7 +1410,6 @@ renderEffects();
 renderStickers();
 renderColors();
 
-/* ---------- DRAWER OPEN/CLOSE ---------- */
 function openStudioDrawer(tab) {
     studioDrawer.classList.add('open');
     switchDrawerPanel(tab);
@@ -954,12 +1417,10 @@ function openStudioDrawer(tab) {
         addNewCanvasTextNode("Dravoo Layer");
     }
 }
-
 function closeStudioDrawer() {
     studioDrawer.classList.remove('open');
     document.querySelectorAll('.canvas-text-overlay, .canvas-sticker-overlay').forEach(n => n.classList.remove('active-node'));
 }
-
 function switchDrawerPanel(panelId) {
     document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
     document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
@@ -969,7 +1430,6 @@ function switchDrawerPanel(panelId) {
     if (targetPanel) targetPanel.classList.add('active');
 }
 
-/* ---------- CANVAS NODE CREATION ---------- */
 function addNewCanvasTextNode(textValue = "Dravoo Layer", customStyle = "") {
     const node = document.createElement('div');
     node.className = "canvas-text-overlay active-node";
@@ -1035,7 +1495,6 @@ function applyActiveSize(s) { if (activeTextNode) activeTextNode.style.fontSize 
 function applyActiveOpacity(op) { if (activeTextNode) activeTextNode.style.opacity = op; else showToast('Select a text layer first', 'error'); }
 function applyActiveRotation(deg) { if (activeTextNode) activeTextNode.style.transform = `rotate(${deg}deg)`; else showToast('Select a text layer first', 'error'); }
 
-/* ---------- DRAG ENGINE ---------- */
 function setupDraggableEngine(el) {
     let startX = 0, startY = 0, offsetX = 0, offsetY = 0;
 
@@ -1218,7 +1677,7 @@ function generateDrawColorsOverlay() {
     const palette = document.getElementById('drawColorPaletteOverlay');
     if (!palette) return;
     palette.innerHTML = '';
-    const colors = ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c','#22c55e','#8b5cf6','#ec4899','#f59e0b','#10b981','#6366f1'];
+    const colors = ['#ffffff','#ff3b30','#ffcc00','#4cd964','#3b82f6','#e02424','#9333ea','#06b6d4','#f472b6','#fb923c'];
     colors.forEach(c => {
         const btn = document.createElement('button');
         btn.className = 'color-picker-btn';
@@ -1237,73 +1696,7 @@ function generateDrawColorsOverlay() {
 }
 
 /* ============================================================
-   AUTO CAPTIONS
-============================================================ */
-function openAutoCaptions() { document.getElementById('captionsDrawer').classList.add('open'); }
-function closeCaptionsDrawer() { document.getElementById('captionsDrawer').classList.remove('open'); }
-
-function processAutoCaptions() {
-    const videoInput = document.getElementById('captionVideoInput');
-    const statusDiv = document.getElementById('captionStatus');
-    const previewContainer = document.getElementById('captionPreviewContainer');
-    const previewText = document.getElementById('captionPreviewText');
-    const transcriptDisplay = document.getElementById('captionTextDisplay');
-    const template = document.getElementById('captionTemplateSelect').value;
-
-    if (!videoInput.files || videoInput.files.length === 0) {
-        showToast('Please upload a video file first', 'error');
-        return;
-    }
-
-    statusDiv.classList.remove('hidden');
-    statusDiv.textContent = 'Processing audio for captions...';
-
-    const file = videoInput.files[0];
-    const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
-
-    const sampleCaptions = [
-        `Welcome to this video about ${fileName}`,
-        `Today we're exploring new ideas and concepts`,
-        `This is an automated caption generated by Dravoo AI`,
-        `Stay tuned for more amazing content`,
-        `Thanks for watching and don't forget to subscribe!`
-    ];
-
-    const templateStyles = {
-        'default': 'font-family:Inter; color:#fff; text-shadow:2px 2px 4px #000;',
-        'cinematic': 'font-family:Playfair Display; color:#f5c842; text-shadow:0 0 20px rgba(245,200,66,0.3); letter-spacing:2px;',
-        'comic': 'font-family:Bangers; color:#ff3b30; text-shadow:3px 3px 0 #000;',
-        'elegant': 'font-family:Great Vibes; color:#d4af37; font-size:32px; text-shadow:0 0 15px rgba(212,175,55,0.2);',
-        'neon': 'font-family:Orbitron; color:#00f3ff; text-shadow:0 0 10px #00f3ff, 0 0 20px #00f3ff;',
-        'retro': 'font-family:Oswald; color:#ff007f; text-shadow:2px 2px #3f007f;',
-        'minimal': 'font-family:Rubik; color:#fff; letter-spacing:4px; font-weight:300;',
-        'bold': 'font-family:Anton; color:#fff; text-shadow:3px 3px 0px #ff0055; text-transform:uppercase;',
-        'graffiti': 'font-family:Permanent Marker; color:#ffea00; text-shadow:2px 2px 0 #000;',
-        'vintage': 'font-family:Playfair Display; color:#d4c5b9; font-style:italic;',
-        'cyber': 'font-family:Black Ops One; color:#00ff66; text-shadow:0 0 10px #00ff66;',
-        'dreamy': 'font-family:Pacifico; color:#ff758c; text-shadow:0 0 15px rgba(255,117,140,0.3);'
-    };
-
-    const fullText = sampleCaptions.join('. ');
-    document.getElementById('fullTranscriptText').textContent = fullText;
-    transcriptDisplay.classList.remove('hidden');
-
-    previewText.style.cssText = templateStyles[template] || templateStyles['default'];
-    previewText.textContent = sampleCaptions[0];
-    previewContainer.classList.remove('hidden');
-
-    sampleCaptions.forEach((caption, index) => {
-        setTimeout(() => addNewCanvasTextNode(caption, templateStyles[template] || templateStyles['default']), index * 200);
-    });
-
-    statusDiv.textContent = 'Captions generated successfully!';
-    setTimeout(() => statusDiv.classList.add('hidden'), 3000);
-    closeCaptionsDrawer();
-    showToast('Captions generated successfully', 'success');
-}
-
-/* ============================================================
-   INFO DATA (MODAL CONTENT)
+   INFO DATA (MODAL CONTENT) — Preserved from original
 ============================================================ */
 const infoData = {
     'bg-remover': `
@@ -1338,7 +1731,7 @@ const infoData = {
     'prompt-maker': `
         <i class="fas fa-wand-magic-sparkles text-4xl text-indigo-500 mb-4"></i>
         <h3 class="text-lg font-bold mb-2">AI Professional Prompt Maker</h3>
-        <p class="text-xs text-gray-400 mb-4">Write a simple idea, and turn it into a professional, high-fidelity engineering prompt.</p>
+        <p class="text-xs text-gray-400 mb-4">Write a simple idea, and turn it into a professional prompt.</p>
         <div class="space-y-3 text-left">
             <textarea id="simple-prompt-input" class="meme-input text-xs w-full h-16" placeholder="e.g., a cyber car in city..."></textarea>
             <button onclick="engineerProfessionalPrompt()" id="prompt-gen-btn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold uppercase text-[10px] text-white">Optimize Prompt</button>
@@ -1351,25 +1744,10 @@ const infoData = {
     'compressor': `
         <i class="fas fa-file-video text-4xl text-orange-500 mb-4"></i>
         <h3 class="text-lg font-bold mb-2">Smart Video Compressor</h3>
-        <p class="text-xs text-gray-400 mb-4">Upload your video to compress and lower payload size instantly right inside your browser.</p>
+        <p class="text-xs text-gray-400 mb-4">Upload your video to compress and lower payload size.</p>
         <div class="space-y-3 text-left">
             <input type="file" id="compressor-video-input" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-500/10 file:text-orange-500 hover:file:bg-orange-500/20">
-            <div>
-                <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Compression Level</label>
-                <select id="compression-quality" class="meme-input text-xs py-2.5 w-full bg-zinc-900 border border-zinc-800 rounded-xl text-white">
-                    <option value="0.7">Medium Compression (Balanced)</option>
-                    <option value="0.4">High Compression (Smallest)</option>
-                    <option value="0.85">Low Compression (Max Quality)</option>
-                </select>
-            </div>
-            <button onclick="processVideoCompression()" id="compressor-action-btn" class="w-full py-2.5 bg-orange-600 hover:bg-orange-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Compress Video</button>
-        </div>
-        <div id="compressor-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[120px]">
-            <div id="compressor-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-orange-400 uppercase tracking-widest hidden">
-                <i class="fas fa-circle-notch animate-spin mb-2 text-2xl"></i> Encoding...
-            </div>
-            <div id="compression-stats" class="text-[11px] text-gray-400 mb-2 font-mono text-center hidden"></div>
-            <a id="compressor-download-link" class="text-[11px] text-orange-400 font-bold uppercase tracking-wide hidden" href="#" download="dravoo-compressed.mp4"><i class="fas fa-download mr-1"></i> Download Compressed Video</a>
+            <button onclick="processVideoCompression()" class="w-full py-2.5 bg-orange-600 hover:bg-orange-500 rounded-xl font-bold uppercase text-[10px] text-white">Compress Video</button>
         </div>
     `,
     'image-scaler': `
@@ -1382,7 +1760,7 @@ const infoData = {
                 <input type="number" id="scale-w" class="meme-input text-xs" placeholder="Width" value="1080">
                 <input type="number" id="scale-h" class="meme-input text-xs" placeholder="Height" value="1080">
             </div>
-            <button onclick="processImageScaling()" id="scaler-action-btn" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 rounded-xl font-bold uppercase text-[10px] text-white">Resize Image</button>
+            <button onclick="processImageScaling()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 rounded-xl font-bold uppercase text-[10px] text-white">Resize Image</button>
         </div>
         <div id="scaler-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl p-3 bg-black flex flex-col items-center">
             <img id="scaler-result-img" class="max-w-full max-h-36 object-contain mb-2 hidden">
@@ -1392,10 +1770,10 @@ const infoData = {
     'face-cutout': `
         <i class="fas fa-sliders text-4xl text-red-500 mb-4"></i>
         <h3 class="text-lg font-bold mb-2">AI Background Blur Studio</h3>
-        <p class="text-xs text-gray-400 mb-4">Upload a photo to isolate the person and apply a DSLR Cinematic Blur to the background.</p>
+        <p class="text-xs text-gray-400 mb-4">Upload a photo to isolate the person and apply cinematic blur.</p>
         <div class="space-y-3">
             <input type="file" id="face-upload-input" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-500/10 file:text-red-500 hover:file:bg-red-500/20">
-            <button onclick="processBackgroundBlur()" id="face-cutout-btn" class="w-full py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-bold uppercase text-[10px] text-white transition">Apply Blur</button>
+            <button onclick="processBackgroundBlur()" class="w-full py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-bold uppercase text-[10px] text-white">Apply Blur</button>
         </div>
         <div id="face-result-container" class="mt-4 hidden border border-zinc-800 rounded-xl overflow-hidden bg-black flex flex-col items-center justify-center p-4 relative min-h-[150px]">
             <div id="face-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-xs font-bold text-red-400 uppercase tracking-widest hidden">
@@ -1416,7 +1794,7 @@ const infoData = {
             <p>> Speed Boost Render Layer: [10X FAST]</p>
             <p class="text-green-400">> System Status: Stable & Ready</p>
         </div>
-        <button onclick="activateSeedanceBoost()" id="seedance-boost-btn" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Activate 10x Turbo Boost</button>
+        <button onclick="activateSeedanceBoost()" class="w-full py-2.5 cap-gradient rounded-xl font-bold uppercase text-[10px] text-white tracking-wider">Activate 10x Turbo Boost</button>
     `,
     'tos': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-file-contract text-blue-500"></i> Terms of Service</h3><p class="text-xs text-gray-400 leading-relaxed text-left">By using Dravoo, you agree to process videos locally on your browser. Any commercial usage of output assets generated via integration channels must adhere to local jurisdiction safety criteria.</p>`,
     'license': `<h3 class="text-lg font-bold mb-2"><i class="fas fa-id-badge text-blue-500"></i> License Agreement</h3><p class="text-xs text-gray-400 leading-relaxed text-left">Dravoo grants you a personal, non-exclusive license to utilize all embedded Client-Side logic components for standard content creations and non-malicious distribution formats.</p>`,
@@ -1476,7 +1854,7 @@ const infoData = {
 };
 
 /* ============================================================
-   PIXABAY IMAGE ENGINE
+   PIXABAY ENGINES (Images + Audio + Video)
 ============================================================ */
 async function generateAIStudioImage(type) {
     const promptInput = document.getElementById(`ai-prompt-${type}`);
@@ -1534,9 +1912,6 @@ async function generateAIStudioImage(type) {
     }
 }
 
-/* ============================================================
-   PIXABAY AUDIO
-============================================================ */
 function searchPixabayAudio() {
     const queryInput = document.getElementById('music-search-query');
     const searchBtn = document.getElementById('music-search-btn');
@@ -1567,9 +1942,6 @@ function searchPixabayAudio() {
     }, 600);
 }
 
-/* ============================================================
-   PROMPT ENGINEER
-============================================================ */
 function engineerProfessionalPrompt() {
     const input = document.getElementById('simple-prompt-input');
     const container = document.getElementById('prompt-result-container');
@@ -1602,9 +1974,6 @@ function downloadPromptText() {
     link.click();
 }
 
-/* ============================================================
-   IMAGE SCALER
-============================================================ */
 function processImageScaling() {
     const fileInput = document.getElementById('scaler-img-input');
     const wInput = document.getElementById('scale-w');
@@ -1635,9 +2004,6 @@ function processImageScaling() {
     };
 }
 
-/* ============================================================
-   PIXABAY STOCK VIDEO
-============================================================ */
 async function generateGrokVideo(e) {
     if (e) e.preventDefault();
 
@@ -1696,9 +2062,6 @@ async function generateGrokVideo(e) {
     }
 }
 
-/* ============================================================
-   BACKGROUND REMOVER
-============================================================ */
 async function processBgRemoval() {
     const fileInput = document.getElementById('bg-upload-input');
     const actionBtn = document.getElementById('bg-remove-btn');
@@ -1748,9 +2111,6 @@ async function processBgRemoval() {
     }
 }
 
-/* ============================================================
-   BACKGROUND BLUR
-============================================================ */
 function processBackgroundBlur() {
     const fileInput = document.getElementById('face-upload-input');
     const actionBtn = document.getElementById('face-cutout-btn');
@@ -1789,9 +2149,6 @@ function processBackgroundBlur() {
     };
 }
 
-/* ============================================================
-   VIDEO COMPRESSOR (Demo)
-============================================================ */
 function processVideoCompression() {
     const fileInput = document.getElementById('compressor-video-input');
     if (!fileInput || fileInput.files.length === 0) return showToast('Please select a video first', 'error');
@@ -1800,18 +2157,8 @@ function processVideoCompression() {
     showToast('Note: Real compression requires FFmpeg.wasm integration', 'info');
 }
 
-/* ============================================================
-   SEEDANCE BOOST
-============================================================ */
 function activateSeedanceBoost() {
-    const btn = document.getElementById('seedance-boost-btn');
-    if (!btn) return;
-    btn.innerText = "TUNING CORE ENGINE...";
-    btn.disabled = true;
-    setTimeout(() => {
-        btn.innerText = "10X TURBO ACCELERATION ACTIVE!";
-        showToast('Seedance 2.0 Engine optimized successfully', 'success');
-    }, 1500);
+    showToast('Seedance 2.0 Engine optimized successfully', 'success');
 }
 
 /* ============================================================
@@ -1952,7 +2299,7 @@ window.addEventListener('resize', () => {
 /* ============================================================
    INIT
 ============================================================ */
-console.log('%cDravoo Studio v1.0', 'background:#3b82f6;color:#fff;padding:4px 8px;border-radius:4px;font-weight:bold;');
+console.log('%cDravoo Studio v1.1 — AI Auto Captions Enabled', 'background:#3b82f6;color:#fff;padding:4px 8px;border-radius:4px;font-weight:bold;');
 console.log('%cAll systems operational', 'color:#22c55e;font-weight:bold;');
 </script>
 
