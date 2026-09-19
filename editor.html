@@ -6,7 +6,7 @@
   <title>Dravoo · Pro Editor - Auto Caption</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Poppins:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Bebas+Neue&family=Lobster&family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Bebas+Neue&family=Lobster&family=Pacifico&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Oswald:wght@500;700&family=Montserrat:wght@800&family=Poppins:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0b0b0e; color: #f1f5f9; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
@@ -14,53 +14,174 @@
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #18181b; }
     ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
+
     .scroll-x-menu { display: flex; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
     .scroll-x-menu::-webkit-scrollbar { display: none; }
-    .editor-drawer { position: fixed; bottom: -100%; left: 0; width: 100%; height: 75vh; background: #111115; border-top-left-radius: 28px; border-top-right-radius: 28px; border-top: 1px solid #2a2a32; transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; display: flex; flex-direction: column; box-shadow: 0 -20px 60px rgba(0,0,0,0.8); }
+
+    .editor-drawer {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      height: 75vh;
+      background: #111115;
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+      border-top: 1px solid #2a2a32;
+      transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
+    }
     .editor-drawer.open { bottom: 0; }
+
+    .asset-card { background: #1c1c22; border-radius: 14px; aspect-ratio: 1/1; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; color: #e5e7eb; border: 1px solid #2c2c34; transition: 0.15s; padding: 8px; text-align: center; position: relative; overflow: hidden; }
+    .asset-card:hover { transform: scale(1.02); border-color: #3b82f6; background: #26262e; }
+
     .draw-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
     .draw-overlay-canvas.active { pointer-events: auto; cursor: crosshair; }
+
     .submenu-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 12px; background: #0c0c10; }
     @media (max-width: 600px) { .submenu-grid { grid-template-columns: repeat(4, 1fr); } }
+
     .audio-track-container { background: #0a0a0e; border-bottom: 1px solid #1a1a22; padding: 8px 12px; }
-    .audio-track-item { background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; transition: all 0.2s; }
-    .audio-track-item:hover { background: rgba(16, 185, 129, 0.15); }
+    .audio-track-item { background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; cursor: pointer; transition: all 0.2s; }
+    .audio-track-item:hover { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); }
     .audio-track-item .track-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-    .audio-track-item .track-info i { color: #34d399; font-size: 12px; }
-    .audio-track-item .track-info span { font-size: 11px; font-family: monospace; color: #34d399; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .audio-track-item .track-actions button { background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
-    .audio-track-item .track-actions button:hover { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .audio-track-item .track-info i { color: #34d399; font-size: 12px; flex-shrink: 0; }
+    .audio-track-item .track-info span { font-size: 11px; font-family: monospace; color: #34d399; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .audio-track-item .track-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .audio-track-item .track-actions button { background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 4px; transition: all 0.2s; }
+    .audio-track-item .track-actions button:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .audio-track-item .track-actions .play-btn { color: #34d399; }
+    .audio-track-item .track-actions .play-btn:hover { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .audio-track-item .waveform-preview { width: 60px; height: 20px; background: linear-gradient(90deg, #34d399 20%, rgba(16, 185, 129, 0.3) 40%, #34d399 60%, rgba(16, 185, 129, 0.3) 80%); border-radius: 4px; opacity: 0.6; flex-shrink: 0; }
+
     .multi-track-container { max-height: 120px; overflow-y: auto; padding: 4px 0; }
-    .text-track-item { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .multi-track-container::-webkit-scrollbar { width: 2px; }
+    .multi-track-container::-webkit-scrollbar-thumb { background: #34d399; border-radius: 4px; }
+
+    .text-track-item { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; transition: all 0.2s; }
+    .text-track-item:hover { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); }
     .text-track-item .track-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-    .text-track-item .track-info i { color: #3b82f6; font-size: 12px; }
-    .text-track-item .track-info span { font-size: 11px; font-family: monospace; color: #3b82f6; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .text-track-item .track-actions button { background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 10px; padding: 2px 6px; }
-    .text-track-item .track-actions button:hover { color: #ef4444; }
+    .text-track-item .track-info i { color: #3b82f6; font-size: 12px; flex-shrink: 0; }
+    .text-track-item .track-info span { font-size: 11px; font-family: monospace; color: #3b82f6; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .text-track-item .track-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .text-track-item .track-actions button { background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 4px; transition: all 0.2s; }
+    .text-track-item .track-actions button:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .text-track-item .track-actions .edit-btn { color: #3b82f6; }
+    .text-track-item .track-actions .edit-btn:hover { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+
     .export-dialog { background: #121216; border: 1px solid #2a2a32; border-radius: 16px; padding: 20px 24px; max-width: 400px; margin: 0 auto; }
     .export-dialog .export-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .export-dialog .export-options button { background: #1c1c22; border: 1px solid #2a2a32; border-radius: 10px; padding: 10px 16px; color: #e5e7eb; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; margin-bottom: 8px; transition: 0.2s; }
+    .export-dialog .export-header h3 { font-size: 14px; font-weight: 600; color: #e5e7eb; }
+    .export-dialog .export-header .close-btn { color: #6b7280; cursor: pointer; font-size: 16px; }
+    .export-dialog .export-header .close-btn:hover { color: #ef4444; }
+    .export-dialog .export-options { display: flex; flex-direction: column; gap: 8px; }
+    .export-dialog .export-options button { background: #1c1c22; border: 1px solid #2a2a32; border-radius: 10px; padding: 10px 16px; color: #e5e7eb; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
     .export-dialog .export-options button:hover { background: #26262e; border-color: #3b82f6; }
-    .tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; color: #8e8e93; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; background: transparent; border-top: none; border-left: none; border-right: none; }
+    .export-dialog .export-options button i { font-size: 14px; }
+
+    .voice-option { background: #1c1c22; border: 2px solid #2a2a32; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .voice-option:hover { border-color: #3b82f6; background: #26262e; }
+    .voice-option.selected { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
+    .voice-option .voice-icon { font-size: 28px; display: block; margin-bottom: 4px; }
+    .voice-option .voice-name { font-size: 11px; font-weight: 600; color: #e5e7eb; }
+    .voice-option .voice-desc { font-size: 9px; color: #6b7280; }
+
+    .tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; color: #8e8e93; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; cursor: pointer; background: transparent; border-top: none; border-left: none; border-right: none; }
     .tab-btn.active { color: #3b82f6; border-color: #3b82f6; }
-    .canvas-text-item { position: absolute; cursor: grab; user-select: none; padding: 4px 8px; border-radius: 4px; z-index: 50; pointer-events: auto; display: flex; align-items: center; gap: 6px; }
-    .canvas-text-item:hover { box-shadow: 0 0 0 2px rgba(59,130,246,0.5); }
-    .canvas-text-item .text-content { pointer-events: none; }
-    .canvas-text-item .delete-btn { display: none; background: rgba(239,68,68,0.9); color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; cursor: pointer; align-items: center; justify-content: center; }
+
+    .font-preview-btn { background: #18181c; border: 1px solid #2a2a32; border-radius: 10px; padding: 6px 8px; cursor: pointer; transition: all 0.2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .font-preview-btn:hover { border-color: #3b82f6; background: #22222a; }
+    .font-preview-btn .font-name { font-size: 9px; color: #9ca3af; font-family: monospace; }
+    .font-preview-btn .font-sample { font-size: 14px; color: #fff; font-weight: 700; }
+
+    @keyframes textFadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 0.95; transform: translateY(0); } }
+    @keyframes textBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    @keyframes textSlideIn { 0% { transform: translateX(-20px); opacity: 0; } 100% { transform: translateX(0); opacity: 0.95; } }
+    @keyframes textGlow { 0%, 100% { text-shadow: 0 0 10px rgba(59,130,246,0.5); } 50% { text-shadow: 0 0 30px rgba(59,130,246,0.8); } }
+    @keyframes textZoom { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 0.95; } }
+
+    .canvas-text-item { position: absolute; cursor: grab; user-select: none; padding: 4px 8px; border-radius: 4px; transition: box-shadow 0.2s; z-index: 50; pointer-events: auto; display: flex; align-items: center; gap: 6px; opacity: 0.95 !important; }
+    .canvas-text-item:hover { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); border-radius: 4px; }
+    .canvas-text-item .text-content { pointer-events: none; opacity: 0.95 !important; }
+    .canvas-text-item .delete-btn { display: none; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; cursor: pointer; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; pointer-events: auto; }
     .canvas-text-item:hover .delete-btn { display: flex; }
-    .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(16, 16, 20, 0.95); backdrop-filter: blur(12px); border: 1px solid #2a2a32; border-radius: 16px; padding: 12px 24px; z-index: 999; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); pointer-events: none; }
+    .canvas-text-item .delete-btn:hover { background: #ef4444; transform: scale(1.1); }
+    .canvas-text-item.dragging { cursor: grabbing; opacity: 0.8; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+
+    .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(16, 16, 20, 0.95); backdrop-filter: blur(12px); border: 1px solid #2a2a32; border-radius: 16px; padding: 12px 24px; z-index: 999; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); animation: slideUp 0.3s ease-out; pointer-events: none; }
     .toast-notification.hidden { display: none; }
-    .caption-controls { background: #0c0c10; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #1a1a22; }
-    .caption-controls select, .caption-controls input[type="text"] { background: #18181c; border: 1px solid #2a2a32; border-radius: 8px; color: #e5e7eb; padding: 6px 10px; font-size: 11px; outline: none; width: 100%; }
-    .caption-controls select:focus, .caption-controls input:focus { border-color: #3b82f6; }
-    .caption-controls .control-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .caption-controls .control-row > * { flex: 1; min-width: 100px; }
-    .caption-controls label { font-size: 9px; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 2px; }
+    @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    .search-bar { background: #18181c; border: 1px solid #2a2a32; border-radius: 10px; padding: 4px 10px; color: #e5e7eb; font-size: 10px; outline: none; width: 100%; transition: all 0.2s; }
+    .search-bar:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+
+    .category-header { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 2px 0; flex-wrap: wrap; }
+    .category-header .action-btns { display: flex; gap: 4px; }
+    .category-header .action-btns button { background: #22222a; border: 1px solid #2a2a32; border-radius: 6px; padding: 2px 8px; color: #9ca3af; font-size: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 3px; }
+    .category-header .action-btns button:hover { background: #2a2a34; border-color: #3b82f6; color: #fff; }
+    .category-header .action-btns button.primary { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+    .category-header .action-btns button.primary:hover { background: #2563eb; }
+    .category-header .action-btns button.danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+    .category-header .action-btns button.danger:hover { background: #b91c1c; }
+
+    .style-item { background: #18181c; border: 1px solid #2a2a32; border-radius: 8px; padding: 4px 6px; cursor: pointer; text-align: center; transition: all 0.2s; font-size: 11px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+    .style-item:hover { border-color: #3b82f6; background: #22222a; }
+
+    .spinner { border: 2px solid #2a2a32; border-top: 2px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .caption-controls {
+      background: #0c0c10;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      border: 1px solid #1a1a22;
+    }
+    .caption-controls select {
+      background: #18181c;
+      border: 1px solid #2a2a32;
+      border-radius: 8px;
+      color: #e5e7eb;
+      padding: 6px 10px;
+      font-size: 11px;
+      outline: none;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .caption-controls select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    .caption-controls select option {
+      background: #18181c;
+      color: #e5e7eb;
+    }
+    .caption-controls .control-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .caption-controls .control-row > * {
+      flex: 1;
+      min-width: 100px;
+    }
+    .caption-controls label {
+      font-size: 9px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 2px;
+    }
   </style>
 
   <!-- ========================================================= -->
-  <!-- WHISPER AI (In Browser, Completely Free) — Transformers.js -->
-  <!-- whisper-base = More Accurate                               -->
+  <!-- WHISPER AI (براؤزر میں، مکمل مفت) — Transformers.js       -->
   <!-- ========================================================= -->
   <script type="module">
     window.__whisperReady = false;
@@ -76,7 +197,7 @@
         mod.env.useBrowserCache = true;
         window.__whisperPipeline = await mod.pipeline(
           'automatic-speech-recognition',
-          'Xenova/whisper-base',
+          'Xenova/whisper-tiny',
           {
             quantized: true,
             progress_callback: (p) => {
@@ -85,19 +206,20 @@
                 const bar = document.getElementById('whisperProgressBar');
                 const txt = document.getElementById('whisperProgressText');
                 if (bar) bar.style.width = pct + '%';
-                if (txt) txt.textContent = `Model download: ${pct}%`;
+                if (txt) txt.textContent = `ماڈل ڈاؤن لوڈ: ${pct}%`;
               }
             }
           }
         );
         window.__whisperReady = true;
-        console.log('✅ Whisper-base ready');
+        console.log('✅ Whisper ready');
       } catch (e) {
         console.error('Whisper load failed:', e);
         window.__whisperLoading = false;
       }
     };
 
+    // صفحہ لوڈ ہونے کے 2 سیکنڈ بعد خود بخود لوڈ کریں
     window.addEventListener('load', () => setTimeout(() => window.__loadWhisper(), 2000));
   </script>
 </head>
@@ -106,19 +228,20 @@
 <input type="file" id="video-file-picker" accept="video/*,image/*" class="hidden" />
 <input type="file" id="overlay-file-picker" accept="video/*,image/*" class="hidden" onchange="handleOverlaySelected(this)" />
 <input type="file" id="audio-extract-picker" accept="audio/*,video/*" class="hidden" onchange="handleAudioExtracted(this)" />
-<input type="file" id="srtImporter" accept=".srt,.vtt" class="hidden" onchange="importSRT(this)" />
 
+<!-- Navbar -->
 <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
   <div class="flex items-center gap-3">
     <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
     <span class="font-black text-lg tracking-tight text-white">DRAVOO</span>
     <span class="text-[10px] font-medium text-zinc-500 bg-zinc-800/60 px-2 py-0.5 rounded-full">Pro Studio</span>
   </div>
-  <button onclick="showExportDialog()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full">
+  <button onclick="showExportDialog()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">
     <i class="fas fa-download mr-1.5"></i>Export
   </button>
 </header>
 
+<!-- Main Workspace -->
 <main class="max-w-3xl mx-auto px-2 my-4">
   <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
@@ -133,6 +256,9 @@
           <option selected>1080p Full HD</option>
           <option>720p HD</option>
         </select>
+        <button onclick="showExportDialog()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">
+          <i class="fas fa-upload mr-1.5"></i>Export
+        </button>
       </div>
     </div>
 
@@ -145,7 +271,7 @@
         <div id="media-placeholder" class="text-center p-6 z-10">
           <i class="fas fa-photo-film text-5xl text-zinc-700 mb-3 animate-pulse"></i>
           <p class="text-sm text-zinc-400 mb-4">No media timeline detected</p>
-          <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full"><i class="fas fa-plus mr-2"></i>Import Asset</button>
+          <button onclick="document.getElementById('video-file-picker').click()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-5 py-2 rounded-full transition"><i class="fas fa-plus mr-2"></i>Import Asset</button>
         </div>
         <canvas id="drawCanvas" class="draw-overlay-canvas"></canvas>
         <div id="drawToolsPanel" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-[#111116] border border-zinc-800 rounded-full px-4 py-2 hidden items-center gap-3 shadow-2xl">
@@ -165,7 +291,7 @@
       <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
     </div>
 
-    <div id="textTrackContainer" class="audio-track-container">
+    <div id="textTrackContainer" class="audio-track-container" style="border-bottom: 1px solid #1a1a22; background: #0a0a0e;">
       <div class="flex items-center justify-between mb-2">
         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><i class="fas fa-font text-blue-400 mr-1.5"></i>Text Tracks</span>
         <span id="textTrackCount" class="text-[10px] text-zinc-600">0 tracks</span>
@@ -193,37 +319,35 @@
     </div>
 
     <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
-      <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px]">Edit</span></button>
-      <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px]">Audio</span></button>
-      <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px]">Text</span></button>
-      <button onclick="showSubmenu('caption')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-closed-captioning text-base text-pink-400"></i><span class="text-[10px]">Caption</span></button>
-      <button onclick="showSubmenu('filters')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-filter text-base text-indigo-400"></i><span class="text-[10px]">Filters</span></button>
-      <button onclick="showSubmenu('adjust')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-sliders text-base text-orange-400"></i><span class="text-[10px]">Adjust</span></button>
-      <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px]">Overlay</span></button>
-      <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px]">Ratio</span></button>
-      <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px]">Background</span></button>
+      <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
+      <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
+      <button onclick="showSubmenu('text')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-font text-base text-amber-400"></i><span class="text-[10px] font-medium">Text</span></button>
+      <button onclick="showSubmenu('caption')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-closed-captioning text-base text-pink-400"></i><span class="text-[10px] font-medium">Caption</span></button>
+      <button onclick="showSubmenu('filters')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-filter text-base text-indigo-400"></i><span class="text-[10px] font-medium">Filters</span></button>
+      <button onclick="showSubmenu('adjust')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-sliders text-base text-orange-400"></i><span class="text-[10px] font-medium">Adjust</span></button>
+      <button onclick="showSubmenu('overlay')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-layer-group text-base text-cyan-400"></i><span class="text-[10px] font-medium">Overlay</span></button>
+      <button onclick="showSubmenu('aspect-ratio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-crop-simple text-base text-emerald-400"></i><span class="text-[10px] font-medium">Ratio</span></button>
+      <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
     </div>
 
-    <!-- ================== CAPTION SUBMENU ================== -->
-    <div id="submenu-caption" class="hidden p-3 bg-[#0c0c10] max-h-[80vh] overflow-y-auto">
+    <!-- CAPTION SUBMENU (with Auto Caption) -->
+    <div id="submenu-caption" class="hidden p-3 bg-[#0c0c10]">
       <div class="flex items-center justify-between mb-3">
         <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
         <span class="text-xs font-bold text-pink-400"><i class="fas fa-closed-captioning mr-1"></i>Caption Studio</span>
       </div>
 
-      <!-- Language + Font -->
       <div class="caption-controls">
         <div class="control-row">
           <div>
             <label><i class="fas fa-language mr-1"></i>Language</label>
             <select id="captionLanguage" onchange="updateCaptionPreview()">
-              <option value="auto">🌐 Auto Detect</option>
               <option value="en">🇬🇧 English</option>
-              <option value="ur">🇵🇰 Urdu</option>
-              <option value="hi">🇮🇳 Hindi</option>
-              <option value="ar">🇸🇦 Arabic</option>
               <option value="zh">🇨🇳 Chinese</option>
               <option value="es">🇪🇸 Spanish</option>
+              <option value="ar">🇸🇦 Arabic</option>
+              <option value="ur">🇵🇰 Urdu</option>
+              <option value="hi">🇮🇳 Hindi</option>
             </select>
           </div>
           <div>
@@ -234,92 +358,40 @@
               <option value="Roboto">Roboto</option>
               <option value="Lato">Lato</option>
               <option value="Open Sans">Open Sans</option>
-              <option value="Bebas Neue">Bebas Neue</option>
             </select>
           </div>
         </div>
+        <div class="mt-2">
+          <label><i class="fas fa-pen mr-1"></i>Caption Text</label>
+          <input type="text" id="captionTextInput" value="Hello World! 🌍" oninput="updateCaptionPreview()" class="w-full bg-[#18181c] border border-[#2a2a32] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-pink-400" />
+        </div>
+        <button onclick="applyCaptionToCanvas()" class="w-full mt-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs font-bold py-2 rounded-lg transition">
+          <i class="fas fa-plus mr-1.5"></i>Apply Manual Caption
+        </button>
+        <div id="captionPreview" class="mt-2 text-center text-xs text-zinc-500">
+          Preview: <span id="captionPreviewText" style="font-family: Inter; color: #fff;">Hello World! 🌍</span>
+        </div>
       </div>
 
-      <!-- Auto Caption -->
+      <!-- ========= AUTO CAPTION (NEW) ========= -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
-          <i class="fas fa-microphone-lines mr-1 text-emerald-400"></i>Auto Caption (Whisper-base · 100% Free)
+          <i class="fas fa-microphone-lines mr-1 text-emerald-400"></i>Auto Caption (Whisper AI · 100% Free)
         </label>
         <button id="autoCaptionBtn" onclick="generateAutoCaptions()"
-          class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2">
+          class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
           <i class="fas fa-wand-magic-sparkles"></i>
-          <span id="autoCaptionBtnText">Generate Auto Caption</span>
+          <span id="autoCaptionBtnText">Auto Caption Generate کریں</span>
         </button>
         <div id="whisperProgressWrap" class="mt-2 hidden">
           <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
             <div id="whisperProgressBar" class="bg-emerald-500 h-full transition-all duration-300" style="width:0%"></div>
           </div>
-          <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">Loading...</p>
+          <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">لوڈ ہو رہا ہے...</p>
         </div>
         <p class="text-[9px] text-zinc-600 mt-2 text-center leading-tight">
-          <i class="fas fa-info-circle mr-1"></i>First time model download (~75MB). Then it will be cached.
+          <i class="fas fa-info-circle mr-1"></i>پہلی بار ماڈل ڈاؤن لوڈ ہوگا (~40MB)۔ پھر کیش ہو جائے گا۔
         </p>
-      </div>
-
-      <!-- Caption Style (Karaoke) -->
-      <div class="mt-3 pt-3 border-t border-zinc-800">
-        <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
-          <i class="fas fa-palette mr-1 text-pink-400"></i>Caption Style (Karaoke)
-        </label>
-        <div class="grid grid-cols-2 gap-2 mb-2">
-          <select id="captionStyleMode" onchange="applyCaptionStyle()" class="bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="karaoke">🎤 Karaoke (CapCut)</option>
-            <option value="minimal">✨ Minimal</option>
-            <option value="bold">💥 Bold Yellow</option>
-            <option value="neon">🌟 Neon Glow</option>
-          </select>
-          <select id="captionWordsPerLine" onchange="applyCaptionStyle()" class="bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="3">3 Words</option>
-            <option value="4" selected>4 Words</option>
-            <option value="5">5 Words</option>
-            <option value="6">6 Words</option>
-          </select>
-        </div>
-        <div class="flex gap-2 items-center">
-          <input type="color" id="captionHighlightColor" value="#FFD700" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Highlight Color" />
-          <input type="color" id="captionBaseColor" value="#FFFFFF" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Base Color" />
-          <select id="captionPos" onchange="applyCaptionStyle()" class="flex-1 bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="bottom">⬇️ Bottom</option>
-            <option value="middle">⏺️ Middle</option>
-            <option value="top">⬆️ Top</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Import/Export -->
-      <div class="mt-3 pt-3 border-t border-zinc-800">
-        <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
-          <i class="fas fa-file-import mr-1 text-blue-400"></i>Import / Export
-        </label>
-        <div class="grid grid-cols-3 gap-2">
-          <button onclick="exportSRT()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-bold py-2 rounded-lg">
-            <i class="fas fa-download mr-1"></i>SRT
-          </button>
-          <button onclick="exportVTT()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-bold py-2 rounded-lg">
-            <i class="fas fa-download mr-1"></i>VTT
-          </button>
-          <button onclick="document.getElementById('srtImporter').click()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-bold py-2 rounded-lg">
-            <i class="fas fa-upload mr-1"></i>Import
-          </button>
-        </div>
-      </div>
-
-      <!-- Caption Lines (Edit) -->
-      <div class="mt-3 pt-3 border-t border-zinc-800">
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-[9px] text-zinc-500 uppercase tracking-wider">
-            <i class="fas fa-list mr-1 text-amber-400"></i>Caption Lines
-          </label>
-          <span id="captionLinesCount" class="text-[9px] text-zinc-600">0 lines</span>
-        </div>
-        <div id="captionLinesList" class="max-h-40 overflow-y-auto space-y-1 pr-1">
-          <p class="text-[10px] text-zinc-600 text-center py-2">No captions yet</p>
-        </div>
       </div>
     </div>
 
@@ -331,13 +403,13 @@
       <div class="flex gap-2 overflow-x-auto pb-1" id="filtersContainer"></div>
     </div>
 
-    <div id="submenu-adjust" class="hidden p-3 bg-[#0c0c10] space-y-3">
+    <div id="submenu-adjust" class="hidden p-3 bg-[#0c0c10] space-y-3 max-h-[160px] overflow-y-auto">
       <div class="flex items-center justify-between">
         <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
         <span class="text-xs font-bold text-orange-400">Pro Color Correction</span>
       </div>
       <div class="grid grid-cols-2 gap-3 text-xs text-zinc-300">
-        <div>Auto: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('brightness(1.2) contrast(1.1) saturate(1.2)')">Apply</button></div>
+        <div>Auto Adjust: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('brightness(1.2) contrast(1.1) saturate(1.2)')">Apply</button></div>
         <div>Reset: <button class="bg-zinc-800 px-2 py-0.5 rounded text-[10px]" onclick="applyCSSFilter('none')">Reset</button></div>
         <div class="col-span-2"><span class="text-[11px] text-zinc-500">Brightness:</span>
         <input type="range" min="50" max="150" value="100" class="w-full mt-1 accent-orange-500" oninput="adjustBrightness(this.value)" /></div>
@@ -345,8 +417,8 @@
     </div>
 
     <div id="submenu-overlay" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
-      <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-xs flex items-center justify-center gap-2 text-white"><i class="fas fa-folder-open"></i> Open Device Media Gallery</button>
+      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+      <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white"><i class="fas fa-folder-open"></i> Open Device Media Gallery</button>
     </div>
 
     <div id="submenu-aspect-ratio" class="hidden p-3 bg-[#0c0c10]">
@@ -363,7 +435,7 @@
     </div>
 
     <div id="submenu-background" class="hidden submenu-grid">
-      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
+      <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
       <button onclick="triggerTool('Background Color')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-palette text-rose-400"></i>Solid Color</button>
       <button onclick="triggerTool('BG Image')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-image"></i>BG Image</button>
       <button onclick="triggerTool('Blur Frame')" class="bg-zinc-900 p-2 rounded text-xs text-zinc-200 flex flex-col items-center gap-1"><i class="fas fa-sliders text-blue-400"></i>Blur Frame</button>
@@ -375,16 +447,16 @@
 
 <div id="toastNotification" class="toast-notification hidden">
   <i class="fas fa-check-circle text-blue-400 text-lg"></i>
-  <span id="toastMessage" class="text-sm text-white font-medium">Ready</span>
+  <span id="toastMessage" class="text-sm text-white font-medium">Animation applied!</span>
 </div>
 
 <div id="exportDialog" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[300] hidden">
   <div class="export-dialog">
-    <div class="export-header"><h3 class="text-white"><i class="fas fa-download mr-2 text-blue-400"></i>Export Project</h3><span class="close-btn text-zinc-400 cursor-pointer" onclick="closeExportDialog()">✕</span></div>
+    <div class="export-header"><h3><i class="fas fa-download mr-2 text-blue-400"></i>Export Project</h3><span class="close-btn" onclick="closeExportDialog()">✕</span></div>
     <div class="export-options">
-      <button onclick="exportProject('video')"><i class="fas fa-video text-blue-400"></i><span>Export as Video (MP4)</span></button>
-      <button onclick="exportProject('audio')"><i class="fas fa-music text-green-400"></i><span>Export as Audio (MP3)</span></button>
-      <button onclick="exportProject('project')"><i class="fas fa-file-archive text-amber-400"></i><span>Export as Project File (.dravoo)</span></button>
+      <button onclick="exportProject('video')"><i class="fas fa-video text-blue-400"></i><span>Export as Video (MP4)</span><span class="ml-auto text-[10px] text-zinc-500">1080p</span></button>
+      <button onclick="exportProject('audio')"><i class="fas fa-music text-green-400"></i><span>Export as Audio (MP3)</span><span class="ml-auto text-[10px] text-zinc-500">320kbps</span></button>
+      <button onclick="exportProject('project')"><i class="fas fa-file-archive text-amber-400"></i><span>Export as Project File</span><span class="ml-auto text-[10px] text-zinc-500">.dravoo</span></button>
     </div>
   </div>
 </div>
@@ -396,8 +468,8 @@
     <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
   </div>
   <div class="px-4 py-2 border-b border-zinc-800 flex gap-2">
-    <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none" value="Enter your text" />
-    <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold">Add</button>
+    <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="Enter your text" />
+    <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add</button>
   </div>
   <div class="flex border-b border-zinc-800 bg-[#0e0e12] overflow-x-auto scroll-x-menu">
     <button id="tab-templates" onclick="switchTextTab('templates')" class="tab-btn active">Templates</button>
@@ -412,8 +484,9 @@
 
 <script>
 // ============================================================
-// GLOBALS
+// DRAVOO — Slim + Auto Caption
 // ============================================================
+
 let currentTextState = { text: "Enter your text", font: "Inter", styleCSS: "color: #ffffff;", animation: "", bubbleCSS: "" };
 let textElementCounter = 0;
 let textTracks = [];
@@ -421,31 +494,13 @@ let textTrackIdCounter = 0;
 let audioTracks = [];
 let trackIdCounter = 0;
 let toastTimeout = null;
+let selectedVoice = 'Adam';
 
 // Auto caption state
 let autoCaptionSegments = [];
-let wordGroups = [];
 let captionSyncRAF = null;
-let captionSettings = {
-  mode: 'karaoke',
-  wordsPerLine: 4,
-  highlight: '#FFD700',
-  base: '#FFFFFF',
-  pos: 'bottom'
-};
 
-const picker = document.getElementById('video-file-picker');
-const player = document.getElementById('studio-player');
-const imageEl = document.getElementById('studio-image');
-const placeholder = document.getElementById('media-placeholder');
-const timelineLabel = document.getElementById('timelineLabel');
-const playBtn = document.getElementById('playBtn');
-const timeDisplay = document.getElementById('timeDisplay');
-const ratioBox = document.getElementById('video-ratio-box');
-
-// ============================================================
-// TOAST
-// ============================================================
+// Toast
 function showToast(message, icon = 'fa-check-circle') {
   try {
     const toast = document.getElementById('toastNotification');
@@ -460,7 +515,7 @@ function showToast(message, icon = 'fa-check-circle') {
 }
 
 // ============================================================
-// AUTO CAPTION — Whisper
+// AUTO CAPTION (Whisper)
 // ============================================================
 async function generateAutoCaptions() {
   const btn = document.getElementById('autoCaptionBtn');
@@ -470,20 +525,22 @@ async function generateAutoCaptions() {
   const progTxt = document.getElementById('whisperProgressText');
 
   if (!player.src || player.classList.contains('hidden')) {
-    showToast('❌ Upload video first', 'fa-exclamation');
+    showToast('❌ پہلے کوئی ویڈیو اپ لوڈ کریں', 'fa-exclamation');
     return;
   }
+
   progWrap.classList.remove('hidden');
 
+  // اگر ماڈل ابھی تیار نہیں
   if (!window.__whisperReady) {
     progBar.style.width = '3%';
-    progTxt.textContent = 'Whisper-base model loading (~75MB)...';
-    showToast('⏳ Loading model, please wait...', 'fa-hourglass');
+    progTxt.textContent = 'Whisper ماڈل لوڈ ہو رہا ہے...';
+    showToast('⏳ ماڈل لوڈ، انتظار کریں...', 'fa-hourglass');
     window.__loadWhisper && window.__loadWhisper();
     const wait = setInterval(() => {
       if (window.__whisperReady) {
         clearInterval(wait);
-        progTxt.textContent = 'Model ready!';
+        progTxt.textContent = 'ماڈل تیار! ٹرانسکرپشن شروع...';
         setTimeout(() => generateAutoCaptions(), 300);
       }
     }, 800);
@@ -491,10 +548,11 @@ async function generateAutoCaptions() {
   }
 
   btn.disabled = true;
-  btnTxt.textContent = 'Extracting audio...';
+  btnTxt.textContent = 'آڈیو نکالا جا رہا ہے...';
   progBar.style.width = '15%';
 
   try {
+    // 1) آڈیو نکالیں
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
     const arrayBuf = await fetch(player.src).then(r => r.arrayBuffer());
     const decoded = await audioCtx.decodeAudioData(arrayBuf);
@@ -502,29 +560,25 @@ async function generateAutoCaptions() {
     audioCtx.close();
 
     progBar.style.width = '35%';
-    progTxt.textContent = 'Whisper is transcribing...';
-    btnTxt.textContent = 'Transcribing...';
+    progTxt.textContent = 'Whisper ٹرانسکرپشن کر رہا ہے...';
+    btnTxt.textContent = 'ٹرانسکرپٹ ہو رہا ہے...';
 
-    const selectedLang = document.getElementById('captionLanguage').value;
-    let langOpt = undefined;
-    if (selectedLang !== 'auto') {
-      const map = { en: 'english', ur: 'urdu', hi: 'hindi', ar: 'arabic', zh: 'chinese', es: 'spanish' };
-      langOpt = map[selectedLang] || 'english';
-    }
+    // 2) Whisper
+    const langMap = { en: 'english', ur: 'urdu', hi: 'hindi', ar: 'arabic', zh: 'chinese', es: 'spanish' };
+    const lang = langMap[document.getElementById('captionLanguage').value] || 'english';
 
-    const opts = {
+    const result = await window.__whisperPipeline(mono, {
+      language: lang,
       task: 'transcribe',
       chunk_length_s: 30,
       stride_length_s: 5,
       return_timestamps: true,
-    };
-    if (langOpt) opts.language = langOpt;
-
-    const result = await window.__whisperPipeline(mono, opts);
+    });
 
     progBar.style.width = '85%';
-    progTxt.textContent = 'Generating captions...';
+    progTxt.textContent = 'کیپشن بنائے جا رہے ہیں...';
 
+    // 3) segments
     autoCaptionSegments = [];
     if (result.chunks && result.chunks.length > 0) {
       result.chunks.forEach(chunk => {
@@ -551,25 +605,26 @@ async function generateAutoCaptions() {
       }
     }
 
-    if (autoCaptionSegments.length === 0) throw new Error('No text found');
+    if (autoCaptionSegments.length === 0) throw new Error('کوئی ٹیکسٹ نہیں ملا');
 
-    rebuildWordGroups();
+    // 4) لگائیں
     setupCaptionOverlay();
     startCaptionSync();
 
     progBar.style.width = '100%';
-    progTxt.textContent = `✅ ${autoCaptionSegments.length} captions generated!`;
-    btnTxt.textContent = 'Generate Again';
+    progTxt.textContent = `✅ ${autoCaptionSegments.length} کیپشن بن گئے!`;
+    btnTxt.textContent = 'دوبارہ بنائیں';
     btn.disabled = false;
-    showToast(`✅ ${wordGroups.length} karaoke groups!`, 'fa-closed-captioning');
+    showToast(`✅ ${autoCaptionSegments.length} آٹو کیپشن بن گئے!`, 'fa-closed-captioning');
+
     setTimeout(() => { progWrap.classList.add('hidden'); progBar.style.width = '0%'; }, 3000);
 
   } catch (err) {
     console.error('Auto caption error:', err);
     btn.disabled = false;
-    btnTxt.textContent = 'Try Again';
-    progTxt.textContent = '❌ Failed: ' + (err.message || 'Unknown');
-    showToast('❌ Failed', 'fa-exclamation');
+    btnTxt.textContent = 'دوبارہ کوشش کریں';
+    progTxt.textContent = '❌ ناکام: ' + (err.message || 'نامعلوم');
+    showToast('❌ آٹو کیپشن ناکام', 'fa-exclamation');
     setTimeout(() => progWrap.classList.add('hidden'), 4000);
   }
 }
@@ -586,101 +641,25 @@ function mixToMono(audioBuffer) {
   return out;
 }
 
-// Words → Groups
-function splitIntoWords(segments) {
-  const out = [];
-  segments.forEach(seg => {
-    const words = (seg.text || '').trim().split(/\s+/).filter(Boolean);
-    if (words.length === 0) return;
-    const dur = Math.max(0.3, (seg.end - seg.start)) / words.length;
-    words.forEach((w, i) => {
-      out.push({ word: w, start: seg.start + i * dur, end: seg.start + (i + 1) * dur });
-    });
-  });
-  return out;
-}
-function groupWords(words, size) {
-  const groups = [];
-  for (let i = 0; i < words.length; i += size) {
-    const chunk = words.slice(i, i + size);
-    groups.push({ start: chunk[0].start, end: chunk[chunk.length - 1].end, words: chunk });
-  }
-  return groups;
-}
-function rebuildWordGroups() {
-  const words = splitIntoWords(autoCaptionSegments);
-  wordGroups = groupWords(words, captionSettings.wordsPerLine);
-  renderCaptionLinesList();
-}
-
-// Overlay
 function setupCaptionOverlay() {
   let overlay = document.getElementById('autoCaptionOverlay');
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'autoCaptionOverlay';
     overlay.style.cssText = `
-      position: absolute; left: 50%; transform: translateX(-50%);
-      max-width: 92%; text-align: center; z-index: 60; pointer-events: none;
-      line-height: 1.15; letter-spacing: 0.5px; padding: 8px 16px;
-      opacity: 0; transition: opacity 0.12s; font-weight: 900;
-      text-transform: uppercase;
+      position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%);
+      max-width: 90%; text-align: center; z-index: 60; pointer-events: none;
+      font-size: 15px; font-weight: 800; color: #fff; line-height: 1.3;
+      text-shadow: 0 0 8px rgba(0,0,0,0.95), 0 0 16px rgba(0,0,0,0.7), 2px 2px 4px rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.5); padding: 6px 14px; border-radius: 10px;
+      backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
+      opacity: 0; transition: opacity 0.15s;
     `;
     document.getElementById('video-ratio-box').appendChild(overlay);
   }
-  const f = document.getElementById('captionFont').value || 'Inter';
-  overlay.style.fontFamily = `'${f}', 'Inter', sans-serif`;
-
-  if (captionSettings.pos === 'bottom') { overlay.style.bottom = '8%'; overlay.style.top = 'auto'; overlay.style.transform = 'translateX(-50%)'; }
-  else if (captionSettings.pos === 'middle') { overlay.style.top = '50%'; overlay.style.bottom = 'auto'; overlay.style.transform = 'translate(-50%, -50%)'; }
-  else { overlay.style.top = '8%'; overlay.style.bottom = 'auto'; overlay.style.transform = 'translateX(-50%)'; }
-
-  const mode = captionSettings.mode;
-  if (mode === 'karaoke') {
-    overlay.style.fontSize = '22px';
-    overlay.style.background = 'rgba(0,0,0,0.65)';
-    overlay.style.borderRadius = '14px';
-    overlay.style.padding = '10px 18px';
-    overlay.style.textShadow = '0 0 10px rgba(0,0,0,1), 3px 3px 6px rgba(0,0,0,0.9)';
-    overlay.style.border = '2px solid rgba(255,255,255,0.15)';
-    overlay.style.backdropFilter = 'blur(6px)';
-  } else if (mode === 'minimal') {
-    overlay.style.fontSize = '15px';
-    overlay.style.background = 'rgba(0,0,0,0.35)';
-    overlay.style.borderRadius = '8px';
-    overlay.style.padding = '4px 12px';
-    overlay.style.textShadow = '0 0 6px rgba(0,0,0,0.9)';
-    overlay.style.border = 'none';
-    overlay.style.backdropFilter = 'blur(2px)';
-  } else if (mode === 'bold') {
-    overlay.style.fontSize = '26px';
-    overlay.style.background = 'transparent';
-    overlay.style.borderRadius = '0';
-    overlay.style.padding = '0 8px';
-    overlay.style.textShadow = '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 0 20px rgba(0,0,0,0.8)';
-    overlay.style.border = 'none';
-    overlay.style.backdropFilter = 'none';
-  } else if (mode === 'neon') {
-    overlay.style.fontSize = '20px';
-    overlay.style.background = 'rgba(0,0,0,0.5)';
-    overlay.style.borderRadius = '12px';
-    overlay.style.padding = '8px 16px';
-    overlay.style.textShadow = `0 0 8px ${captionSettings.highlight}, 0 0 16px ${captionSettings.highlight}`;
-    overlay.style.border = `2px solid ${captionSettings.highlight}`;
-    overlay.style.backdropFilter = 'blur(4px)';
-  }
+  const f = document.getElementById('captionFont').value;
+  overlay.style.fontFamily = `'${f}', sans-serif`;
   return overlay;
-}
-
-function applyCaptionStyle() {
-  captionSettings.mode = document.getElementById('captionStyleMode').value;
-  captionSettings.wordsPerLine = parseInt(document.getElementById('captionWordsPerLine').value);
-  captionSettings.highlight = document.getElementById('captionHighlightColor').value;
-  captionSettings.base = document.getElementById('captionBaseColor').value;
-  captionSettings.pos = document.getElementById('captionPos').value;
-  setupCaptionOverlay();
-  rebuildWordGroups();
-  showToast('🎨 Style updated', 'fa-palette');
 }
 
 function startCaptionSync() {
@@ -688,20 +667,12 @@ function startCaptionSync() {
   const overlay = setupCaptionOverlay();
   const loop = () => {
     const t = player.currentTime;
-    let activeGroup = null;
-    for (const g of wordGroups) {
-      if (t >= g.start && t < g.end) { activeGroup = g; break; }
+    let found = null;
+    for (const seg of autoCaptionSegments) {
+      if (t >= seg.start && t < seg.end) { found = seg; break; }
     }
-    if (activeGroup) {
-      let html = '';
-      activeGroup.words.forEach(w => {
-        const isActive = t >= w.start && t < w.end;
-        const color = isActive ? captionSettings.highlight : captionSettings.base;
-        const scale = isActive && captionSettings.mode === 'karaoke' ? 'transform: scale(1.15); display:inline-block;' : '';
-        const extra = isActive ? `text-shadow: 0 0 12px ${captionSettings.highlight};` : '';
-        html += `<span style="color:${color}; ${scale} ${extra} transition: all 0.08s; margin: 0 4px;">${w.word}</span>`;
-      });
-      if (overlay.innerHTML !== html) overlay.innerHTML = html;
+    if (found) {
+      if (overlay.textContent !== found.text) overlay.textContent = found.text;
       overlay.style.opacity = '1';
     } else {
       overlay.style.opacity = '0';
@@ -712,117 +683,125 @@ function startCaptionSync() {
 }
 
 // ============================================================
-// CAPTION LINES (Edit)
+// CAPTION (manual)
 // ============================================================
-function renderCaptionLinesList() {
-  const list = document.getElementById('captionLinesList');
-  const count = document.getElementById('captionLinesCount');
-  if (!list) return;
-  if (autoCaptionSegments.length === 0) {
-    list.innerHTML = '<p class="text-[10px] text-zinc-600 text-center py-2">No captions yet</p>';
-    if (count) count.textContent = '0 lines';
-    return;
-  }
-  if (count) count.textContent = `${autoCaptionSegments.length} lines`;
-  list.innerHTML = autoCaptionSegments.map((s, i) => `
-    <div class="flex items-center gap-2 bg-[#18181c] border border-zinc-800 rounded-lg p-1.5">
-      <span class="text-[9px] text-zinc-500 font-mono w-10 flex-shrink-0">${formatTime(s.start)}</span>
-      <input type="text" value="${(s.text || '').replace(/"/g, '&quot;')}"
-        oninput="editCaptionLine(${i}, this.value)"
-        class="flex-1 bg-transparent text-[10px] text-zinc-200 outline-none border-b border-transparent focus:border-pink-400" />
-      <button onclick="deleteCaptionLine(${i})" class="text-red-400 hover:text-red-300 text-[10px] px-1">✕</button>
-    </div>
-  `).join('');
+function updateCaptionPreview() {
+  try {
+    const lang = document.getElementById('captionLanguage').value;
+    const font = document.getElementById('captionFont').value;
+    const textInput = document.getElementById('captionTextInput');
+    const previewText = document.getElementById('captionPreviewText');
+    previewText.style.fontFamily = font;
+    previewText.textContent = textInput.value || 'Hello World! 🌍';
+    // update overlay font live
+    const ov = document.getElementById('autoCaptionOverlay');
+    if (ov) ov.style.fontFamily = `'${font}', sans-serif`;
+  } catch (e) {}
 }
-function editCaptionLine(i, val) {
-  if (!autoCaptionSegments[i]) return;
-  autoCaptionSegments[i].text = val;
-  rebuildWordGroups();
-}
-function deleteCaptionLine(i) {
-  autoCaptionSegments.splice(i, 1);
-  rebuildWordGroups();
-  showToast('🗑️ Line deleted', 'fa-trash');
+
+function applyCaptionToCanvas() {
+  try {
+    const text = document.getElementById('captionTextInput').value || 'Hello World! 🌍';
+    const font = document.getElementById('captionFont').value;
+    const styleCSS = `color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.9), 2px 2px 4px rgba(0,0,0,0.9); font-weight: 800; background: rgba(0,0,0,0.4); padding: 6px 14px; border-radius: 12px;`;
+    const wrapper = createTextElementOnCanvas(text, styleCSS, font, '', 'Fade In');
+    if (wrapper) {
+      wrapper.style.left = '50%';
+      wrapper.style.top = '50%';
+      showToast('📝 Manual caption added', 'fa-closed-captioning');
+      backToMaster();
+    }
+  } catch (e) { console.error(e); }
 }
 
 // ============================================================
-// SRT / VTT EXPORT / IMPORT
+// TEXT TRACKS
 // ============================================================
-function secToSRT(s) {
-  const h = Math.floor(s / 3600).toString().padStart(2, '0');
-  const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
-  const sec = Math.floor(s % 60).toString().padStart(2, '0');
-  const ms = Math.floor((s % 1) * 1000).toString().padStart(3, '0');
-  return `${h}:${m}:${sec},${ms}`;
+function addTextTrack(text, font, styleCSS, bubbleCSS, animation) {
+  const id = ++textTrackIdCounter;
+  const track = { id, text, font, styleCSS, bubbleCSS, animation };
+  textTracks.push(track);
+  renderTextTracks();
+  updateTextTrackCount();
+  return track;
 }
-function secToVTT(s) { return secToSRT(s).replace(',', '.'); }
+function renderTextTracks() {
+  const c = document.getElementById('textTrackList');
+  if (!c) return;
+  if (textTracks.length === 0) { c.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`; return; }
+  c.innerHTML = textTracks.map(t => `
+    <div class="text-track-item" data-track-id="${t.id}">
+      <div class="track-info"><i class="fas fa-font"></i><span>${(t.text || '').substring(0, 30)}</span></div>
+      <div class="track-actions">
+        <button onclick="removeTextTrack(${t.id})"><i class="fas fa-times"></i></button>
+      </div>
+    </div>`).join('');
+}
+function updateTextTrackCount() {
+  const e = document.getElementById('textTrackCount');
+  if (e) e.textContent = `${textTracks.length} track${textTracks.length !== 1 ? 's' : ''}`;
+}
+function removeTextTrack(id) {
+  document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id && el.parentNode) el.parentNode.removeChild(el); });
+  textTracks = textTracks.filter(t => t.id !== id);
+  renderTextTracks(); updateTextTrackCount();
+}
 
-function exportSRT() {
-  if (autoCaptionSegments.length === 0) { showToast('❌ No captions', 'fa-exclamation'); return; }
-  let out = '';
-  autoCaptionSegments.forEach((s, i) => {
-    out += `${i + 1}\n${secToSRT(s.start)} --> ${secToSRT(s.end)}\n${s.text}\n\n`;
-  });
-  downloadFile(out, 'captions.srt', 'text/plain');
-  showToast('✅ SRT exported', 'fa-download');
+// ============================================================
+// AUDIO TRACKS (basic)
+// ============================================================
+function addAudioTrack(name, url, type = 'track') {
+  const id = ++trackIdCounter;
+  const audio = new Audio(url);
+  const track = { id, name, audio, type, playing: false, url };
+  audioTracks.push(track);
+  renderAudioTracks();
+  updateTrackCount();
+  showToast(`🎵 "${name}" added`, 'fa-music');
+  return track;
 }
-function exportVTT() {
-  if (autoCaptionSegments.length === 0) { showToast('❌ No captions', 'fa-exclamation'); return; }
-  let out = 'WEBVTT\n\n';
-  autoCaptionSegments.forEach((s, i) => {
-    out += `${i + 1}\n${secToVTT(s.start)} --> ${secToVTT(s.end)}\n${s.text}\n\n`;
-  });
-  downloadFile(out, 'captions.vtt', 'text/vtt');
-  showToast('✅ VTT exported', 'fa-download');
+function renderAudioTracks() {
+  const c = document.getElementById('multiTrackList');
+  if (!c) return;
+  if (audioTracks.length === 0) { c.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No audio tracks</span></div>`; return; }
+  c.innerHTML = audioTracks.map(t => `
+    <div class="audio-track-item" data-track-id="${t.id}">
+      <div class="track-info"><i class="fas fa-music"></i><span>${t.name}</span></div>
+      <div class="track-actions">
+        <button class="play-btn" onclick="toggleTrackPlay(${t.id})"><i class="fas ${t.playing ? 'fa-pause' : 'fa-play'}"></i></button>
+        <button onclick="removeTrack(${t.id})"><i class="fas fa-times"></i></button>
+      </div>
+    </div>`).join('');
 }
-function downloadFile(content, name, type) {
-  const blob = new Blob([content], { type });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(a.href);
+function updateTrackCount() {
+  const e = document.getElementById('trackCount');
+  if (e) e.textContent = `${audioTracks.length} track${audioTracks.length !== 1 ? 's' : ''}`;
 }
-function importSRT(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const text = e.target.result;
-    const parsed = parseSRT(text);
-    if (parsed.length === 0) { showToast('❌ File empty or invalid', 'fa-exclamation'); return; }
-    autoCaptionSegments = parsed;
-    rebuildWordGroups();
-    setupCaptionOverlay();
-    startCaptionSync();
-    showToast(`✅ ${parsed.length} captions imported!`, 'fa-upload');
-  };
-  reader.readAsText(file);
-  input.value = '';
+function toggleTrackPlay(id) {
+  const t = audioTracks.find(x => x.id === id); if (!t) return;
+  if (t.playing) { t.audio.pause(); t.playing = false; }
+  else { audioTracks.forEach(x => { if (x.id !== id && x.playing) { x.audio.pause(); x.playing = false; } }); t.audio.play().catch(()=>{}); t.playing = true; }
+  renderAudioTracks();
 }
-function parseSRT(text) {
-  const out = [];
-  const blocks = text.replace(/\r/g, '').split('\n\n');
-  blocks.forEach(block => {
-    const lines = block.split('\n').filter(Boolean);
-    if (lines.length < 2) return;
-    const timeLine = lines.find(l => l.includes('-->'));
-    if (!timeLine) return;
-    const idx = lines.indexOf(timeLine);
-    const textPart = lines.slice(idx + 1).join(' ').trim();
-    if (!textPart) return;
-    const m = timeLine.match(/(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)/);
-    if (!m) return;
-    const start = (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3]) + (+m[4]) / 1000;
-    const end = (+m[5]) * 3600 + (+m[6]) * 60 + (+m[7]) + (+m[8]) / 1000;
-    out.push({ start, end, text: textPart });
-  });
-  return out;
+function removeTrack(id) {
+  const t = audioTracks.find(x => x.id === id);
+  if (t) { t.audio.pause(); t.audio.src = ''; if (t.url && t.url.startsWith('blob:')) URL.revokeObjectURL(t.url); }
+  audioTracks = audioTracks.filter(x => x.id !== id);
+  renderAudioTracks(); updateTrackCount();
 }
 
 // ============================================================
 // MEDIA PLAYER
 // ============================================================
+const picker = document.getElementById('video-file-picker');
+const player = document.getElementById('studio-player');
+const imageEl = document.getElementById('studio-image');
+const placeholder = document.getElementById('media-placeholder');
+const timelineLabel = document.getElementById('timelineLabel');
+const playBtn = document.getElementById('playBtn');
+const timeDisplay = document.getElementById('timeDisplay');
+const ratioBox = document.getElementById('video-ratio-box');
+
 picker.addEventListener('change', function(e) {
   const file = e.target.files[0]; if (!file) return;
   timelineLabel.innerText = file.name;
@@ -833,11 +812,10 @@ picker.addEventListener('change', function(e) {
     player.src = URL.createObjectURL(file);
     player.play().catch(()=>{});
     playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
+    // دوبارہ کیپشن بنانے پر پرانا ہٹا دیں
     autoCaptionSegments = [];
-    wordGroups = [];
     const ov = document.getElementById('autoCaptionOverlay');
     if (ov) ov.remove();
-    renderCaptionLinesList();
   } else {
     player.classList.add('hidden');
     imageEl.classList.remove('hidden');
@@ -845,21 +823,15 @@ picker.addEventListener('change', function(e) {
     timeDisplay.innerText = "00:00 / 00:05";
   }
 });
+
 function togglePlay() {
   if (player.src && !player.classList.contains('hidden')) {
     if (player.paused) { player.play().catch(()=>{}); playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`; }
     else { player.pause(); playBtn.innerHTML = `<i class="fas fa-play text-xs"></i>`; }
   }
 }
-function formatTime(s) {
-  if (isNaN(s) || !isFinite(s)) s = 0;
-  const m = Math.floor(s/60).toString().padStart(2,'0');
-  const x = Math.floor(s%60).toString().padStart(2,'0');
-  return `${m}:${x}`;
-}
-player.addEventListener('timeupdate', () => {
-  timeDisplay.innerText = `${formatTime(player.currentTime)} / ${formatTime(player.duration || 0)}`;
-});
+function formatTime(s) { const m = Math.floor(s/60).toString().padStart(2,'0'); const x = Math.floor(s%60).toString().padStart(2,'0'); return `${m}:${x}`; }
+player.addEventListener('timeupdate', () => { timeDisplay.innerText = `${formatTime(player.currentTime)} / ${formatTime(player.duration || 0)}`; });
 
 function handleAudioExtracted(input) {
   const file = input.files[0]; if (!file) return;
@@ -868,6 +840,7 @@ function handleAudioExtracted(input) {
   showSubmenu('audio');
   input.value = '';
 }
+
 function handleOverlaySelected(input) {
   const file = input.files[0]; if (!file) return;
   const overlayImg = document.getElementById('overlay-display-img');
@@ -886,7 +859,7 @@ function showSubmenu(id) {
   const sub = document.getElementById(`submenu-${id}`);
   if (sub) sub.classList.remove('hidden');
   if (id === 'filters') generateFilters();
-  if (id === 'caption') { updateCaptionPreview(); renderCaptionLinesList(); }
+  if (id === 'caption') updateCaptionPreview();
 }
 function backToMaster() {
   ['edit','audio','text','effects','overlay','caption','filters','adjust','generate-media','ai-avatar','aspect-ratio','background']
@@ -926,7 +899,7 @@ function generateFilters() {
 }
 
 // ============================================================
-// TEXT ELEMENT
+// TEXT ELEMENT (basic — only template style)
 // ============================================================
 function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCSS = '', animation = '') {
   const layer = document.getElementById('canvas-elements-layer');
@@ -954,14 +927,20 @@ function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCS
   addTextTrack(text, font, styleCSS, bubbleCSS, animation);
   return wrapper;
 }
+
 function setupDrag(el) {
   let drag = false, sx, sy, sl, st;
-  const start = (x, y) => { drag = true; el.classList.add('dragging'); sx = x; sy = y; sl = parseFloat(el.style.left) || 50; st = parseFloat(el.style.top) || 50; };
+  const start = (x, y) => {
+    drag = true; el.classList.add('dragging');
+    sx = x; sy = y;
+    sl = parseFloat(el.style.left) || 50;
+    st = parseFloat(el.style.top) || 50;
+  };
   const move = (x, y) => {
     if (!drag) return;
     const r = el.parentElement.getBoundingClientRect();
-    const nl = sl + (x - sx) / r.width * 100;
-    const nt = st + (y - sy) / r.height * 100;
+    let nl = sl + (x - sx) / r.width * 100;
+    let nt = st + (y - sy) / r.height * 100;
     el.style.left = Math.max(0, Math.min(100, nl)) + '%';
     el.style.top = Math.max(0, Math.min(100, nt)) + '%';
   };
@@ -973,12 +952,14 @@ function setupDrag(el) {
   document.addEventListener('touchmove', e => { if (!drag) return; const t = e.touches[0]; move(t.clientX, t.clientY); }, { passive: true });
   document.addEventListener('touchend', end);
 }
+
 function applyNewTextToCanvas() {
   const text = document.getElementById('liveTextInput').value || 'Enter Text';
   createTextElementOnCanvas(text, currentTextState.styleCSS || 'color:#fff;', currentTextState.font, currentTextState.bubbleCSS, currentTextState.animation);
   closeDrawer();
   showToast('✏️ Text added', 'fa-font');
 }
+
 function updateLiveTextPreview() {
   const text = document.getElementById('liveTextInput').value || 'Enter Text';
   currentTextState.text = text;
@@ -993,77 +974,13 @@ function updateLiveTextPreview() {
   p.innerText = text;
 }
 
-function addTextTrack(text, font, styleCSS, bubbleCSS, animation) {
-  const id = ++textTrackIdCounter;
-  textTracks.push({ id, text, font, styleCSS, bubbleCSS, animation });
-  renderTextTracks();
-  updateTextTrackCount();
-}
-function renderTextTracks() {
-  const c = document.getElementById('textTrackList');
-  if (!c) return;
-  if (textTracks.length === 0) { c.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`; return; }
-  c.innerHTML = textTracks.map(t => `
-    <div class="text-track-item">
-      <div class="track-info"><i class="fas fa-font"></i><span>${(t.text||'').substring(0,30)}</span></div>
-      <div class="track-actions"><button onclick="removeTextTrack(${t.id})"><i class="fas fa-times"></i></button></div>
-    </div>`).join('');
-}
-function updateTextTrackCount() {
-  const e = document.getElementById('textTrackCount');
-  if (e) e.textContent = `${textTracks.length} track${textTracks.length !== 1 ? 's' : ''}`;
-}
-function removeTextTrack(id) {
-  document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id && el.parentNode) el.parentNode.removeChild(el); });
-  textTracks = textTracks.filter(t => t.id !== id);
-  renderTextTracks(); updateTextTrackCount();
-}
-
 // ============================================================
-// AUDIO TRACKS
+// DRAWER (simplified — templates + fonts only)
 // ============================================================
-function addAudioTrack(name, url, type = 'track') {
-  const id = ++trackIdCounter;
-  const audio = new Audio(url);
-  audioTracks.push({ id, name, audio, type, playing: false, url });
-  renderAudioTracks();
-  updateTrackCount();
-  showToast(`🎵 "${name}" added`, 'fa-music');
+function openDrawer(type) {
+  document.getElementById('editorDrawer').classList.add('open');
+  switchTextTab('templates');
 }
-function renderAudioTracks() {
-  const c = document.getElementById('multiTrackList');
-  if (!c) return;
-  if (audioTracks.length === 0) { c.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No audio tracks</span></div>`; return; }
-  c.innerHTML = audioTracks.map(t => `
-    <div class="audio-track-item">
-      <div class="track-info"><i class="fas fa-music"></i><span>${t.name}</span></div>
-      <div class="track-actions">
-        <button onclick="toggleTrackPlay(${t.id})"><i class="fas ${t.playing ? 'fa-pause' : 'fa-play'}"></i></button>
-        <button onclick="removeTrack(${t.id})"><i class="fas fa-times"></i></button>
-      </div>
-    </div>`).join('');
-}
-function updateTrackCount() {
-  const e = document.getElementById('trackCount');
-  if (e) e.textContent = `${audioTracks.length} track${audioTracks.length !== 1 ? 's' : ''}`;
-}
-function toggleTrackPlay(id) {
-  const t = audioTracks.find(x => x.id === id); if (!t) return;
-  if (t.playing) { t.audio.pause(); t.playing = false; }
-  else { audioTracks.forEach(x => { if (x.id !== id && x.playing) { x.audio.pause(); x.playing = false; } }); t.audio.play().catch(()=>{}); t.playing = true; }
-  renderAudioTracks();
-}
-function removeTrack(id) {
-  const t = audioTracks.find(x => x.id === id);
-  if (t) { t.audio.pause(); t.audio.src = ''; if (t.url && t.url.startsWith('blob:')) URL.revokeObjectURL(t.url); }
-  audioTracks = audioTracks.filter(x => x.id !== id);
-  renderAudioTracks(); updateTrackCount();
-}
-
-// ============================================================
-// DRAWER
-// ============================================================
-function openDrawer(type) { document.getElementById('editorDrawer').classList.add('open'); switchTextTab('templates'); }
 function closeDrawer() {
   document.getElementById('editorDrawer').classList.remove('open');
   const p = document.getElementById('live-canvas-text-preview');
@@ -1092,7 +1009,8 @@ function switchTextTab(tab) {
       grid.appendChild(d);
     });
   } else if (tab === 'fonts') {
-    ['Inter','Poppins','Roboto','Lato','Open Sans','Bebas Neue','Lobster','Pacifico'].forEach(f => {
+    const fonts = ['Inter','Poppins','Roboto','Lato','Open Sans','Bebas Neue','Lobster','Pacifico'];
+    fonts.forEach(f => {
       const d = document.createElement('div');
       d.className = "bg-[#18181c] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer h-14 flex items-center justify-center hover:border-blue-500";
       d.innerHTML = `<span style="font-family:'${f}';font-size:14px;color:#fff;">${f}</span>`;
@@ -1110,7 +1028,8 @@ function switchTextTab(tab) {
       grid.appendChild(d);
     }
   } else if (tab === 'animations') {
-    ['Fade In','Bounce','Slide In','Zoom In'].forEach(a => {
+    const anims = ['Fade In','Bounce','Slide In','Zoom In'];
+    anims.forEach(a => {
       const d = document.createElement('div');
       d.className = "bg-[#18181c] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer h-14 flex items-center justify-center hover:border-blue-500 text-[10px] text-zinc-200";
       d.innerText = a;
@@ -1121,7 +1040,7 @@ function switchTextTab(tab) {
 }
 
 // ============================================================
-// EXPORT / CAPTION MANUAL
+// EXPORT
 // ============================================================
 function showExportDialog() { document.getElementById('exportDialog').classList.remove('hidden'); }
 function closeExportDialog() { document.getElementById('exportDialog').classList.add('hidden'); }
@@ -1136,13 +1055,6 @@ function exportProject(type) {
   } else { alert(`Exporting ${type}... (demo)`); }
   closeExportDialog();
   showToast(`📤 Exporting ${type}`, 'fa-download');
-}
-function updateCaptionPreview() {
-  try {
-    const font = document.getElementById('captionFont').value;
-    const ov = document.getElementById('autoCaptionOverlay');
-    if (ov) ov.style.fontFamily = `'${font}', sans-serif`;
-  } catch (e) {}
 }
 
 // ============================================================
@@ -1163,12 +1075,14 @@ function toggleDraw() {
 }
 function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 function setBrush(s) { brushSize = s; }
+
 canvas.addEventListener('mousedown', e => { if (!drawActive) return; isDrawing = true; draw(e); });
 canvas.addEventListener('mousemove', e => { if (!drawActive || !isDrawing) return; draw(e); });
 canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
 canvas.addEventListener('touchstart', e => { if (!drawActive) return; isDrawing = true; const t = e.touches[0]; const r = canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault(); }, { passive: false });
 canvas.addEventListener('touchmove', e => { if (!drawActive || !isDrawing) return; const t = e.touches[0]; const r = canvas.getBoundingClientRect(); ctx.lineWidth = brushSize; ctx.lineCap = 'round'; ctx.strokeStyle = '#3b82f6'; ctx.lineTo(t.clientX - r.left, t.clientY - r.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault(); }, { passive: false });
 canvas.addEventListener('touchend', () => { isDrawing = false; ctx.beginPath(); });
+
 function draw(e) {
   if (!isDrawing || !drawActive) return;
   ctx.lineWidth = brushSize; ctx.lineCap = 'round'; ctx.strokeStyle = '#3b82f6';
