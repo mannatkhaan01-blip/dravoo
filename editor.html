@@ -59,8 +59,8 @@
   </style>
 
   <!-- ========================================================= -->
-  <!-- WHISPER AI (براؤزر میں، مکمل مفت) — Transformers.js       -->
-  <!-- whisper-base = زیادہ درست                                 -->
+  <!-- WHISPER AI (In Browser, Completely Free) — Transformers.js -->
+  <!-- whisper-base = More Accurate                               -->
   <!-- ========================================================= -->
   <script type="module">
     window.__whisperReady = false;
@@ -85,7 +85,7 @@
                 const bar = document.getElementById('whisperProgressBar');
                 const txt = document.getElementById('whisperProgressText');
                 if (bar) bar.style.width = pct + '%';
-                if (txt) txt.textContent = `ماڈل ڈاؤن لوڈ: ${pct}%`;
+                if (txt) txt.textContent = `Model download: ${pct}%`;
               }
             }
           }
@@ -217,7 +217,7 @@
           <div>
             <label><i class="fas fa-language mr-1"></i>Language</label>
             <select id="captionLanguage" onchange="updateCaptionPreview()">
-              <option value="auto">🌐 خودکار شناخت (Auto)</option>
+              <option value="auto">🌐 Auto Detect</option>
               <option value="en">🇬🇧 English</option>
               <option value="ur">🇵🇰 Urdu</option>
               <option value="hi">🇮🇳 Hindi</option>
@@ -248,23 +248,23 @@
         <button id="autoCaptionBtn" onclick="generateAutoCaptions()"
           class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2">
           <i class="fas fa-wand-magic-sparkles"></i>
-          <span id="autoCaptionBtnText">Auto Caption Generate کریں</span>
+          <span id="autoCaptionBtnText">Generate Auto Caption</span>
         </button>
         <div id="whisperProgressWrap" class="mt-2 hidden">
           <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
             <div id="whisperProgressBar" class="bg-emerald-500 h-full transition-all duration-300" style="width:0%"></div>
           </div>
-          <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">لوڈ ہو رہا ہے...</p>
+          <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">Loading...</p>
         </div>
         <p class="text-[9px] text-zinc-600 mt-2 text-center leading-tight">
-          <i class="fas fa-info-circle mr-1"></i>پہلی بار ماڈل ڈاؤن لوڈ (~75MB)۔ پھر کیش ہو جائے گا۔
+          <i class="fas fa-info-circle mr-1"></i>First time model download (~75MB). Then it will be cached.
         </p>
       </div>
 
-      <!-- Caption Style (کاراوکی) -->
+      <!-- Caption Style (Karaoke) -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
-          <i class="fas fa-palette mr-1 text-pink-400"></i>Caption Style (کاراوکی)
+          <i class="fas fa-palette mr-1 text-pink-400"></i>Caption Style (Karaoke)
         </label>
         <div class="grid grid-cols-2 gap-2 mb-2">
           <select id="captionStyleMode" onchange="applyCaptionStyle()" class="bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
@@ -274,19 +274,19 @@
             <option value="neon">🌟 Neon Glow</option>
           </select>
           <select id="captionWordsPerLine" onchange="applyCaptionStyle()" class="bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="3">3 الفاظ</option>
-            <option value="4" selected>4 الفاظ</option>
-            <option value="5">5 الفاظ</option>
-            <option value="6">6 الفاظ</option>
+            <option value="3">3 Words</option>
+            <option value="4" selected>4 Words</option>
+            <option value="5">5 Words</option>
+            <option value="6">6 Words</option>
           </select>
         </div>
         <div class="flex gap-2 items-center">
-          <input type="color" id="captionHighlightColor" value="#FFD700" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="ہائی لائٹ رنگ" />
-          <input type="color" id="captionBaseColor" value="#FFFFFF" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="بنیادی رنگ" />
+          <input type="color" id="captionHighlightColor" value="#FFD700" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Highlight Color" />
+          <input type="color" id="captionBaseColor" value="#FFFFFF" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Base Color" />
           <select id="captionPos" onchange="applyCaptionStyle()" class="flex-1 bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="bottom">⬇️ نیچے</option>
-            <option value="middle">⏺️ درمیان</option>
-            <option value="top">⬆️ اوپر</option>
+            <option value="bottom">⬇️ Bottom</option>
+            <option value="middle">⏺️ Middle</option>
+            <option value="top">⬆️ Top</option>
           </select>
         </div>
       </div>
@@ -318,7 +318,7 @@
           <span id="captionLinesCount" class="text-[9px] text-zinc-600">0 lines</span>
         </div>
         <div id="captionLinesList" class="max-h-40 overflow-y-auto space-y-1 pr-1">
-          <p class="text-[10px] text-zinc-600 text-center py-2">ابھی کوئی کیپشن نہیں</p>
+          <p class="text-[10px] text-zinc-600 text-center py-2">No captions yet</p>
         </div>
       </div>
     </div>
@@ -470,20 +470,20 @@ async function generateAutoCaptions() {
   const progTxt = document.getElementById('whisperProgressText');
 
   if (!player.src || player.classList.contains('hidden')) {
-    showToast('❌ پہلے ویڈیو اپ لوڈ کریں', 'fa-exclamation');
+    showToast('❌ Upload video first', 'fa-exclamation');
     return;
   }
   progWrap.classList.remove('hidden');
 
   if (!window.__whisperReady) {
     progBar.style.width = '3%';
-    progTxt.textContent = 'Whisper-base ماڈل لوڈ ہو رہا ہے (~75MB)...';
-    showToast('⏳ ماڈل لوڈ، انتظار کریں...', 'fa-hourglass');
+    progTxt.textContent = 'Whisper-base model loading (~75MB)...';
+    showToast('⏳ Loading model, please wait...', 'fa-hourglass');
     window.__loadWhisper && window.__loadWhisper();
     const wait = setInterval(() => {
       if (window.__whisperReady) {
         clearInterval(wait);
-        progTxt.textContent = 'ماڈل تیار!';
+        progTxt.textContent = 'Model ready!';
         setTimeout(() => generateAutoCaptions(), 300);
       }
     }, 800);
@@ -491,7 +491,7 @@ async function generateAutoCaptions() {
   }
 
   btn.disabled = true;
-  btnTxt.textContent = 'آڈیو نکالا جا رہا ہے...';
+  btnTxt.textContent = 'Extracting audio...';
   progBar.style.width = '15%';
 
   try {
@@ -502,8 +502,8 @@ async function generateAutoCaptions() {
     audioCtx.close();
 
     progBar.style.width = '35%';
-    progTxt.textContent = 'Whisper ٹرانسکرپشن کر رہا ہے...';
-    btnTxt.textContent = 'ٹرانسکرپٹ ہو رہا ہے...';
+    progTxt.textContent = 'Whisper is transcribing...';
+    btnTxt.textContent = 'Transcribing...';
 
     const selectedLang = document.getElementById('captionLanguage').value;
     let langOpt = undefined;
@@ -523,7 +523,7 @@ async function generateAutoCaptions() {
     const result = await window.__whisperPipeline(mono, opts);
 
     progBar.style.width = '85%';
-    progTxt.textContent = 'کیپشن بنائے جا رہے ہیں...';
+    progTxt.textContent = 'Generating captions...';
 
     autoCaptionSegments = [];
     if (result.chunks && result.chunks.length > 0) {
@@ -551,25 +551,25 @@ async function generateAutoCaptions() {
       }
     }
 
-    if (autoCaptionSegments.length === 0) throw new Error('کوئی ٹیکسٹ نہیں ملا');
+    if (autoCaptionSegments.length === 0) throw new Error('No text found');
 
     rebuildWordGroups();
     setupCaptionOverlay();
     startCaptionSync();
 
     progBar.style.width = '100%';
-    progTxt.textContent = `✅ ${autoCaptionSegments.length} کیپشن بن گئے!`;
-    btnTxt.textContent = 'دوبارہ بنائیں';
+    progTxt.textContent = `✅ ${autoCaptionSegments.length} captions generated!`;
+    btnTxt.textContent = 'Generate Again';
     btn.disabled = false;
-    showToast(`✅ ${wordGroups.length} کاراوکی گروپس!`, 'fa-closed-captioning');
+    showToast(`✅ ${wordGroups.length} karaoke groups!`, 'fa-closed-captioning');
     setTimeout(() => { progWrap.classList.add('hidden'); progBar.style.width = '0%'; }, 3000);
 
   } catch (err) {
     console.error('Auto caption error:', err);
     btn.disabled = false;
-    btnTxt.textContent = 'دوبارہ کوشش کریں';
-    progTxt.textContent = '❌ ناکام: ' + (err.message || 'نامعلوم');
-    showToast('❌ ناکام', 'fa-exclamation');
+    btnTxt.textContent = 'Try Again';
+    progTxt.textContent = '❌ Failed: ' + (err.message || 'Unknown');
+    showToast('❌ Failed', 'fa-exclamation');
     setTimeout(() => progWrap.classList.add('hidden'), 4000);
   }
 }
@@ -680,7 +680,7 @@ function applyCaptionStyle() {
   captionSettings.pos = document.getElementById('captionPos').value;
   setupCaptionOverlay();
   rebuildWordGroups();
-  showToast('🎨 اسٹائل اپ ڈیٹ', 'fa-palette');
+  showToast('🎨 Style updated', 'fa-palette');
 }
 
 function startCaptionSync() {
@@ -719,7 +719,7 @@ function renderCaptionLinesList() {
   const count = document.getElementById('captionLinesCount');
   if (!list) return;
   if (autoCaptionSegments.length === 0) {
-    list.innerHTML = '<p class="text-[10px] text-zinc-600 text-center py-2">ابھی کوئی کیپشن نہیں</p>';
+    list.innerHTML = '<p class="text-[10px] text-zinc-600 text-center py-2">No captions yet</p>';
     if (count) count.textContent = '0 lines';
     return;
   }
@@ -742,7 +742,7 @@ function editCaptionLine(i, val) {
 function deleteCaptionLine(i) {
   autoCaptionSegments.splice(i, 1);
   rebuildWordGroups();
-  showToast('🗑️ لائن حذف', 'fa-trash');
+  showToast('🗑️ Line deleted', 'fa-trash');
 }
 
 // ============================================================
@@ -758,22 +758,22 @@ function secToSRT(s) {
 function secToVTT(s) { return secToSRT(s).replace(',', '.'); }
 
 function exportSRT() {
-  if (autoCaptionSegments.length === 0) { showToast('❌ کوئی کیپشن نہیں', 'fa-exclamation'); return; }
+  if (autoCaptionSegments.length === 0) { showToast('❌ No captions', 'fa-exclamation'); return; }
   let out = '';
   autoCaptionSegments.forEach((s, i) => {
     out += `${i + 1}\n${secToSRT(s.start)} --> ${secToSRT(s.end)}\n${s.text}\n\n`;
   });
   downloadFile(out, 'captions.srt', 'text/plain');
-  showToast('✅ SRT ایکسپورٹ', 'fa-download');
+  showToast('✅ SRT exported', 'fa-download');
 }
 function exportVTT() {
-  if (autoCaptionSegments.length === 0) { showToast('❌ کوئی کیپشن نہیں', 'fa-exclamation'); return; }
+  if (autoCaptionSegments.length === 0) { showToast('❌ No captions', 'fa-exclamation'); return; }
   let out = 'WEBVTT\n\n';
   autoCaptionSegments.forEach((s, i) => {
     out += `${i + 1}\n${secToVTT(s.start)} --> ${secToVTT(s.end)}\n${s.text}\n\n`;
   });
   downloadFile(out, 'captions.vtt', 'text/vtt');
-  showToast('✅ VTT ایکسپورٹ', 'fa-download');
+  showToast('✅ VTT exported', 'fa-download');
 }
 function downloadFile(content, name, type) {
   const blob = new Blob([content], { type });
@@ -790,12 +790,12 @@ function importSRT(input) {
   reader.onload = (e) => {
     const text = e.target.result;
     const parsed = parseSRT(text);
-    if (parsed.length === 0) { showToast('❌ فائل خالی یا غلط', 'fa-exclamation'); return; }
+    if (parsed.length === 0) { showToast('❌ File empty or invalid', 'fa-exclamation'); return; }
     autoCaptionSegments = parsed;
     rebuildWordGroups();
     setupCaptionOverlay();
     startCaptionSync();
-    showToast(`✅ ${parsed.length} کیپشن امپورٹ!`, 'fa-upload');
+    showToast(`✅ ${parsed.length} captions imported!`, 'fa-upload');
   };
   reader.readAsText(file);
   input.value = '';
