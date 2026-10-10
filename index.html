@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <style>
-  /* نیا شامل کیا گیا باکس ڈیزائن */
+  /* Newly added box design */
   .dravoo-box {
     text-align: center;
     margin: 40px auto;
@@ -225,7 +225,6 @@
         }
         .draw-tools-panel .btn-close-draw:hover { color: #fff; }
     </style>
-<meta name="monetag" content="8004d3e812d9ae5847f725f5baf62c9f">
 </head>
 <body>
 
@@ -265,7 +264,7 @@
         <p class="text-gray-400 text-sm mt-4 max-w-xl mx-auto">Looking for pro templates and smart tools to make videos free online for TikTok, YouTube, and personal branding? Dravoo's web editor has you covered.</p>
        
         <div class="mt-8 flex flex-wrap justify-center gap-4">
-            <!-- 🆕 CHANGED: New Project button now opens editor.html in new tab -->
+            <!-- CHANGED: New Project button now opens editor.html in new tab -->
             <button onclick="window.open('editor.html', '_blank')" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2"><i class="fas fa-plus"></i> New Project</button>
             <button onclick="showInfo('ai-generation')" class="cap-gradient text-white text-sm font-bold px-8 py-3.5 rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2"><i class="fas fa-wand-magic-sparkles"></i> Create with AI</button>
         </div>
@@ -747,7 +746,7 @@
         }
 
         function closeStudioWorkspace() {
-            if (confirm("Kya aap is editing timeline workspace ko close karna chahte hain?")) {
+            if (confirm("Do you want to close this editing timeline workspace?")) {
                 advStudioSection.classList.add('hidden');
                 mainStudioPlayer.pause();
                 window.scrollTo(0,0);
@@ -891,7 +890,7 @@
                 {name:"Gamma Cephei", style:"font-family:'Tangerine'; color:#f368e0; font-size:36px;"},
                 {name:"Delta Pavonis", style:"font-family:'Ultra'; color:#ffcc00; text-shadow:3px 3px 0 #000; font-size:24px;"},
                 {name:"Epsilon Eridani", style:"font-family:'Uncial Antiqua'; color:#c8d6e5; font-weight:bold; font-size:18px;"},
-                // 🆕 50 NEW HANDWRITING & CALLIGRAPHY TEMPLATES (Zeyada se aage)
+                // NEW: 50 NEW HANDWRITING & CALLIGRAPHY TEMPLATES (from Zeyada onwards)
                 {name:"Zeyada Script", style:"font-family:'Zeyada'; color:#e84393; font-size:34px; text-shadow:0 0 10px rgba(232,67,147,0.3);"},
                 {name:"Architect Note", style:"font-family:'Architects Daughter'; color:#2d3436; background:#dfe6e9; padding:4px 8px; border-radius:8px; font-size:22px;"},
                 {name:"Indie Vibes", style:"font-family:'Indie Flower'; color:#0984e3; font-size:28px; transform:rotate(-2deg);"},
@@ -1180,7 +1179,7 @@
             });
 
             node.addEventListener('dblclick', () => {
-                if(confirm("Kya aap is text layer ko delete karna chahte hain?")) {
+                if(confirm("Do you want to delete this text layer?")) {
                     node.remove();
                     if(activeTextNode === node) activeTextNode = null;
                     drawerLiveInput.value = '';
@@ -1211,7 +1210,7 @@
             });
 
             stk.addEventListener('dblclick', () => {
-                if(confirm("Kya aap is sticker ko delete karna chahte hain?")) {
+                if(confirm("Do you want to delete this sticker?")) {
                     stk.remove();
                 }
             });
@@ -1701,7 +1700,7 @@
             }
 
             const promptText = promptInput.value.trim();
-            if (!promptText) return alert("Pehle koi creative prompt likhein!");
+            if (!promptText) return alert("Please enter a creative prompt first!");
 
             const originalText = genBtn.innerText;
             genBtn.innerText = "FETCHING IMAGERY...";
@@ -1740,7 +1739,7 @@
                     loaderDiv.classList.add('hidden');
                     genBtn.innerText = originalText;
                     genBtn.disabled = false;
-                    alert("Pixabay par is keyword ki koi picture nahi mili. Kuch aur search karein!");
+                    alert("No picture found on Pixabay for this keyword. Please try a different search!");
                 }
             } catch (error) {
                 console.error("Pixabay API Error:", error);
@@ -1760,7 +1759,7 @@
             const audioList = document.getElementById('audio-list');
 
             const qText = queryInput.value.trim();
-            if(!qText) return alert("Kuch search type karein (e.g., lofi, cinematic)!");
+            if(!qText) return alert("Please type something to search (e.g., lofi, cinematic)!");
 
             searchBtn.disabled = true;
             resultContainer.classList.remove('hidden');
@@ -1793,7 +1792,7 @@
             const btn = document.getElementById('prompt-gen-btn');
 
             const txt = input.value.trim();
-            if(!txt) return alert("Pehle apna simple idea likhein!");
+            if(!txt) return alert("Please write your simple idea first!");
 
             btn.innerText = "ENGINEERING STRUCTURE...";
             btn.disabled = true;
@@ -1826,7 +1825,7 @@
             const resImg = document.getElementById('scaler-result-img');
             const dlLink = document.getElementById('scaler-download-link');
 
-            if(!fileInput || fileInput.files.length === 0) return alert("Pehle image asset select karein!");
+            if(!fileInput || fileInput.files.length === 0) return alert("Please select an image asset first!");
             
             const file = fileInput.files[0];
             const img = new Image();
@@ -1863,7 +1862,7 @@
 
             const promptText = promptInput.value.trim();
             if (!promptText) {
-                return alert("Pehle koi topic ya keyword likhein!");
+                return alert("Please enter a topic or keyword first!");
             }
 
             actionBtn.disabled = true;
@@ -1903,7 +1902,7 @@
                     resultContainer.classList.add('hidden');
                     actionBtn.disabled = false;
                     actionBtn.innerText = "Search Videos";
-                    alert("Pixabay par is keyword ki koi video nahi mili. Kuch aur likhein!");
+                    alert("No video found on Pixabay for this keyword. Please try another search!");
                 }
 
             } catch (error) {
@@ -1980,7 +1979,7 @@
             const loader = document.getElementById('bg-loader');
 
             if (fileInput.files.length === 0) {
-                return alert("Pehle koi photo select karein!");
+                return alert("Please select a photo first!");
             }
 
             const file = fileInput.files[0];
@@ -2102,7 +2101,7 @@
             const loader = document.getElementById('face-loader');
             const canvas = document.getElementById('face-canvas-processor');
 
-            if (!fileInput || fileInput.files.length === 0) return alert("Pehle photo select karein!");
+            if (!fileInput || fileInput.files.length === 0) return alert("Please select a photo first!");
 
             const file = fileInput.files[0];
             actionBtn.disabled = true;
@@ -2140,6 +2139,5 @@
             }
         });
     </script>
-<script src="https://pl29520941.effectivecpmnetwork.com/56/9b/91/569b916f1519bba936d441dcd83f5495.js"></script>
 </body>
 </html>
