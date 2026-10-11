@@ -93,12 +93,59 @@
     .tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; color: #8e8e93; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; cursor: pointer; background: transparent; border-top: none; border-left: none; border-right: none; }
     .tab-btn.active { color: #3b82f6; border-color: #3b82f6; }
 
-    .font-preview-btn { background: #18181c; border: 1px solid #2a2a32; border-radius: 10px; padding: 6px 8px; cursor: pointer; transition: all 0.2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .font-preview-btn:hover { border-color: #3b82f6; background: #22222a; }
-    .font-preview-btn .font-name { font-size: 9px; color: #9ca3af; font-family: monospace; }
-    .font-preview-btn .font-sample { font-size: 14px; color: #fff; font-weight: 700; }
+    /* ============ FONT PREVIEW (FIX #3) ============ */
+    .font-preview-btn {
+      background: #18181c;
+      border: 1px solid #2a2a32;
+      border-radius: 10px;
+      padding: 8px 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-height: 78px;
+      overflow: hidden;
+    }
+    .font-preview-btn:hover {
+      border-color: #3b82f6;
+      background: #22222a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15);
+    }
+    .font-preview-btn .font-name {
+      font-size: 8px;
+      color: #6b7280;
+      font-family: monospace;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .font-preview-btn .font-sample {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .font-preview-btn .font-hello {
+      font-size: 10px;
+      color: #9ca3af;
+      line-height: 1;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
 
-    /* ============ CAPTION CONTROLS (from 2nd code) ============ */
+    /* ============ CAPTION CONTROLS ============ */
     .caption-controls { background: #0c0c10; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #1a1a22; }
     .caption-controls select, .caption-controls input[type="text"] { background: #18181c; border: 1px solid #2a2a32; border-radius: 8px; color: #e5e7eb; padding: 6px 10px; font-size: 11px; outline: none; width: 100%; }
     .caption-controls select:focus, .caption-controls input:focus { border-color: #3b82f6; }
@@ -173,8 +220,8 @@
   </style>
 
   <!-- ========================================================= -->
-  <!-- WHISPER AI (Browser mein, 100% Free) — Transformers.js     -->
-  <!-- whisper-base = zyada accurate                              -->
+  <!-- DRAVOO AI (Browser, 100% Free) - Transformers.js         -->
+  <!-- FIX #1: Renamed from Whisper to Dravoo                    -->
   <!-- ========================================================= -->
   <script type="module">
     window.__whisperReady = false;
@@ -199,15 +246,15 @@
                 const bar = document.getElementById('whisperProgressBar');
                 const txt = document.getElementById('whisperProgressText');
                 if (bar) bar.style.width = pct + '%';
-                if (txt) txt.textContent = `Model download: ${pct}%`;
+                if (txt) txt.textContent = `Dravoo AI download: ${pct}%`;
               }
             }
           }
         );
         window.__whisperReady = true;
-        console.log('✅ Whisper-base ready');
+        console.log('✅ Dravoo AI ready');
       } catch (e) {
-        console.error('Whisper load failed:', e);
+        console.error('Dravoo AI load failed:', e);
         window.__whisperLoading = false;
       }
     };
@@ -411,9 +458,11 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- ADVANCED CAPTION SUBMENU (Whisper + Karaoke) -->
+    <!-- ADVANCED CAPTION SUBMENU                    -->
+    <!-- FIX #1: max-h reduced to 55vh               -->
+    <!-- FIX #1: Whisper renamed to Dravoo AI        -->
     <!-- ========================================== -->
-    <div id="submenu-caption" class="hidden p-3 bg-[#0c0c10] max-h-[80vh] overflow-y-auto">
+    <div id="submenu-caption" class="hidden p-3 bg-[#0c0c10] max-h-[55vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-3">
         <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
         <span class="text-xs font-bold text-pink-400"><i class="fas fa-closed-captioning mr-1"></i>Caption Studio</span>
@@ -425,13 +474,13 @@
           <div>
             <label><i class="fas fa-language mr-1"></i>Language</label>
             <select id="captionLanguage" onchange="updateCaptionPreview()">
-              <option value="auto">🌐 Auto Detect</option>
-              <option value="en">🇬🇧 English</option>
-              <option value="ur" selected>🇵🇰 Urdu</option>
-              <option value="hi">🇮🇳 Hindi</option>
-              <option value="ar">🇸🇦 Arabic</option>
-              <option value="zh">🇨🇳 Chinese</option>
-              <option value="es">🇪🇸 Spanish</option>
+              <option value="en" selected>English</option>
+              <option value="ur">Urdu</option>
+              <option value="hi">Hindi</option>
+              <option value="ar">Arabic</option>
+              <option value="zh">Chinese</option>
+              <option value="es">Spanish</option>
+              <option value="auto">Auto Detect</option>
             </select>
           </div>
           <div>
@@ -454,7 +503,7 @@
       <!-- Auto Caption -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
-          <i class="fas fa-microphone-lines mr-1 text-emerald-400"></i>Auto Caption (Whisper-base · 100% Free)
+          <i class="fas fa-microphone-lines mr-1 text-emerald-400"></i>Auto Caption (Dravoo AI · 100% Free)
         </label>
         <button id="autoCaptionBtn" onclick="generateAutoCaptions()"
           class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2">
@@ -468,7 +517,7 @@
           <p id="whisperProgressText" class="text-[10px] text-zinc-400 mt-1 text-center">Loading...</p>
         </div>
         <p class="text-[9px] text-zinc-600 mt-2 text-center leading-tight">
-          <i class="fas fa-info-circle mr-1"></i>First time model download (~75MB). Will be cached after.
+          <i class="fas fa-info-circle mr-1"></i>First time Dravoo AI download (~75MB). Will be cached after.
         </p>
       </div>
 
@@ -479,10 +528,10 @@
         </label>
         <div class="grid grid-cols-2 gap-2 mb-2">
           <select id="captionStyleMode" onchange="applyCaptionStyle()" class="bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="karaoke">🎤 Karaoke (CapCut)</option>
-            <option value="minimal">✨ Minimal</option>
-            <option value="bold">💥 Bold Yellow</option>
-            <option value="neon">🌟 Neon Glow</option>
+            <option value="karaoke">Karaoke (CapCut)</option>
+            <option value="minimal">Minimal</option>
+            <option value="bold">Bold Yellow</option>
+            <option value="neon">Neon Glow</option>
           </select>
           <select id="captionWordsPerLine" onchange="applyCaptionStyle()" class="bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
             <option value="3">3 words</option>
@@ -495,9 +544,9 @@
           <input type="color" id="captionHighlightColor" value="#FFD700" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Highlight color" />
           <input type="color" id="captionBaseColor" value="#FFFFFF" onchange="applyCaptionStyle()" class="w-10 h-8 bg-transparent border border-zinc-700 rounded cursor-pointer" title="Base color" />
           <select id="captionPos" onchange="applyCaptionStyle()" class="flex-1 bg-[#18181c] border border-[#2a2a32] rounded-lg px-2 py-1.5 text-[10px] text-white outline-none">
-            <option value="bottom">⬇️ Bottom</option>
-            <option value="middle">⏺️ Middle</option>
-            <option value="top">⬆️ Top</option>
+            <option value="bottom">Bottom</option>
+            <option value="middle">Middle</option>
+            <option value="top">Top</option>
           </select>
         </div>
       </div>
@@ -568,9 +617,9 @@
         <span class="text-xs font-bold text-violet-400">Speaking Interactive AI Avatars</span>
       </div>
       <div class="flex gap-2 overflow-x-auto">
-        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('Adam')">🧔 Adam (Speech)</div>
-        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('Elena')">👩 Elena (Speech)</div>
-        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('CyberBot')">🤖 CyberBot</div>
+        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('Adam')">Adam (Speech)</div>
+        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('Elena')">Elena (Speech)</div>
+        <div class="flex-shrink-0 bg-zinc-800 p-2 rounded text-center text-xs cursor-pointer" onclick="activateAvatar('CyberBot')">CyberBot</div>
       </div>
     </div>
 
@@ -658,7 +707,7 @@
 
 <script>
 // ============================================================
-// DRAVOO PRO EDITOR - COMPLETE FIXED VERSION (with Whisper Auto-Caption)
+// DRAVOO PRO EDITOR - COMPLETE FIXED VERSION
 // ============================================================
 
 // GLOBALS
@@ -682,7 +731,7 @@ let currentBatchIndex = 0;
 const BATCH_SIZE = 50;
 const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
 
-// ===== Auto Caption Globals (from 2nd code) =====
+// ===== Auto Caption Globals =====
 let autoCaptionSegments = [];
 let wordGroups = [];
 let captionSyncRAF = null;
@@ -715,9 +764,9 @@ function addTextTrack(text, font, styleCSS, bubbleCSS, animation) {
     textTracks.push(track);
     renderTextTracks();
     updateTextTrackCount();
-    showToast(`✏️ Text track added: "${text}"`, 'fa-font');
+    showToast(`Text track added: "${text}"`, 'fa-font');
     return track;
-  } catch (error) { console.error('Error adding text track:', error); showToast('❌ Error adding text track', 'fa-exclamation'); return null; }
+  } catch (error) { console.error('Error adding text track:', error); showToast('Error adding text track', 'fa-exclamation'); return null; }
 }
 
 function renderTextTracks() {
@@ -749,8 +798,8 @@ function removeTextTrack(id) {
     textTracks = textTracks.filter(t => t.id !== id);
     renderTextTracks();
     updateTextTrackCount();
-    showToast('🗑️ Text track removed', 'fa-trash');
-  } catch (error) { console.error('Error removing text track:', error); showToast('❌ Error removing text track', 'fa-exclamation'); }
+    showToast('Text track removed', 'fa-trash');
+  } catch (error) { console.error('Error removing text track:', error); showToast('Error removing text track', 'fa-exclamation'); }
 }
 
 function editTextTrack(id) {
@@ -772,9 +821,9 @@ function editTextTrack(id) {
       textTracks = textTracks.filter(t => t.id !== id);
       renderTextTracks();
       updateTextTrackCount();
-      showToast(`✏️ Editing: "${track.text}"`, 'fa-edit');
+      showToast(`Editing: "${track.text}"`, 'fa-edit');
     }
-  } catch (error) { console.error('Error editing text track:', error); showToast('❌ Error editing text track', 'fa-exclamation'); }
+  } catch (error) { console.error('Error editing text track:', error); showToast('Error editing text track', 'fa-exclamation'); }
 }
 
 // AUDIO TRACKS
@@ -788,9 +837,9 @@ function addAudioTrack(name, url, type = 'track') {
     audioTracks.push(track);
     renderAudioTracks();
     updateTrackCount();
-    showToast(`🎵 "${name}" added`, 'fa-music');
+    showToast(`"${name}" added`, 'fa-music');
     return track;
-  } catch (error) { console.error('Error adding audio track:', error); showToast('❌ Error adding audio track', 'fa-exclamation'); return null; }
+  } catch (error) { console.error('Error adding audio track:', error); showToast('Error adding audio track', 'fa-exclamation'); return null; }
 }
 
 function renderAudioTracks() {
@@ -824,7 +873,7 @@ function toggleTrackPlay(id) {
       track.playing = true;
     }
     renderAudioTracks();
-  } catch (error) { console.error('Error toggling track play:', error); showToast('❌ Error playing track', 'fa-exclamation'); }
+  } catch (error) { console.error('Error toggling track play:', error); showToast('Error playing track', 'fa-exclamation'); }
 }
 
 function removeTrack(id) {
@@ -834,8 +883,8 @@ function removeTrack(id) {
     audioTracks = audioTracks.filter(t => t.id !== id);
     renderAudioTracks();
     updateTrackCount();
-    showToast('🗑️ Track removed', 'fa-trash');
-  } catch (error) { console.error('Error removing track:', error); showToast('❌ Error removing track', 'fa-exclamation'); }
+    showToast('Track removed', 'fa-trash');
+  } catch (error) { console.error('Error removing track:', error); showToast('Error removing track', 'fa-exclamation'); }
 }
 
 function playAllTracks() { audioTracks.forEach(track => { track.audio.currentTime = 0; track.audio.play().catch(e => console.log('Play error:', e)); track.playing = true; }); renderAudioTracks(); }
@@ -866,7 +915,6 @@ picker.addEventListener('change', function(e) {
       player.play().catch(e => console.log('Auto-play error:', e));
       playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
       setTimeout(syncCanvasSize, 100);
-      // Reset captions on new video
       autoCaptionSegments = [];
       wordGroups = [];
       const ov = document.getElementById('autoCaptionOverlay');
@@ -879,7 +927,7 @@ picker.addEventListener('change', function(e) {
       timeDisplay.innerText = "00:00 / 00:05";
       setTimeout(syncCanvasSize, 100);
     }
-  } catch (error) { console.error('Error loading media:', error); showToast('❌ Error loading media', 'fa-exclamation'); }
+  } catch (error) { console.error('Error loading media:', error); showToast('Error loading media', 'fa-exclamation'); }
 });
 
 function togglePlay() {
@@ -909,7 +957,7 @@ function handleAudioExtracted(input) {
     addAudioTrack(trackName, url, 'track');
     showSubmenu('audio');
     input.value = '';
-  } catch (error) { console.error('Error extracting audio:', error); showToast('❌ Error extracting audio', 'fa-exclamation'); }
+  } catch (error) { console.error('Error extracting audio:', error); showToast('Error extracting audio', 'fa-exclamation'); }
 }
 
 // PIXABAY
@@ -958,7 +1006,7 @@ async function searchPixabayAudio() {
         row.innerHTML = `<span class="text-xs font-medium text-zinc-200 truncate max-w-[200px]">${track.title || 'Untitled'}</span><button class="bg-purple-600 text-[10px] font-bold text-white px-3 py-1.5 rounded-lg hover:bg-purple-500 transition">Apply</button>`;
         row.querySelector('button').onclick = () => {
           try { const trackType = mode === 'sound-fx' ? 'fx' : 'track'; const audioUrl = track.url || getFallbackAudio(mode); const trackName = track.title || (mode === 'sound-fx' ? 'Sound FX' : 'Music Track'); addAudioTrack(trackName, audioUrl, trackType); closePixabayModal(); showSubmenu('audio'); } 
-          catch (error) { console.error('Error applying track:', error); showToast('❌ Error applying track', 'fa-exclamation'); }
+          catch (error) { console.error('Error applying track:', error); showToast('Error applying track', 'fa-exclamation'); }
         };
         resultsDiv.appendChild(row);
       });
@@ -977,7 +1025,7 @@ async function searchPixabayAudio() {
         resultsDiv.appendChild(row);
       });
     }
-  } catch (error) { console.error('Search error:', error); showToast('❌ Search failed', 'fa-exclamation'); }
+  } catch (error) { console.error('Search error:', error); showToast('Search failed', 'fa-exclamation'); }
 }
 
 function getFallbackAudio(mode) {
@@ -999,19 +1047,19 @@ async function toggleVoiceRecording() {
         recordedChunks = [];
         mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
         mediaRecorder.onstop = () => {
-          try { const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' }); const url = URL.createObjectURL(audioBlob); addAudioTrack('Live Voiceover Recording', url, 'track'); showSubmenu('audio'); showToast('🎙️ Voiceover recorded!', 'fa-microphone'); } 
-          catch (error) { console.error('Error saving recording:', error); showToast('❌ Error saving recording', 'fa-exclamation'); }
+          try { const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' }); const url = URL.createObjectURL(audioBlob); addAudioTrack('Live Voiceover Recording', url, 'track'); showSubmenu('audio'); showToast('Voiceover recorded!', 'fa-microphone'); } 
+          catch (error) { console.error('Error saving recording:', error); showToast('Error saving recording', 'fa-exclamation'); }
         };
         mediaRecorder.start();
         isRecording = true;
         recordText.innerText = "Stop Rec";
         micIcon.className = "fas fa-stop text-red-500 animate-pulse";
-        showToast('🔴 Recording...', 'fa-circle');
-      } catch (err) { alert("Microphone Error: " + err.message); showToast('❌ Microphone access denied', 'fa-exclamation'); }
+        showToast('Recording...', 'fa-circle');
+      } catch (err) { alert("Microphone Error: " + err.message); showToast('Microphone access denied', 'fa-exclamation'); }
     } else {
-      if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); isRecording = false; recordText.innerText = "Record"; micIcon.className = "fas fa-microphone text-red-500"; showToast('⏹️ Recording stopped', 'fa-stop'); }
+      if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); isRecording = false; recordText.innerText = "Record"; micIcon.className = "fas fa-microphone text-red-500"; showToast('Recording stopped', 'fa-stop'); }
     }
-  } catch (error) { console.error('Recording error:', error); showToast('❌ Recording error', 'fa-exclamation'); }
+  } catch (error) { console.error('Recording error:', error); showToast('Recording error', 'fa-exclamation'); }
 }
 
 // TEXT TO AUDIO
@@ -1034,7 +1082,7 @@ function openTextToAudioDrawer() {
     `;
     drawer.classList.add('open');
     if (window.speechSynthesis) speechSynthesis.getVoices();
-  } catch (error) { console.error('Error opening TTS drawer:', error); showToast('❌ Error opening TTS', 'fa-exclamation'); }
+  } catch (error) { console.error('Error opening TTS drawer:', error); showToast('Error opening TTS', 'fa-exclamation'); }
 }
 
 function selectVoice(voice) {
@@ -1047,7 +1095,7 @@ function generateSpeech() {
     const text = document.getElementById('ai-text-input').value.trim();
     if (!text) { alert('Please enter some text to convert to speech.'); return; }
     const synth = window.speechSynthesis;
-    if (!synth) { showToast('❌ Speech synthesis not supported', 'fa-exclamation'); return; }
+    if (!synth) { showToast('Speech synthesis not supported', 'fa-exclamation'); return; }
     synth.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     const voiceConfig = { 'Adam': { pitch: 0.7, rate: 0.85, lang: 'en-US' }, 'Lucia': { pitch: 1.25, rate: 0.9, lang: 'en-US' }, 'James': { pitch: 0.85, rate: 0.8, lang: 'en-GB' }, 'Sofia': { pitch: 1.15, rate: 0.85, lang: 'es-ES' } };
@@ -1067,10 +1115,10 @@ function generateSpeech() {
     if (!matchedVoice && voices.length > 0) matchedVoice = voices[0];
     if (matchedVoice) utterance.voice = matchedVoice;
     const trackName = `${selectedVoice}: "${text.substring(0, 25)}${text.length > 25 ? '...' : ''}"`;
-    utterance.onstart = () => { try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('🔊 Voice generated!', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
-    utterance.onerror = (e) => { console.error('Speech error:', e); try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('⚠️ Voice generated (simulated)', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
+    utterance.onstart = () => { try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('Voice generated!', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
+    utterance.onerror = (e) => { console.error('Speech error:', e); try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('Voice generated (simulated)', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
     synth.speak(utterance);
-  } catch (error) { console.error('Speech generation error:', error); showToast('❌ Speech generation failed', 'fa-exclamation'); }
+  } catch (error) { console.error('Speech generation error:', error); showToast('Speech generation failed', 'fa-exclamation'); }
 }
 
 // BRAND MUSIC
@@ -1086,7 +1134,7 @@ function openBrandMusicDrawer() {
     `;
     loadBrandTracks();
     drawer.classList.add('open');
-  } catch (error) { console.error('Error opening brand music drawer:', error); showToast('❌ Error opening brand music', 'fa-exclamation'); }
+  } catch (error) { console.error('Error opening brand music drawer:', error); showToast('Error opening brand music', 'fa-exclamation'); }
 }
 
 function loadBrandTracks() {
@@ -1103,10 +1151,10 @@ function loadBrandTracks() {
       const div = document.createElement('div');
       div.className = 'flex items-center justify-between p-2 bg-[#18181c] border border-zinc-800 rounded-xl hover:border-blue-500 transition';
       div.innerHTML = `<div class="flex items-center gap-2 truncate"><i class="fas fa-bookmark text-amber-400 text-xs"></i><span class="text-xs font-mono text-zinc-300 truncate">${trackName}</span></div><button class="bg-blue-600 text-[10px] text-white px-2.5 py-1 rounded-lg hover:bg-blue-500 transition">Apply</button>`;
-      div.querySelector('button').onclick = () => { try { addAudioTrack(trackName, urls[urlIndex], 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying brand track:', error); showToast('❌ Error applying track', 'fa-exclamation'); } };
+      div.querySelector('button').onclick = () => { try { addAudioTrack(trackName, urls[urlIndex], 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying brand track:', error); showToast('Error applying track', 'fa-exclamation'); } };
       container.appendChild(div);
     }
-  } catch (error) { console.error('Error loading brand tracks:', error); showToast('❌ Error loading brand tracks', 'fa-exclamation'); }
+  } catch (error) { console.error('Error loading brand tracks:', error); showToast('Error loading brand tracks', 'fa-exclamation'); }
 }
 
 async function searchBrandMusic() {
@@ -1125,12 +1173,12 @@ async function searchBrandMusic() {
           const div = document.createElement('div');
           div.className = 'flex items-center justify-between p-2 bg-[#18181c] border border-zinc-800 rounded-xl hover:border-blue-500 transition';
           div.innerHTML = `<div class="flex items-center gap-2 truncate"><i class="fas fa-search text-blue-400 text-xs"></i><span class="text-xs font-mono text-zinc-300 truncate">${hit.tags || 'Untitled'}</span></div><button class="bg-blue-600 text-[10px] text-white px-2.5 py-1 rounded-lg hover:bg-blue-500 transition">Apply</button>`;
-          div.querySelector('button').onclick = () => { try { addAudioTrack(hit.tags || 'Pixabay Track', hit.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying track:', error); showToast('❌ Error applying track', 'fa-exclamation'); } };
+          div.querySelector('button').onclick = () => { try { addAudioTrack(hit.tags || 'Pixabay Track', hit.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying track:', error); showToast('Error applying track', 'fa-exclamation'); } };
           container.appendChild(div);
         });
       } else { container.innerHTML = '<p class="text-zinc-400 text-xs text-center py-4">No results. Showing brand tracks.</p>'; loadBrandTracks(); }
     } catch (error) { console.error('Search error:', error); container.innerHTML = '<p class="text-red-400 text-xs text-center py-4">Search error. Showing default tracks.</p>'; setTimeout(loadBrandTracks, 500); }
-  } catch (error) { console.error('Search error:', error); showToast('❌ Search failed', 'fa-exclamation'); }
+  } catch (error) { console.error('Search error:', error); showToast('Search failed', 'fa-exclamation'); }
 }
 
 // EXPORT
@@ -1140,9 +1188,9 @@ function closeExportDialog() { try { document.getElementById('exportDialog').cla
 function exportProject(type) {
   try {
     const trackCount = audioTracks.length;
-    let message = `📦 Exporting ${type.toUpperCase()}...\nAudio tracks included: ${trackCount}\n`;
-    if (trackCount > 0) { message += '\nTracks:\n'; audioTracks.forEach((t, i) => { message += `  ${i+1}. ${t.name}\n`; }); } else { message += '\n⚠️ No audio tracks in project'; }
-    message += `\n\n✅ Export complete!`;
+    let message = `Exporting ${type.toUpperCase()}...\nAudio tracks included: ${trackCount}\n`;
+    if (trackCount > 0) { message += '\nTracks:\n'; audioTracks.forEach((t, i) => { message += `  ${i+1}. ${t.name}\n`; }); } else { message += '\nNo audio tracks in project'; }
+    message += `\n\nExport complete!`;
     if (type === 'project') {
       const projectData = { version: '1.0', exportedAt: new Date().toISOString(), audioTracks: audioTracks.map(t => ({ name: t.name, type: t.type })), textTracks: textTracks, captions: autoCaptionSegments, settings: { aspectRatio: ratioBox.style.aspectRatio || '9/16' } };
       const blob = new Blob([JSON.stringify(projectData, null, 2)], { type: 'application/json' });
@@ -1156,25 +1204,33 @@ function exportProject(type) {
       URL.revokeObjectURL(url);
     } else { alert(message); }
     closeExportDialog();
-    showToast(`📤 Exporting ${type}...`, 'fa-download');
-  } catch (error) { console.error('Export error:', error); showToast('❌ Export failed', 'fa-exclamation'); }
+    showToast(`Exporting ${type}...`, 'fa-download');
+  } catch (error) { console.error('Export error:', error); showToast('Export failed', 'fa-exclamation'); }
 }
 
-function runCopyrightAI() { try { showToast('🔍 AI scanning audio tracks...', 'fa-shield'); setTimeout(() => { const trackNames = audioTracks.map(t => t.name).join(', ') || 'No tracks'; alert(`✅ Copyright Report:\n• Tracks Analyzed: ${audioTracks.length}\n• ${trackNames}\n• Status: 100% Unique\n• Distribution: Authorized`); showToast('✅ Copyright check complete!', 'fa-check-circle'); }, 800); } catch (error) { console.error('Copyright check error:', error); showToast('❌ Copyright check failed', 'fa-exclamation'); } }
+function runCopyrightAI() { try { showToast('AI scanning audio tracks...', 'fa-shield'); setTimeout(() => { const trackNames = audioTracks.map(t => t.name).join(', ') || 'No tracks'; alert(`Copyright Report:\n- Tracks Analyzed: ${audioTracks.length}\n- ${trackNames}\n- Status: 100% Unique\n- Distribution: Authorized`); showToast('Copyright check complete!', 'fa-check-circle'); }, 800); } catch (error) { console.error('Copyright check error:', error); showToast('Copyright check failed', 'fa-exclamation'); } }
 
-function generateAIImage() { try { showToast('🎨 Generating AI image...', 'fa-wand-magic-sparkles'); setTimeout(() => { showToast('✅ AI Image generated! (Demo)', 'fa-check-circle'); alert('🎨 AI Image generated!\n\nThis is a demo. In production, this would connect to an AI image generation API.'); }, 1500); } catch (error) { console.error('AI image generation error:', error); showToast('❌ AI image generation failed', 'fa-exclamation'); } }
+function generateAIImage() { try { showToast('Generating AI image...', 'fa-wand-magic-sparkles'); setTimeout(() => { showToast('AI Image generated! (Demo)', 'fa-check-circle'); alert('AI Image generated!\n\nThis is a demo. In production, this would connect to an AI image generation API.'); }, 1500); } catch (error) { console.error('AI image generation error:', error); showToast('AI image generation failed', 'fa-exclamation'); } }
 
-function generateAIVideo() { try { showToast('🎬 Generating AI video...', 'fa-video'); setTimeout(() => { showToast('✅ AI Video generated! (Demo)', 'fa-check-circle'); alert('🎬 AI Video generated!\n\nThis is a demo. In production, this would connect to an AI video generation API.'); }, 2000); } catch (error) { console.error('AI video generation error:', error); showToast('❌ AI video generation failed', 'fa-exclamation'); } }
+function generateAIVideo() { try { showToast('Generating AI video...', 'fa-video'); setTimeout(() => { showToast('AI Video generated! (Demo)', 'fa-check-circle'); alert('AI Video generated!\n\nThis is a demo. In production, this would connect to an AI video generation API.'); }, 2000); } catch (error) { console.error('AI video generation error:', error); showToast('AI video generation failed', 'fa-exclamation'); } }
 
-function activateAvatar(name) { try { showToast(`👤 ${name} avatar activated!`, 'fa-user-astronaut'); alert(`🤖 ${name} Avatar Activated!\n\nThis is a demo. In production, this would connect to an AI avatar service.`); } catch (error) { console.error('Avatar activation error:', error); showToast('❌ Avatar activation failed', 'fa-exclamation'); } }
+function activateAvatar(name) { try { showToast(`${name} avatar activated!`, 'fa-user-astronaut'); alert(`${name} Avatar Activated!\n\nThis is a demo. In production, this would connect to an AI avatar service.`); } catch (error) { console.error('Avatar activation error:', error); showToast('Avatar activation failed', 'fa-exclamation'); } }
 
+// ============================================================
 // NAVIGATION
+// FIX #1: auto-scroll to video when caption submenu opens
+// ============================================================
 function showSubmenu(id) {
   try {
     backToMaster();
     document.getElementById('masterBottomMenu').classList.add('hidden');
     const sub = document.getElementById(`submenu-${id}`);
     if (sub) { sub.classList.remove('hidden'); if (id === 'filters') generateFilters(); if (id === 'caption') { updateCaptionPreview(); renderCaptionLinesList(); } }
+    // FIX #1: Scroll video into view so user always sees it
+    setTimeout(() => {
+      const video = document.getElementById('video-ratio-box');
+      if (video) video.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 60);
   } catch (error) { console.error('Error showing submenu:', error); }
 }
 function backToMaster() {
@@ -1184,14 +1240,14 @@ function backToMaster() {
     document.getElementById('masterBottomMenu').classList.remove('hidden');
   } catch (error) { console.error('Error going back to master:', error); }
 }
-function triggerTool(name) { try { alert(`"${name}" layer triggered.`); showToast(`⚡ ${name} triggered`, 'fa-bolt'); } catch (error) { console.error('Error triggering tool:', error); showToast('❌ Tool trigger failed', 'fa-exclamation'); } }
+function triggerTool(name) { try { alert(`"${name}" layer triggered.`); showToast(`${name} triggered`, 'fa-bolt'); } catch (error) { console.error('Error triggering tool:', error); showToast('Tool trigger failed', 'fa-exclamation'); } }
 
 function handleOverlaySelected(input) {
   try {
     const file = input.files[0];
-    if (file) { const overlayImg = document.getElementById('overlay-display-img'); overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); showToast('📁 Overlay added!', 'fa-layer-group'); }
+    if (file) { const overlayImg = document.getElementById('overlay-display-img'); overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); showToast('Overlay added!', 'fa-layer-group'); }
     input.value = '';
-  } catch (error) { console.error('Error handling overlay:', error); showToast('❌ Error adding overlay', 'fa-exclamation'); }
+  } catch (error) { console.error('Error handling overlay:', error); showToast('Error adding overlay', 'fa-exclamation'); }
 }
 
 function applyCSSFilter(filterValue) { try { player.style.filter = filterValue; imageEl.style.filter = filterValue; } catch (error) { console.error('Error applying filter:', error); } }
@@ -1204,8 +1260,8 @@ function changeRatio(ratioStr) {
     else if (ratioStr === '1/1') { ratioBox.style.aspectRatio = '1/1'; ratioBox.style.maxWidth = '360px'; } 
     else if (ratioStr === '4/3') { ratioBox.style.aspectRatio = '4/3'; ratioBox.style.maxWidth = '400px'; }
     setTimeout(syncCanvasSize, 200);
-    showToast(`📐 Ratio: ${ratioStr}`, 'fa-crop-simple');
-  } catch (error) { console.error('Error changing ratio:', error); showToast('❌ Error changing ratio', 'fa-exclamation'); }
+    showToast(`Ratio: ${ratioStr}`, 'fa-crop-simple');
+  } catch (error) { console.error('Error changing ratio:', error); showToast('Error changing ratio', 'fa-exclamation'); }
 }
 
 function generateFilters() {
@@ -1220,7 +1276,7 @@ function generateFilters() {
       div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i+100}')`;
       div.style.backgroundSize = 'cover';
       div.innerText = filter.name + ` #${i+1}`;
-      div.onclick = () => { try { applyCSSFilter(filter.css); showToast(`🎨 ${filter.name} filter applied`, 'fa-filter'); } catch (error) { console.error('Error applying filter:', error); } };
+      div.onclick = () => { try { applyCSSFilter(filter.css); showToast(`${filter.name} filter applied`, 'fa-filter'); } catch (error) { console.error('Error applying filter:', error); } };
       container.appendChild(div);
     }
   } catch (error) { console.error('Error generating filters:', error); }
@@ -1258,9 +1314,9 @@ function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCS
     const track = addTextTrack(text, font, styleCSS, bubbleCSS, animation);
     if (track) wrapper.setAttribute('data-track-id', track.id);
     if (animation) textSpan.style.animationPlayState = 'running';
-    showToast(`✨ Text added with ${animation || 'no'} animation`, 'fa-font');
+    showToast(`Text added with ${animation || 'no'} animation`, 'fa-font');
     return wrapper;
-  } catch (error) { console.error('Error creating text element:', error); showToast('❌ Error adding text', 'fa-exclamation'); return null; }
+  } catch (error) { console.error('Error creating text element:', error); showToast('Error adding text', 'fa-exclamation'); return null; }
 }
 
 function getAnimationCSS(animation) {
@@ -1279,9 +1335,9 @@ function deleteTextElement(id) {
       el.style.transition = 'all 0.2s';
       el.style.transform = 'scale(0.8)';
       el.style.opacity = '0';
-      setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); showToast('🗑️ Text deleted', 'fa-trash'); }, 200);
+      setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); showToast('Text deleted', 'fa-trash'); }, 200);
     }
-  } catch (error) { console.error('Error deleting text element:', error); showToast('❌ Error deleting text', 'fa-exclamation'); }
+  } catch (error) { console.error('Error deleting text element:', error); showToast('Error deleting text', 'fa-exclamation'); }
 }
 
 function setupDrag(element) {
@@ -1351,8 +1407,8 @@ function applyNewTextToCanvas() {
     const animation = currentTextState.animation || '';
     createTextElementOnCanvas(text, styleCSS, font, bubbleCSS, animation);
     closeDrawer();
-    showToast('✏️ Text added to canvas!', 'fa-font');
-  } catch (error) { console.error('Error applying text:', error); showToast('❌ Error applying text', 'fa-exclamation'); }
+    showToast('Text added to canvas!', 'fa-font');
+  } catch (error) { console.error('Error applying text:', error); showToast('Error applying text', 'fa-exclamation'); }
 }
 
 function updateLiveTextPreview() {
@@ -1379,7 +1435,7 @@ function openDrawer(type) {
     if (matchedTabBtn) matchedTabBtn.classList.add('active');
     const tabId = type === 'stickers' || type === 'captions' ? 'templates' : type;
     renderTextTabContent(tabId);
-  } catch (error) { console.error('Error opening drawer:', error); showToast('❌ Error opening editor', 'fa-exclamation'); }
+  } catch (error) { console.error('Error opening drawer:', error); showToast('Error opening editor', 'fa-exclamation'); }
 }
 function switchTextTab(tabId) {
   try { document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(`tab-${tabId}`).classList.add('active'); renderTextTabContent(tabId); } 
@@ -1500,7 +1556,7 @@ function renderTextTabContent(tabId) {
     grid.innerHTML = '';
     const headerWrapper = document.createElement('div');
     headerWrapper.className = 'col-span-4 category-header';
-    headerWrapper.innerHTML = `<div style="flex:1; min-width:80px;"><input type="text" id="categorySearchInput" placeholder="🔍 Search..." class="search-bar" oninput="filterCategoryItems('${tabId}')" /></div><div class="action-btns"><button onclick="saveCategoryDefault('${tabId}')" class="primary"><i class="fas fa-check"></i>Def</button><button onclick="saveCategoryPreset('${tabId}')"><i class="fas fa-save"></i></button><button onclick="resetCategoryDefault('${tabId}')" class="danger"><i class="fas fa-undo"></i></button></div>`;
+    headerWrapper.innerHTML = `<div style="flex:1; min-width:80px;"><input type="text" id="categorySearchInput" placeholder="Search..." class="search-bar" oninput="filterCategoryItems('${tabId}')" /></div><div class="action-btns"><button onclick="saveCategoryDefault('${tabId}')" class="primary"><i class="fas fa-check"></i>Def</button><button onclick="saveCategoryPreset('${tabId}')"><i class="fas fa-save"></i></button><button onclick="resetCategoryDefault('${tabId}')" class="danger"><i class="fas fa-undo"></i></button></div>`;
     grid.appendChild(headerWrapper);
     const itemsContainer = document.createElement('div');
     itemsContainer.id = 'categoryItemsContainer';
@@ -1508,7 +1564,7 @@ function renderTextTabContent(tabId) {
     grid.appendChild(itemsContainer);
     currentBatchIndex = 0;
     loadItemsBatch(tabId, itemsContainer);
-  } catch (error) { console.error('Error rendering text tab content:', error); showToast('❌ Error loading content', 'fa-exclamation'); }
+  } catch (error) { console.error('Error rendering text tab content:', error); showToast('Error loading content', 'fa-exclamation'); }
 }
 
 function loadItemsBatch(tabId, container) {
@@ -1533,19 +1589,25 @@ function loadItemsBatch(tabId, container) {
         el.className = "bg-gradient-to-br from-[#1c1c22] to-[#26262e] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer flex flex-col justify-between items-center h-20 hover:border-blue-500 transition relative overflow-hidden";
         el.setAttribute('data-search', template.name + ' ' + template.font);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 absolute top-0.5 right-1">#${globalIdx+1}</span><span class="text-[10px] truncate w-full mt-2" style="${template.styleCSS}; font-family: '${template.font}';">${template.name}</span><span class="text-[7px] text-zinc-500 mt-1">Click</span>`;
-        el.onclick = () => { try { currentTextState.text = template.name; currentTextState.font = template.font; currentTextState.styleCSS = template.styleCSS; document.getElementById('liveTextInput').value = template.name; updateLiveTextPreview(); showToast(`🎨 Template: ${template.name}`, 'fa-palette'); } catch (error) { console.error('Error applying template:', error); } };
+        el.onclick = () => { try { currentTextState.text = template.name; currentTextState.font = template.font; currentTextState.styleCSS = template.styleCSS; document.getElementById('liveTextInput').value = template.name; updateLiveTextPreview(); showToast(`Template: ${template.name}`, 'fa-palette'); } catch (error) { console.error('Error applying template:', error); } };
       } else if (tabId === 'fonts') {
+        // FIX #3: Font preview now shows actual text in that font
         const font = item;
         el.className = 'font-preview-btn';
         el.setAttribute('data-search', font);
-        el.innerHTML = `<span class="text-[7px] text-zinc-500 font-mono">#${globalIdx+1}</span><span class="font-sample text-sm" style="font-family: '${font}';">${font}</span>`;
-        el.onclick = () => { try { currentTextState.font = font; updateLiveTextPreview(); showToast(`🔤 Font: ${font}`, 'fa-font'); } catch (error) { console.error('Error applying font:', error); } };
+        el.setAttribute('data-fontname', font);
+        el.innerHTML = `
+          <span class="font-sample" style="font-family: '${font}', sans-serif;">Aa Bb</span>
+          <span class="font-hello" style="font-family: '${font}', sans-serif;">Hello World</span>
+          <span class="font-name">${font}</span>
+        `;
+        el.onclick = () => { try { currentTextState.font = font; updateLiveTextPreview(); showToast(`Font: ${font}`, 'fa-font'); } catch (error) { console.error('Error applying font:', error); } };
       } else if (tabId === 'styles') {
         const style = item;
         el.className = 'style-item';
         el.setAttribute('data-search', style.label);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 font-mono mr-1">#${globalIdx+1}</span><span class="text-xs font-bold" style="${style.css}">Aa</span>`;
-        el.onclick = () => { try { currentTextState.styleCSS = style.css; updateLiveTextPreview(); showToast(`🎨 ${style.label} applied`, 'fa-paint-brush'); } catch (error) { console.error('Error applying style:', error); } };
+        el.onclick = () => { try { currentTextState.styleCSS = style.css; updateLiveTextPreview(); showToast(`${style.label} applied`, 'fa-paint-brush'); } catch (error) { console.error('Error applying style:', error); } };
       } else if (tabId === 'animations') {
         const anim = item;
         el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-lg p-1.5 cursor-pointer text-center flex flex-col justify-between h-14 transition';
@@ -1558,13 +1620,13 @@ function loadItemsBatch(tabId, container) {
         if (globalIdx % 8 === 0) iconClass = "fa-rainbow text-pink-400 text-[10px]";
         if (globalIdx % 9 === 0) iconClass = "fa-snowflake text-cyan-300 text-[10px]";
         el.innerHTML = `<div class="flex items-center justify-between"><span class="text-[7px] text-zinc-500 font-mono">#${globalIdx+1}</span><i class="fas ${iconClass}"></i></div><span class="text-[9px] text-zinc-200 truncate font-semibold">${anim}</span>`;
-        el.onclick = () => { try { currentTextState.animation = anim; updateLiveTextPreview(); showToast(`✨ "${anim}" applied!`, 'fa-wand-magic-sparkles'); } catch (error) { console.error('Error applying animation:', error); } };
+        el.onclick = () => { try { currentTextState.animation = anim; updateLiveTextPreview(); showToast(`"${anim}" applied!`, 'fa-wand-magic-sparkles'); } catch (error) { console.error('Error applying animation:', error); } };
       } else if (tabId === 'bubbles') {
         const bubble = item;
         el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-lg p-1.5 cursor-pointer text-center flex flex-col justify-between h-16 transition relative';
         el.setAttribute('data-search', bubble.name);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 block font-mono">#${globalIdx+1}</span><div class="text-[8px] text-zinc-300 truncate px-1 py-0.5" style="${bubble.css}">${bubble.name}</div>`;
-        el.onclick = () => { try { currentTextState.bubbleCSS = bubble.css; updateLiveTextPreview(); showToast(`🫧 ${bubble.name} applied`, 'fa-circle'); } catch (error) { console.error('Error applying bubble:', error); } };
+        el.onclick = () => { try { currentTextState.bubbleCSS = bubble.css; updateLiveTextPreview(); showToast(`${bubble.name} applied`, 'fa-circle'); } catch (error) { console.error('Error applying bubble:', error); } };
       }
       container.appendChild(el);
     });
@@ -1576,7 +1638,7 @@ function loadItemsBatch(tabId, container) {
       loadMoreBtn.innerHTML = `<button onclick="loadMoreItems('${tabId}')" class="text-[10px] text-zinc-500 hover:text-white transition">Load More (${currentBatchIndex}/${totalItems})</button>`;
       container.appendChild(loadMoreBtn);
     }
-  } catch (error) { console.error('Error loading items batch:', error); isLoadingMore = false; showToast('❌ Error loading items', 'fa-exclamation'); }
+  } catch (error) { console.error('Error loading items batch:', error); isLoadingMore = false; showToast('Error loading items', 'fa-exclamation'); }
 }
 
 function loadMoreItems(tabId) {
@@ -1608,20 +1670,20 @@ function saveCategoryDefault(tabId) {
   try {
     const defaultData = { text: document.getElementById('liveTextInput').value || 'Enter Text', font: currentTextState.font, styleCSS: currentTextState.styleCSS, bubbleCSS: currentTextState.bubbleCSS, animation: currentTextState.animation };
     localStorage.setItem('dravoo_default_' + tabId, JSON.stringify(defaultData));
-    showToast(`✅ Default ${tabId} saved!`, 'fa-check');
-  } catch (error) { console.error('Error saving default:', error); showToast('⚠️ Could not save default', 'fa-exclamation'); }
+    showToast(`Default ${tabId} saved!`, 'fa-check');
+  } catch (error) { console.error('Error saving default:', error); showToast('Could not save default', 'fa-exclamation'); }
 }
 
 function resetCategoryDefault(tabId) {
   try {
     localStorage.removeItem('dravoo_default_' + tabId);
-    showToast(`↩️ ${tabId} reset`, 'fa-undo');
+    showToast(`${tabId} reset`, 'fa-undo');
     currentTextState.font = 'Inter';
     currentTextState.styleCSS = 'color: #ffffff;';
     currentTextState.bubbleCSS = '';
     currentTextState.animation = '';
     updateLiveTextPreview();
-  } catch (error) { console.error('Error resetting default:', error); showToast('⚠️ Could not reset default', 'fa-exclamation'); }
+  } catch (error) { console.error('Error resetting default:', error); showToast('Could not reset default', 'fa-exclamation'); }
 }
 
 function saveCategoryPreset(tabId) {
@@ -1632,9 +1694,9 @@ function saveCategoryPreset(tabId) {
     let presets = JSON.parse(localStorage.getItem('dravoo_presets') || '[]');
     presets.push(presetData);
     localStorage.setItem('dravoo_presets', JSON.stringify(presets));
-    showToast(`💾 "${presetName}" saved!`, 'fa-save');
+    showToast(`"${presetName}" saved!`, 'fa-save');
     renderSavedPresets();
-  } catch (error) { console.error('Error saving preset:', error); showToast('⚠️ Could not save preset', 'fa-exclamation'); }
+  } catch (error) { console.error('Error saving preset:', error); showToast('Could not save preset', 'fa-exclamation'); }
 }
 
 function saveCurrentPreset() {
@@ -1644,9 +1706,9 @@ function saveCurrentPreset() {
     const newPreset = { name: presetName, font: currentTextState.font, styleCSS: currentTextState.styleCSS, bubbleCSS: currentTextState.bubbleCSS, animation: currentTextState.animation };
     customPresets.push(newPreset);
     localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets));
-    showToast(`💾 "${presetName}" saved!`, 'fa-save');
+    showToast(`"${presetName}" saved!`, 'fa-save');
     renderSavedPresets();
-  } catch (error) { console.error('Error saving current preset:', error); showToast('⚠️ Could not save preset', 'fa-exclamation'); }
+  } catch (error) { console.error('Error saving current preset:', error); showToast('Could not save preset', 'fa-exclamation'); }
 }
 
 function renderSavedPresets() {
@@ -1659,16 +1721,16 @@ function renderSavedPresets() {
     customPresets.forEach((p, idx) => {
       const item = document.createElement('div');
       item.className = 'bg-[#22222a] border border-zinc-800 rounded-lg p-2 cursor-pointer hover:border-blue-500 transition text-center';
-      item.innerHTML = `<span class="text-[7px] text-zinc-400 block font-mono mb-0.5">${p.name || `P${idx + 1}`}</span><span class="text-[10px] font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name || 'Preset'}</span><button class="text-[7px] text-red-400 mt-0.5 hover:text-red-300" onclick="event.stopPropagation(); deletePreset(${idx})">✕</button>`;
-      item.onclick = () => { try { currentTextState.font = p.font; currentTextState.styleCSS = p.styleCSS; currentTextState.bubbleCSS = p.bubbleCSS || ''; currentTextState.animation = p.animation || ''; updateLiveTextPreview(); showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open'); } catch (error) { console.error('Error loading preset:', error); } };
+      item.innerHTML = `<span class="text-[7px] text-zinc-400 block font-mono mb-0.5">${p.name || `P${idx + 1}`}</span><span class="text-[10px] font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name || 'Preset'}</span><button class="text-[7px] text-red-400 mt-0.5 hover:text-red-300" onclick="event.stopPropagation(); deletePreset(${idx})">x</button>`;
+      item.onclick = () => { try { currentTextState.font = p.font; currentTextState.styleCSS = p.styleCSS; currentTextState.bubbleCSS = p.bubbleCSS || ''; currentTextState.animation = p.animation || ''; updateLiveTextPreview(); showToast(`"${p.name}" loaded!`, 'fa-folder-open'); } catch (error) { console.error('Error loading preset:', error); } };
       listContainer.appendChild(item);
     });
   } catch (error) { console.error('Error rendering saved presets:', error); }
 }
 
 function deletePreset(index) {
-  try { customPresets.splice(index, 1); localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets)); renderSavedPresets(); showToast('🗑️ Preset deleted', 'fa-trash'); } 
-  catch (error) { console.error('Error deleting preset:', error); showToast('⚠️ Could not delete preset', 'fa-exclamation'); }
+  try { customPresets.splice(index, 1); localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets)); renderSavedPresets(); showToast('Preset deleted', 'fa-trash'); } 
+  catch (error) { console.error('Error deleting preset:', error); showToast('Could not delete preset', 'fa-exclamation'); }
 }
 
 function closeDrawer() {
@@ -1689,12 +1751,12 @@ function toggleDraw() {
   try {
     drawActive = !drawActive;
     const panel = document.getElementById('drawToolsPanel');
-    if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); showToast('✏️ Draw ON', 'fa-pen'); } 
-    else { canvas.classList.remove('active'); panel.classList.add('hidden'); showToast('✏️ Draw OFF', 'fa-pen'); }
+    if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); showToast('Draw ON', 'fa-pen'); } 
+    else { canvas.classList.remove('active'); panel.classList.add('hidden'); showToast('Draw OFF', 'fa-pen'); }
   } catch (error) { console.error('Error toggling draw:', error); }
 }
-function clearDraw() { try { ctx.clearRect(0, 0, canvas.width, canvas.height); showToast('🧹 Cleared', 'fa-eraser'); } catch (error) { console.error('Error clearing draw:', error); } }
-function setBrush(size) { try { brushSize = size; showToast(`🖌️ ${size}px`, 'fa-paintbrush'); } catch (error) { console.error('Error setting brush:', error); } }
+function clearDraw() { try { ctx.clearRect(0, 0, canvas.width, canvas.height); showToast('Cleared', 'fa-eraser'); } catch (error) { console.error('Error clearing draw:', error); } }
+function setBrush(size) { try { brushSize = size; showToast(`${size}px`, 'fa-paintbrush'); } catch (error) { console.error('Error setting brush:', error); } }
 
 canvas.addEventListener('mousedown', (e) => { try { if (!drawActive) return; isDrawing = true; draw(e); } catch (error) { console.error('Mouse down error:', error); } });
 canvas.addEventListener('mousemove', (e) => { try { if (!drawActive) return; if (!isDrawing) return; draw(e); } catch (error) { console.error('Mouse move error:', error); } });
@@ -1748,7 +1810,9 @@ function draw(e) {
 }
 
 // ============================================================
-// AUTO-CAPTION — WHISPER (from 2nd code, fully integrated)
+// AUTO-CAPTION - DRAVOO AI (FIXED)
+// FIX #1: All user-visible text now says "Dravoo AI"
+// FIX #2: Language properly passed for non-English
 // ============================================================
 async function generateAutoCaptions() {
   const btn = document.getElementById('autoCaptionBtn');
@@ -1758,20 +1822,20 @@ async function generateAutoCaptions() {
   const progTxt = document.getElementById('whisperProgressText');
 
   if (!player.src || player.classList.contains('hidden')) {
-    showToast('❌ Please upload a video first', 'fa-exclamation');
+    showToast('Please upload a video first', 'fa-exclamation');
     return;
   }
   progWrap.classList.remove('hidden');
 
   if (!window.__whisperReady) {
     progBar.style.width = '3%';
-    progTxt.textContent = 'Loading Whisper-base model (~75MB)...';
-    showToast('⏳ Model loading, please wait...', 'fa-hourglass');
+    progTxt.textContent = 'Loading Dravoo AI model (~75MB)...';
+    showToast('Model loading, please wait...', 'fa-hourglass');
     window.__loadWhisper && window.__loadWhisper();
     const wait = setInterval(() => {
       if (window.__whisperReady) {
         clearInterval(wait);
-        progTxt.textContent = 'Model ready!';
+        progTxt.textContent = 'Dravoo AI ready!';
         setTimeout(() => generateAutoCaptions(), 300);
       }
     }, 800);
@@ -1790,15 +1854,12 @@ async function generateAutoCaptions() {
     audioCtx.close();
 
     progBar.style.width = '35%';
-    progTxt.textContent = 'Whisper transcribing...';
+    progTxt.textContent = 'Dravoo AI transcribing...';
     btnTxt.textContent = 'Transcribing...';
 
+    // FIX #2: Language handling - properly map to Whisper's expected language names
     const selectedLang = document.getElementById('captionLanguage').value;
-    let langOpt = undefined;
-    if (selectedLang !== 'auto') {
-      const map = { en: 'english', ur: 'urdu', hi: 'hindi', ar: 'arabic', zh: 'chinese', es: 'spanish' };
-      langOpt = map[selectedLang] || 'english';
-    }
+    const langMap = { en: 'english', ur: 'urdu', hi: 'hindi', ar: 'arabic', zh: 'chinese', es: 'spanish' };
 
     const opts = {
       task: 'transcribe',
@@ -1806,7 +1867,11 @@ async function generateAutoCaptions() {
       stride_length_s: 5,
       return_timestamps: true,
     };
-    if (langOpt) opts.language = langOpt;
+    // Pass language explicitly so Dravoo AI transcribes in that language
+    if (selectedLang && selectedLang !== 'auto' && langMap[selectedLang]) {
+      opts.language = langMap[selectedLang];
+    }
+    // If 'auto', don't pass language -> Dravoo AI will auto-detect
 
     const result = await window.__whisperPipeline(mono, opts);
 
@@ -1846,18 +1911,18 @@ async function generateAutoCaptions() {
     startCaptionSync();
 
     progBar.style.width = '100%';
-    progTxt.textContent = `✅ ${autoCaptionSegments.length} captions generated!`;
+    progTxt.textContent = `${autoCaptionSegments.length} captions generated!`;
     btnTxt.textContent = 'Regenerate';
     btn.disabled = false;
-    showToast(`✅ ${wordGroups.length} karaoke groups!`, 'fa-closed-captioning');
+    showToast(`${wordGroups.length} karaoke groups!`, 'fa-closed-captioning');
     setTimeout(() => { progWrap.classList.add('hidden'); progBar.style.width = '0%'; }, 3000);
 
   } catch (err) {
     console.error('Auto caption error:', err);
     btn.disabled = false;
     btnTxt.textContent = 'Try Again';
-    progTxt.textContent = '❌ Failed: ' + (err.message || 'Unknown');
-    showToast('❌ Failed', 'fa-exclamation');
+    progTxt.textContent = 'Failed: ' + (err.message || 'Unknown');
+    showToast('Auto caption failed', 'fa-exclamation');
     setTimeout(() => progWrap.classList.add('hidden'), 4000);
   }
 }
@@ -1874,7 +1939,7 @@ function mixToMono(audioBuffer) {
   return out;
 }
 
-// Words → Groups
+// Words -> Groups
 function splitIntoWords(segments) {
   const out = [];
   segments.forEach(seg => {
@@ -1968,7 +2033,7 @@ function applyCaptionStyle() {
   captionSettings.pos = document.getElementById('captionPos').value;
   setupCaptionOverlay();
   rebuildWordGroups();
-  showToast('🎨 Style updated', 'fa-palette');
+  showToast('Style updated', 'fa-palette');
 }
 
 function startCaptionSync() {
@@ -2016,7 +2081,7 @@ function renderCaptionLinesList() {
       <input type="text" value="${(s.text || '').replace(/"/g, '&quot;')}"
         oninput="editCaptionLine(${i}, this.value)"
         class="flex-1 bg-transparent text-[10px] text-zinc-200 outline-none border-b border-transparent focus:border-pink-400" />
-      <button onclick="deleteCaptionLine(${i})" class="text-red-400 hover:text-red-300 text-[10px] px-1">✕</button>
+      <button onclick="deleteCaptionLine(${i})" class="text-red-400 hover:text-red-300 text-[10px] px-1">x</button>
     </div>
   `).join('');
 }
@@ -2028,7 +2093,7 @@ function editCaptionLine(i, val) {
 function deleteCaptionLine(i) {
   autoCaptionSegments.splice(i, 1);
   rebuildWordGroups();
-  showToast('🗑️ Line deleted', 'fa-trash');
+  showToast('Line deleted', 'fa-trash');
 }
 
 // SRT / VTT EXPORT / IMPORT
@@ -2042,22 +2107,22 @@ function secToSRT(s) {
 function secToVTT(s) { return secToSRT(s).replace(',', '.'); }
 
 function exportSRT() {
-  if (autoCaptionSegments.length === 0) { showToast('❌ No captions to export', 'fa-exclamation'); return; }
+  if (autoCaptionSegments.length === 0) { showToast('No captions to export', 'fa-exclamation'); return; }
   let out = '';
   autoCaptionSegments.forEach((s, i) => {
     out += `${i + 1}\n${secToSRT(s.start)} --> ${secToSRT(s.end)}\n${s.text}\n\n`;
   });
   downloadFile(out, 'captions.srt', 'text/plain');
-  showToast('✅ SRT exported', 'fa-download');
+  showToast('SRT exported', 'fa-download');
 }
 function exportVTT() {
-  if (autoCaptionSegments.length === 0) { showToast('❌ No captions to export', 'fa-exclamation'); return; }
+  if (autoCaptionSegments.length === 0) { showToast('No captions to export', 'fa-exclamation'); return; }
   let out = 'WEBVTT\n\n';
   autoCaptionSegments.forEach((s, i) => {
     out += `${i + 1}\n${secToVTT(s.start)} --> ${secToVTT(s.end)}\n${s.text}\n\n`;
   });
   downloadFile(out, 'captions.vtt', 'text/vtt');
-  showToast('✅ VTT exported', 'fa-download');
+  showToast('VTT exported', 'fa-download');
 }
 function downloadFile(content, name, type) {
   const blob = new Blob([content], { type });
@@ -2074,12 +2139,12 @@ function importSRT(input) {
   reader.onload = (e) => {
     const text = e.target.result;
     const parsed = parseSRT(text);
-    if (parsed.length === 0) { showToast('❌ File empty or invalid', 'fa-exclamation'); return; }
+    if (parsed.length === 0) { showToast('File empty or invalid', 'fa-exclamation'); return; }
     autoCaptionSegments = parsed;
     rebuildWordGroups();
     setupCaptionOverlay();
     startCaptionSync();
-    showToast(`✅ ${parsed.length} captions imported!`, 'fa-upload');
+    showToast(`${parsed.length} captions imported!`, 'fa-upload');
   };
   reader.readAsText(file);
   input.value = '';
@@ -2115,7 +2180,7 @@ function updateCaptionPreview() {
 // KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
   try {
-    if (e.ctrlKey && e.key === 'z') { e.preventDefault(); showToast('↩️ Undo (placeholder)', 'fa-undo'); }
+    if (e.ctrlKey && e.key === 'z') { e.preventDefault(); showToast('Undo (placeholder)', 'fa-undo'); }
     if (e.key === 'Delete' || e.key === 'Backspace') { const active = document.activeElement; if (active && active.classList.contains('canvas-text-item')) { deleteTextElement(active.id); } }
     if (e.key === 'Escape') { closeDrawer(); closePixabayModal(); closeExportDialog(); if (drawActive) toggleDraw(); }
     if (e.key === ' ' && e.target === document.body) { e.preventDefault(); togglePlay(); }
@@ -2130,8 +2195,8 @@ function init() {
     updateTextTrackCount();
     if (window.speechSynthesis) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); }; }
     try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) { console.warn('Error loading presets:', e); }
-    showToast('🚀 Welcome to Dravoo Pro Studio!', 'fa-rocket');
-    console.log('🚀 Dravoo Pro Editor Loaded with Whisper Auto-Caption!');
+    showToast('Welcome to Dravoo Pro Studio!', 'fa-rocket');
+    console.log('Dravoo Pro Editor Loaded with Auto Caption!');
   } catch (error) { console.error('Error during initialization:', error); }
 }
 
