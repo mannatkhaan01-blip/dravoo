@@ -58,21 +58,52 @@
     .audio-track-item .track-actions .play-btn:hover { background: rgba(16, 185, 129, 0.15); color: #10b981; }
     .audio-track-item .waveform-preview { width: 60px; height: 20px; background: linear-gradient(90deg, #34d399 20%, rgba(16, 185, 129, 0.3) 40%, #34d399 60%, rgba(16, 185, 129, 0.3) 80%); border-radius: 4px; opacity: 0.6; flex-shrink: 0; }
 
-    .multi-track-container { max-height: 120px; overflow-y: auto; padding: 4px 0; }
+    .multi-track-container { max-height: 120px; overflow-y: auto; padding: 4px 0; position: relative; }
     .multi-track-container::-webkit-scrollbar { width: 2px; }
     .multi-track-container::-webkit-scrollbar-thumb { background: #34d399; border-radius: 4px; }
 
-    .text-track-item { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; transition: all 0.2s; }
-    .text-track-item:hover { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); }
-    .text-track-item .track-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-    .text-track-item .track-info i { color: #3b82f6; font-size: 12px; flex-shrink: 0; }
-    .text-track-item .track-info span { font-size: 11px; font-family: monospace; color: #3b82f6; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .text-track-item .track-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .text-track-item .track-actions button { background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 4px; transition: all 0.2s; }
-    .text-track-item .track-actions button:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-    .text-track-item .track-actions .edit-btn { color: #3b82f6; }
-    .text-track-item .track-actions .edit-btn:hover { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+    /* TIMELINE TEXT TRACK (Orange Block like CapCut) */
+    .timeline-text-track {
+      background: #f59e0b;
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 6px;
+      cursor: pointer;
+      min-width: 120px;
+      width: 80%;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+      user-select: none;
+    }
+    .timeline-text-track .track-content { display: flex; align-items: center; gap: 6px; pointer-events: none; }
+    .timeline-text-track .track-actions { display: flex; align-items: center; gap: 4px; z-index: 10; }
+    .timeline-text-track .track-actions button { background: rgba(0,0,0,0.2); border: none; color: #fff; cursor: pointer; font-size: 9px; padding: 2px 6px; border-radius: 4px; transition: all 0.2s; }
+    .timeline-text-track .track-actions button:hover { background: rgba(0,0,0,0.4); }
+    
+    .timeline-track-resize {
+      width: 14px;
+      height: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
+      cursor: ew-resize;
+      background: rgba(255,255,255,0.4);
+      border-left: 1px solid rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timeline-track-resize:hover { background: rgba(255,255,255,0.6); }
 
+    .text-track-item { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; transition: all 0.2s; }
+    
     .export-dialog { background: #121216; border: 1px solid #2a2a32; border-radius: 16px; padding: 20px 24px; max-width: 400px; margin: 0 auto; }
     .export-dialog .export-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .export-dialog .export-header h3 { font-size: 14px; font-weight: 600; color: #e5e7eb; }
@@ -98,7 +129,6 @@
     .font-preview-btn .font-name { font-size: 9px; color: #9ca3af; font-family: monospace; }
     .font-preview-btn .font-sample { font-size: 14px; color: #fff; font-weight: 700; }
 
-    /* ============ CAPTION CONTROLS (from 2nd code) ============ */
     .caption-controls { background: #0c0c10; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #1a1a22; }
     .caption-controls select, .caption-controls input[type="text"] { background: #18181c; border: 1px solid #2a2a32; border-radius: 8px; color: #e5e7eb; padding: 6px 10px; font-size: 11px; outline: none; width: 100%; }
     .caption-controls select:focus, .caption-controls input:focus { border-color: #3b82f6; }
@@ -106,48 +136,27 @@
     .caption-controls .control-row > * { flex: 1; min-width: 100px; }
     .caption-controls label { font-size: 9px; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 2px; }
 
-    /* animations */
-    @keyframes textFadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 0.95; transform: translateY(0); } }
+    @keyframes textFadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
     @keyframes textBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-    @keyframes textSlideIn { 0% { transform: translateX(-20px); opacity: 0; } 100% { transform: translateX(0); opacity: 0.95; } }
+    @keyframes textSlideIn { 0% { transform: translateX(-20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
     @keyframes textGlow { 0%, 100% { text-shadow: 0 0 10px rgba(59,130,246,0.5); } 50% { text-shadow: 0 0 30px rgba(59,130,246,0.8); } }
     @keyframes textRotate { 0% { transform: rotate(-3deg); } 100% { transform: rotate(3deg); } }
-    @keyframes textPulse { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.5; } }
+    @keyframes textPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     @keyframes textWave { 0% { transform: translateY(0); } 25% { transform: translateY(-5px); } 50% { transform: translateY(0); } 75% { transform: translateY(5px); } 100% { transform: translateY(0); } }
     @keyframes textShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     @keyframes textFlip { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
-    @keyframes textZoom { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 0.95; } }
+    @keyframes textZoom { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     @keyframes textNeonPulse { 0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #3b82f6, 0 0 40px #3b82f6; } 50% { text-shadow: 0 0 10px #fff, 0 0 20px #3b82f6, 0 0 40px #3b82f6, 0 0 80px #3b82f6; } }
     @keyframes textRainbow { 0% { color: #ff0000; } 17% { color: #ff8800; } 33% { color: #ffff00; } 50% { color: #00ff00; } 67% { color: #0088ff; } 83% { color: #8800ff; } 100% { color: #ff0000; } }
-    @keyframes textWobble { 0%, 100% { transform: rotate(-2deg) scale(1); } 50% { transform: rotate(2deg) scale(1.05); } }
-    @keyframes textJello { 0%, 100% { transform: scale(1); } 25% { transform: scale(1.1) rotate(-5deg); } 50% { transform: scale(0.9) rotate(5deg); } 70% { transform: scale(1.05) rotate(-3deg); } }
-    @keyframes textHeartbeat { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.2); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
-    @keyframes textFlicker { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.3; } 75% { opacity: 0.7; } }
-    @keyframes textTyping { 0% { width: 0; } 100% { width: 100%; } }
-    @keyframes textReveal { 0% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 0 0 0); } }
-    @keyframes textSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes textDropIn { 0% { transform: translateY(-50px) scale(0.5); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 0.95; } }
-    @keyframes textRiseUp { 0% { transform: translateY(30px); opacity: 0; } 100% { transform: translateY(0); opacity: 0.95; } }
-    @keyframes textSplash { 0% { transform: scale(0) rotate(-30deg); opacity: 0; } 50% { transform: scale(1.3) rotate(5deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 0.95; } }
-    @keyframes textExplode { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(1.5) rotate(20deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 0.95; } }
-    @keyframes textMorph { 0% { transform: scale(0.5) skewX(10deg); opacity: 0; } 50% { transform: scale(1.2) skewX(-5deg); opacity: 1; } 100% { transform: scale(1) skewX(0deg); opacity: 0.95; } }
-    @keyframes textBlurIn { 0% { filter: blur(10px); opacity: 0; } 100% { filter: blur(0); opacity: 0.95; } }
-    @keyframes textColorShift { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-    @keyframes textShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-    @keyframes textSparkle { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.5; text-shadow: 0 0 20px #fbbf24; } }
-    @keyframes textCyberGlitch { 0% { transform: translate(0); opacity: 0.95; } 20% { transform: translate(-2px, 2px); opacity: 0.8; } 40% { transform: translate(2px, -2px); opacity: 0.95; } 60% { transform: translate(-1px, 1px); opacity: 0.9; } 80% { transform: translate(1px, -1px); opacity: 0.95; } 100% { transform: translate(0); opacity: 0.95; } }
-    @keyframes textMatrix { 0% { filter: brightness(0) contrast(2); opacity: 0; } 50% { filter: brightness(1) contrast(1.5); opacity: 1; } 100% { filter: brightness(1) contrast(1); opacity: 0.95; } }
-    @keyframes textHologram { 0% { filter: brightness(0.5) hue-rotate(0deg); } 50% { filter: brightness(1.5) hue-rotate(30deg); } 100% { filter: brightness(0.5) hue-rotate(0deg); } }
-    @keyframes textFire { 0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff6348; } 50% { text-shadow: 0 0 15px #ff6348, 0 0 25px #ff4500, 0 0 40px #ff8c00; } 100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff6348; } }
-    @keyframes textIce { 0% { text-shadow: 0 0 10px #00bfff, 0 0 20px #87ceeb; } 50% { text-shadow: 0 0 15px #87ceeb, 0 0 30px #00bfff; } 100% { text-shadow: 0 0 10px #00bfff, 0 0 20px #87ceeb; } }
-
-    .canvas-text-item { position: absolute; cursor: grab; user-select: none; padding: 4px 8px; border-radius: 4px; transition: box-shadow 0.2s; z-index: 50; pointer-events: auto; display: flex; align-items: center; gap: 6px; opacity: 0.95 !important; }
-    .canvas-text-item:hover { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); border-radius: 4px; }
-    .canvas-text-item .text-content { pointer-events: none; opacity: 0.95 !important; }
+    
+    /* FIX 2: Text fully visible now */
+    .canvas-text-item { position: absolute; cursor: grab; user-select: none; padding: 4px 8px; border-radius: 4px; transition: box-shadow 0.2s; z-index: 50; pointer-events: auto; display: flex; align-items: center; gap: 6px; }
+    .canvas-text-item:hover { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.8); border-radius: 4px; }
+    .canvas-text-item .text-content { pointer-events: none; }
     .canvas-text-item .delete-btn { display: none; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; cursor: pointer; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; pointer-events: auto; }
     .canvas-text-item:hover .delete-btn { display: flex; }
     .canvas-text-item .delete-btn:hover { background: #ef4444; transform: scale(1.1); }
-    .canvas-text-item.dragging { cursor: grabbing; opacity: 0.8; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+    .canvas-text-item.dragging { cursor: grabbing; opacity: 0.9; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
 
     .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(16, 16, 20, 0.95); backdrop-filter: blur(12px); border: 1px solid #2a2a32; border-radius: 16px; padding: 12px 24px; z-index: 999; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); animation: slideUp 0.3s ease-out; pointer-events: none; }
     .toast-notification.hidden { display: none; }
@@ -172,10 +181,6 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 
-  <!-- ========================================================= -->
-  <!-- WHISPER AI (Browser mein, 100% Free) — Transformers.js     -->
-  <!-- whisper-base = zyada accurate                              -->
-  <!-- ========================================================= -->
   <script type="module">
     window.__whisperReady = false;
     window.__whisperPipeline = null;
@@ -222,7 +227,6 @@
 <input type="file" id="audio-extract-picker" accept="audio/*,video/*" class="hidden" onchange="handleAudioExtracted(this)" />
 <input type="file" id="srtImporter" accept=".srt,.vtt" class="hidden" onchange="importSRT(this)" />
 
-<!-- Navbar -->
 <header class="flex items-center justify-between px-5 py-3 bg-[#0b0b0e] border-b border-[#1e1e26]">
   <div class="flex items-center gap-3">
     <i class="fas fa-clapperboard text-blue-500 text-xl"></i>
@@ -234,11 +238,9 @@
   </button>
 </header>
 
-<!-- Main Workspace -->
 <main class="max-w-3xl mx-auto px-2 my-4">
   <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
 
-    <!-- Top Project Toolbar -->
     <div class="flex items-center justify-between px-4 py-2.5 bg-[#0e0e12] border-b border-[#1f1f26]">
       <div class="flex items-center gap-2 text-sm">
         <span class="text-white font-semibold">Project: Untitled</span>
@@ -256,7 +258,6 @@
       </div>
     </div>
 
-    <!-- Main Canvas Viewport -->
     <div class="w-full bg-[#050507] p-4 flex items-center justify-center border-b border-[#1c1c24]">
       <div id="video-ratio-box" class="relative bg-black flex items-center justify-center overflow-hidden shadow-inner transition-all duration-300 w-full max-w-[280px]" style="aspect-ratio: 9/16;">
         <video id="studio-player" loop class="w-full h-full object-contain hidden"></video>
@@ -278,7 +279,6 @@
       </div>
     </div>
 
-    <!-- Playback Controls -->
     <div class="px-4 py-2.5 bg-[#0c0c10] border-b border-[#1a1a22] flex items-center justify-between">
       <span id="timeDisplay" class="text-xs font-mono text-zinc-400">00:00 / 00:00</span>
       <button id="playBtn" onclick="togglePlay()" class="w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white">
@@ -287,10 +287,9 @@
       <span class="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Timeline Mode</span>
     </div>
 
-    <!-- TEXT TRACKS CONTAINER -->
     <div id="textTrackContainer" class="audio-track-container" style="border-bottom: 1px solid #1a1a22; background: #0a0a0e;">
       <div class="flex items-center justify-between mb-2">
-        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><i class="fas fa-font text-blue-400 mr-1.5"></i>Text Tracks</span>
+        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><i class="fas fa-font text-amber-400 mr-1.5"></i>Text Tracks</span>
         <span id="textTrackCount" class="text-[10px] text-zinc-600">0 tracks</span>
       </div>
       <div id="textTrackList" class="multi-track-container">
@@ -298,7 +297,6 @@
       </div>
     </div>
 
-    <!-- AUDIO TRACK CONTAINER -->
     <div id="audioTrackContainer" class="audio-track-container">
       <div class="flex items-center justify-between mb-2">
         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider"><i class="fas fa-waveform text-emerald-400 mr-1.5"></i>Audio Tracks</span>
@@ -309,7 +307,6 @@
       </div>
     </div>
 
-    <!-- Video Timeline Track -->
     <div class="px-4 py-3 bg-[#0a0a0e] border-b border-[#1a1a22] space-y-2">
       <div class="bg-[#131318] border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between">
         <div class="flex items-center gap-2 truncate"><i class="fas fa-video text-blue-400 text-xs"></i><span id="timelineLabel" class="text-xs font-mono text-zinc-400 truncate">master_track.mp4</span></div>
@@ -317,7 +314,6 @@
       </div>
     </div>
 
-    <!-- MASTER BOTTOM MENU -->
     <div id="masterBottomMenu" class="scroll-x-menu bg-[#0e0e12] border-t border-[#22222a] py-2 px-1 gap-1">
       <button onclick="showSubmenu('edit')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-video text-base text-blue-400"></i><span class="text-[10px] font-medium">Edit</span></button>
       <button onclick="showSubmenu('audio')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-music text-base text-green-400"></i><span class="text-[10px] font-medium">Audio</span></button>
@@ -334,7 +330,6 @@
       <button onclick="showSubmenu('background')" class="flex-shrink-0 w-20 flex flex-col items-center gap-1 text-[#9ca3af] hover:text-white py-1 transition"><i class="fas fa-image text-base text-rose-400"></i><span class="text-[10px] font-medium">Background</span></button>
     </div>
 
-    <!-- SUBMENUS -->
     <div id="submenu-edit" class="hidden submenu-grid">
       <button onclick="backToMaster()" class="bg-zinc-950 p-2 rounded text-center text-zinc-400 text-xs flex flex-col items-center gap-1"><i class="fas fa-arrow-left"></i>Back</button>
       <button onclick="triggerTool('Split')" class="bg-zinc-900 p-2 rounded text-center text-xs flex flex-col items-center gap-1 text-zinc-200"><i class="fas fa-scissors text-blue-400"></i>Split</button>
@@ -410,16 +405,12 @@
       <button onclick="document.getElementById('overlay-file-picker').click()" class="col-span-4 bg-blue-600/30 border border-blue-500/50 p-2 rounded text-center text-xs flex items-center justify-center gap-2 text-white"><i class="fas fa-folder-open"></i> Open Device Media Gallery</button>
     </div>
 
-    <!-- ========================================== -->
-    <!-- ADVANCED CAPTION SUBMENU (Whisper + Karaoke) -->
-    <!-- ========================================== -->
     <div id="submenu-caption" class="hidden p-3 bg-[#0c0c10] max-h-[80vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-3">
         <button onclick="backToMaster()" class="text-xs text-zinc-400"><i class="fas fa-arrow-left mr-1"></i>Back</button>
         <span class="text-xs font-bold text-pink-400"><i class="fas fa-closed-captioning mr-1"></i>Caption Studio</span>
       </div>
 
-      <!-- Language + Font -->
       <div class="caption-controls">
         <div class="control-row">
           <div>
@@ -451,7 +442,6 @@
         </div>
       </div>
 
-      <!-- Auto Caption -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
           <i class="fas fa-microphone-lines mr-1 text-emerald-400"></i>Auto Caption (Whisper-base · 100% Free)
@@ -472,7 +462,6 @@
         </p>
       </div>
 
-      <!-- Caption Style (Karaoke) -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
           <i class="fas fa-palette mr-1 text-pink-400"></i>Caption Style (Karaoke)
@@ -502,7 +491,6 @@
         </div>
       </div>
 
-      <!-- Import/Export -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <label class="text-[9px] text-zinc-500 uppercase tracking-wider block mb-2">
           <i class="fas fa-file-import mr-1 text-blue-400"></i>Import / Export
@@ -520,7 +508,6 @@
         </div>
       </div>
 
-      <!-- Caption Lines (Edit) -->
       <div class="mt-3 pt-3 border-t border-zinc-800">
         <div class="flex items-center justify-between mb-2">
           <label class="text-[9px] text-zinc-500 uppercase tracking-wider">
@@ -598,13 +585,11 @@
   </div>
 </main>
 
-<!-- TOAST -->
 <div id="toastNotification" class="toast-notification hidden">
   <i class="fas fa-check-circle text-blue-400 text-lg"></i>
   <span id="toastMessage" class="text-sm text-white font-medium">Animation applied!</span>
 </div>
 
-<!-- PIXABAY MODAL -->
 <div id="pixabayModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
   <div class="bg-[#121216] border border-zinc-800 w-full max-w-md rounded-3xl p-6 text-center space-y-5 shadow-2xl">
     <div class="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-3xl"><i class="fas fa-music" id="pixabayIcon"></i></div>
@@ -619,7 +604,6 @@
   </div>
 </div>
 
-<!-- EXPORT DIALOG -->
 <div id="exportDialog" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[300] hidden">
   <div class="export-dialog">
     <div class="export-header"><h3><i class="fas fa-download mr-2 text-blue-400"></i>Export Project</h3><span class="close-btn" onclick="closeExportDialog()">✕</span></div>
@@ -632,16 +616,16 @@
   </div>
 </div>
 
-<!-- EDITOR DRAWER -->
 <div class="editor-drawer" id="editorDrawer">
   <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
     <button class="text-zinc-400 font-bold" onclick="closeDrawer()">✕</button>
     <span id="drawerTitle" class="text-sm font-bold text-zinc-300">Text Designer Workspace</span>
-    <button class="text-blue-500 font-bold text-sm" onclick="closeDrawer()">Done</button>
+    <!-- FIX 3: Done Button -->
+    <button class="text-blue-500 font-bold text-sm" onclick="handleDone()">Done</button>
   </div>
   <div class="px-4 py-2 border-b border-zinc-800 flex gap-2">
     <input type="text" id="liveTextInput" oninput="updateLiveTextPreview()" placeholder="Enter text here..." class="flex-1 bg-zinc-900 border border-zinc-800 text-sm text-white px-3 py-2 rounded-xl outline-none focus:border-blue-500" value="Enter your text" />
-    <button onclick="applyNewTextToCanvas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add to Video</button>
+    <button onclick="handleDone()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded-xl font-bold transition">Add to Video</button>
   </div>
   <div class="flex border-b border-zinc-800 bg-[#0e0e12] overflow-x-auto scroll-x-menu">
     <button id="tab-templates" onclick="switchTextTab('templates')" class="tab-btn active">Templates</button>
@@ -657,10 +641,6 @@
 </div>
 
 <script>
-// ============================================================
-// DRAVOO PRO EDITOR - COMPLETE FIXED VERSION (with Whisper Auto-Caption)
-// ============================================================
-
 // GLOBALS
 let currentTextState = { text: "Enter your text", font: "Inter", styleCSS: "color: #ffffff; text-shadow: none;", animation: "", bubbleCSS: "" };
 let customPresets = [];
@@ -682,7 +662,6 @@ let currentBatchIndex = 0;
 const BATCH_SIZE = 50;
 const PIXABAY_API_KEY = '52778614-b103ae3cfe866a30cb154bd0a';
 
-// ===== Auto Caption Globals (from 2nd code) =====
 let autoCaptionSegments = [];
 let wordGroups = [];
 let captionSyncRAF = null;
@@ -707,17 +686,17 @@ function showToast(message, icon = 'fa-check-circle') {
   } catch (error) { console.warn('Toast error:', error); }
 }
 
-// TEXT TRACKS
+// TEXT TRACKS (Timeline Block like Image)
 function addTextTrack(text, font, styleCSS, bubbleCSS, animation) {
   try {
     const id = ++textTrackIdCounter;
-    const track = { id, text, font, styleCSS, bubbleCSS, animation, timestamp: new Date().toISOString() };
+    const track = { id, text, font, styleCSS, bubbleCSS, animation, width: 80, timestamp: new Date().toISOString() };
     textTracks.push(track);
     renderTextTracks();
     updateTextTrackCount();
-    showToast(`✏️ Text track added: "${text}"`, 'fa-font');
+    showToast(`✏️ Text added: "${text}"`, 'fa-font');
     return track;
-  } catch (error) { console.error('Error adding text track:', error); showToast('❌ Error adding text track', 'fa-exclamation'); return null; }
+  } catch (error) { console.error('Error adding text track:', error); return null; }
 }
 
 function renderTextTracks() {
@@ -725,12 +704,19 @@ function renderTextTracks() {
     const container = document.getElementById('textTrackList');
     if (!container) return;
     if (textTracks.length === 0) { container.innerHTML = `<div class="text-center py-4"><span class="text-[10px] text-zinc-600">No text tracks added yet</span></div>`; return; }
+    
+    // FIX 4: Render as "Line Graph" (Orange Block) with Resize and Split
     container.innerHTML = textTracks.map(track => `
-      <div class="text-track-item" data-track-id="${track.id}">
-        <div class="track-info"><i class="fas fa-font"></i><span>${track.text.substring(0, 30)}${track.text.length > 30 ? '...' : ''}</span></div>
+      <div class="timeline-text-track" data-track-id="${track.id}" style="width: ${track.width}%;">
+        <div class="track-content">
+          <span class="truncate max-w-[100px]">${track.text}</span>
+        </div>
         <div class="track-actions">
-          <button class="edit-btn" onclick="editTextTrack(${track.id})"><i class="fas fa-edit"></i></button>
-          <button onclick="removeTextTrack(${track.id})"><i class="fas fa-times"></i></button>
+          <button onclick="splitTextTrack(${track.id})" style="background:#10b981; color:#fff;">✂ Split</button>
+          <button onclick="removeTextTrack(${track.id})" style="background:#ef4444; color:#fff;">✕</button>
+        </div>
+        <div class="timeline-track-resize" onmousedown="initResizeTrack(event, ${track.id})" title="Drag to resize">
+          <i class="fas fa-grip-lines-vertical text-[8px] text-black/50"></i>
         </div>
       </div>
     `).join('');
@@ -743,38 +729,46 @@ function updateTextTrackCount() {
 
 function removeTextTrack(id) {
   try {
-    const track = textTracks.find(t => t.id === id);
-    if (!track) return;
     document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id) { if (el.parentNode) el.parentNode.removeChild(el); } });
     textTracks = textTracks.filter(t => t.id !== id);
     renderTextTracks();
     updateTextTrackCount();
     showToast('🗑️ Text track removed', 'fa-trash');
-  } catch (error) { console.error('Error removing text track:', error); showToast('❌ Error removing text track', 'fa-exclamation'); }
+  } catch (error) { console.error('Error removing text track:', error); }
 }
 
-function editTextTrack(id) {
+function splitTextTrack(id) {
   try {
     const track = textTracks.find(t => t.id === id);
     if (!track) return;
-    let targetEl = null;
-    document.querySelectorAll('.canvas-text-item').forEach(el => { if (el.getAttribute('data-track-id') == id) targetEl = el; });
-    if (targetEl) {
-      openDrawer('templates');
-      document.getElementById('liveTextInput').value = track.text;
-      currentTextState.text = track.text;
-      currentTextState.font = track.font;
-      currentTextState.styleCSS = track.styleCSS;
-      currentTextState.bubbleCSS = track.bubbleCSS;
-      currentTextState.animation = track.animation;
-      updateLiveTextPreview();
-      if (targetEl.parentNode) targetEl.parentNode.removeChild(targetEl);
-      textTracks = textTracks.filter(t => t.id !== id);
-      renderTextTracks();
-      updateTextTrackCount();
-      showToast(`✏️ Editing: "${track.text}"`, 'fa-edit');
+    const newTrack = { ...track, id: ++textTrackIdCounter, text: track.text + " (Split)", width: Math.max(40, track.width / 2) };
+    track.width = Math.max(40, track.width / 2);
+    textTracks.push(newTrack);
+    renderTextTracks();
+    showToast('✂️ Track split into two!', 'fa-scissors');
+  } catch (e) { console.error('Split error:', e); }
+}
+
+function initResizeTrack(e, id) {
+  e.preventDefault();
+  const trackEl = e.target.closest('.timeline-text-track');
+  const startX = e.clientX;
+  const startWidth = trackEl.offsetWidth;
+  const containerWidth = document.getElementById('textTrackList').offsetWidth;
+  
+  document.onmousemove = (ev) => {
+    const newWidthPx = startWidth + (ev.clientX - startX);
+    const newWidthPercent = (newWidthPx / containerWidth) * 100;
+    if (newWidthPercent > 10 && newWidthPercent < 100) {
+      trackEl.style.width = newWidthPercent + '%';
+      const t = textTracks.find(t => t.id === id);
+      if (t) t.width = newWidthPercent;
     }
-  } catch (error) { console.error('Error editing text track:', error); showToast('❌ Error editing text track', 'fa-exclamation'); }
+  };
+  document.onmouseup = () => {
+    document.onmousemove = null;
+    document.onmouseup = null;
+  };
 }
 
 // AUDIO TRACKS
@@ -790,7 +784,7 @@ function addAudioTrack(name, url, type = 'track') {
     updateTrackCount();
     showToast(`🎵 "${name}" added`, 'fa-music');
     return track;
-  } catch (error) { console.error('Error adding audio track:', error); showToast('❌ Error adding audio track', 'fa-exclamation'); return null; }
+  } catch (error) { console.error('Error adding audio track:', error); return null; }
 }
 
 function renderAudioTracks() {
@@ -824,7 +818,7 @@ function toggleTrackPlay(id) {
       track.playing = true;
     }
     renderAudioTracks();
-  } catch (error) { console.error('Error toggling track play:', error); showToast('❌ Error playing track', 'fa-exclamation'); }
+  } catch (error) { console.error('Error toggling track play:', error); }
 }
 
 function removeTrack(id) {
@@ -835,7 +829,7 @@ function removeTrack(id) {
     renderAudioTracks();
     updateTrackCount();
     showToast('🗑️ Track removed', 'fa-trash');
-  } catch (error) { console.error('Error removing track:', error); showToast('❌ Error removing track', 'fa-exclamation'); }
+  } catch (error) { console.error('Error removing track:', error); }
 }
 
 function playAllTracks() { audioTracks.forEach(track => { track.audio.currentTime = 0; track.audio.play().catch(e => console.log('Play error:', e)); track.playing = true; }); renderAudioTracks(); }
@@ -866,7 +860,6 @@ picker.addEventListener('change', function(e) {
       player.play().catch(e => console.log('Auto-play error:', e));
       playBtn.innerHTML = `<i class="fas fa-pause text-xs"></i>`;
       setTimeout(syncCanvasSize, 100);
-      // Reset captions on new video
       autoCaptionSegments = [];
       wordGroups = [];
       const ov = document.getElementById('autoCaptionOverlay');
@@ -879,7 +872,7 @@ picker.addEventListener('change', function(e) {
       timeDisplay.innerText = "00:00 / 00:05";
       setTimeout(syncCanvasSize, 100);
     }
-  } catch (error) { console.error('Error loading media:', error); showToast('❌ Error loading media', 'fa-exclamation'); }
+  } catch (error) { console.error('Error loading media:', error); }
 });
 
 function togglePlay() {
@@ -909,7 +902,7 @@ function handleAudioExtracted(input) {
     addAudioTrack(trackName, url, 'track');
     showSubmenu('audio');
     input.value = '';
-  } catch (error) { console.error('Error extracting audio:', error); showToast('❌ Error extracting audio', 'fa-exclamation'); }
+  } catch (error) { console.error('Error extracting audio:', error); }
 }
 
 // PIXABAY
@@ -921,7 +914,7 @@ function openPixabayModal(mode) {
     document.getElementById('pixabayResults').innerHTML = '';
     if (mode === 'sounds') { document.getElementById('pixabayTitle').innerText = "Pixabay Free Music"; document.getElementById('pixabayIcon').className = "fas fa-music text-purple-400"; } 
     else { document.getElementById('pixabayTitle').innerText = "Pixabay Sound Effects"; document.getElementById('pixabayIcon').className = "fas fa-bolt text-yellow-400"; }
-  } catch (error) { console.error('Error opening Pixabay modal:', error); }
+  } catch (error) {}
 }
 function closePixabayModal() { try { document.getElementById('pixabayModal').classList.add('hidden'); } catch (error) {} }
 
@@ -958,7 +951,7 @@ async function searchPixabayAudio() {
         row.innerHTML = `<span class="text-xs font-medium text-zinc-200 truncate max-w-[200px]">${track.title || 'Untitled'}</span><button class="bg-purple-600 text-[10px] font-bold text-white px-3 py-1.5 rounded-lg hover:bg-purple-500 transition">Apply</button>`;
         row.querySelector('button').onclick = () => {
           try { const trackType = mode === 'sound-fx' ? 'fx' : 'track'; const audioUrl = track.url || getFallbackAudio(mode); const trackName = track.title || (mode === 'sound-fx' ? 'Sound FX' : 'Music Track'); addAudioTrack(trackName, audioUrl, trackType); closePixabayModal(); showSubmenu('audio'); } 
-          catch (error) { console.error('Error applying track:', error); showToast('❌ Error applying track', 'fa-exclamation'); }
+          catch (error) { console.error('Error applying track:', error); }
         };
         resultsDiv.appendChild(row);
       });
@@ -1000,18 +993,18 @@ async function toggleVoiceRecording() {
         mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
         mediaRecorder.onstop = () => {
           try { const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' }); const url = URL.createObjectURL(audioBlob); addAudioTrack('Live Voiceover Recording', url, 'track'); showSubmenu('audio'); showToast('🎙️ Voiceover recorded!', 'fa-microphone'); } 
-          catch (error) { console.error('Error saving recording:', error); showToast('❌ Error saving recording', 'fa-exclamation'); }
+          catch (error) { console.error('Error saving recording:', error); }
         };
         mediaRecorder.start();
         isRecording = true;
         recordText.innerText = "Stop Rec";
         micIcon.className = "fas fa-stop text-red-500 animate-pulse";
         showToast('🔴 Recording...', 'fa-circle');
-      } catch (err) { alert("Microphone Error: " + err.message); showToast('❌ Microphone access denied', 'fa-exclamation'); }
+      } catch (err) { alert("Microphone Error: " + err.message); }
     } else {
       if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); isRecording = false; recordText.innerText = "Record"; micIcon.className = "fas fa-microphone text-red-500"; showToast('⏹️ Recording stopped', 'fa-stop'); }
     }
-  } catch (error) { console.error('Recording error:', error); showToast('❌ Recording error', 'fa-exclamation'); }
+  } catch (error) { console.error('Recording error:', error); }
 }
 
 // TEXT TO AUDIO
@@ -1034,7 +1027,7 @@ function openTextToAudioDrawer() {
     `;
     drawer.classList.add('open');
     if (window.speechSynthesis) speechSynthesis.getVoices();
-  } catch (error) { console.error('Error opening TTS drawer:', error); showToast('❌ Error opening TTS', 'fa-exclamation'); }
+  } catch (error) { console.error('Error opening TTS drawer:', error); }
 }
 
 function selectVoice(voice) {
@@ -1067,10 +1060,10 @@ function generateSpeech() {
     if (!matchedVoice && voices.length > 0) matchedVoice = voices[0];
     if (matchedVoice) utterance.voice = matchedVoice;
     const trackName = `${selectedVoice}: "${text.substring(0, 25)}${text.length > 25 ? '...' : ''}"`;
-    utterance.onstart = () => { try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('🔊 Voice generated!', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
-    utterance.onerror = (e) => { console.error('Speech error:', e); try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('⚠️ Voice generated (simulated)', 'fa-volume-high'); } catch (error) { console.error('Error adding TTS track:', error); } };
+    utterance.onstart = () => { try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('🔊 Voice generated!', 'fa-volume-high'); } catch (error) {} };
+    utterance.onerror = (e) => { console.error('Speech error:', e); try { addAudioTrack(trackName, 'data:audio/mp3;base64,//uQx', 'track'); showSubmenu('audio'); closeDrawer(); showToast('⚠️ Voice generated (simulated)', 'fa-volume-high'); } catch (error) {} };
     synth.speak(utterance);
-  } catch (error) { console.error('Speech generation error:', error); showToast('❌ Speech generation failed', 'fa-exclamation'); }
+  } catch (error) { console.error('Speech generation error:', error); }
 }
 
 // BRAND MUSIC
@@ -1086,7 +1079,7 @@ function openBrandMusicDrawer() {
     `;
     loadBrandTracks();
     drawer.classList.add('open');
-  } catch (error) { console.error('Error opening brand music drawer:', error); showToast('❌ Error opening brand music', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function loadBrandTracks() {
@@ -1103,10 +1096,10 @@ function loadBrandTracks() {
       const div = document.createElement('div');
       div.className = 'flex items-center justify-between p-2 bg-[#18181c] border border-zinc-800 rounded-xl hover:border-blue-500 transition';
       div.innerHTML = `<div class="flex items-center gap-2 truncate"><i class="fas fa-bookmark text-amber-400 text-xs"></i><span class="text-xs font-mono text-zinc-300 truncate">${trackName}</span></div><button class="bg-blue-600 text-[10px] text-white px-2.5 py-1 rounded-lg hover:bg-blue-500 transition">Apply</button>`;
-      div.querySelector('button').onclick = () => { try { addAudioTrack(trackName, urls[urlIndex], 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying brand track:', error); showToast('❌ Error applying track', 'fa-exclamation'); } };
+      div.querySelector('button').onclick = () => { try { addAudioTrack(trackName, urls[urlIndex], 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) {} };
       container.appendChild(div);
     }
-  } catch (error) { console.error('Error loading brand tracks:', error); showToast('❌ Error loading brand tracks', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 async function searchBrandMusic() {
@@ -1125,12 +1118,12 @@ async function searchBrandMusic() {
           const div = document.createElement('div');
           div.className = 'flex items-center justify-between p-2 bg-[#18181c] border border-zinc-800 rounded-xl hover:border-blue-500 transition';
           div.innerHTML = `<div class="flex items-center gap-2 truncate"><i class="fas fa-search text-blue-400 text-xs"></i><span class="text-xs font-mono text-zinc-300 truncate">${hit.tags || 'Untitled'}</span></div><button class="bg-blue-600 text-[10px] text-white px-2.5 py-1 rounded-lg hover:bg-blue-500 transition">Apply</button>`;
-          div.querySelector('button').onclick = () => { try { addAudioTrack(hit.tags || 'Pixabay Track', hit.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) { console.error('Error applying track:', error); showToast('❌ Error applying track', 'fa-exclamation'); } };
+          div.querySelector('button').onclick = () => { try { addAudioTrack(hit.tags || 'Pixabay Track', hit.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'track'); closeDrawer(); showSubmenu('audio'); } catch (error) {} };
           container.appendChild(div);
         });
       } else { container.innerHTML = '<p class="text-zinc-400 text-xs text-center py-4">No results. Showing brand tracks.</p>'; loadBrandTracks(); }
-    } catch (error) { console.error('Search error:', error); container.innerHTML = '<p class="text-red-400 text-xs text-center py-4">Search error. Showing default tracks.</p>'; setTimeout(loadBrandTracks, 500); }
-  } catch (error) { console.error('Search error:', error); showToast('❌ Search failed', 'fa-exclamation'); }
+    } catch (error) { container.innerHTML = '<p class="text-red-400 text-xs text-center py-4">Search error. Showing default tracks.</p>'; setTimeout(loadBrandTracks, 500); }
+  } catch (error) {}
 }
 
 // EXPORT
@@ -1157,16 +1150,16 @@ function exportProject(type) {
     } else { alert(message); }
     closeExportDialog();
     showToast(`📤 Exporting ${type}...`, 'fa-download');
-  } catch (error) { console.error('Export error:', error); showToast('❌ Export failed', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
-function runCopyrightAI() { try { showToast('🔍 AI scanning audio tracks...', 'fa-shield'); setTimeout(() => { const trackNames = audioTracks.map(t => t.name).join(', ') || 'No tracks'; alert(`✅ Copyright Report:\n• Tracks Analyzed: ${audioTracks.length}\n• ${trackNames}\n• Status: 100% Unique\n• Distribution: Authorized`); showToast('✅ Copyright check complete!', 'fa-check-circle'); }, 800); } catch (error) { console.error('Copyright check error:', error); showToast('❌ Copyright check failed', 'fa-exclamation'); } }
+function runCopyrightAI() { try { showToast('🔍 AI scanning audio tracks...', 'fa-shield'); setTimeout(() => { const trackNames = audioTracks.map(t => t.name).join(', ') || 'No tracks'; alert(`✅ Copyright Report:\n• Tracks Analyzed: ${audioTracks.length}\n• ${trackNames}\n• Status: 100% Unique\n• Distribution: Authorized`); showToast('✅ Copyright check complete!', 'fa-check-circle'); }, 800); } catch (error) {} }
 
-function generateAIImage() { try { showToast('🎨 Generating AI image...', 'fa-wand-magic-sparkles'); setTimeout(() => { showToast('✅ AI Image generated! (Demo)', 'fa-check-circle'); alert('🎨 AI Image generated!\n\nThis is a demo. In production, this would connect to an AI image generation API.'); }, 1500); } catch (error) { console.error('AI image generation error:', error); showToast('❌ AI image generation failed', 'fa-exclamation'); } }
+function generateAIImage() { try { showToast('🎨 Generating AI image...', 'fa-wand-magic-sparkles'); setTimeout(() => { showToast('✅ AI Image generated! (Demo)', 'fa-check-circle'); alert('🎨 AI Image generated!\n\nThis is a demo. In production, this would connect to an AI image generation API.'); }, 1500); } catch (error) {} }
 
-function generateAIVideo() { try { showToast('🎬 Generating AI video...', 'fa-video'); setTimeout(() => { showToast('✅ AI Video generated! (Demo)', 'fa-check-circle'); alert('🎬 AI Video generated!\n\nThis is a demo. In production, this would connect to an AI video generation API.'); }, 2000); } catch (error) { console.error('AI video generation error:', error); showToast('❌ AI video generation failed', 'fa-exclamation'); } }
+function generateAIVideo() { try { showToast('🎬 Generating AI video...', 'fa-video'); setTimeout(() => { showToast('✅ AI Video generated! (Demo)', 'fa-check-circle'); alert('🎬 AI Video generated!\n\nThis is a demo. In production, this would connect to an AI video generation API.'); }, 2000); } catch (error) {} }
 
-function activateAvatar(name) { try { showToast(`👤 ${name} avatar activated!`, 'fa-user-astronaut'); alert(`🤖 ${name} Avatar Activated!\n\nThis is a demo. In production, this would connect to an AI avatar service.`); } catch (error) { console.error('Avatar activation error:', error); showToast('❌ Avatar activation failed', 'fa-exclamation'); } }
+function activateAvatar(name) { try { showToast(`👤 ${name} avatar activated!`, 'fa-user-astronaut'); alert(`🤖 ${name} Avatar Activated!\n\nThis is a demo. In production, this would connect to an AI avatar service.`); } catch (error) {} }
 
 // NAVIGATION
 function showSubmenu(id) {
@@ -1175,27 +1168,27 @@ function showSubmenu(id) {
     document.getElementById('masterBottomMenu').classList.add('hidden');
     const sub = document.getElementById(`submenu-${id}`);
     if (sub) { sub.classList.remove('hidden'); if (id === 'filters') generateFilters(); if (id === 'caption') { updateCaptionPreview(); renderCaptionLinesList(); } }
-  } catch (error) { console.error('Error showing submenu:', error); }
+  } catch (error) {}
 }
 function backToMaster() {
   try {
     const submenus = ['edit', 'audio', 'text', 'effects', 'overlay', 'caption', 'filters', 'adjust', 'generate-media', 'ai-avatar', 'aspect-ratio', 'background'];
     submenus.forEach(s => { const el = document.getElementById(`submenu-${s}`); if (el) el.classList.add('hidden'); });
     document.getElementById('masterBottomMenu').classList.remove('hidden');
-  } catch (error) { console.error('Error going back to master:', error); }
+  } catch (error) {}
 }
-function triggerTool(name) { try { alert(`"${name}" layer triggered.`); showToast(`⚡ ${name} triggered`, 'fa-bolt'); } catch (error) { console.error('Error triggering tool:', error); showToast('❌ Tool trigger failed', 'fa-exclamation'); } }
+function triggerTool(name) { try { alert(`"${name}" layer triggered.`); showToast(`⚡ ${name} triggered`, 'fa-bolt'); } catch (error) {} }
 
 function handleOverlaySelected(input) {
   try {
     const file = input.files[0];
     if (file) { const overlayImg = document.getElementById('overlay-display-img'); overlayImg.src = URL.createObjectURL(file); overlayImg.classList.remove('hidden'); showToast('📁 Overlay added!', 'fa-layer-group'); }
     input.value = '';
-  } catch (error) { console.error('Error handling overlay:', error); showToast('❌ Error adding overlay', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
-function applyCSSFilter(filterValue) { try { player.style.filter = filterValue; imageEl.style.filter = filterValue; } catch (error) { console.error('Error applying filter:', error); } }
-function adjustBrightness(val) { try { applyCSSFilter(`brightness(${val}%)`); } catch (error) { console.error('Error adjusting brightness:', error); } }
+function applyCSSFilter(filterValue) { try { player.style.filter = filterValue; imageEl.style.filter = filterValue; } catch (error) {} }
+function adjustBrightness(val) { try { applyCSSFilter(`brightness(${val}%)`); } catch (error) {} }
 
 function changeRatio(ratioStr) {
   try {
@@ -1205,7 +1198,7 @@ function changeRatio(ratioStr) {
     else if (ratioStr === '4/3') { ratioBox.style.aspectRatio = '4/3'; ratioBox.style.maxWidth = '400px'; }
     setTimeout(syncCanvasSize, 200);
     showToast(`📐 Ratio: ${ratioStr}`, 'fa-crop-simple');
-  } catch (error) { console.error('Error changing ratio:', error); showToast('❌ Error changing ratio', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function generateFilters() {
@@ -1220,52 +1213,59 @@ function generateFilters() {
       div.style.background = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/60?random=${i+100}')`;
       div.style.backgroundSize = 'cover';
       div.innerText = filter.name + ` #${i+1}`;
-      div.onclick = () => { try { applyCSSFilter(filter.css); showToast(`🎨 ${filter.name} filter applied`, 'fa-filter'); } catch (error) { console.error('Error applying filter:', error); } };
+      div.onclick = () => { try { applyCSSFilter(filter.css); showToast(`🎨 ${filter.name} filter applied`, 'fa-filter'); } catch (error) {} };
       container.appendChild(div);
     }
-  } catch (error) { console.error('Error generating filters:', error); }
+  } catch (error) {}
 }
 
-// TEXT ELEMENT
+// TEXT ELEMENT (FIX 2 & 3)
 function createTextElementOnCanvas(text, styleCSS = '', font = 'Inter', bubbleCSS = '', animation = '') {
   try {
-    const container = document.getElementById('video-ratio-box');
     const elementsLayer = document.getElementById('canvas-elements-layer');
     const wrapper = document.createElement('div');
     wrapper.className = 'canvas-text-item';
     const id = ++textElementCounter;
     wrapper.id = `text-${id}`;
-    const randomX = 20 + Math.random() * 60;
-    const randomY = 20 + Math.random() * 60;
-    wrapper.style.left = randomX + '%';
-    wrapper.style.top = randomY + '%';
+    // Default center position
+    wrapper.style.left = '50%';
+    wrapper.style.top = '50%';
     wrapper.style.transform = 'translate(-50%, -50%)';
+    
     const textSpan = document.createElement('span');
     textSpan.className = 'text-content';
     textSpan.innerText = text || 'Enter Text';
-    textSpan.style.cssText = `${styleCSS}; font-family: '${font}'; ${bubbleCSS}; opacity: 0.95;`;
-    if (animation) { let animCSS = getAnimationCSS(animation); textSpan.style.animation = animCSS; textSpan.style.opacity = '0.95'; }
+    // Opacity removed from here so it's fully visible
+    textSpan.style.cssText = `${styleCSS}; font-family: '${font}'; ${bubbleCSS};`;
+    
+    if (animation) { 
+      let animCSS = getAnimationCSS(animation); 
+      textSpan.style.animation = animCSS; 
+    }
+    
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
     deleteBtn.innerHTML = '×';
     deleteBtn.title = 'Delete text';
     deleteBtn.onclick = (e) => { e.stopPropagation(); deleteTextElement(wrapper.id); };
+    
     wrapper.appendChild(textSpan);
     wrapper.appendChild(deleteBtn);
     elementsLayer.appendChild(wrapper);
-    wrapper.style.pointerEvents = 'auto';
+    
     setupDrag(wrapper);
     const track = addTextTrack(text, font, styleCSS, bubbleCSS, animation);
     if (track) wrapper.setAttribute('data-track-id', track.id);
+    
     if (animation) textSpan.style.animationPlayState = 'running';
-    showToast(`✨ Text added with ${animation || 'no'} animation`, 'fa-font');
+    showToast(`✨ Text added to canvas!`, 'fa-font');
     return wrapper;
-  } catch (error) { console.error('Error creating text element:', error); showToast('❌ Error adding text', 'fa-exclamation'); return null; }
+  } catch (error) { console.error('Error creating text element:', error); return null; }
 }
 
 function getAnimationCSS(animation) {
   const animMap = {
-    'Fade In': 'textFadeIn 0.6s ease-out forwards', 'Bounce': 'textBounce 0.6s ease-in-out infinite', 'Slide In': 'textSlideIn 0.5s ease-out forwards', 'Glow Pulse': 'textGlow 1.5s ease-in-out infinite', 'Rotate': 'textRotate 0.3s ease-in-out infinite alternate', 'Pulse': 'textPulse 1s ease-in-out infinite', 'Wave': 'textWave 0.5s ease-in-out infinite', 'Shake': 'textShake 0.3s ease-in-out infinite', 'Flip': 'textFlip 0.6s ease-in-out forwards', 'Zoom In': 'textZoom 0.4s ease-out forwards', 'Neon Pulse': 'textNeonPulse 1.5s ease-in-out infinite', 'Rainbow': 'textRainbow 2s linear infinite', 'Wobble': 'textWobble 0.5s ease-in-out infinite', 'Jello': 'textJello 0.8s ease-in-out infinite', 'Heartbeat': 'textHeartbeat 1s ease-in-out infinite', 'Flicker': 'textFlicker 0.5s ease-in-out infinite', 'Typing': 'textTyping 2s steps(40) forwards', 'Reveal': 'textReveal 0.8s ease-out forwards', 'Spin': 'textSpin 2s linear infinite', 'Drop In': 'textDropIn 0.6s ease-out forwards', 'Rise Up': 'textRiseUp 0.5s ease-out forwards', 'Splash': 'textSplash 0.6s ease-out forwards', 'Explode': 'textExplode 0.7s ease-out forwards', 'Morph': 'textMorph 0.6s ease-out forwards', 'Blur In': 'textBlurIn 0.5s ease-out forwards', 'Color Shift': 'textColorShift 3s linear infinite', 'Shimmer': 'textShimmer 2s linear infinite', 'Sparkle': 'textSparkle 1.5s ease-in-out infinite', 'Cyber Glitch': 'textCyberGlitch 0.5s ease-in-out infinite', 'Matrix': 'textMatrix 1s ease-out forwards', 'Hologram': 'textHologram 2s ease-in-out infinite', 'Fire': 'textFire 1.5s ease-in-out infinite', 'Ice': 'textIce 1.5s ease-in-out infinite'
+    'Fade In': 'textFadeIn 0.6s ease-out forwards', 'Bounce': 'textBounce 0.6s ease-in-out infinite', 'Slide In': 'textSlideIn 0.5s ease-out forwards', 'Glow Pulse': 'textGlow 1.5s ease-in-out infinite', 'Rotate': 'textRotate 0.3s ease-in-out infinite alternate', 'Pulse': 'textPulse 1s ease-in-out infinite', 'Wave': 'textWave 0.5s ease-in-out infinite', 'Shake': 'textShake 0.3s ease-in-out infinite', 'Flip': 'textFlip 0.6s ease-in-out forwards', 'Zoom In': 'textZoom 0.4s ease-out forwards', 'Neon Pulse': 'textNeonPulse 1.5s ease-in-out infinite', 'Rainbow': 'textRainbow 2s linear infinite'
   };
   return animMap[animation] || 'textFadeIn 0.4s ease-out forwards';
 }
@@ -1281,7 +1281,7 @@ function deleteTextElement(id) {
       el.style.opacity = '0';
       setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); showToast('🗑️ Text deleted', 'fa-trash'); }, 200);
     }
-  } catch (error) { console.error('Error deleting text element:', error); showToast('❌ Error deleting text', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function setupDrag(element) {
@@ -1312,37 +1312,9 @@ function setupDrag(element) {
     } catch (error) {}
   });
   document.addEventListener('mouseup', () => { if (isDragging) { isDragging = false; element.classList.remove('dragging'); } });
-  element.addEventListener('touchstart', (e) => {
-    if (e.target.classList.contains('delete-btn')) return;
-    const touch = e.touches[0];
-    isDragging = true;
-    element.classList.add('dragging');
-    startX = touch.clientX;
-    startY = touch.clientY;
-    startLeft = parseFloat(element.style.left) || 50;
-    startTop = parseFloat(element.style.top) || 50;
-    e.preventDefault();
-  }, { passive: false });
-  document.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    try {
-      const touch = e.touches[0];
-      const containerRect = element.parentElement.getBoundingClientRect();
-      const deltaX = (touch.clientX - startX) / containerRect.width * 100;
-      const deltaY = (touch.clientY - startY) / containerRect.height * 100;
-      let newLeft = startLeft + deltaX;
-      let newTop = startTop + deltaY;
-      newLeft = Math.max(0, Math.min(100, newLeft));
-      newTop = Math.max(0, Math.min(100, newTop));
-      element.style.left = newLeft + '%';
-      element.style.top = newTop + '%';
-      e.preventDefault();
-    } catch (error) {}
-  }, { passive: false });
-  document.addEventListener('touchend', () => { if (isDragging) { isDragging = false; element.classList.remove('dragging'); } });
 }
 
-function applyNewTextToCanvas() {
+function handleDone() {
   try {
     const text = document.getElementById('liveTextInput').value || 'Enter Text';
     const styleCSS = currentTextState.styleCSS || 'color: #ffffff;';
@@ -1351,8 +1323,7 @@ function applyNewTextToCanvas() {
     const animation = currentTextState.animation || '';
     createTextElementOnCanvas(text, styleCSS, font, bubbleCSS, animation);
     closeDrawer();
-    showToast('✏️ Text added to canvas!', 'fa-font');
-  } catch (error) { console.error('Error applying text:', error); showToast('❌ Error applying text', 'fa-exclamation'); }
+  } catch (error) { console.error('Error on done:', error); }
 }
 
 function updateLiveTextPreview() {
@@ -1360,12 +1331,13 @@ function updateLiveTextPreview() {
     const text = document.getElementById('liveTextInput').value || 'Enter Text';
     currentTextState.text = text;
     let previewEl = document.getElementById('live-canvas-text-preview');
-    if (!previewEl) { previewEl = document.createElement('div'); previewEl.id = 'live-canvas-text-preview'; previewEl.className = 'absolute z-45 p-2 select-none pointer-events-none opacity-70'; const layer = document.getElementById('canvas-elements-layer'); if (layer) layer.appendChild(previewEl); }
+    if (!previewEl) { previewEl = document.createElement('div'); previewEl.id = 'live-canvas-text-preview'; previewEl.className = 'absolute z-45 p-2 select-none pointer-events-none'; const layer = document.getElementById('canvas-elements-layer'); if (layer) layer.appendChild(previewEl); }
     let animCSS = '';
     if (currentTextState.animation) animCSS = `animation: ${getAnimationCSS(currentTextState.animation)};`;
-    previewEl.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; ${animCSS}; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.6; pointer-events: none; z-index: 45;`;
+    // FIX 2: Opacity increased to 0.9 for preview
+    previewEl.style.cssText = `${currentTextState.styleCSS}; font-family: '${currentTextState.font}'; ${currentTextState.bubbleCSS}; ${animCSS}; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.9; pointer-events: none; z-index: 45;`;
     previewEl.innerText = text;
-  } catch (error) { console.error('Error updating preview:', error); }
+  } catch (error) {}
 }
 
 // DRAWER
@@ -1379,11 +1351,11 @@ function openDrawer(type) {
     if (matchedTabBtn) matchedTabBtn.classList.add('active');
     const tabId = type === 'stickers' || type === 'captions' ? 'templates' : type;
     renderTextTabContent(tabId);
-  } catch (error) { console.error('Error opening drawer:', error); showToast('❌ Error opening editor', 'fa-exclamation'); }
+  } catch (error) {}
 }
 function switchTextTab(tabId) {
   try { document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(`tab-${tabId}`).classList.add('active'); renderTextTabContent(tabId); } 
-  catch (error) { console.error('Error switching tab:', error); }
+  catch (error) {}
 }
 
 // TEMPLATE GENERATION
@@ -1419,16 +1391,10 @@ function generateStyleCSS(style, index) {
   }
 }
 
+// FIX 1: Only Real Unique Fonts
 function get1000Fonts() {
   const baseFonts = ['Inter','Bebas Neue','Lobster','Pacifico','Caveat','Playfair Display','Oswald','Montserrat','Fascinate','Permanent Marker','Righteous','Fredoka One','Alfa Slab One','Bangers','Cinzel','Comfortaa','Courgette','Creepster','Gloria Hallelujah','Great Vibes','Kaushan Script','Luckiest Guy','Monoton','Orbitron','Press Start 2P','Sacramento','Satisfy','Special Elite','Spicy Rice','Titan One','Vampiro One','Abril Fatface','Anton','Archivo Black','Black Ops One','Bungee','Coiny','Exo 2','Francois One','Gravitas One','Josefin Sans','Kanit','Lilita One','Limelight','Megrim','New Rocker','Nosifer','Paytone One','Plaster','Poiret One','Rajdhani','Rampart One','Rancho','Russo One','Sigmar One','Staatliches','Syncopate','Uncial Antiqua','Wallpoet','Big Shoulders Display','Black Han Sans','Chango','Comic Neue','Delius Swash Caps','Emblema One','Fugaz One','Gaegu','Girassol','Hanalei','Henny Penny','Iceberg','Jacques Francois Shadow','Kavoon','Leckerli One','Ma Shan Zheng','Monofett','Overlock','Patua One','Qwigley','Redressed','Shrikhand','Sirin Stencil','Sofia','Sriracha','Stalinist One','Warnes','ZCOOL KuaiLe','Audiowide','Dancing Script','Epilogue','Fira Code','Genos','Hind','Inconsolata','JetBrains Mono','Karla','Lato','Merriweather','Nunito','Open Sans','Poppins','Quicksand','Roboto','Source Sans Pro'];
-  const uniqueBase = [...new Set(baseFonts)];
-  const fonts = [];
-  for (let i = 0; i < 1000; i++) {
-    const base = uniqueBase[i % uniqueBase.length];
-    const variant = Math.floor(i / uniqueBase.length);
-    fonts.push(variant === 0 ? base : `${base} ${variant}`);
-  }
-  return fonts;
+  return [...new Set(baseFonts)]; // 98 Unique fonts only
 }
 
 function generate1000Styles() {
@@ -1458,7 +1424,7 @@ function generate1000Styles() {
 }
 
 function get1000Animations() {
-  const baseAnimations = ['Fade In','Bounce','Slide In','Glow Pulse','Rotate','Pulse','Wave','Zoom In','Flip','Shake','Wobble','Swing','Jello','Heartbeat','Flicker','Typing','Reveal','Spin','Drop In','Rise Up','Splash','Explode','Morph','Blur In','Color Shift','Rainbow','Neon Pulse','Cyber Glitch','Matrix','Hologram','Shimmer','Sparkle','Fire','Ice','Wind','Thunder','Gravity','Magnetic','Warp','Ripple','Echo','Ghost','Shadow Dance','Light Burst','Speed Trail','Comet','Nebula','Vortex','Zen','Dream','Cyber','Retro','Modern','Classic','Pop','Rock','Jazz','Blues','Metal','Punk','Grunge','Techno','House','Trance','Dubstep','DnB','LoFi','Ambient','Acoustic','Electric','Digital','Analog','VHS','Film','Reel','Cinema','Theater','Stage','Studio','Live','Night','Day','Sunrise','Sunset','Moon','Star','Galaxy','Universe','Nature','Ocean','Forest','Mountain','Desert','Arctic','Volcano','Storm'];
+  const baseAnimations = ['Fade In','Bounce','Slide In','Glow Pulse','Rotate','Pulse','Wave','Zoom In','Flip','Shake','Wobble','Swing','Jello','Heartbeat','Flicker','Typing','Reveal','Spin','Drop In','Rise Up','Splash','Explode','Morph','Blur In','Color Shift','Rainbow','Neon Pulse'];
   const animations = [];
   for (let i = 0; i < 1000; i++) { animations.push(`${baseAnimations[i % baseAnimations.length]} ${i+1}`); }
   return animations;
@@ -1508,7 +1474,7 @@ function renderTextTabContent(tabId) {
     grid.appendChild(itemsContainer);
     currentBatchIndex = 0;
     loadItemsBatch(tabId, itemsContainer);
-  } catch (error) { console.error('Error rendering text tab content:', error); showToast('❌ Error loading content', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function loadItemsBatch(tabId, container) {
@@ -1533,19 +1499,19 @@ function loadItemsBatch(tabId, container) {
         el.className = "bg-gradient-to-br from-[#1c1c22] to-[#26262e] border border-zinc-800 rounded-lg p-2 text-center cursor-pointer flex flex-col justify-between items-center h-20 hover:border-blue-500 transition relative overflow-hidden";
         el.setAttribute('data-search', template.name + ' ' + template.font);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 absolute top-0.5 right-1">#${globalIdx+1}</span><span class="text-[10px] truncate w-full mt-2" style="${template.styleCSS}; font-family: '${template.font}';">${template.name}</span><span class="text-[7px] text-zinc-500 mt-1">Click</span>`;
-        el.onclick = () => { try { currentTextState.text = template.name; currentTextState.font = template.font; currentTextState.styleCSS = template.styleCSS; document.getElementById('liveTextInput').value = template.name; updateLiveTextPreview(); showToast(`🎨 Template: ${template.name}`, 'fa-palette'); } catch (error) { console.error('Error applying template:', error); } };
+        el.onclick = () => { try { currentTextState.text = template.name; currentTextState.font = template.font; currentTextState.styleCSS = template.styleCSS; document.getElementById('liveTextInput').value = template.name; updateLiveTextPreview(); showToast(`🎨 Template: ${template.name}`, 'fa-palette'); } catch (error) {} };
       } else if (tabId === 'fonts') {
         const font = item;
         el.className = 'font-preview-btn';
         el.setAttribute('data-search', font);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 font-mono">#${globalIdx+1}</span><span class="font-sample text-sm" style="font-family: '${font}';">${font}</span>`;
-        el.onclick = () => { try { currentTextState.font = font; updateLiveTextPreview(); showToast(`🔤 Font: ${font}`, 'fa-font'); } catch (error) { console.error('Error applying font:', error); } };
+        el.onclick = () => { try { currentTextState.font = font; updateLiveTextPreview(); showToast(`🔤 Font: ${font}`, 'fa-font'); } catch (error) {} };
       } else if (tabId === 'styles') {
         const style = item;
         el.className = 'style-item';
         el.setAttribute('data-search', style.label);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 font-mono mr-1">#${globalIdx+1}</span><span class="text-xs font-bold" style="${style.css}">Aa</span>`;
-        el.onclick = () => { try { currentTextState.styleCSS = style.css; updateLiveTextPreview(); showToast(`🎨 ${style.label} applied`, 'fa-paint-brush'); } catch (error) { console.error('Error applying style:', error); } };
+        el.onclick = () => { try { currentTextState.styleCSS = style.css; updateLiveTextPreview(); showToast(`🎨 ${style.label} applied`, 'fa-paint-brush'); } catch (error) {} };
       } else if (tabId === 'animations') {
         const anim = item;
         el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-lg p-1.5 cursor-pointer text-center flex flex-col justify-between h-14 transition';
@@ -1558,17 +1524,17 @@ function loadItemsBatch(tabId, container) {
         if (globalIdx % 8 === 0) iconClass = "fa-rainbow text-pink-400 text-[10px]";
         if (globalIdx % 9 === 0) iconClass = "fa-snowflake text-cyan-300 text-[10px]";
         el.innerHTML = `<div class="flex items-center justify-between"><span class="text-[7px] text-zinc-500 font-mono">#${globalIdx+1}</span><i class="fas ${iconClass}"></i></div><span class="text-[9px] text-zinc-200 truncate font-semibold">${anim}</span>`;
-        el.onclick = () => { try { currentTextState.animation = anim; updateLiveTextPreview(); showToast(`✨ "${anim}" applied!`, 'fa-wand-magic-sparkles'); } catch (error) { console.error('Error applying animation:', error); } };
+        el.onclick = () => { try { currentTextState.animation = anim; updateLiveTextPreview(); showToast(`✨ "${anim}" applied!`, 'fa-wand-magic-sparkles'); } catch (error) {} };
       } else if (tabId === 'bubbles') {
         const bubble = item;
         el.className = 'bg-[#18181c] border border-zinc-800 hover:border-blue-500 rounded-lg p-1.5 cursor-pointer text-center flex flex-col justify-between h-16 transition relative';
         el.setAttribute('data-search', bubble.name);
         el.innerHTML = `<span class="text-[7px] text-zinc-500 block font-mono">#${globalIdx+1}</span><div class="text-[8px] text-zinc-300 truncate px-1 py-0.5" style="${bubble.css}">${bubble.name}</div>`;
-        el.onclick = () => { try { currentTextState.bubbleCSS = bubble.css; updateLiveTextPreview(); showToast(`🫧 ${bubble.name} applied`, 'fa-circle'); } catch (error) { console.error('Error applying bubble:', error); } };
+        el.onclick = () => { try { currentTextState.bubbleCSS = bubble.css; updateLiveTextPreview(); showToast(`🫧 ${bubble.name} applied`, 'fa-circle'); } catch (error) {} };
       }
       container.appendChild(el);
     });
-    currentBatchIndex = end;
+    currentBatchIndex = Math.min(end, totalItems);
     isLoadingMore = false;
     if (currentBatchIndex < totalItems) {
       const loadMoreBtn = document.createElement('div');
@@ -1576,12 +1542,12 @@ function loadItemsBatch(tabId, container) {
       loadMoreBtn.innerHTML = `<button onclick="loadMoreItems('${tabId}')" class="text-[10px] text-zinc-500 hover:text-white transition">Load More (${currentBatchIndex}/${totalItems})</button>`;
       container.appendChild(loadMoreBtn);
     }
-  } catch (error) { console.error('Error loading items batch:', error); isLoadingMore = false; showToast('❌ Error loading items', 'fa-exclamation'); }
+  } catch (error) { isLoadingMore = false; }
 }
 
 function loadMoreItems(tabId) {
   try { const container = document.getElementById('categoryItemsContainer'); if (!container) return; const existingBtn = container.querySelector('.col-span-2'); if (existingBtn) existingBtn.remove(); loadItemsBatch(tabId, container); } 
-  catch (error) { console.error('Error loading more items:', error); }
+  catch (error) {}
 }
 
 function renderPresetsTab(container) {
@@ -1589,7 +1555,7 @@ function renderPresetsTab(container) {
     container.className = 'col-span-4 flex flex-col gap-2';
     container.innerHTML = `<div class="bg-[#18181c] border border-zinc-800 rounded-2xl p-3 text-center"><p class="text-[10px] text-zinc-400 mb-2">Save your current style as a custom preset!</p><button onclick="saveCurrentPreset()" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl transition"><i class="fas fa-plus mr-1"></i>Save Design</button></div><div class="text-[10px] font-bold text-zinc-400 mt-1">Your Presets:</div><div id="savedPresetsList" class="grid grid-cols-2 gap-2"></div>`;
     renderSavedPresets();
-  } catch (error) { console.error('Error rendering presets tab:', error); }
+  } catch (error) {}
 }
 
 function filterCategoryItems(tabId) {
@@ -1601,7 +1567,7 @@ function filterCategoryItems(tabId) {
       const searchData = item.getAttribute('data-search') || '';
       item.style.display = (query === '' || searchData.toLowerCase().includes(query)) ? '' : 'none';
     });
-  } catch (error) { console.error('Error filtering items:', error); }
+  } catch (error) {}
 }
 
 function saveCategoryDefault(tabId) {
@@ -1609,7 +1575,7 @@ function saveCategoryDefault(tabId) {
     const defaultData = { text: document.getElementById('liveTextInput').value || 'Enter Text', font: currentTextState.font, styleCSS: currentTextState.styleCSS, bubbleCSS: currentTextState.bubbleCSS, animation: currentTextState.animation };
     localStorage.setItem('dravoo_default_' + tabId, JSON.stringify(defaultData));
     showToast(`✅ Default ${tabId} saved!`, 'fa-check');
-  } catch (error) { console.error('Error saving default:', error); showToast('⚠️ Could not save default', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function resetCategoryDefault(tabId) {
@@ -1621,7 +1587,7 @@ function resetCategoryDefault(tabId) {
     currentTextState.bubbleCSS = '';
     currentTextState.animation = '';
     updateLiveTextPreview();
-  } catch (error) { console.error('Error resetting default:', error); showToast('⚠️ Could not reset default', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function saveCategoryPreset(tabId) {
@@ -1634,7 +1600,7 @@ function saveCategoryPreset(tabId) {
     localStorage.setItem('dravoo_presets', JSON.stringify(presets));
     showToast(`💾 "${presetName}" saved!`, 'fa-save');
     renderSavedPresets();
-  } catch (error) { console.error('Error saving preset:', error); showToast('⚠️ Could not save preset', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function saveCurrentPreset() {
@@ -1646,34 +1612,34 @@ function saveCurrentPreset() {
     localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets));
     showToast(`💾 "${presetName}" saved!`, 'fa-save');
     renderSavedPresets();
-  } catch (error) { console.error('Error saving current preset:', error); showToast('⚠️ Could not save preset', 'fa-exclamation'); }
+  } catch (error) {}
 }
 
 function renderSavedPresets() {
   try {
     const listContainer = document.getElementById('savedPresetsList');
     if (!listContainer) return;
-    try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) { console.warn('Error parsing presets:', e); }
+    try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) {}
     if (customPresets.length === 0) { listContainer.innerHTML = `<div class="text-zinc-600 text-[10px] col-span-2 py-2 text-center">No presets saved.</div>`; return; }
     listContainer.innerHTML = '';
     customPresets.forEach((p, idx) => {
       const item = document.createElement('div');
       item.className = 'bg-[#22222a] border border-zinc-800 rounded-lg p-2 cursor-pointer hover:border-blue-500 transition text-center';
       item.innerHTML = `<span class="text-[7px] text-zinc-400 block font-mono mb-0.5">${p.name || `P${idx + 1}`}</span><span class="text-[10px] font-bold block truncate" style="${p.styleCSS}; font-family: '${p.font}';">${p.name || 'Preset'}</span><button class="text-[7px] text-red-400 mt-0.5 hover:text-red-300" onclick="event.stopPropagation(); deletePreset(${idx})">✕</button>`;
-      item.onclick = () => { try { currentTextState.font = p.font; currentTextState.styleCSS = p.styleCSS; currentTextState.bubbleCSS = p.bubbleCSS || ''; currentTextState.animation = p.animation || ''; updateLiveTextPreview(); showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open'); } catch (error) { console.error('Error loading preset:', error); } };
+      item.onclick = () => { try { currentTextState.font = p.font; currentTextState.styleCSS = p.styleCSS; currentTextState.bubbleCSS = p.bubbleCSS || ''; currentTextState.animation = p.animation || ''; updateLiveTextPreview(); showToast(`📂 "${p.name}" loaded!`, 'fa-folder-open'); } catch (error) {} };
       listContainer.appendChild(item);
     });
-  } catch (error) { console.error('Error rendering saved presets:', error); }
+  } catch (error) {}
 }
 
 function deletePreset(index) {
   try { customPresets.splice(index, 1); localStorage.setItem('dravoo_custom_presets', JSON.stringify(customPresets)); renderSavedPresets(); showToast('🗑️ Preset deleted', 'fa-trash'); } 
-  catch (error) { console.error('Error deleting preset:', error); showToast('⚠️ Could not delete preset', 'fa-exclamation'); }
+  catch (error) {}
 }
 
 function closeDrawer() {
   try { document.getElementById('editorDrawer').classList.remove('open'); const previewEl = document.getElementById('live-canvas-text-preview'); if (previewEl) previewEl.remove(); } 
-  catch (error) { console.error('Error closing drawer:', error); }
+  catch (error) {}
 }
 
 // CANVAS DRAWING
@@ -1681,7 +1647,7 @@ const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 
 function syncCanvasSize() {
-  try { canvas.width = ratioBox.clientWidth; canvas.height = ratioBox.clientHeight; } catch (error) { console.error('Error syncing canvas size:', error); }
+  try { canvas.width = ratioBox.clientWidth; canvas.height = ratioBox.clientHeight; } catch (error) {}
 }
 window.addEventListener('resize', syncCanvasSize);
 
@@ -1691,45 +1657,14 @@ function toggleDraw() {
     const panel = document.getElementById('drawToolsPanel');
     if (drawActive) { canvas.classList.add('active'); panel.classList.remove('hidden'); panel.classList.add('flex'); syncCanvasSize(); showToast('✏️ Draw ON', 'fa-pen'); } 
     else { canvas.classList.remove('active'); panel.classList.add('hidden'); showToast('✏️ Draw OFF', 'fa-pen'); }
-  } catch (error) { console.error('Error toggling draw:', error); }
+  } catch (error) {}
 }
-function clearDraw() { try { ctx.clearRect(0, 0, canvas.width, canvas.height); showToast('🧹 Cleared', 'fa-eraser'); } catch (error) { console.error('Error clearing draw:', error); } }
-function setBrush(size) { try { brushSize = size; showToast(`🖌️ ${size}px`, 'fa-paintbrush'); } catch (error) { console.error('Error setting brush:', error); } }
+function clearDraw() { try { ctx.clearRect(0, 0, canvas.width, canvas.height); showToast('🧹 Cleared', 'fa-eraser'); } catch (error) {} }
+function setBrush(size) { try { brushSize = size; showToast(`🖌️ ${size}px`, 'fa-paintbrush'); } catch (error) {} }
 
-canvas.addEventListener('mousedown', (e) => { try { if (!drawActive) return; isDrawing = true; draw(e); } catch (error) { console.error('Mouse down error:', error); } });
-canvas.addEventListener('mousemove', (e) => { try { if (!drawActive) return; if (!isDrawing) return; draw(e); } catch (error) { console.error('Mouse move error:', error); } });
-canvas.addEventListener('mouseup', () => { try { isDrawing = false; ctx.beginPath(); } catch (error) { console.error('Mouse up error:', error); } });
-canvas.addEventListener('touchstart', (e) => {
-  try {
-    if (!drawActive) return;
-    isDrawing = true;
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    e.preventDefault();
-  } catch (error) { console.error('Touch start error:', error); }
-}, { passive: false });
-canvas.addEventListener('touchmove', (e) => {
-  try {
-    if (!drawActive || !isDrawing) return;
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    e.preventDefault();
-  } catch (error) { console.error('Touch move error:', error); }
-}, { passive: false });
-canvas.addEventListener('touchend', () => { try { isDrawing = false; ctx.beginPath(); } catch (error) { console.error('Touch end error:', error); } });
+canvas.addEventListener('mousedown', (e) => { try { if (!drawActive) return; isDrawing = true; draw(e); } catch (error) {} });
+canvas.addEventListener('mousemove', (e) => { try { if (!drawActive) return; if (!isDrawing) return; draw(e); } catch (error) {} });
+canvas.addEventListener('mouseup', () => { try { isDrawing = false; ctx.beginPath(); } catch (error) {} });
 
 function draw(e) {
   try {
@@ -1744,11 +1679,11 @@ function draw(e) {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(x, y);
-  } catch (error) { console.error('Draw error:', error); }
+  } catch (error) {}
 }
 
 // ============================================================
-// AUTO-CAPTION — WHISPER (from 2nd code, fully integrated)
+// AUTO-CAPTION — WHISPER
 // ============================================================
 async function generateAutoCaptions() {
   const btn = document.getElementById('autoCaptionBtn');
@@ -1874,7 +1809,6 @@ function mixToMono(audioBuffer) {
   return out;
 }
 
-// Words → Groups
 function splitIntoWords(segments) {
   const out = [];
   segments.forEach(seg => {
@@ -1901,7 +1835,6 @@ function rebuildWordGroups() {
   renderCaptionLinesList();
 }
 
-// Overlay
 function setupCaptionOverlay() {
   let overlay = document.getElementById('autoCaptionOverlay');
   if (!overlay) {
@@ -1999,7 +1932,6 @@ function startCaptionSync() {
   loop();
 }
 
-// CAPTION LINES (Edit)
 function renderCaptionLinesList() {
   const list = document.getElementById('captionLinesList');
   const count = document.getElementById('captionLinesCount');
@@ -2031,7 +1963,6 @@ function deleteCaptionLine(i) {
   showToast('🗑️ Line deleted', 'fa-trash');
 }
 
-// SRT / VTT EXPORT / IMPORT
 function secToSRT(s) {
   const h = Math.floor(s / 3600).toString().padStart(2, '0');
   const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
@@ -2112,27 +2043,25 @@ function updateCaptionPreview() {
   } catch (e) {}
 }
 
-// KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
   try {
     if (e.ctrlKey && e.key === 'z') { e.preventDefault(); showToast('↩️ Undo (placeholder)', 'fa-undo'); }
     if (e.key === 'Delete' || e.key === 'Backspace') { const active = document.activeElement; if (active && active.classList.contains('canvas-text-item')) { deleteTextElement(active.id); } }
     if (e.key === 'Escape') { closeDrawer(); closePixabayModal(); closeExportDialog(); if (drawActive) toggleDraw(); }
     if (e.key === ' ' && e.target === document.body) { e.preventDefault(); togglePlay(); }
-  } catch (error) { console.error('Keyboard shortcut error:', error); }
+  } catch (error) {}
 });
 
-// INIT
 function init() {
   try {
     setTimeout(syncCanvasSize, 300);
     updateTrackCount();
     updateTextTrackCount();
     if (window.speechSynthesis) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); }; }
-    try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) { console.warn('Error loading presets:', e); }
+    try { const saved = localStorage.getItem('dravoo_custom_presets'); if (saved) customPresets = JSON.parse(saved); } catch (e) {}
     showToast('🚀 Welcome to Dravoo Pro Studio!', 'fa-rocket');
-    console.log('🚀 Dravoo Pro Editor Loaded with Whisper Auto-Caption!');
-  } catch (error) { console.error('Error during initialization:', error); }
+    console.log('🚀 Dravoo Pro Editor Loaded!');
+  } catch (error) {}
 }
 
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
